@@ -1,0 +1,15 @@
+{
+  "name": "Emarsys_Extension",
+  "description": "Emarsys Extension for Magento2",
+  "require": {
+    "magento/framework": "*"
+  },
+  "type": "magento2-module",
+  "version": "1.0",
+  "autoload": {
+     "files": [ "registration.php" ],
+     "psr-4": {
+        "Emarsys\\": ""
+     }
+  }
+}
