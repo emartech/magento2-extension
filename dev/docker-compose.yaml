@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/var/www/html/vendor/emarsys
+      - ./..:/var/www/html/vendor/emarsys/magento2-extension
   db:
     image: mysql:5.6.23
     volumes:

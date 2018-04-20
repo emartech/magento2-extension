@@ -35,7 +35,7 @@ install-sampledata: ## Installs Magento sample data in the container
 	@$(COMPOSE) exec web install-sampledata
 
 magento: ## Runs Magento CLI command (make magento command=your-command)
-	@$(COMPOSE) exec --user 33 web bin/magento
+	@$(COMPOSE) exec --user 33 web bin/magento $(command)
 
 help: ## This help message
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' -e 's/:.*#/: #/' | column -t -s '##'

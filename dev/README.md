@@ -54,6 +54,6 @@ $ make exec <command>
 ### Magento
 If you want to run Magento CLI commands, you should use
 ```
-$ make magento <command>
+$ make magento command=setup:upgrade
 ```
-This will run the command as the `www-data` user in the container. If you run this without arguments, you will get a list of available commands.
+This will run the command as the `www-data` user in the container. If you run this without command parameter, you will get a list of available commands.
