@@ -10,10 +10,13 @@ services:
       - .env
     volumes:
       - ./..:/var/www/html/vendor/emarsys/magento2-extension
+      - ./composer.json:/var/www/html/composer.json
   db:
     image: mysql:5.6.23
     volumes:
       - magento-db:/var/lib/mysql
+    ports:
+      - "13306:3306"
     env_file:
       - .env
 volumes:

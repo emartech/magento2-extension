@@ -5,7 +5,7 @@ To start development first copy `dev/.env.example` to `dev/.env` then use
 ```
 $ make up
 ```
-This will set up the containers and run Magento installation.
+This will set up the containers, run Magento installation and installs the extension.
 
 The web container will expose its port `80` to port `8888` on the host machine.
 
@@ -38,7 +38,10 @@ Destroy all
 ```
 $ make down
 ```
-**Note:** MYSQL data is persisted in local filesystem for faster rebuild. If you want to start from a clean state, you can delete `dev/db-data` folder after `make down`.
+**Note:** MYSQL data is persisted in a Docker volume for faster rebuild. If you want to start from a clean state, you can delete `mage_magento-db` volume folder after `make down` by
+```
+$ docker volume rm mage_magento-db
+```
 
 Access the web container CLI as `root`
 ```
@@ -57,3 +60,18 @@ If you want to run Magento CLI commands, you should use
 $ make magento command=setup:upgrade
 ```
 This will run the command as the `www-data` user in the container. If you run this without command parameter, you will get a list of available commands.
+
+For debugging use:
+```
+$ make exception
+```
+This will `tail -f` Magento's `expception.log` file.
+
+### MYSQL
+The MYSQL container exposes its connection port `3306` to port `13306` on the host machine.
+
+You can also use
+```
+$ make mysql
+```
+to enter the MYSQL CLI directly.
