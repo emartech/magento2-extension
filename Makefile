@@ -7,7 +7,7 @@ default: help
 up: ## Creates containers and starts app
 	@$(COMPOSE) up -d
 	@echo "Waiting for DB to be ready..."
-	@sleep 1
+	@sleep 3
 	@$(COMPOSE) exec web install-magento
 
 down: ## Destorys containers
