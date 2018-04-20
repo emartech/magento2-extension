@@ -13,6 +13,8 @@ services:
   db:
     image: mysql:5.6.23
     volumes:
-      - ./db-data:/var/lib/mysql
+      - magento-db:/var/lib/mysql
     env_file:
       - .env
+volumes:
+  magento-db:
