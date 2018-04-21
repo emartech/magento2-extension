@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Emarsys_Extension::parent" title="Emarsys" translate="title" module="Emarsys_Extension" sortOrder="50" dependsOnModule="Emarsys_Extension" resource="Emarsys_Extension::emarsys"/>
+        <add id="Emarsys_Extension::greetings_helloworld" title="Hello World" translate="title" module="Emarsys_Extension" parent="Emarsys_Extension::parent" sortOrder="10" dependsOnModule="Emarsys_Extension" action="emarsys/helloworld" resource="Magento_Backend::content"/>
+    </menu>
+</config>
