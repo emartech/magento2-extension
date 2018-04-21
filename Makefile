@@ -28,7 +28,7 @@ ps: ## Displays container statuses
 	@$(COMPOSE) ps
 
 ssh: ## Enters the web container
-	@$(COMPOSE) exec web bash
+	@$(COMPOSE) exec --user 33 web bash
 
 exec: ## Runs command in web container (make exec command=your-command)
 	@$(COMPOSE) exec web $(command)
@@ -41,6 +41,15 @@ install-sampledata: ## Installs Magento sample data in the container
 
 magento: ## Runs Magento CLI command (make magento command=your-command)
 	@$(COMPOSE) exec --user 33 web bin/magento $(command)
+
+setup: ## Runs Magento CLI setup:upgrade command
+	@$(COMPOSE) exec --user 33 web bin/magento setup:upgrade
+
+compile: ## Runs Magento CLI setup:di:compile command
+	@$(COMPOSE) exec --user 33 web bin/magento setup:di:compile
+
+flush: ## Runs Magento CLI cache:flush command
+	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
 
 mysql: ## Enter MYSQL command line
 	@$(COMPOSE) exec db mysql -u magento -p$(MYSQL_PASSWORD)

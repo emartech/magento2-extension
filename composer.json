@@ -1,15 +1,15 @@
 {
-  "name": "Emarsys_Extension",
-  "description": "Emarsys Extension for Magento2",
+  "name": "emartech/emarsys-magento2-extension",
+  "description": "Emarsys Marketing Platform",
   "require": {
     "magento/framework": "*"
   },
   "type": "magento2-module",
-  "version": "1.0",
+  "version": "1.0.0",
   "autoload": {
      "files": [ "registration.php" ],
      "psr-4": {
-        "Emarsys\\": ""
+        "Emartech\\Emarsys\\": ""
      }
   }
 }
