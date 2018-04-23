@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Emarsys
+* @package    Emarsys_Emarsys
+* @copyright  Copyright (c) 2017 Emarsys. (http://www.emarsys.net/)
+*/
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <!-- for css file -->
+        <css src="Emartech_Emarsys::css/emarsys.css"/>
+    </head>
+</page>

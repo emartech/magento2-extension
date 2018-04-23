@@ -27,6 +27,8 @@ class Index extends \Magento\Backend\App\Action
     */
     public function execute()
     {
-      return $resultPage = $this->resultPageFactory->create();
+      $resultPage = $resultPage = $this->resultPageFactory->create();
+      $resultPage->setActiveMenu('Emarsys_Extension::parent');
+      return $resultPage;
     }
   }
