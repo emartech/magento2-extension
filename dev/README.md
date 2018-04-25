@@ -61,14 +61,31 @@ $ make magento command=setup:upgrade
 ```
 This will run the command as the `www-data` user in the container. If you run this without command parameter, you will get a list of available commands.
 
-For debugging use:
+There are some frequently used Magento commands predefined:
+
+Run `setup:upgrade` & `setup:di:compile`:
+```
+$ make upgrade
+```
+
+Run `setup:di:compile`:
+```
+$ make upgrade
+```
+
+Run `cache:flush`:
+```
+$ make flush
+```
+
+For debugging, use:
 ```
 $ make exception
 ```
 This will `tail -f` Magento's `expception.log` file.
 
 ### MYSQL
-The MYSQL container exposes its connection port `3306` to port `13306` on the host machine.
+The MYSQL container exposes its connection port `3306` to port `13306` on the host machine. Credentials are defined in your `.env` file.
 
 You can also use
 ```

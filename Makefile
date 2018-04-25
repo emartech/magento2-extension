@@ -14,6 +14,8 @@ up: ## Creates containers and starts app
 	@$(COMPOSE) exec --user 33 web composer dump-autoload
 	@$(COMPOSE) exec --user 33 web bin/magento setup:upgrade
 	@$(COMPOSE) exec --user 33 web bin/magento setup:di:compile
+	@$(COMPOSE) exec --user 33 web bin/magento config:set oauth/access_token_lifetime/admin 8760
+	@$(COMPOSE) exec --user 33 web bin/magento config:set admin/security/session_lifetime 31536000
 
 down: ## Destorys containers
 	@$(COMPOSE) down
@@ -37,15 +39,18 @@ install-magento: ## Installs Magento in the container
 	@$(COMPOSE) exec web install-magento
 
 install-sampledata: ## Installs Magento sample data in the container
+	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
 	@$(COMPOSE) exec web install-sampledata
 
 magento: ## Runs Magento CLI command (make magento command=your-command)
 	@$(COMPOSE) exec --user 33 web bin/magento $(command)
 
-setup: ## Runs Magento CLI setup:upgrade command
+upgrade: ## Runs Magento CLI setup:upgrade command
+	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
 	@$(COMPOSE) exec --user 33 web bin/magento setup:upgrade
 
 compile: ## Runs Magento CLI setup:di:compile command
+	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
 	@$(COMPOSE) exec --user 33 web bin/magento setup:di:compile
 
 flush: ## Runs Magento CLI cache:flush command
