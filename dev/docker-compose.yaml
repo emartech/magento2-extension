@@ -11,6 +11,7 @@ services:
     volumes:
       - ./..:/var/www/html/vendor/emartech/emarsys-magento2-extension
       - ./composer.json:/var/www/html/composer.json
+      - ./php.ini:/usr/local/etc/php/php.ini
   db:
     image: percona
     restart: always
