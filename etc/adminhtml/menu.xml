@@ -4,5 +4,6 @@
     <menu>
         <add id="Emarsys_Extension::parent" title="Emarsys" translate="title" module="Emarsys_Extension" sortOrder="50" dependsOnModule="Emarsys_Extension" resource="Emarsys_Extension::emarsys"/>
         <add id="Emarsys_Extension::helloworld" title="Hello World" translate="title" module="Emarsys_Extension" parent="Emarsys_Extension::parent" sortOrder="10" dependsOnModule="Emarsys_Extension" action="emarsys/helloworld" resource="Magento_Backend::content"/>
+        <add id="Emarsys_Extension::integration" title="API Integration" translate="title" module="Emarsys_Extension" parent="Emarsys_Extension::parent" sortOrder="10" dependsOnModule="Emarsys_Extension" action="emarsys/integrate" resource="Magento_Backend::content"/>
     </menu>
 </config>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Emarsys Marketing Platform</title>
+    </head>
+    <body>
+        fuck
+        <referenceContainer name="content">
+            <block class="Emartech\Emarsys\Block\Adminhtml\Integrate" template="Emartech_Emarsys::integrate.phtml"/>
+        </referenceContainer>
+    </body>
+</page>
