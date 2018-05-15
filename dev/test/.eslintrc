@@ -1,0 +1,33 @@
+{
+  "root": true,
+  "extends": [
+    "emarsys"
+  ],
+  "plugins": [
+    "mocha"
+  ],
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "globals": {
+    "inject": true,
+    "onmessage": true,
+    "expect": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+  "rules": {
+    "curly": [2, "multi-line"],
+    "new-cap": 0,
+    "no-unused-expressions": 0,
+    "no-unused-vars": [2, { "vars": "all", "args": "after-used" }],
+    "require-yield": 0,
+    "security/detect-child-process": 0,
+    "security/detect-non-literal-fs-filename": 0,
+    "security/detect-non-literal-require": 0,
+    "security/detect-object-injection": 0
+  }
+}

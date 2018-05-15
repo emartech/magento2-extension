@@ -1,0 +1,32 @@
+{
+  "name": "magento2-extension-test",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "gulp test",
+    "code-style": "gulp code-style"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emartech/magento2-extension"
+  },
+  "keywords": [
+    "magento"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "boar-tasks-server": "11.0.0",
+    "chai": "4.1.2",
+    "chai-string": "1.4.0",
+    "chai-subset": "1.6.0",
+    "eslint": "4.19.1",
+    "eslint-config-emarsys": "4.0.0",
+    "eslint-plugin-mocha": "5.0.0",
+    "eslint-plugin-no-only-tests": "2.0.0",
+    "eslint-plugin-security": "1.4.0",
+    "gulp": "3.9.1",
+    "sinon": "4.5.0",
+    "sinon-chai": "3.0.0"
+  }
+}

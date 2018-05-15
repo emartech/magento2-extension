@@ -63,5 +63,11 @@ exception: ## Tail Magento exception logs
 	@echo "Following var/log/exception.log\n"
 	@$(COMPOSE) exec web tail -f -n 10 var/log/exception.log
 
+test: ## Runs tests
+	@$(COMPOSE) run node npm t
+
+npm-install: ##
+	@$(COMPOSE) run node npm i
+
 help: ## This help message
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' -e 's/:.*#/: #/' | column -t -s '##'

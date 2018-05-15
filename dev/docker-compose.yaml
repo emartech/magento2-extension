@@ -21,5 +21,16 @@ services:
       - "13306:3306"
     env_file:
       - .env
+  node:
+    image: "node:9.11.1-alpine"
+    user: "node"
+    working_dir: /test
+    env_file:
+      - .env
+    volumes:
+      - ./test:/test
+    expose:
+      - "8081"
+    command: "npm i"
 volumes:
   magento-db:
