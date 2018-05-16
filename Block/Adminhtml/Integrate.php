@@ -26,12 +26,10 @@ class Integrate extends Template
   }
 
   /**
-   * Test function
-   *
    * @return string
    */
   public function getToken()
   {
-    return $this->integration->getToken()['token'];
+    return $this->integration->getConnectToken();
   }
 }

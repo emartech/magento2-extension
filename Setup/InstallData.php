@@ -27,12 +27,14 @@ class InstallData implements InstallDataInterface
   /**
    * @param ModuleDataSetupInterface $setup
    * @param ModuleContextInterface $context
+   * @throws \Magento\Framework\Oauth\Exception
    */
   public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
   {
     $setup->startSetup();
 
     $this->integration->create();
+    $this->integration->saveConnectTokenToConfig();
 
     $setup->endSetup();
   }
