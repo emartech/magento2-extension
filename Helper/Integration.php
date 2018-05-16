@@ -88,8 +88,12 @@ class Integration extends AbstractHelper
    */
   public function saveConnectTokenToConfig() {
     $token = $this->getToken()['token'];
-    $baseUrl = preg_replace('/https?:\/\//', '', $this->getBaseUrl());
-    $connectJson = json_encode(['hostname' => $baseUrl, 'token' => $token]);
+    $parsedUrl = parse_url($this->getBaseUrl());
+    $hostname = $parsedUrl['host'];
+    if ($parsedUrl['port']) {
+      $hostname .= ':' . $parsedUrl['port'];
+    }
+    $connectJson = json_encode(['hostname' => $hostname, 'token' => $token]);
 
     $connectToken = base64_encode($connectJson);
 
