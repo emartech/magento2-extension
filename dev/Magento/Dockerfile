@@ -1,11 +1,9 @@
-FROM webdevops/php-apache-dev:alpine
+FROM alexcheng/magento2:2.2.3
 
-COPY *.json /app/
-WORKDIR /app
-RUN su application \
-  && composer install \
-  && chmod +x bin/magento \
-  && bin/magento setup:upgrade
+COPY *.json /var/www/html/
+COPY setup /etc/my_init.d/
+
+WORKDIR /var/www/html
 
 
 
