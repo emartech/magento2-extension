@@ -1,8 +1,15 @@
 'use strict';
 
 describe('Connect', function() {
-  it('should work', async function() {
-    const result = await this.db.select().from('admin_user');
-    expect(result).not.to.undefined;
+  it('should store hostname, token', async function() {
+    const result = await this.db
+      .select('value')
+      .from('core_config_data')
+      .where({ path: 'emartech/emarsys/connecttoken' })
+      .first();
+
+    const { hostname, token } = JSON.parse(Buffer.from(result.value, 'base64'));
+    expect(process.env.MAGENTO_URL.includes(hostname)).to.be.true;
+    expect(token).not.to.be.undefined;
   });
 });
