@@ -1,11 +1,11 @@
 {
-  "name": "magento/project-community-edition",
+  "name": "emartech/magento-environment",
   "description": "eCommerce Platform for Growth (Community Edition)",
   "type": "project",
-  "version": "2.2.3",
+  "version": "1.0.0",
   "license": ["OSL-3.0", "AFL-3.0"],
   "require": {
-    "magento/product-community-edition": "2.2.3",
+    "magento/product-community-edition": "2.2.4",
     "composer/composer": "@alpha",
     "emartech/emarsys-magento2-extension": "dev-master@dev"
   },
