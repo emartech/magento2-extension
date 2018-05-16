@@ -32,6 +32,9 @@ ps: ## Displays container statuses
 ssh: ## Enters the web container
 	@$(COMPOSE) exec --user 33 web bash
 
+ssh-node: ## Enters the web container
+	@$(COMPOSE) run --rm node /bin/sh
+
 exec: ## Runs command in web container (make exec command=your-command)
 	@$(COMPOSE) exec web $(command)
 

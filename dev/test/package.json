@@ -26,6 +26,8 @@
     "eslint-plugin-no-only-tests": "2.0.0",
     "eslint-plugin-security": "1.4.0",
     "gulp": "3.9.1",
+    "knex": "0.14.6",
+    "mysql": "2.15.0",
     "sinon": "4.5.0",
     "sinon-chai": "3.0.0"
   }

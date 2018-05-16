@@ -1,9 +1,9 @@
 'use strict';
 
 const gulp = require('gulp');
+const config = require('./tasks.config');
 const tasks = require('boar-tasks-server').getTasks(gulp, config);
 const eslint = require('gulp-eslint');
-const config = require('./tasks.config');
 
 gulp.task('test', ['code-style', 'server-test']);
 gulp.task('code-style', () => {

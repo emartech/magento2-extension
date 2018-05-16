@@ -3,7 +3,7 @@
 module.exports = {
   server: {
     test: {
-      filePatterns: ['!(node_modules)/**/*.spec.js']
+      filePatterns: ['./setup.spec.js', '!(node_modules)/**/*.spec.js']
     }
   }
 };
