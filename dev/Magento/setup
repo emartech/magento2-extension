@@ -8,3 +8,8 @@ bin/magento setup:install --base-url=$MAGENTO_URL --backend-frontname=$MAGENTO_B
 composer dump-autoload
 bin/magento setup:upgrade
 EOSU
+
+echo "Setup ready"
+touch /setup-ready
+
+docker-healthcheck

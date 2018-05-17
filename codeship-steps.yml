@@ -1,0 +1,3 @@
+- name: install-and-test
+  service: node
+  command: /bin/sh -c "npm i && npm t"

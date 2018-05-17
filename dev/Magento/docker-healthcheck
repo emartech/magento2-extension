@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eo pipefail
+
+if [[ -f /setup-ready ]]; then
+    echo "van"
+    exit 0
+fi
+echo "nincs"
+exit 1

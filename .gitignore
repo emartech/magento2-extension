@@ -3,3 +3,4 @@ dev/db-data/
 dev/test/node_modules
 codeship.aes
 magento-db
+emartech_magento2_extension.aes

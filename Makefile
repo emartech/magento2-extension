@@ -8,14 +8,6 @@ default: help
 
 up: ## Creates containers and starts app
 	@$(COMPOSE) up -d
-	@echo "Waiting for DB to be ready..."
-	@sleep 3
-	##@$(COMPOSE) exec web install-magento
-	#@$(COMPOSE) exec --user 33 web composer dump-autoload
-	#@$(COMPOSE) exec --user 33 web bin/magento setup:upgrade
-	#@$(COMPOSE) exec --user 33 web bin/magento setup:di:compile
-	#@$(COMPOSE) exec --user 33 web bin/magento config:set oauth/access_token_lifetime/admin 8760
-	#@$(COMPOSE) exec --user 33 web bin/magento config:set admin/security/session_lifetime 31536000
 
 down: ## Destorys containers
 	@$(COMPOSE) down
