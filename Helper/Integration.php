@@ -90,7 +90,7 @@ class Integration extends AbstractHelper
     $token = $this->getToken()['token'];
     $parsedUrl = parse_url($this->getBaseUrl());
     $hostname = $parsedUrl['host'];
-    if ($parsedUrl['port']) {
+    if (isset($parsedUrl['port'])) {
       $hostname .= ':' . $parsedUrl['port'];
     }
     $connectJson = json_encode(['hostname' => $hostname, 'token' => $token]);
