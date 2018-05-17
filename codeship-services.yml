@@ -16,7 +16,6 @@ node:
   depends_on:
     - db
     - web
-  user: "node"
   working_dir: /test
   volumes:
     - ./dev/test:/test

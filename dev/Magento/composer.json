@@ -29,7 +29,7 @@
     },
     "files": [
       "app/etc/NonComposerComponentRegistration.php",
-      "vendor/emartech/emarsys-magento2-extension/Registration.php"
+      "vendor/emartech/emarsys-magento2-extension/registration.php"
     ],
     "exclude-from-classmap": ["**/dev/**", "**/update/**", "**/Test/**"]
   },
