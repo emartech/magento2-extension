@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="emarsys" translate="label" sortOrder="500">
+            <label>Emarsys</label>
+        </tab>
+        <section id="emartech" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Connect</label>
+            <tab>emarsys</tab>
+            <resource>Magento_Backend::content</resource>
+            <group id="emarsys" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="connecttoken" translate="label" type="label" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Connect token</label>
+                    <comment>Please copy this token and paste in at your Emarsys Integration page.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

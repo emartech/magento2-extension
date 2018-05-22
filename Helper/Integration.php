@@ -10,7 +10,6 @@ use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Integration\Model\OauthService;
-use Magento\Setup\Exception;
 
 class Integration extends AbstractHelper
 {
