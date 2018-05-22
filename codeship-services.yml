@@ -1,7 +1,7 @@
 db:
   image: healthcheck/percona
   cached: true
-  encrypted_env_file: env.encrypted
+  encrypted_env_file: codeship.env.encrypted
 web:
   build: ./dev/Magento
   depends_on:
@@ -10,7 +10,7 @@ web:
     - .:/var/www/html/vendor/emartech/emarsys-magento2-extension
     - ./php.ini:/usr/local/etc/php/php.ini
   cached: true
-  encrypted_env_file: env.encrypted
+  encrypted_env_file: codeship.env.encrypted
 node:
   image: "node:9.11.1-alpine"
   depends_on:
@@ -21,4 +21,11 @@ node:
     - ./dev/test:/test
   expose:
     - "8081"
-  encrypted_env_file: env.encrypted
+  encrypted_env_file: codeship.env.encrypted
+deploy:
+  build:
+    image: emarsys/magento-extension-deploy
+    dockerfile: ./dev/Deploy/Dockerfile
+  encrypted_env_file: codeship.env.encrypted
+  volumes:
+    - ./.ssh:/root/.ssh
