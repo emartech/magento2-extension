@@ -24,6 +24,9 @@ ps: ## Displays container statuses
 ssh: ## Enters the web container
 	@$(COMPOSE) exec --user 33 web bash
 
+ssh-root: ## Enters the web container
+	@$(COMPOSE) exec web bash
+
 ssh-node: ## Enters the web container
 	@$(COMPOSE) run --rm node /bin/sh
 
@@ -59,10 +62,10 @@ exception: ## Tail Magento exception logs
 	@$(COMPOSE) exec web tail -f -n 10 var/log/exception.log
 
 test: ## Runs tests
-	@$(COMPOSE) run node npm t
+	@$(COMPOSE) run --rm node npm t
 
 npm-install: ##
-	@$(COMPOSE) run node npm i
+	@$(COMPOSE) run --rm node npm i
 
 help: ## This help message
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' -e 's/:.*#/: #/' | column -t -s '##'

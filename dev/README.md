@@ -43,7 +43,7 @@ $ make down
 $ docker volume rm mage_magento-db
 ```
 
-Access the web container CLI as `root`
+Access the web container CLI as `www-data` user
 ```
 $ make ssh
 ```
@@ -92,3 +92,15 @@ You can also use
 $ make mysql
 ```
 to enter the MYSQL CLI directly.
+
+### Testing
+Tests are run in NodeJS environment in a separate container. The node container does not run constantly, it boots up for one-off test runs.
+
+Before the first run `npm` packages must be installed by
+```
+$ make npm-install
+```
+To run the tests use
+```
+$ make test
+```
