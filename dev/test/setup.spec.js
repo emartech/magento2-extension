@@ -36,7 +36,7 @@ before(async function() {
 
 beforeEach(async function() {
   this.sinon = sinon;
-  this.sandbox = sinon.sandbox.create();
+  this.sandbox = sinon.createSandbox();
 });
 
 afterEach(async function() {
