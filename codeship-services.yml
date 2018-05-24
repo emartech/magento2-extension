@@ -8,7 +8,6 @@ web:
     - db
   volumes:
     - .:/var/www/html/vendor/emartech/emarsys-magento2-extension
-    - ./php.ini:/usr/local/etc/php/php.ini
   cached: true
   encrypted_env_file: codeship.env.encrypted
 node:

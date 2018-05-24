@@ -1,7 +1,6 @@
 version: '3.0'
 services:
   web:
-    #image: alexcheng/magento2
     build: ./Magento
     ports:
       - "8888:80"
@@ -11,8 +10,6 @@ services:
       - .env
     volumes:
       - ./..:/var/www/html/vendor/emartech/emarsys-magento2-extension
-      #- ./composer.json:/var/www/html/composer.json
-      #- ./auth.json:/var/www/html/auth.json
       - ./php.ini:/usr/local/etc/php/php.ini
   db:
     image: percona
