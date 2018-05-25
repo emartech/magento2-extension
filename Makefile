@@ -65,7 +65,7 @@ test: ## Runs tests
 	@$(COMPOSE) run --rm node npm t
 
 npm-install: ##
-	@$(COMPOSE) run --rm node npm i
+	@$(COMPOSE) run --rm node npm i && npm i -g gulp
 
 help: ## This help message
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' -e 's/:.*#/: #/' | column -t -s '##'

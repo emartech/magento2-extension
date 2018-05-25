@@ -11,8 +11,9 @@ services:
     volumes:
       - ./..:/var/www/html/vendor/emartech/emarsys-magento2-extension
       - ./php.ini:/usr/local/etc/php/php.ini
+    command: ["/opt/wait-for-it.sh", "db:3306", "--", "/sbin/my_init"]
   db:
-    image: percona
+    image: healthcheck/percona
     restart: always
     volumes:
       - magento-db:/var/lib/mysql
