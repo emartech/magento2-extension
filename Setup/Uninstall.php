@@ -30,6 +30,11 @@ class Uninstall implements UninstallInterface
 
     $this->integration->delete();
 
+    $tableName = $setup->getTable('emarsys_settings');
+    if ($setup->getConnection()->isTableExists($tableName) === true) {
+      $setup->getConnection()->dropTable($tableName);
+    }
+
     $setup->endSetup();
   }
 }

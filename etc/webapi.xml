@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
     <route url="/V1/emarsys/settings" method="POST">
-        <service class="Emartech\Emarsys\Api\SettingsInterface" method="set"/>
+        <service class="Emartech\Emarsys\Api\SettingsApiInterface" method="set"/>
         <resources>
             <resource ref="Magento_Backend::content"/>
         </resources>

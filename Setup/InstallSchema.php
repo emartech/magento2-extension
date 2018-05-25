@@ -12,30 +12,42 @@ class InstallSchema implements InstallSchemaInterface
   {
     $setup->startSetup();
 
-    $table = $setup->getConnection()->newTable(
-      $setup->getTable('emarsys_settings'))
-      ->addColumn(
-        'id',
-        \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-        null,
-        ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-        'Id'
-      )
-      ->addColumn(
-        'key',
-        \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-        null,
-        ['default' => null, 'nullable' => false],
-        'Key'
-      )
-      ->addColumn(
-        'value',
-        \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-        null,
-        ['default' => null, 'nullable' => false],
-        'Value'
-      );
-    $setup->getConnection()->createTable($table);
+    $tableName = $setup->getTable('emarsys_settings');
+    if ($setup->getConnection()->isTableExists($tableName) != true) {
+      $table = $setup->getConnection()->newTable(
+        $setup->getTable('emarsys_settings'))
+        ->addColumn(
+          'setting_id',
+          \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+          null,
+          ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+          'Id'
+        )
+        ->addColumn(
+          'setting',
+          \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+          255,
+          ['default' => null, 'nullable' => false],
+          'Setting'
+        )
+        ->addColumn(
+          'value',
+          \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+          null,
+          ['default' => null, 'nullable' => false],
+          'Value'
+        )
+        ->addIndex(
+          $setup->getIdxName(
+            $setup->getTable('emarsys_settings'),
+            ['setting'],
+            \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+          ),
+          ['setting'],
+          ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
+        );
+      $setup->getConnection()->createTable($table);
+    }
 
     $setup->endSetup();
   }
