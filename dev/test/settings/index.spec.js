@@ -2,7 +2,7 @@
 
 const Magento2ApiClient = require('@emartech/magento2-api');
 
-describe.only('Settings', function() {
+describe('Settings', function() {
   describe('defaults', function() {
     it('should have a collectCustomerEvents default config after install', async function() {
       const setting = await this.db
