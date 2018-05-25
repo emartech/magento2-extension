@@ -3,7 +3,8 @@
 module.exports = {
   server: {
     test: {
-      filePatterns: ['./setup.spec.js', '!(node_modules)/**/*.spec.js']
+      filePatterns: ['./setup.spec.js', '!(node_modules)/**/*.spec.js'],
+      flags: ['timeout 30000']
     }
   }
 };
