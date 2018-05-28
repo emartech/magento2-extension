@@ -6,6 +6,7 @@ const chaiSubset = require('chai-subset');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const knex = require('knex');
+const DbCleaner = require('./db-cleaner');
 
 chai.use(chaiString);
 chai.use(chaiSubset);
@@ -37,8 +38,10 @@ before(async function() {
 beforeEach(async function() {
   this.sinon = sinon;
   this.sandbox = sinon.createSandbox();
+  await DbCleaner.create(this.db).tearDown();
 });
 
 afterEach(async function() {
   this.sandbox.restore();
+  await DbCleaner.create(this.db).tearDown();
 });

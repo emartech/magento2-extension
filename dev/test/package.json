@@ -5,7 +5,7 @@
   "scripts": {
     "test": "npm run code-style && npm run mocha",
     "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./setup.spec.js '!(node_modules)/**/*.spec.js'",
-    "code-style": "eslint **/**.js"
+    "code-style": "eslint '!(node_modules)/**/**.js'"
   },
   "repository": {
     "type": "git",
