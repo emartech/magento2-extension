@@ -63,12 +63,7 @@ This will run the command as the `www-data` user in the container. If you run th
 
 There are some frequently used Magento commands predefined:
 
-Run `setup:upgrade` & `setup:di:compile`:
-```
-$ make upgrade
-```
-
-Run `setup:di:compile`:
+Run `cache:flush` & `setup:upgrade`:
 ```
 $ make upgrade
 ```
@@ -78,11 +73,19 @@ Run `cache:flush`:
 $ make flush
 ```
 
-For debugging, use:
+For debugging, use (This will `tail -f` Magento's `expception.log` file.):
 ```
 $ make exception
 ```
-This will `tail -f` Magento's `expception.log` file.
+
+**Uninstall** the extension in local instance (will remove connect token from `core_config_data`, drop extension migrations, delete module from `setup_module`, delete generated code and flush cache):
+```
+$ make uninstall
+```
+then you can **reinstall** it by calling `upgrade`:
+```
+$ make upgrade
+```
 
 ### MYSQL
 The MYSQL container exposes its connection port `3306` to port `13306` on the host machine. Credentials are defined in your `.env` file.

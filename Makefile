@@ -54,8 +54,13 @@ compile: ## Runs Magento CLI setup:di:compile command
 flush: ## Runs Magento CLI cache:flush command
 	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
 
+uninstall: ## Uninstalls the extension from the Magento instance
+	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} < /opt/uninstall-extension.sql'
+	@$(COMPOSE) exec --user 33 web rm -rf generated/code/Magento/
+	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
+
 mysql: ## Enter MYSQL command line
-	@$(COMPOSE) exec db mysql -u magento -p$(MYSQL_PASSWORD)
+	@$(COMPOSE) exec db mysql -u magento -p${MYSQL_PASSWORD}
 
 exception: ## Tail Magento exception logs
 	@echo "Following var/log/exception.log\n"
