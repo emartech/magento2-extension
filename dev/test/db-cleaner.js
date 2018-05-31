@@ -10,8 +10,10 @@ module.exports = class DbCleaner {
   }
 
   async tearDown() {
-    return this._db('emarsys_settings').update({
+    await this._db('emarsys_settings').update({
       value: 'disabled'
     });
+    await this._db.raw('DELETE FROM customer_entity');
+    await this._db.truncate('emarsys_events');
   }
 };
