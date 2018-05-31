@@ -40,5 +40,6 @@ class CustomerAddressObserver implements ObserverInterface
       $this->customerEventHandler->store('customer_account', $customerId);
     } catch (\Exception $e) {
       $this->logger->warning('Emartech\\Emarsys\\Observers\\CustomerAddressObserver: ' . $e->getMessage());
+    }
   }
 }
