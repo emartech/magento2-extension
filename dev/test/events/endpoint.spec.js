@@ -52,14 +52,14 @@ describe('Events API endpoint', function() {
       await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer } });
     }
 
-    const eventsResponse = await magentoApi.getEventsSince(0, pageSize);
+    const eventsResponse = await magentoApi.execute('events', 'getSince', 0, pageSize);
 
     expect(eventsResponse.events.length).to.equal(pageSize);
     expect(eventsResponse.last_page).to.equal(3);
 
     let sinceId = eventsResponse.events.pop().event_id;
 
-    const secondEventsResponse = await magentoApi.getEventsSince(sinceId, pageSize);
+    const secondEventsResponse = await magentoApi.execute('events', 'getSince', sinceId, pageSize);
 
     expect(secondEventsResponse.last_page).to.equal(2);
 
