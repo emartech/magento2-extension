@@ -1,18 +1,20 @@
 <?php
 
 
-namespace Emartech\Emarsys\Model;
+namespace Emartech\Emarsys\Model\Api;
 
 use Emartech\Emarsys\Api\SettingsApiInterface;
+use Emartech\Emarsys\Model\ResourceModel\Settings;
+use Emartech\Emarsys\Model\SettingsFactory;
 
 class SettingsApi implements SettingsApiInterface
 {
   /**  @var SettingsFactory */
   protected $settingsFactory;
-  /** @var ResourceModel\Settings */
+  /** @var Settings */
   private $settingsResource;
 
-  public function __construct(SettingsFactory $settingsFactory, ResourceModel\Settings $resourceModel)
+  public function __construct(SettingsFactory $settingsFactory, Settings $resourceModel)
   {
     $this->settingsFactory = $settingsFactory;
     $this->settingsResource = $resourceModel;

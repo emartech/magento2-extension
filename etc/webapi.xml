@@ -6,4 +6,10 @@
             <resource ref="Magento_Backend::content"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/events" method="POST">
+        <service class="Emartech\Emarsys\Api\EventsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Magento_Backend::content"/>
+        </resources>
+    </route>
 </routes>

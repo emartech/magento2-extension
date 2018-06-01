@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "npm run code-style && npm run mocha",
+    "test": "npm run mocha && npm run code-style",
     "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./setup.spec.js '!(node_modules)/**/*.spec.js'",
     "code-style": "eslint '!(node_modules)/**/**.js'"
   },
