@@ -6,6 +6,7 @@ namespace Emartech\Emarsys\Observers;
 use Emartech\Emarsys\Helper\CustomerEventHandler;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Psr\Log\LoggerInterface;
 
 class CustomerAccountObserver implements ObserverInterface
 {
@@ -13,10 +14,15 @@ class CustomerAccountObserver implements ObserverInterface
    * @var CustomerEventHandler
    */
   private $customerEventHandler;
+  /**
+   * @var LoggerInterface
+   */
+  private $logger;
 
-  public function __construct(CustomerEventHandler $customerEventHandler)
+  public function __construct(CustomerEventHandler $customerEventHandler, LoggerInterface $logger)
   {
     $this->customerEventHandler = $customerEventHandler;
+    $this->logger = $logger;
   }
 
   /**
@@ -29,7 +35,7 @@ class CustomerAccountObserver implements ObserverInterface
     $customerId = $observer->getEvent()->getCustomer()->getId();
 
     try {
-      $this->customerEventHandler->store('customer_account', $customerId);
+      $this->customerEventHandler->store('customers/account', $customerId);
     } catch (\Exception $e) {
       $this->logger->warning('Emartech\\Emarsys\\Observers\\CustomerAccountObserver: ' . $e->getMessage());
     }
