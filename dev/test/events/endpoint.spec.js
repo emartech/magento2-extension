@@ -45,11 +45,17 @@ describe('Events API endpoint', function() {
     });
   });
 
+  afterEach(async function() {
+    await this.db.raw(
+      'DELETE FROM customer_entity where email in ("yolo@yolo.net", "doggo@yolo.net", "pupper@yolo.net")'
+    );
+  });
+
   it('returns number of events defined in page_size and deletes events before since_id', async function() {
     const pageSize = 2;
     await magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
     for (const customer of customers) {
-      await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer } });
+      await this.createCustomer(customer);
     }
 
     const eventsResponse = await magentoApi.execute('events', 'getSince', 0, pageSize);

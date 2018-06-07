@@ -23,9 +23,13 @@ describe('Customer events', function() {
     });
   });
 
+  afterEach(async function() {
+    await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
+  });
+
   it('are saved in DB if collectCustomerEvents is enabled', async function() {
     await magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
-    await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer } });
+    await this.createCustomer(customer);
 
     const event = await this.db
       .select()
@@ -38,7 +42,7 @@ describe('Customer events', function() {
   });
 
   it('are not saved in DB if collectCustomerEvents is disabled', async function() {
-    await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer } });
+    await this.createCustomer(customer);
 
     const event = await this.db
       .select()
