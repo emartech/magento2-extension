@@ -7,7 +7,7 @@ COMPOSE=docker-compose -f $(COMPOSE_FILE) -p mage
 default: help
 
 up: ## Creates containers and starts app
-	@$(COMPOSE) up -d
+	@$(COMPOSE) up -d --build
 
 down: ## Destorys containers
 	@$(COMPOSE) down
@@ -66,11 +66,15 @@ exception: ## Tail Magento exception logs
 	@echo "Following var/log/exception.log\n"
 	@$(COMPOSE) exec web tail -f -n 10 var/log/exception.log
 
+log: ## Tail Magento exception logs
+	@echo "Following var/log/system.log\n"
+	@$(COMPOSE) exec web tail -f -n 10 var/log/system.log
+
 test: ## Runs tests
 	@$(COMPOSE) run --rm node npm t
 
 npm-install: ##
-	@$(COMPOSE) run --rm node npm i && npm i -g gulp
+	@$(COMPOSE) run --rm node npm i
 
 help: ## This help message
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' -e 's/:.*#/: #/' | column -t -s '##'
