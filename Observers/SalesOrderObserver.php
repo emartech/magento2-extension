@@ -71,7 +71,7 @@ class SalesOrderObserver implements ObserverInterface
     }
 
     if ($state === 'canceled') {
-      return 'orders/canceled';
+      return 'orders/cancelled';
     }
 
     if ($state === 'complete') {

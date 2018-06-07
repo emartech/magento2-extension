@@ -71,14 +71,55 @@ const createNewOrder = async (magentoApi, customer, product) => {
   return { cartId, orderId };
 };
 
+const fulfillOrder = async (magentoApi, orderId) => {
+  await magentoApi.post({
+    path: `/index.php/rest/V1/order/${orderId}/invoice`,
+    payload: {
+      capture: true
+    }
+  });
+
+  await magentoApi.post({
+    path: `/index.php/rest/V1/order/${orderId}/ship`
+  });
+};
+
+const cancelOrder = async (magentoApi, orderId) => {
+  await magentoApi.post({
+    path: `/index.php/rest/V1/orders/${orderId}/cancel`
+  });
+};
+
 describe('Order events', function() {
-  it('creates orders/new event', async function() {
+  it('creates orders/new event and an orders/fulfilled', async function() {
     await this.magentoApi.setSettings({ collectSalesEvents: 'enabled' });
 
-    await createNewOrder(this.magentoApi, this.customer, this.product);
+    const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.product);
 
-    const { event_type: eventType } = await getLastEvent(this.db);
+    const { event_type: createEventType } = await getLastEvent(this.db);
 
-    expect(eventType).to.be.equal('orders/create');
+    expect(createEventType).to.be.equal('orders/create');
+
+    await fulfillOrder(this.magentoApi, orderId);
+
+    const { event_type: fulfillEventType } = await getLastEvent(this.db);
+
+    expect(fulfillEventType).to.be.equal('orders/fulfilled');
+  });
+
+  it('should not create events until disabled and after enable should create an orders/cancelled', async function() {
+    const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.product);
+
+    const createEvent = await getLastEvent(this.db);
+
+    expect(createEvent).to.be.undefined;
+
+    await this.magentoApi.setSettings({ collectSalesEvents: 'enabled' });
+
+    await cancelOrder(this.magentoApi, orderId);
+
+    const { event_type: cancelEventType } = await getLastEvent(this.db);
+
+    expect(cancelEventType).to.be.equal('orders/cancelled');
   });
 });
