@@ -53,8 +53,8 @@ const createNewOrder = async (magentoApi, customer, product) => {
           email: 'jdoe@example.com',
           telephone: '512-555-1111'
         },
-        shipping_carrier_code: 'tablerate',
-        shipping_method_code: 'bestway'
+        shipping_carrier_code: 'flatrate',
+        shipping_method_code: 'flatrate'
       }
     }
   });
