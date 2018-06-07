@@ -34,7 +34,7 @@ describe('Customer events', function() {
     const event = await this.db
       .select()
       .from('emarsys_events')
-      .where({ event_type: 'customer_account' })
+      .where({ event_type: 'customers/update' })
       .first();
 
     const eventData = JSON.parse(event.event_data);

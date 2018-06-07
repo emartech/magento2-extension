@@ -35,7 +35,7 @@ class CustomerAccountObserver implements ObserverInterface
     $customerId = $observer->getEvent()->getCustomer()->getId();
 
     try {
-      $this->customerEventHandler->store('customer_account', $customerId);
+      $this->customerEventHandler->store('customers/update', $customerId);
     } catch (\Exception $e) {
       $this->logger->warning('Emartech\\Emarsys\\Observers\\CustomerAccountObserver: ' . $e->getMessage());
     }
