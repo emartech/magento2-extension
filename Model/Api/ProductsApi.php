@@ -62,9 +62,8 @@ class ProductsApi implements ProductsApiInterface
       $responseProducts[] = [
         'type' => $product['type_id'],
         'entity_id' => $product['entity_id'],
-        'parent_entity_id' => $product['parent_entity_id'],
         'children_entity_ids' => $childrenEntityIds,
-        'categories' => implode('|', $productCategories),
+        'categories' => $productCategories,
         'sku' => $product['sku'],
         'name' => $product['name'],
         'price' => $product['price'],
@@ -101,7 +100,7 @@ class ProductsApi implements ProductsApiInterface
         foreach ($categoryPathIds as $categoryPathId) {
           $categoryPathNames[] = $this->categoryFactory->create()->load($categoryPathId)->getName();
         }
-        $categories[] = implode(' > ', $categoryPathNames);
+        $categories[] = $categoryPathNames;
       }
     }
     return $categories;
