@@ -66,6 +66,7 @@ before(async function() {
 
   this.createCustomer = createCustomer(this.magentoApi, this.db);
   this.createProduct = createProduct(this.magentoApi);
+  this.deleteProduct = deleteProduct(this.magentoApi);
 
   this.customer = await this.createCustomer({
     group_id: 0,
@@ -78,11 +79,13 @@ before(async function() {
     disable_auto_group_change: 0
   });
 
-  this.deleteProduct = deleteProduct(this.magentoApi);
-
   this.product = await this.createProduct({
     sku: 'DEFAULT-SKU',
     name: 'Default product',
+    custom_attributes: {
+      description: 'Default products description',
+      short_description: 'Such short, very description'
+    },
     price: 69.0,
     status: 1,
     visibility: 4,
