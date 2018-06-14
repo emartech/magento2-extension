@@ -19,6 +19,13 @@ If you want sample data use:
 ```
 $ make install-sampledata
 ```
+
+Removing sample data:
+```
+  make down
+  docker volume rm mage_magento-db
+  make up
+```
 ---
 ## Usage
 ### Working with containers
