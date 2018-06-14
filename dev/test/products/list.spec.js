@@ -5,7 +5,7 @@ describe('Products endpoint', function() {
 
   afterEach(async function() {});
 
-  it('returns products', async function() {
+  it.only('returns products', async function() {
     const page = 1;
     const pageSize = 10;
 
@@ -15,7 +15,8 @@ describe('Products endpoint', function() {
     expect(product.type).to.equal('simple');
     expect(product.entity_id).to.be.a('string');
     expect(product.children_entity_ids).to.be.an('array');
-    expect(product.categories).to.be.an('array');
+    expect(product.categories[0]).to.have.members(['Simple category']);
+    expect(product.categories[1]).to.have.ordered.members(['Parent category', 'Child category']);
     expect(product.sku).to.equal('PRODUCT-SYNC-SKU');
     expect(product.name).to.equal('Product For Product Sync');
     expect(product.price).to.equal('69.0000');

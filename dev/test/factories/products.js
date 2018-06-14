@@ -4,10 +4,12 @@ const productFactory = productData => {
   const defaultProductData = {
     sku: 'DEFAULT-SKU',
     name: 'Default product',
-    custom_attributes: {
-      description: 'Default products description',
-      short_description: 'Such short, very description'
-    },
+    custom_attributes: [
+      {
+        attribute_code: 'description',
+        value: 'Default products description'
+      }
+    ],
     price: 69.0,
     status: 1,
     visibility: 4,
@@ -26,11 +28,6 @@ const productFactory = productData => {
   return Object.assign({}, defaultProductData, productData);
 };
 
-const defaultProduct = productFactory({});
-
-const productsForProductSync = [productFactory({ sku: 'PRODUCT-SYNC-SKU', name: 'Product For Product Sync' })];
-
 module.exports = {
-  defaultProduct,
-  productsForProductSync
+  productFactory
 };

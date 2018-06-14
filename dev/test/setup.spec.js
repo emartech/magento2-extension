@@ -8,7 +8,7 @@ const sinonChai = require('sinon-chai');
 const knex = require('knex');
 const DbCleaner = require('./db-cleaner');
 const Magento2ApiClient = require('@emartech/magento2-api');
-const { defaultProduct, productsForProductSync } = require('./fixtures/products');
+const { productFactory } = require('./factories/products');
 
 chai.use(chaiString);
 chai.use(chaiSubset);
@@ -37,6 +37,19 @@ const deleteProduct = magentoApi => async product => {
   return product;
 };
 
+const createCategory = magentoApi => async category => {
+  try {
+    return await magentoApi.createCategory(category);
+  } catch (error) {
+    console.log('cat create error', error.response);
+    throw error;
+  }
+};
+
+const deleteCategory = magentoApi => async categoryId => {
+  return await magentoApi.deleteCategory(categoryId);
+};
+
 before(async function() {
   this.timeout(30000);
   this.db = knex({
@@ -57,6 +70,7 @@ before(async function() {
 
   const { token } = JSON.parse(Buffer.from(result.value, 'base64'));
   this.token = token;
+  console.log('Token: ' + token);
 
   this.magentoApi = new Magento2ApiClient({
     baseUrl: 'http://web',
@@ -66,6 +80,8 @@ before(async function() {
   this.createCustomer = createCustomer(this.magentoApi, this.db);
   this.createProduct = createProduct(this.magentoApi);
   this.deleteProduct = deleteProduct(this.magentoApi);
+  this.createCategory = createCategory(this.magentoApi);
+  this.deleteCategory = deleteCategory(this.magentoApi);
 
   this.customer = await this.createCustomer({
     group_id: 0,
@@ -78,21 +94,62 @@ before(async function() {
     disable_auto_group_change: 0
   });
 
-  this.product = await this.createProduct(defaultProduct);
+  const { parentIds, childIds } = await createCategories(this.createCategory);
+  this.createdParentCategoryIds = parentIds;
 
+  this.product = await this.createProduct(productFactory({}));
   this.storedProductsForProductSync = [];
-
+  const productsForProductSync = [
+    productFactory({
+      sku: 'PRODUCT-SYNC-SKU',
+      name: 'Product For Product Sync',
+      custom_attributes: [
+        {
+          attribute_code: 'description',
+          value: 'Default products description'
+        },
+        {
+          attribute_code: 'category_ids',
+          value: [parentIds[1].toString(), childIds[0].toString()]
+        }
+      ]
+    })
+  ];
   for (const productForProductSync of productsForProductSync) {
     const result = await this.createProduct(productForProductSync);
     this.storedProductsForProductSync.push(result);
   }
 });
 
+const createCategories = async function(createCategory) {
+  const parent = await createCategory({
+    parent_id: 2,
+    name: 'Parent category',
+    is_active: true
+  });
+  const child = await createCategory({
+    parent_id: parent.id,
+    name: 'Child category',
+    is_active: true
+  });
+  const simple = await createCategory({
+    parent_id: 2,
+    name: 'Simple category',
+    is_active: true
+  });
+
+  return { parentIds: [parent.id, simple.id], childIds: [child.id] };
+};
+
 after(async function() {
   await this.deleteProduct(this.product);
 
   for (const product of this.storedProductsForProductSync) {
     await this.deleteProduct(product);
+  }
+
+  for (const categoryId of this.createdParentCategoryIds) {
+    await this.deleteCategory(categoryId);
   }
 
   await DbCleaner.create(this.db).tearDown();
