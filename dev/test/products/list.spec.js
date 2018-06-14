@@ -5,7 +5,7 @@ describe('Products endpoint', function() {
 
   afterEach(async function() {});
 
-  it.only('returns products', async function() {
+  it('returns products', async function() {
     const page = 1;
     const pageSize = 10;
 
