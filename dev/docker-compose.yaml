@@ -18,6 +18,7 @@ services:
     volumes:
       - magento-db:/var/lib/mysql
       - ./uninstall-extension.sql:/opt/uninstall-extension.sql
+      - ./magento.sql:/opt/magento.sql
     ports:
       - "13306:3306"
     env_file:

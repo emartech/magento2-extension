@@ -141,20 +141,6 @@ const createCategories = async function(createCategory) {
   return { parentIds: [parent.id, simple.id], childIds: [child.id] };
 };
 
-after(async function() {
-  await this.deleteProduct(this.product);
-
-  for (const product of this.storedProductsForProductSync) {
-    await this.deleteProduct(product);
-  }
-
-  for (const categoryId of this.createdParentCategoryIds) {
-    await this.deleteCategory(categoryId);
-  }
-
-  await DbCleaner.create(this.db).tearDown();
-});
-
 beforeEach(async function() {
   this.sinon = sinon;
   this.sandbox = sinon.createSandbox();
