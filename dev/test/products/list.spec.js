@@ -10,16 +10,16 @@ describe('Products endpoint', function() {
     const pageSize = 10;
 
     const { products } = (await this.magentoApi.execute('products', 'get', page, pageSize))[0];
-    const product = products[0];
+    const product = products[1];
 
     expect(product.type).to.equal('simple');
     expect(product.entity_id).to.be.a('string');
     expect(product.children_entity_ids).to.be.an('array');
     expect(product.categories).to.be.an('array');
-    expect(product.sku).to.equal('DEFAULT-SKU');
-    expect(product.name).to.equal('Default product');
+    expect(product.sku).to.equal('PRODUCT-SYNC-SKU');
+    expect(product.name).to.equal('Product For Product Sync');
     expect(product.price).to.equal('69.0000');
-    expect(product.link).to.include('http://magento.local:8888/index.php/default-product.html');
+    expect(product.link).to.include('http://magento.local:8888/index.php/product-for-product-sync.html');
     expect(product.images).to.eql({
       image: 'http://magento.local:8888/pub/media/catalog/product',
       small_image: 'http://magento.local:8888/pub/media/catalog/product',

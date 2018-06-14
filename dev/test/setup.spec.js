@@ -8,6 +8,7 @@ const sinonChai = require('sinon-chai');
 const knex = require('knex');
 const DbCleaner = require('./db-cleaner');
 const Magento2ApiClient = require('@emartech/magento2-api');
+const { defaultProduct, productsForProductSync } = require('./fixtures/products');
 
 chai.use(chaiString);
 chai.use(chaiSubset);
@@ -28,18 +29,16 @@ const createCustomer = (magentoApi, db) => async customer => {
 
 const createProduct = magentoApi => async product => {
   await magentoApi.post({ path: '/index.php/rest/V1/products', payload: { product } });
-
   return product;
 };
 
 const deleteProduct = magentoApi => async product => {
   await magentoApi.delete({ path: `/index.php/rest/V1/products/${product.sku}` });
-
   return product;
 };
 
 before(async function() {
-  this.timeout(10000);
+  this.timeout(30000);
   this.db = knex({
     client: 'mysql',
     connection: {
@@ -79,31 +78,23 @@ before(async function() {
     disable_auto_group_change: 0
   });
 
-  this.product = await this.createProduct({
-    sku: 'DEFAULT-SKU',
-    name: 'Default product',
-    custom_attributes: {
-      description: 'Default products description',
-      short_description: 'Such short, very description'
-    },
-    price: 69.0,
-    status: 1,
-    visibility: 4,
-    type_id: 'simple',
-    attribute_set_id: 4,
-    weight: 1,
-    extension_attributes: {
-      stock_item: {
-        stock_id: 1,
-        qty: 999,
-        is_in_stock: 1
-      }
-    }
-  });
+  this.product = await this.createProduct(defaultProduct);
+
+  this.storedProductsForProductSync = [];
+
+  for (const productForProductSync of productsForProductSync) {
+    const result = await this.createProduct(productForProductSync);
+    this.storedProductsForProductSync.push(result);
+  }
 });
 
 after(async function() {
   await this.deleteProduct(this.product);
+
+  for (const product of this.storedProductsForProductSync) {
+    await this.deleteProduct(product);
+  }
+
   await DbCleaner.create(this.db).tearDown();
 });
 
