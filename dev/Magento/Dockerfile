@@ -7,7 +7,7 @@ COPY docker-healthcheck /usr/local/bin/
 
 WORKDIR /var/www/html
 
-HEALTHCHECK CMD ["docker-healthcheck"]
+HEALTHCHECK --retries=20 CMD ["docker-healthcheck"]
 
 
 
