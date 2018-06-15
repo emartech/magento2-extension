@@ -74,10 +74,14 @@ class ProductsApi implements ProductsApiInterface
         'description' => $product['description'],
       ];
     }
+
+    $totalCount = $this->productFactory->create()->getCollection()->count();
+
     $responseData = [[
-      'products' => $responseProducts,
+      'items' => $responseProducts,
       'page' => $page,
-      'page_size' => $page_size
+      'page_size' => $page_size,
+      'total_count' => $totalCount
     ]];
 
     return $responseData;

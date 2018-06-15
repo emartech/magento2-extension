@@ -5,15 +5,16 @@ describe('Products endpoint', function() {
 
   afterEach(async function() {});
 
-  it('returns products according to page and page_size', async function() {
+  it('returns product count and products according to page and page_size', async function() {
     const page = 3;
     const pageSize = 10;
 
-    const { products } = (await this.magentoApi.execute('products', 'get', page, pageSize))[0];
+    const { products, productCount } = (await this.magentoApi.execute('products', 'get', page, pageSize));
     const product = products[0];
 
     expect(products.length).to.equal(10);
     expect(product.entity_id).to.equal('21');
+    expect(productCount).to.equal(2048);
 
     expect(product.type).to.equal('simple');
     expect(product.children_entity_ids).to.be.an('array');
@@ -40,7 +41,7 @@ describe('Products endpoint', function() {
     const page = 67;
     const pageSize = 1;
 
-    const { products } = (await this.magentoApi.execute('products', 'get', page, pageSize))[0];
+    const { products } = (await this.magentoApi.execute('products', 'get', page, pageSize));
     const product = products[0];
 
     expect(product.type).to.equal('configurable');
