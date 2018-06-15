@@ -48,7 +48,7 @@ class ProductsApi implements ProductsApiInterface
   {
     $productCollection = $this->productFactory->create()
       ->getCollection()
-      ->addAttributeToSelect(['name', 'price', 'image', 'small_image', 'thumbnail', 'description', 'type_id'])
+      ->addAttributeToSelect(['name', 'price', 'image', 'small_image', 'thumbnail', 'description', 'type_id', 'status'])
       ->joinTable('cataloginventory_stock_item', 'product_id=entity_id', ['qty', 'is_in_stock'], '{{table}}.stock_id=1', 'left')
       ->setCurPage($page)
       ->setPageSize($page_size);
@@ -72,6 +72,7 @@ class ProductsApi implements ProductsApiInterface
         'qty' => $product['qty'],
         'is_in_stock' => $product['is_in_stock'],
         'description' => $product['description'],
+        'published' => $product['status'] === '1' ? true : false
       ];
     }
 
