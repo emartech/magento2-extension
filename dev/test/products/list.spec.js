@@ -31,7 +31,7 @@ describe('Products endpoint', function() {
     });
     expect(product.qty).to.equal('100.0000');
     expect(product.is_in_stock).to.equal('1');
-    expect(product.published).to.equal(true);
+    expect(product.status).to.equal('1');
     expect(product.description).to.equal(
       // eslint-disable-next-line
       `<p>Our top-selling yoga prop, the 4-inch, high-quality Sprite Foam Yoga Brick is popular among yoga novices and studio professionals alike. An essential yoga accessory, the yoga brick is a critical tool for finding balance and alignment in many common yoga poses. Choose from 5 color options.</p>\n<ul>\n<li>Standard Large Size: 4\" x 6\" x 9\".\n<li>Beveled edges for ideal contour grip.\n<li>Durable and soft, scratch-proof foam.\n<li>Individually wrapped.\n<li>Ten color choices.\n</ul> `

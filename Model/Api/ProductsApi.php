@@ -72,7 +72,7 @@ class ProductsApi implements ProductsApiInterface
         'qty' => $product['qty'],
         'is_in_stock' => $product['is_in_stock'],
         'description' => $product['description'],
-        'published' => $product['status'] === '1' ? true : false
+        'status' => $product['status']
       ];
     }
 
