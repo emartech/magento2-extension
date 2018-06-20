@@ -7,9 +7,9 @@ describe('Products endpoint', function() {
 
   it('returns product count and products according to page and page_size', async function() {
     const page = 3;
-    const pageSize = 10;
+    const limit = 10;
 
-    const { products, productCount } = (await this.magentoApi.execute('products', 'get', page, pageSize));
+    const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit });
     const product = products[0];
 
     expect(products.length).to.equal(10);
@@ -40,9 +40,9 @@ describe('Products endpoint', function() {
 
   it('returns child entities for configurable products', async function() {
     const page = 67;
-    const pageSize = 1;
+    const limit = 1;
 
-    const { products } = (await this.magentoApi.execute('products', 'get', page, pageSize));
+    const { products } = await this.magentoApi.execute('products', 'get', { page, limit });
     const product = products[0];
 
     expect(product.type).to.equal('configurable');
