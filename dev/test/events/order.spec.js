@@ -7,7 +7,7 @@ const getLastEvent = async db =>
     .orderBy('event_id', 'desc')
     .first();
 
-const createNewOrder = async (magentoApi, customer, product) => {
+const createNewOrder = async (magentoApi, customer) => {
   const { data: cartId } = await magentoApi.post({
     path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
   });
@@ -16,9 +16,24 @@ const createNewOrder = async (magentoApi, customer, product) => {
     path: `/index.php/rest/V1/carts/${cartId}/items`,
     payload: {
       cartItem: {
-        sku: product.sku,
+        sku: 'WS03',
         qty: 1,
-        quote_id: `${cartId}`
+        product_type: 'configurable',
+        quote_id: cartId,
+        product_option: {
+          extension_attributes: {
+            configurable_item_options: [
+              {
+                option_id: 93,
+                option_value: 50
+              },
+              {
+                option_id: 142,
+                option_value: 167
+              }
+            ]
+          }
+        }
       }
     }
   });
@@ -94,11 +109,13 @@ describe('Order events', function() {
   it('creates orders/new event and an orders/fulfilled', async function() {
     await this.magentoApi.setSettings({ collectSalesEvents: 'enabled' });
 
-    const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.product);
+    const { orderId } = await createNewOrder(this.magentoApi, this.customer);
 
-    const { event_type: createEventType } = await getLastEvent(this.db);
+    const { event_type: createEventType, event_data: createEventPayload } = await getLastEvent(this.db);
+    const createEventSimpleItem = JSON.parse(createEventPayload).items[1];
 
     expect(createEventType).to.be.equal('orders/create');
+    expect(createEventSimpleItem.parent_item).not.to.be.empty;
 
     await fulfillOrder(this.magentoApi, orderId);
 

@@ -43,18 +43,25 @@ class SalesOrderObserver implements ObserverInterface
     $orderData['addresses'] = [];
 
     foreach ($orderItems as $item) {
-      $orderData['items'][] = $item->toArray();
+      $arrayItem = $item->toArray();
+      $parentItem = $item->getParentItem();
+      if (!is_null($parentItem)) {
+        $arrayItem['parent_item'] = $parentItem->toArray();
+      }
+      $orderData['items'][] = $arrayItem;
     }
 
     $orderData['addresses']['shipping'] = $order->getShippingAddress()->toArray();
     $orderData['addresses']['billing'] = $order->getBillingAddress()->toArray();
+
+    $orderData['payments'] = $order->getAllPayments();
 
     $event_type = $this->getEventType($orderData['state']);
 
     if (!$event_type) return;
 
     try {
-      $this->salesEventHandler->store($event_type, json_encode($orderData));
+      $this->salesEventHandler->store($event_type, $orderData);
     } catch (\Exception $e) {
       $this->logger->warning('Emartech\\Emarsys\\Observers\\OrderObserver: ' . $e->getMessage());
     }
