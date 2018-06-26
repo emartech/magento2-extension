@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+* @category   Emarsys
+* @package    Emartech_Emarsys
+* @copyright  Copyright (c) 2018 Emarsys. (http://www.emarsys.net/)
+*/
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content.bottom">
+            <container name="emarsys.snippets" htmlTag="div" htmlClass="emarsys-snippets" after="-">
+                <block class="Emartech\Emarsys\Block\Snippets" template="Emartech_Emarsys::emarsys/snippets.phtml" name="snippets" after="-" />
+            </container>
+        </referenceContainer>
+    </body>
+</page>
