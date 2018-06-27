@@ -52,5 +52,23 @@ describe('Settings', function() {
 
       expect(setting.value).to.eql('enabled');
     });
+
+    it('should store merchantId from settings', async function() {
+      const merchantId = 'merchant123';
+      const magentoApi = new Magento2ApiClient({
+        baseUrl: 'http://web',
+        token: this.token
+      });
+
+      await magentoApi.setSettings({ merchantId });
+
+      const setting = await this.db
+        .select()
+        .from('emarsys_settings')
+        .where({ setting: 'merchantId' })
+        .first();
+
+      expect(setting.value).to.eql(merchantId);
+    });
   });
 });
