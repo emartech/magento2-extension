@@ -6,23 +6,9 @@
  */
 /** @var \Emartech\Emarsys\Block\Snippets $block */
 ?>
-<script>
-  require(['Magento_Customer/js/customer-data'], function (customerData) {
-    window.x = customerData;
-    customerData.get('customer').subscribe(function (value) {
-      console.log('customer', value);
-    });
 
-    customerData.get('cart').subscribe(function (value) {
-      console.log('cart', value);
-    });
-
-    customerData.get('order').subscribe(function (value) {
-      console.log('order', value);
-    });
-  });
-</script>
-
-<p>SKU: <?php echo $block->getSku() ?></p>
-<p>Search Term: <?php echo $block->getSearchTerm() ?></p>
-<p>Category: <?php echo $block->getCategory() ?></p>
+<?php $mageData = $block->getTrackingData() ?>
+<p>SKU: <?php echo $mageData['sku'] ?></p>
+<p>Search Term: <?php echo $mageData['searchTerm'] ?></p>
+<p>Category: <?php echo $mageData['category'] ?></p>
+<p>Merchant ID: <?php echo $mageData['merchantId'] ?></p>

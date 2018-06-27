@@ -10,6 +10,7 @@ use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Model\CategoryFactory;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Registry;
+use Emartech\Emarsys\Model\SettingsFactory;
 
 /**
  * Class Snippets
@@ -18,14 +19,19 @@ use Magento\Framework\Registry;
 class Snippets extends \Magento\Framework\View\Element\Template
 {
   /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
+   * @var \Magento\Store\Model\StoreManagerInterface
+   */
+  protected $storeManager;
 
   /**
    * @var CategoryFactory
    */
   protected $categoryFactory;
+
+  /**
+   * @var SettingsFactory
+   */
+  protected $settingsFactory;
 
   /**
    * @var Registry
@@ -39,6 +45,7 @@ class Snippets extends \Magento\Framework\View\Element\Template
    * @param CategoryFactory $categoryFactory
    * @param Http $request
    * @param Registry $registry
+   * @param SettingsFactory $settingsFactory
    * @param array $data
    */
   public function __construct(
@@ -46,13 +53,30 @@ class Snippets extends \Magento\Framework\View\Element\Template
     CategoryFactory $categoryFactory,
     Http $request,
     Registry $registry,
+    SettingsFactory $settingsFactory,
     array $data = []
   ) {
     $this->storeManager = $context->getStoreManager();
     $this->categoryFactory = $categoryFactory;
     $this->_request = $request;
     $this->coreRegistry = $registry;
+    $this->settingsFactory = $settingsFactory;
     parent::__construct($context, $data);
+  }
+
+  /**
+   * Get Tracking Data
+   *
+   * @return string
+   */
+  public function getTrackingData()
+  {
+    return [
+      'sku' => $this->getSku(),
+      'category' => $this->getCategory(),
+      'merchantId' => $this->getMerchantId(),
+      'searchTerm' => $this->getSearchTerm()
+    ];
   }
 
   /**
@@ -116,5 +140,19 @@ class Snippets extends \Magento\Framework\View\Element\Template
       throw $e;
     }
     return false;
+  }
+
+  /**
+   * Get Merchant ID
+   *
+   * @return string
+   */
+  public function getMerchantId()
+  {
+    return $this->settingsFactory->create()
+      ->getCollection()
+      ->addFieldToFilter('setting', 'merchantId')
+      ->getFirstItem()
+      ->getValue();
   }
 }
