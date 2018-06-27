@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category   Emartech
+ * @package    Emarsys
+ * @copyright  Copyright (c) 2018 Emarsys. (http://www.emarsys.net/)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="adminhtml_customer_save_after">
+        <observer name="adminhtml_customer_save_after" instance="Emartech\Emarsys\Observers\CustomerAccountObserver" />
+    </event>
+</config>
