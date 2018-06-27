@@ -77,6 +77,11 @@ module.exports = class DbCleaner {
     await this._db('emarsys_settings').update({
       value: 'disabled'
     });
+
+    await this._db('emarsys_settings')
+      .where({ setting: 'merchantId' })
+      .update({ value: null });
+
     await this._db.truncate('emarsys_events');
   }
 };
