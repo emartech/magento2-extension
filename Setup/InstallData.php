@@ -50,6 +50,18 @@ class InstallData implements InstallDataInterface
         [
           'setting' => 'collectProductEvents',
           'value' => 'disabled'
+        ],
+        [
+          'setting' => 'injectSnippet',
+          'value' => 'disabled'
+        ],
+        [
+          'setting' => 'merchantId',
+          'value' => ''
+        ],
+        [
+          'setting' => 'webTrackingSnippetUrl',
+          'value' => ''
         ]
       ];
 

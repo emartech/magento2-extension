@@ -20,7 +20,12 @@ class SettingsApi implements SettingsApiInterface
     $this->settingsResource = $resourceModel;
   }
 
-  public function set($collectCustomerEvents = null, $collectSalesEvents = null, $collectProductEvents = null, $merchantId = null)
+  public function set($collectCustomerEvents = null,
+    $collectSalesEvents = null,
+    $collectProductEvents = null,
+    $merchantId = null,
+    $injectSnippet = null,
+    $webTrackingSnippetUrl = null)
   {
     if ($collectCustomerEvents !== null) {
       $this->saveSetting('collectCustomerEvents', $collectCustomerEvents);
@@ -36,6 +41,14 @@ class SettingsApi implements SettingsApiInterface
 
     if ($merchantId !== null) {
       $this->saveSetting('merchantId', $merchantId);
+    }
+
+    if ($injectSnippet !== null) {
+      $this->saveSetting('injectSnippet', $injectSnippet);
+    }
+
+    if ($webTrackingSnippetUrl !== null) {
+      $this->saveSetting('webTrackingSnippetUrl', $webTrackingSnippetUrl);
     }
 
     return 'OK';

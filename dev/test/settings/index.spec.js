@@ -8,7 +8,7 @@ describe('Settings', function() {
       const setting = await this.db
         .select()
         .from('emarsys_settings')
-        .where({ setting: 'collectCustomerEvents ' })
+        .where({ setting: 'collectCustomerEvents' })
         .first();
 
       expect(setting.value).to.eql('disabled');
@@ -18,7 +18,7 @@ describe('Settings', function() {
       const setting = await this.db
         .select()
         .from('emarsys_settings')
-        .where({ setting: 'collectSalesEvents ' })
+        .where({ setting: 'collectSalesEvents' })
         .first();
 
       expect(setting.value).to.eql('disabled');
@@ -28,10 +28,40 @@ describe('Settings', function() {
       const setting = await this.db
         .select()
         .from('emarsys_settings')
-        .where({ setting: 'collectProductEvents ' })
+        .where({ setting: 'collectProductEvents' })
         .first();
 
       expect(setting.value).to.eql('disabled');
+    });
+
+    it('should have a injectSnippet default config after install', async function() {
+      const setting = await this.db
+        .select()
+        .from('emarsys_settings')
+        .where({ setting: 'injectSnippet' })
+        .first();
+
+      expect(setting.value).to.eql('disabled');
+    });
+
+    it('should have a merchantId default config after install', async function() {
+      const setting = await this.db
+        .select()
+        .from('emarsys_settings')
+        .where({ setting: 'merchantId' })
+        .first();
+
+      expect(setting.value).to.eql('');
+    });
+
+    it('should have a webTrackingSnippetUrl default config after install', async function() {
+      const setting = await this.db
+        .select()
+        .from('emarsys_settings')
+        .where({ setting: 'webTrackingSnippetUrl' })
+        .first();
+
+      expect(setting.value).to.eql('');
     });
   });
 
@@ -69,6 +99,24 @@ describe('Settings', function() {
         .first();
 
       expect(setting.value).to.eql(merchantId);
+    });
+
+    it('should store webTrackingSnippetUrl from settings', async function() {
+      const webTrackingSnippetUrl = 'yolo.com';
+      const magentoApi = new Magento2ApiClient({
+        baseUrl: 'http://web',
+        token: this.token
+      });
+
+      await magentoApi.setSettings({ webTrackingSnippetUrl });
+
+      const setting = await this.db
+        .select()
+        .from('emarsys_settings')
+        .where({ setting: 'webTrackingSnippetUrl' })
+        .first();
+
+      expect(setting.value).to.eql(webTrackingSnippetUrl);
     });
   });
 });

@@ -82,6 +82,10 @@ module.exports = class DbCleaner {
       .where({ setting: 'merchantId' })
       .update({ value: '' });
 
+    await this._db('emarsys_settings')
+      .where({ setting: 'webTrackingSnippetUrl' })
+      .update({ value: '' });
+
     await this._db.truncate('emarsys_events');
   }
 };
