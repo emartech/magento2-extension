@@ -67,29 +67,50 @@ class Snippets extends \Magento\Framework\View\Element\Template
   /**
    * Get Tracking Data
    *
-   * @return string
+   * @return mixed
    */
   public function getTrackingData()
   {
     return [
-      'sku' => $this->getSku(),
+      'product' => $this->getCurrentProduct(),
       'category' => $this->getCategory(),
-      'merchantId' => $this->getMerchantId(),
-      'searchTerm' => $this->getSearchTerm()
+      'store' => $this->getStoreData(),
+      'search' => $this->getSearchData()
     ];
   }
 
   /**
-   * Get Sku
+   * Get Store Data
    *
-   * @return string
+   * @return bool|mixed
    */
-  public function getSku()
+  public function getStoreData()
+  {
+    try {
+      return [
+        'merchantId' => $this->getMerchantId()
+      ];
+    } catch (\Exception $e) {
+      throw $e;
+    }
+
+    return false;
+  }
+
+  /**
+   * Get Current Product
+   *
+   * @return bool|mixed
+   */
+  public function getCurrentProduct()
   {
     try {
       $product = $this->coreRegistry->registry('current_product');
       if (isset($product) && $product != '') {
-        return addslashes($product->getSku());
+        return [
+          'sku' => $product->getSku(),
+          'id' => $product->getId()
+        ];
       }
     } catch (\Exception $e) {
       throw $e;
@@ -99,16 +120,18 @@ class Snippets extends \Magento\Framework\View\Element\Template
   }
 
   /**
-   * Get Search Term
+   * Get Search Data
    *
    * @return bool|mixed
    */
-  public function getSearchTerm()
+  public function getSearchData()
   {
     try {
       $q = $this->_request->getParam('q');
       if ($q != '') {
-        return $q;
+        return [
+          'term' => $q
+        ];
       }
     } catch (\Exception $e) {
       throw $e;
@@ -134,7 +157,10 @@ class Snippets extends \Magento\Framework\View\Element\Template
           $childCat = $this->categoryFactory->create()->setStoreId($storeId)->load($categoryIds[$pathIndex]);
           $categoryList[] = $childCat->getName();
         }
-        return implode(" > ", $categoryList);
+        return [
+          'names' => $categoryList,
+          'ids' => array_splice($categoryIds, 2)
+        ];
       }
     } catch (\Exception $e) {
       throw $e;
@@ -152,6 +178,34 @@ class Snippets extends \Magento\Framework\View\Element\Template
     return $this->settingsFactory->create()
       ->getCollection()
       ->addFieldToFilter('setting', 'merchantId')
+      ->getFirstItem()
+      ->getValue();
+  }
+
+  /**
+   * Get Snippet Url
+   *
+   * @return string
+   */
+  public function getSnippetUrl()
+  {
+    return $this->settingsFactory->create()
+      ->getCollection()
+      ->addFieldToFilter('setting', 'webTrackingSnippetUrl')
+      ->getFirstItem()
+      ->getValue();
+  }
+
+  /**
+   * Is Injectable
+   *
+   * @return string
+   */
+  public function isInjectable()
+  {
+    return 'enabled' === $this->settingsFactory->create()
+      ->getCollection()
+      ->addFieldToFilter('setting', 'injectSnippet')
       ->getFirstItem()
       ->getValue();
   }

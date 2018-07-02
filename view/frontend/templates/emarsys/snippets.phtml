@@ -2,13 +2,23 @@
 /**
  * @category   Emarsys
  * @package    Emartech_Emarsys
- * @copyright  Copyright (c) 2017 Emarsys. (http://www.emarsys.net/)
+ * @copyright  Copyright (c) 2018 Emarsys. (http://www.emarsys.net/)
  */
 /** @var \Emartech\Emarsys\Block\Snippets $block */
 ?>
 
-<?php $mageData = $block->getTrackingData() ?>
-<p>SKU: <?php echo $mageData['sku'] ?></p>
-<p>Search Term: <?php echo $mageData['searchTerm'] ?></p>
-<p>Category: <?php echo $mageData['category'] ?></p>
-<p>Merchant ID: <?php echo $mageData['merchantId'] ?></p>
+<?php $injectable = $block->isInjectable() ?>
+<?php if ($injectable): ?>
+  <script type="text/javascript">
+    var ScarabQueue = ScarabQueue || [];
+    (function(id) {
+      if (document.getElementById(id)) return;
+      var js = document.createElement('script'); js.id = id;
+      js.src = '//cdn.scarabresearch.com/js/<?php echo $block->getMerchantId(); ?>/scarab-v2.js';
+      var fs = document.getElementsByTagName('script')[0];
+      fs.parentNode.insertBefore(js, fs);
+    })('scarab-js-api');
+  </script>
+  <script src='<?php echo $block->getSnippetUrl(); ?>'></script>
+  <script>Emarsys.Magento2.track(<?php echo json_encode($block->getTrackingData()); ?>);</script>
+<?php endif; ?>
