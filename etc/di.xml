@@ -3,6 +3,7 @@
     <preference for="Emartech\Emarsys\Api\SettingsApiInterface" type="Emartech\Emarsys\Model\Api\SettingsApi" />
     <preference for="Emartech\Emarsys\Api\EventsApiInterface" type="Emartech\Emarsys\Model\Api\EventsApi" />
     <preference for="Emartech\Emarsys\Api\ProductsApiInterface" type="Emartech\Emarsys\Model\Api\ProductsApi" />
+    <preference for="Emartech\Emarsys\Api\TemplatesApiInterface" type="Emartech\Emarsys\Model\Api\TemplatesApi" />
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
     </type>

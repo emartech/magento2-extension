@@ -46,7 +46,6 @@ class EmailEventHandler extends AbstractHelper
    */
   public function store($template, $args)
   {
-    $this->logger->info('1');
     if (!$this->emarsysData->isEnabled(Data::EXTERNAL_EVENTS)) return;
 
     $emailData = [
@@ -54,7 +53,6 @@ class EmailEventHandler extends AbstractHelper
       'store' => $args[0]['store']->getData(),
       'url'=> $args[0]['back_url']
     ];
-    $this->logger->info('2');
 
 
     /** @var \Emartech\Emarsys\Model\Event $eventModel */

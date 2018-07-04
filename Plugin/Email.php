@@ -32,12 +32,10 @@ class Email
 
   public function afterGetProcessedTemplate(Template $subject, $result, ...$args)
   {
-    $this->logger->info('3');
 
     if (in_array($subject->getId(), $this->ignoredTemplates)) {
       return $result;
     }
-    $this->logger->info('4');
 
     $this->emailEventHandler->store($subject->getId(), $args);
 
