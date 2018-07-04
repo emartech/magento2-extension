@@ -52,6 +52,10 @@ class InstallData implements InstallDataInterface
           'value' => 'disabled'
         ],
         [
+          'setting' => 'collectExternalEvents',
+          'value' => 'disabled'
+        ],
+        [
           'setting' => 'injectSnippet',
           'value' => 'disabled'
         ],

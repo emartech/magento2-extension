@@ -10,14 +10,17 @@ interface SettingsApiInterface
    * @param string $collectCustomerEvents
    * @param string $collectSalesEvents
    * @param string $collectProductEvents
+   * @param string $collectExternalEvents
    * @param string $merchantId
    * @param string $injectSnippet
    * @param string $webTrackingSnippetUrl
    * @return mixed
    */
-  public function set($collectCustomerEvents = null,
+  public function set(
+    $collectCustomerEvents = null,
     $collectSalesEvents = null,
     $collectProductEvents = null,
+    $collectExternalEvents = null,
     $merchantId = null,
     $injectSnippet = null,
     $webTrackingSnippetUrl = null

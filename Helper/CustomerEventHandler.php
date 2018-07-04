@@ -5,7 +5,6 @@ namespace Emartech\Emarsys\Helper;
 
 
 use Emartech\Emarsys\Model\ResourceModel\Event;
-use Emartech\Emarsys\Model\SettingsFactory;
 use Emartech\Emarsys\Model\EventFactory;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\CustomerFactory;
@@ -20,10 +19,13 @@ class CustomerEventHandler extends AbstractHelper
   protected $eventFactory;
   protected $eventResource;
   private $subscriber;
-  private $settings;
+  /**
+   * @var Data
+   */
+  private $emarsysData;
 
   public function __construct(
-    SettingsFactory $settingsFactory,
+    Data $emarsysData,
     CustomerFactory $customerFactory,
     EventFactory $eventFactory,
     Event $eventResource,
@@ -36,8 +38,7 @@ class CustomerEventHandler extends AbstractHelper
     $this->eventResource = $eventResource;
     $this->logger = $logger;
     $this->subscriber = $subscriber;
-
-    $this->getSettings($settingsFactory);
+    $this->emarsysData = $emarsysData;
   }
 
   /**
@@ -48,7 +49,7 @@ class CustomerEventHandler extends AbstractHelper
    */
   public function store($type, $customerId)
   {
-    if (!$this->settings['collectCustomerEvents']) return;
+    if (!$this->emarsysData->isEnabled(Data::CUSTOMER_EVENTS)) return;
 
     /** @var Customer $customer */
     $customer = $this->customerFactory->create()->load($customerId);
@@ -71,19 +72,5 @@ class CustomerEventHandler extends AbstractHelper
     $this->eventResource->save($eventModel);
 
     $this->logger->info('event_type: '. $type . ', event_data: '.json_encode($customerData));
-  }
-
-  /**
-   * @param SettingsFactory $settingsFactory
-   */
-  private function getSettings(SettingsFactory $settingsFactory)
-  {
-    $settingsResource = $settingsFactory->create();
-    $settings = $settingsResource->getCollection();
-    foreach ($settings as $setting) {
-      $name = $setting->getSetting();
-      $value = $setting->getValue() === 'enabled' ? true : false;
-      $this->settings[$name] = $value;
-    }
   }
 }

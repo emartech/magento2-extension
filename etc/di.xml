@@ -7,6 +7,6 @@
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
     </type>
     <type name="Magento\Email\Model\Template">
-        <plugin name="emarsys_template_plugin" type="\Emartech\Emarsys\Plugin\Email" sortOrder="500" disabled="false" />
+        <plugin name="emarsys_template_plugin" type="\Emartech\Emarsys\Plugin\Email"/>
     </type>
 </config>

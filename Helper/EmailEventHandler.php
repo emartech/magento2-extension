@@ -5,18 +5,16 @@ namespace Emartech\Emarsys\Helper;
 
 
 use Emartech\Emarsys\Model\ResourceModel\Event;
-use Emartech\Emarsys\Model\SettingsFactory;
 use Emartech\Emarsys\Model\EventFactory;
-use Magento\Sales\Model\OrderFactory;
+use Magento\Customer\Model\CustomerFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Newsletter\Model\Subscriber;
-use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface;
 
-class SalesEventHandler extends AbstractHelper
+class EmailEventHandler extends AbstractHelper
 {
   protected $logger;
-  protected $orderFactory;
+  protected $customerFactory;
   protected $eventFactory;
   protected $eventResource;
   protected $subscriber;
@@ -24,14 +22,14 @@ class SalesEventHandler extends AbstractHelper
 
   public function __construct(
     Data $emarsysData,
-    OrderFactory $orderFactory,
+    CustomerFactory $customerFactory,
     EventFactory $eventFactory,
     Event $eventResource,
     Subscriber $subscriber,
     LoggerInterface $logger
   )
   {
-    $this->orderFactory = $orderFactory;
+    $this->customerFactory = $customerFactory;
     $this->eventFactory = $eventFactory;
     $this->eventResource = $eventResource;
     $this->logger = $logger;
@@ -41,21 +39,30 @@ class SalesEventHandler extends AbstractHelper
   }
 
   /**
-   * @param $event_type
-   * @param $orderData
+   * @param $template
+   * @param $args
    * @throws \Exception
    * @throws \Magento\Framework\Exception\AlreadyExistsException
    */
-  public function store($event_type, $orderData)
+  public function store($template, $args)
   {
-    if (!$this->emarsysData->isEnabled(Data::SALES_EVENTS)) return;
+    $this->logger->info('1');
+    if (!$this->emarsysData->isEnabled(Data::EXTERNAL_EVENTS)) return;
+
+    $emailData = [
+      'customer' => $args[0]['customer']->getData(),
+      'store' => $args[0]['store']->getData(),
+      'url'=> $args[0]['back_url']
+    ];
+    $this->logger->info('2');
+
 
     /** @var \Emartech\Emarsys\Model\Event $eventModel */
     $eventModel = $this->eventFactory->create();
-    $eventModel->setData('event_type', $event_type);
-    $eventModel->setData('event_data', json_encode($orderData));
+    $eventModel->setEventType($template);
+    $eventModel->setEventData(json_encode($emailData));
     $this->eventResource->save($eventModel);
 
-    $this->logger->info('event_type: ' . $event_type . ', event_data: ' . json_encode($orderData));
+    $this->logger->info('event_type: '. $template . ', event_data: '.json_encode($emailData));
   }
 }

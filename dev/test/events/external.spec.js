@@ -15,7 +15,7 @@ const customer = {
   disable_auto_group_change: 0
 };
 
-describe('Customer events', function() {
+describe('External events', function() {
   before(function() {
     magentoApi = new Magento2ApiClient({
       baseUrl: 'http://web',
@@ -27,31 +27,27 @@ describe('Customer events', function() {
     await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
   });
 
-  it('are saved in DB if collectCustomerEvents is enabled', async function() {
-    await magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
+  it('are saved in DB if collectExternalEvents is enabled', async function() {
+    await magentoApi.setSettings({ collectExternalEvents: 'enabled' });
     await this.createCustomer(customer);
-
-    console.log(await this.db
-      .select()
-      .from('emarsys_events'));
 
     const event = await this.db
       .select()
       .from('emarsys_events')
-      .where({ event_type: 'customers/update' })
+      .where({ event_type: 'customer_create_account_email_no_password_template' })
       .first();
 
     const eventData = JSON.parse(event.event_data);
-    expect(eventData.email).to.eql(customer.email);
+    expect(eventData.customer.email).to.eql(customer.email);
   });
 
-  it('are not saved in DB if collectCustomerEvents is disabled', async function() {
+  it('are not saved in DB if collectExternalEvents is disabled', async function() {
     await this.createCustomer(customer);
 
     const event = await this.db
       .select()
       .from('emarsys_events')
-      .where({ event_type: 'customer_account' })
+      .where({ event_type: 'customer_create_account_email_no_password_template' })
       .first();
 
     expect(event).to.be.undefined;
