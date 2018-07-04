@@ -1,0 +1,6 @@
+<?php /* @var $block \Emartech\Emarsys\Block\Success */?>
+<script>
+  window.Emarsys = window.Emarsys || {};
+  window.Emarsys.Magento2 = window.Emarsys.Magento2 || {};
+  window.Emarsys.Magento2.orderData = <?php echo json_encode($block->getOrderData()); ?>;
+</script>

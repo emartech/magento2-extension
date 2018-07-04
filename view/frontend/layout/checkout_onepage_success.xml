@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<body>
+    <referenceContainer name="head.additional">
+        <block class="Emartech\Emarsys\Block\Success"
+              name="emarsys.success"
+              template="Emartech_Emarsys::emarsys/order/success.phtml"
+              before="-"
+              cacheable="false">
+        </block>
+    </referenceContainer>
+</body>
