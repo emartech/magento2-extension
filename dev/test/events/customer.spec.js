@@ -31,10 +31,6 @@ describe('Customer events', function() {
     await magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
     await this.createCustomer(customer);
 
-    console.log(await this.db
-      .select()
-      .from('emarsys_events'));
-
     const event = await this.db
       .select()
       .from('emarsys_events')
