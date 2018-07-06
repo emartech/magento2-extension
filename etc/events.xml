@@ -3,6 +3,9 @@
     <event name="customer_save_commit_after">
         <observer name="customerAccountObserver" instance="Emartech\Emarsys\Observers\CustomerAccountObserver" />
     </event>
+    <event name="customer_address_save_commit_after">
+        <observer name="customerAddressObserver" instance="Emartech\Emarsys\Observers\CustomerAddressObserver" />
+    </event>
     <event name="sales_order_save_after">
         <observer name="orderObserver" instance="Emartech\Emarsys\Observers\SalesOrderObserver" />
     </event>
