@@ -1,5 +1,28 @@
 # Emarsys Magento 2 Extension Developer Guide
 
+## Prerequisites
+To be able to pull image from Google Container Registry (GCR), you will have to authenticate to Google Cloud and
+ configure docker to use those credentials.
+ 
+First install Google Cloud SDK:
+```
+$ brew cask install google-cloud-sdk
+```
+Then login to your account:
+```
+$ gcloud auth login
+```
+This will bring up the browser: choose your account that is associated with the `ems-plugin` GCP project and grant the permissions.
+
+After authentication set de default project:
+```
+$ gcloud config set project ems-plugins
+```
+The last step is to configure docker to use the credentials:
+```
+$ gcloud auth configure-docker
+```
+
 ## Installation
 To start development first copy `dev/.env.example` to `dev/.env` then use
 ```
@@ -75,7 +98,7 @@ Run `cache:flush` & `setup:upgrade`:
 $ make upgrade
 ```
 
-Run `cache:flush`:
+Clean the generated code folder and run `cache:flush`:
 ```
 $ make flush
 ```
