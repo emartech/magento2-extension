@@ -1,12 +1,17 @@
 db:
   image: healthcheck/percona
   cached: true
+  volumes:
+    - ./dev/fresh-magento-sampledata.sql:/docker-entrypoint-initdb.d/magento.sql
+
   encrypted_env_file: codeship.env.encrypted
 web:
-  build: ./dev/Magento
+  image: eu.gcr.io/ems-plugins/magento:2.2.3
   depends_on:
     - db
   volumes:
+    - ./dev/Magento/composer.json:/var/www/html/composer.json
+    - ./dev/setup:/etc/my_init.d/setup
     - .:/var/www/html/vendor/emartech/emarsys-magento2-extension
   cached: true
   encrypted_env_file: codeship.env.encrypted

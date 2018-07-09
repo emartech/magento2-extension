@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+su www-data <<EOSU
+cd /var/www/html
+sed -i 's/MAGENTO_REPO_KEY/${MAGENTO_REPO_KEY}/g' auth.json
+sed -i 's/MAGENTO_REPO_SECRET/${MAGENTO_REPO_SECRET}/g' auth.json
+sed -i 's/GITHUB_TOKEN/${GITHUB_TOKEN}/g' auth.json
+
+sed -i 's/MAGENTO_DB_HOST/${MYSQL_HOST}/g' app/etc/env.php
+sed -i 's/MAGENTO_DB_NAME/${MYSQL_DATABASE}/g' app/etc/env.php
+sed -i 's/MAGENTO_DB_USER/${MYSQL_USER}/g' app/etc/env.php
+sed -i 's/MAGENTO_DB_PASSWORD/${MYSQL_PASSWORD}/g' app/etc/env.php
+
+bin/magento config:set web/unsecure/base_url ${MAGENTO_URL}/
+composer dump-autoload
+bin/magento setup:upgrade
+bin/magento cache:flush
+EOSU
+
+touch /setup-ready
