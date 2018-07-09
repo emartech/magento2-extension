@@ -15,6 +15,7 @@ web:
     - .:/var/www/html/vendor/emartech/emarsys-magento2-extension
   cached: true
   encrypted_env_file: codeship.env.encrypted
+  dockercfg_service: dockercfg_generator
 dockercfg_generator:
   image: codeship/gcr-dockercfg-generator
   add_docker: true
