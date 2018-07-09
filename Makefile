@@ -52,6 +52,7 @@ compile: ## Runs Magento CLI setup:di:compile command
 	@$(COMPOSE) exec --user 33 web bin/magento setup:di:compile
 
 flush: ## Runs Magento CLI cache:flush command
+	@$(COMPOSE) exec --user 33 web rm -rf generated/code/
 	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
 
 uninstall: ## Uninstalls the extension from the Magento instance
