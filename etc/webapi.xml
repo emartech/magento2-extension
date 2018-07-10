@@ -30,4 +30,10 @@
             <resource ref="Magento_Backend::content"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/subscriptions/list" method="POST">
+        <service class="Emartech\Emarsys\Api\SubscriptionApiInterface" method="getList"/>
+        <resources>
+            <resource ref="Magento_Backend::content"/>
+        </resources>
+    </route>
 </routes>
