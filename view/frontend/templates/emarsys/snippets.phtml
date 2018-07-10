@@ -7,7 +7,7 @@
 /** @var \Emartech\Emarsys\Block\Snippets $block */
 ?>
 
-<?php $injectable = true; ?>
+<?php $injectable = $block->isInjectable(); ?>
 <?php if ($injectable): ?>
   <script type="text/javascript">
     var ScarabQueue = ScarabQueue || [];
@@ -19,10 +19,6 @@
       fs.parentNode.insertBefore(js, fs);
     })('scarab-js-api');
   </script>
-<!--  <script src='--><?php //echo $block->getSnippetUrl(); ?><!--'></script>-->
-    <script>window.require(['Magento_Customer/js/customer-data'], function(customerData) {customerData.get('customer').subscribe(function(customer) {
-            console.log('customer', customer);
-
-        });})</script>
+  <script src='<?php echo $block->getSnippetUrl(); ?>'></script>
   <script>Emarsys.Magento2.track(<?php echo json_encode($block->getTrackingData()); ?>);</script>
 <?php endif; ?>
