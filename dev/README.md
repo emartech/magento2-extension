@@ -14,7 +14,7 @@ $ gcloud auth login
 ```
 This will bring up the browser: choose your account that is associated with the `ems-plugin` GCP project and grant the permissions.
 
-After authentication set de default project:
+After authentication set the default project:
 ```
 $ gcloud config set project ems-plugins
 ```
