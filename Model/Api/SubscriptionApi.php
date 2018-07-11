@@ -3,21 +3,29 @@
 namespace Emartech\Emarsys\Model\Api;
 use Emartech\Emarsys\Api\SubscriptionApiInterface;
 use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory as SubscriberCollectionFactory;
+use Magento\Newsletter\Model\SubscriberFactory as SubscriberFactory;
+use Magento\Newsletter\Model\Subscriber;
 
 class SubscriptionApi implements SubscriptionApiInterface
 {
   /**  @var SubscriberCollectionFactory */
   protected $subscriberCollectionFactory;
 
+  /**  @var SubscriberFactory */
+  protected $subscriberFactory;
+
   /**
    * Subscription constructor.
    * @param SubscriberCollectionFactory $subscriberCollectionFactory
+   * @param SubscriberFactory $subscriberFactory
    */
 
   public function __construct(
-    SubscriberCollectionFactory $subscriberCollectionFactory
+    SubscriberCollectionFactory $subscriberCollectionFactory,
+    SubscriberFactory $subscriberFactory
   ) {
     $this->subscriberCollectionFactory = $subscriberCollectionFactory;
+    $this->subscriberFactory = $subscriberFactory;
   }
 
   /**
@@ -58,5 +66,54 @@ class SubscriptionApi implements SubscriptionApiInterface
     ]];
 
     return $responseData;
+  }
+
+  /**
+   * @param mixed $subscriptions
+   * @return boolean
+   */
+  public function update($subscriptions)
+  {
+    foreach ($subscriptions as $subscription) {
+      if ($subscription['status'] === true) {
+        $this->subscribe($subscription);
+      } else {
+        $this->unsubscribe($subscription['email']);
+      }
+    }
+  }
+
+  private function subscribe($subscription)
+  {
+    $email = $subscription['email'];
+    $customerId = 0;
+    if (array_key_exists('customerId', $subscription)) {
+      $customerId = $subscription['customerId'];
+    }
+
+    $subscriber = $this->subscriberFactory->create()->loadByEmail($email);
+    if ($subscriber->getId() && $subscriber->getStatus() == Subscriber::STATUS_SUBSCRIBED) {
+      return false;
+    }
+
+    if (!$subscriber->getId()) {
+      $subscriber->setSubscriberEmail($email);
+      $subscriber->setCustomerId($customerId);
+    }
+
+    $subscriber->setStatus(Subscriber::STATUS_SUBSCRIBED);
+    $subscriber->setStatusChanged(true);
+    $subscriber->save();
+    return true;
+  }
+
+  private function unsubscribe($email)
+  {
+    $subscriber = $this->subscriberFactory->create()->loadByEmail($email);
+    if ($subscriber->getId() && $subscriber->getSubscriberStatus() != Subscriber::STATUS_UNSUBSCRIBED) {
+      $subscriber->setSubscriberStatus(Subscriber::STATUS_UNSUBSCRIBED)->save();
+      return true;
+    }
+    return false;
   }
 }

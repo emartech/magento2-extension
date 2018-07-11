@@ -11,4 +11,10 @@ interface SubscriptionApiInterface
    * @return mixed[]
    */
   public function getList($page, $page_size, $emails = []);
+
+  /**
+   * @param mixed $subscriptions
+   * @return boolean
+   */
+  public function update($subscriptions);
 }

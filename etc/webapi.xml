@@ -36,4 +36,10 @@
             <resource ref="Magento_Backend::content"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/subscriptions/update" method="POST">
+        <service class="Emartech\Emarsys\Api\SubscriptionApiInterface" method="update"/>
+        <resources>
+            <resource ref="Magento_Backend::content"/>
+        </resources>
+    </route>
 </routes>
