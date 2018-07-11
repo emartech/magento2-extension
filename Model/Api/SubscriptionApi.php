@@ -58,7 +58,7 @@ class SubscriptionApi implements SubscriptionApiInterface
       ->setPageSize($page_size);
 
     $responseData = [[
-      'subscribers' => $subscriptions->getData(),
+      'subscriptions' => $subscriptions->getData(),
       'page' => $page,
       'page_size' => $page_size,
       'total_count' => $total_count,
