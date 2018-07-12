@@ -47,6 +47,7 @@ describe('Customers endpoint', function() {
     expect(customer.entity_id).to.equal('1');
     expect(lastPage).to.equal(2);
 
+    expect(customer).to.have.property('id');
     expect(customer.email).to.be.a('string');
     expect(customer.firstname).to.be.a('string');
     expect(customer.lastname).to.be.a('string');

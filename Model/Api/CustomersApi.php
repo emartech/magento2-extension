@@ -43,14 +43,16 @@ class CustomersApi implements CustomersApiInterface
       ->addAttributeToSelect(['is_subscribed'])
       ->setPage($page, $page_size);
 
-    $customersData = [];
+    $customers = [];
 
     foreach ($customerCollection as $customer) {
-      $customersData[] = $this->loadExtensionData($customer);
+      $customerData = $this->loadExtensionData($customer);
+      $customerData['id'] = $customerData['entity_id'];
+      $customers[] = $customerData;
     }
 
     $responseData = [[
-      'customers' => $customersData,
+      'customers' => $customers,
       'current_page' => $customerCollection->getCurPage(),
       'last_page' => $customerCollection->getLastPageNumber(),
       'page_size' => $customerCollection->getPageSize()
