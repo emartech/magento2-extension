@@ -53,7 +53,7 @@ describe('Customers endpoint', function() {
     expect(customer.lastname).to.be.a('string');
     expect(customer.billing_address).to.be.an('object');
     expect(customer.shipping_address).to.be.an('object');
-    expect(customer).to.have.property('subscription');
+    expect(customer).to.have.property('accepts_marketing');
     expect(customer).to.have.property('billing_address');
     expect(customer).to.have.property('shipping_address');
   });

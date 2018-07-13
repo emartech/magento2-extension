@@ -72,7 +72,7 @@ class CustomersApi implements CustomersApiInterface
       $customerData['shipping_address'] = $customer->getDefaultShippingAddress()->toArray();
     }
     $subscription = $this->subscriberFactory->create()->loadByCustomerId($customer->getId());
-    $customerData['subscription'] = $subscription->getStatus();
+    $customerData['accepts_marketing'] = $subscription->getStatus();
 
     return $customerData;
   }
