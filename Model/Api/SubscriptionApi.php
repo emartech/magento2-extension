@@ -78,7 +78,7 @@ class SubscriptionApi implements SubscriptionApiInterface
       if ($subscription['subscription_status'] === true) {
         $this->subscribe($subscription);
       } else {
-        $this->unsubscribe($subscription['email']);
+        $this->unsubscribe($subscription['subscription_email']);
       }
     }
     return 'OK';
