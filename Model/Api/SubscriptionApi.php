@@ -48,7 +48,6 @@ class SubscriptionApi implements SubscriptionApiInterface
         'subscriber_email',
         [ 'in' => $emails ]
       );
-      $test = 1;
     }
 
     $total_count = $subscriptions->count();
@@ -61,8 +60,7 @@ class SubscriptionApi implements SubscriptionApiInterface
       'subscriptions' => $subscriptions->getData(),
       'page' => $page,
       'page_size' => $page_size,
-      'total_count' => $total_count,
-      'test' => $test
+      'total_count' => $total_count
     ]];
 
     return $responseData;
@@ -75,10 +73,10 @@ class SubscriptionApi implements SubscriptionApiInterface
   public function update($subscriptions)
   {
     foreach ($subscriptions as $subscription) {
-      if ($subscription['subscription_status'] === true) {
+      if ($subscription['subscriber_status'] === true) {
         $this->subscribe($subscription);
       } else {
-        $this->unsubscribe($subscription['subscription_email']);
+        $this->unsubscribe($subscription['subscriber_email']);
       }
     }
     return 'OK';
@@ -86,7 +84,7 @@ class SubscriptionApi implements SubscriptionApiInterface
 
   private function subscribe($subscription)
   {
-    $email = $subscription['subscription_email'];
+    $email = $subscription['subscriber_email'];
     $customerId = 0;
     if (array_key_exists('customer_id', $subscription)) {
       $customerId = $subscription['customer_id'];
