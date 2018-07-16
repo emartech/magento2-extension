@@ -14,7 +14,7 @@ interface SubscriptionApiInterface
 
   /**
    * @param mixed $subscriptions
-   * @return boolean
+   * @return mixed
    */
   public function update($subscriptions);
 }

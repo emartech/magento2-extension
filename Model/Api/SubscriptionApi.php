@@ -70,25 +70,26 @@ class SubscriptionApi implements SubscriptionApiInterface
 
   /**
    * @param mixed $subscriptions
-   * @return boolean
+   * @return mixed
    */
   public function update($subscriptions)
   {
     foreach ($subscriptions as $subscription) {
-      if ($subscription['status'] === true) {
+      if ($subscription['subscription_status'] === true) {
         $this->subscribe($subscription);
       } else {
         $this->unsubscribe($subscription['email']);
       }
     }
+    return 'OK';
   }
 
   private function subscribe($subscription)
   {
-    $email = $subscription['email'];
+    $email = $subscription['subscription_email'];
     $customerId = 0;
-    if (array_key_exists('customerId', $subscription)) {
-      $customerId = $subscription['customerId'];
+    if (array_key_exists('customer_id', $subscription)) {
+      $customerId = $subscription['customer_id'];
     }
 
     $subscriber = $this->subscriberFactory->create()->loadByEmail($email);
