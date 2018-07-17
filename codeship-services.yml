@@ -22,6 +22,8 @@ dockercfg_generator:
   encrypted_env_file: codeship.env.encrypted
 node:
   image: "node:9.11.1-alpine"
+  links:
+    - web:magento.local
   depends_on:
     - db
     - web
