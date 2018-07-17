@@ -29,8 +29,8 @@ services:
   node:
     image: "node:9.11.1-alpine"
     links:
+      - web:magento.local
       - db
-    user: "node"
     working_dir: /test
     env_file:
       - .env
