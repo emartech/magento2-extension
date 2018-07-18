@@ -75,6 +75,9 @@ test: ## Runs tests
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} magento < /opt/magento.sql'
 	@$(COMPOSE) run --rm node npm t
 
+quick-test: ## Runs tests
+	@$(COMPOSE) run --rm node npm t
+
 npm-install: ##
 	@$(COMPOSE) run --rm node npm i
 
