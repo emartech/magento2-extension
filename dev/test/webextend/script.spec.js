@@ -21,7 +21,7 @@ describe('Webextend scripts', function() {
       webTrackingSnippetUrl: 'http://yolo.hu/script'
     });
 
-    const response = await axios.get('http://magento.local/index.php');
+    const response = await axios.get('http://magento.local/index.php/customer/account/login/');
     const $ = cheerio.load(response.data);
     const emarsysSnippets = $('.emarsys-snippets').html().replace(/(?:\r\n|\r|\n)/g, '');
 
@@ -32,5 +32,13 @@ describe('Webextend scripts', function() {
 
     //eslint-disable-next-line
     expect(emarsysSnippets.includes('<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"123"},"search":false});</script>')).to.be.true;
+  });
+
+  it('should not be in the HTML if injectsnippet is disabled', async function() {
+    const response = await axios.get('http://magento.local/index.php/customer/account/login/');
+    const $ = cheerio.load(response.data);
+    const emarsysSnippets = $('.emarsys-snippets').html().replace(/(?:\r\n|\r|\n)/g, '');
+
+    expect(emarsysSnippets).to.eql('');
   });
 });
