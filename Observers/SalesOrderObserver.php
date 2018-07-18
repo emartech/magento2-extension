@@ -56,9 +56,10 @@ class SalesOrderObserver implements ObserverInterface
 
     $orderData['payments'] = $order->getAllPayments();
 
-    $event_type = $this->getEventType($orderData['state']);
+    $orderData['shipments'] = $order->getShipmentsCollection()->toArray();
+    $orderData['tracks'] = $order->getTracksCollection()->toArray();
 
-    if (!$event_type) return;
+    $event_type = $this->getEventType($orderData['state']);
 
     try {
       $this->salesEventHandler->store($event_type, $orderData);
@@ -85,6 +86,6 @@ class SalesOrderObserver implements ObserverInterface
       return 'orders/fulfilled';
     }
 
-    return null;
+    return 'orders/' . $state;
   }
 }
