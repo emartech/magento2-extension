@@ -12,4 +12,14 @@
     <type name="Magento\Email\Model\Template">
         <plugin name="emarsys_template_plugin" type="\Emartech\Emarsys\Plugin\Email"/>
     </type>
+
+    <type name="Magento\Newsletter\Model\Subscriber">
+        <plugin name="emarsys_newsletter" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Customer\Model\Customer">
+        <plugin name="emarsys_customer_sendNewAccountEmail" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Customer\Model\EmailNotificationInterface">
+        <plugin name="emarsys_customer_email" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
+    </type>
 </config>
