@@ -295,11 +295,10 @@ class CustomerPlugin
         $storeId = 0,
         $sendemailStoreId = null
     ) {
-        exit('3');
         if (!$storeId) {
             $storeId = $this->getWebsiteStoreId($customer, $sendemailStoreId);
         }
-
+        return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
 
         /*if (! $this->scopeConfig->getValue(
             path_in_the_config_table,
