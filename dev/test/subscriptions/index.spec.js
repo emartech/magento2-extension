@@ -15,6 +15,7 @@ const isSubscribed = subscription => {
 };
 
 const noCustomerEmail = 'no-customer@a.com';
+const noCustomerEmail2 = 'still-no-customer@a.com';
 const customerEmail = 'roni_cost@example.com';
 const customerId = 1;
 
@@ -79,42 +80,73 @@ describe('Subscriptions api', function() {
     });
   });
   describe('list', function() {
+    let customerEmail2;
+    let customerId2;
+
     before(async function() {
+      customerEmail2 = this.customer.email;
+      customerId2 = this.customer.entityId;
+
+      await this.magentoApi.updateSubscriptions({
+        subscriptions: [
+          { subscriber_email: noCustomerEmail2, subscriber_status: true },
+          { subscriber_email: customerEmail2, subscriber_status: true, customer_id: customerId2 }
+        ]
+      });
+
       await this.magentoApi.updateSubscriptions({
         subscriptions: [
           { subscriber_email: noCustomerEmail, subscriber_status: true },
-          { subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId }
+          { subscriber_email: noCustomerEmail2, subscriber_status: false },
+          { subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId },
+          { subscriber_email: customerEmail2, subscriber_status: false, customer_id: customerId2 }
         ]
       });
     });
 
-    it('should list all subscriber when no emails given', async function() {
+    it('should list all subscriber without filters', async function() {
       const expectedSubscriptions = {
         subscriptions: [
           {
             customer_id: '0',
-            subscriber_email: 'no-customer@a.com',
+            store_id: '0',
+            subscriber_email: noCustomerEmail,
             subscriber_status: '1'
           },
           {
-            customer_id: '1',
-            subscriber_email: 'roni_cost@example.com',
+            customer_id: '' + customerId,
+            store_id: '0',
+            subscriber_email: customerEmail,
             subscriber_status: '1'
+          },
+          {
+            customer_id: '0',
+            store_id: '0',
+            subscriber_email: noCustomerEmail2,
+            subscriber_status: '3'
+          },
+          {
+            customer_id: '' + customerId2,
+            store_id: '0',
+            subscriber_email: customerEmail2,
+            subscriber_status: '3'
           }
         ],
-        total_count: 2
+        total_count: 4
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({});
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ withCustomers: true });
 
-      expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
+      expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
+      expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
     });
 
-    it('should give specific subscriber for email', async function() {
+    it('should give specific subscriber for email filter', async function() {
       const expectedSubscriptions = {
         subscriptions: [
           {
             customer_id: '1',
+            store_id: '0',
             subscriber_email: 'roni_cost@example.com',
             subscriber_status: '1'
           }
@@ -122,20 +154,99 @@ describe('Subscriptions api', function() {
         total_count: 1
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ emails: [customerEmail] });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({
+        emails: [customerEmail],
+        withCustomers: true
+      });
 
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
 
-    it('should give empty result for not existing email', async function() {
+    it('should give empty result for not existing email filter', async function() {
       const expectedSubscriptions = {
         subscriptions: [],
         total_count: 0
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ emails: ['not-a-known-address@a.com'] });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({
+        emails: ['not-a-known-address@a.com'],
+        withCustomers: true
+      });
 
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
+    });
+
+    it('should filter with subscribed true', async function() {
+      const expectedSubscriptions = {
+        subscriptions: [
+          {
+            customer_id: '0',
+            store_id: '0',
+            subscriber_email: noCustomerEmail,
+            subscriber_status: '1'
+          },
+          {
+            customer_id: '' + customerId,
+            store_id: '0',
+            subscriber_email: customerEmail,
+            subscriber_status: '1'
+          }
+        ],
+        total_count: 2
+      };
+
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: true, withCustomers: true });
+
+      expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
+    });
+
+    it('should filter with subscribed false', async function() {
+      const expectedSubscriptions = {
+        subscriptions: [
+          {
+            customer_id: '0',
+            store_id: '0',
+            subscriber_email: noCustomerEmail2,
+            subscriber_status: '3'
+          },
+          {
+            customer_id: '' + customerId2,
+            store_id: '0',
+            subscriber_email: customerEmail2,
+            subscriber_status: '3'
+          }
+        ],
+        total_count: 2
+      };
+
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: false, withCustomers: true });
+
+      expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
+    });
+
+    it('should filter for not customers', async function() {
+      const expectedSubscriptions = {
+        subscriptions: [
+          {
+            customer_id: '0',
+            store_id: '0',
+            subscriber_email: noCustomerEmail,
+            subscriber_status: '1'
+          },
+          {
+            customer_id: '0',
+            store_id: '0',
+            subscriber_email: noCustomerEmail2,
+            subscriber_status: '3'
+          }
+        ],
+        total_count: 2
+      };
+
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ withCustomers: false });
+
+      expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
+      expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
     });
   });
 });
