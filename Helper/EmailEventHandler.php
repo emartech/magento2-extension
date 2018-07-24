@@ -46,7 +46,7 @@ class EmailEventHandler extends AbstractHelper
    */
   public function store($template, $args)
   {
-    if (!$this->emarsysData->isEnabled(Data::EXTERNAL_EVENTS)) return;
+    if (!$this->emarsysData->isEnabled(Data::MARKETING_EVENTS)) return;
 
     $emailData = [
       'customer' => $args[0]['customer']->getData(),

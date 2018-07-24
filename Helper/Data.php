@@ -12,7 +12,7 @@ class Data extends AbstractHelper
 {
   const ENABLED = 'enabled';
 
-  const EXTERNAL_EVENTS = 'collectExternalEvents';
+  const MARKETING_EVENTS = 'collectMarketingEvents';
   const SALES_EVENTS = 'collectSalesEvents';
   const CUSTOMER_EVENTS = 'collectCustomerEvents';
 

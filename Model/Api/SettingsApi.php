@@ -21,13 +21,13 @@ class SettingsApi implements SettingsApiInterface
   }
 
   public function set(
-    $collectCustomerEvents = null,
-    $collectSalesEvents = null,
-    $collectProductEvents = null,
-    $collectExternalEvents = null,
-    $merchantId = null,
-    $injectSnippet = null,
-    $webTrackingSnippetUrl = null
+      $collectCustomerEvents = null,
+      $collectSalesEvents = null,
+      $collectProductEvents = null,
+      $collectMarketingEvents = null,
+      $merchantId = null,
+      $injectSnippet = null,
+      $webTrackingSnippetUrl = null
   ) {
     if ($collectCustomerEvents !== null) {
       $this->saveSetting('collectCustomerEvents', $collectCustomerEvents);
@@ -41,8 +41,8 @@ class SettingsApi implements SettingsApiInterface
       $this->saveSetting('collectProductEvents', $collectProductEvents);
     }
 
-    if ($collectExternalEvents !== null) {
-      $this->saveSetting('collectExternalEvents', $collectExternalEvents);
+    if ($collectMarketingEvents !== null) {
+      $this->saveSetting('collectMarketingEvents', $collectMarketingEvents);
     }
 
     if ($merchantId !== null) {

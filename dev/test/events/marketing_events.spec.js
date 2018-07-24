@@ -15,7 +15,7 @@ const customer = {
   disable_auto_group_change: 0
 };
 
-describe('External events', function() {
+describe('Marketing events', function() {
   before(function() {
     magentoApi = new Magento2ApiClient({
       baseUrl: 'http://web',
@@ -27,8 +27,8 @@ describe('External events', function() {
     await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
   });
 
-  it('are saved in DB if collectExternalEvents is enabled', async function() {
-    await magentoApi.setSettings({ collectExternalEvents: 'enabled' });
+  it('are saved in DB if collectMarketingEvents is enabled', async function() {
+    await magentoApi.setSettings({ collectMarketingEvents: 'enabled' });
     await this.createCustomer(customer);
 
     const event = await this.db
@@ -41,7 +41,7 @@ describe('External events', function() {
     expect(eventData.customer.email).to.eql(customer.email);
   });
 
-  it('are not saved in DB if collectExternalEvents is disabled', async function() {
+  it('are not saved in DB if collectMarketingEvents is disabled', async function() {
     await this.createCustomer(customer);
 
     const event = await this.db
