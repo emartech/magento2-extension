@@ -34,7 +34,7 @@ describe('Marketing events', function() {
     const event = await this.db
       .select()
       .from('emarsys_events')
-      .where({ event_type: 'customer_create_account_email_no_password_template' })
+      .where({ event_type: 'customer_new_account_registered_no_password' })
       .first();
 
     const eventData = JSON.parse(event.event_data);
@@ -47,7 +47,7 @@ describe('Marketing events', function() {
     const event = await this.db
       .select()
       .from('emarsys_events')
-      .where({ event_type: 'customer_create_account_email_no_password_template' })
+      .where({ event_type: 'customer_new_account_registered_no_password' })
       .first();
 
     expect(event).to.be.undefined;
