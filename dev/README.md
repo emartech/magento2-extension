@@ -3,7 +3,7 @@
 ## Prerequisites
 To be able to pull image from Google Container Registry (GCR), you will have to authenticate to Google Cloud and
  configure docker to use those credentials.
- 
+
 First install Google Cloud SDK:
 ```
 $ brew cask install google-cloud-sdk
@@ -35,6 +35,12 @@ The web container will expose its port `80` to port `8888` on the host machine.
 By default the Magento store will be available at http://magento.local:8888, but you have to add this to your `/etc/hosts` file first:
 ```
 127.0.0.1 magento.local
+```
+
+### Create test DB
+Before you make any changes on the Magento instance, it's a good idea to create the test DB from a clean state. You can do this with the following command:
+```
+$ make create-test-db
 ```
 
 ### Sample data

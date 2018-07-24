@@ -71,9 +71,16 @@ log: ## Tail Magento exception logs
 	@echo "Following var/log/system.log\n"
 	@$(COMPOSE) exec web tail -f -n 10 var/log/system.log
 
+create-test-db: ## Creates magento-test database
+	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "create database if not exists magento_test;"'
+	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON magento_test.* TO \"magento\"@\"%\";"'
+	@$(COMPOSE) exec db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento > /opt/magento_test.sql'
+
 test: ## Runs tests
-	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} magento < /opt/magento.sql'
-	@$(COMPOSE) run --rm node npm t
+	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} magento_test < /opt/magento_test.sql'
+	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento'/'dbname' => 'magento_test'/g\" app/etc/env.php"
+	-@$(COMPOSE) run --rm node npm t
+	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
 
 quick-test: ## Runs tests
 	@$(COMPOSE) run --rm node npm t
