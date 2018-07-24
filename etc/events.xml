@@ -9,6 +9,9 @@
     <event name="newsletter_subscriber_save_after">
         <observer name="subscriptionObserver" instance="Emartech\Emarsys\Observers\SubscriptionObserver" />
     </event>
+    <event name="newsletter_subscriber_delete_after">
+        <observer name="subscriptionObserver" instance="Emartech\Emarsys\Observers\SubscriptionObserver" />
+    </event>
     <event name="sales_order_save_after">
         <observer name="orderObserver" instance="Emartech\Emarsys\Observers\SalesOrderObserver" />
     </event>

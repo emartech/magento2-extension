@@ -43,6 +43,8 @@ class SubscriptionObserver implements ObserverInterface
    */
   public function execute(Observer $observer)
   {
+    $this->logger->info('name: '.json_encode($observer->getName()));
+    $this->logger->info('event name: '.json_encode($observer->getEventName()));
     /** @var Subscriber $subscriber */
     $subscriber = $observer->getSubscriber();
 
@@ -50,10 +52,10 @@ class SubscriptionObserver implements ObserverInterface
       if ($subscriber->getCustomerId()) {
         $this->customerEventHandler->store('customers/update', $subscriber->getCustomerId());
       } else {
-        $this->subscriptionEventHandler->store($subscriber);
+        $this->subscriptionEventHandler->store($subscriber, $observer->getEvent()->getName());
       }
     } catch (\Exception $e) {
-      $this->logger->warning('Emartech\\Emarsys\\Observers\\CustomerAccountObserver: ' . $e->getMessage());
+      $this->logger->warning('Emartech\\Emarsys\\Observers\\SubscriptionObserver: ' . $e->getMessage());
     }
   }
 }

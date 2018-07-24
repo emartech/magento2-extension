@@ -43,21 +43,41 @@ class SubscriptionEventHandler extends AbstractHelper
 
   /**
    * @param $subscription
+   * @param $eventName
    * @throws \Exception
    * @throws \Magento\Framework\Exception\AlreadyExistsException
    */
-  public function store($subscription)
+  public function store($subscription, $eventName)
   {
     if (!$this->emarsysData->isEnabled(Data::CUSTOMER_EVENTS)) return;
 
     $eventData = $subscription->getData();
 
+    $eventType = $this->getEventType($eventName);
+
     /** @var \Emartech\Emarsys\Model\Event $eventModel */
     $eventModel = $this->eventFactory->create();
-    $eventModel->setData('event_type', 'subscription/update');
+    $eventModel->setData('event_type', $eventType);
     $eventModel->setData('event_data', json_encode($eventData));
     $this->eventResource->save($eventModel);
 
-    $this->logger->info('event_type: '. 'subscription/update' . ', event_data: '.json_encode($eventData));
+    $this->logger->info('event_type: '. $eventType . ', event_data: '.json_encode($eventData));
+  }
+
+  /**
+   * @param $eventName
+   * @return string
+   */
+  private function getEventType($eventName)
+  {
+    $eventType = 'subscription/unknown';
+
+    if ($eventName === 'newsletter_subscriber_save_after') {
+      $eventType = 'subscription/update';
+    } elseif ($eventName === 'newsletter_subscriber_delete_after') {
+      $eventType = 'subscription/delete';
+    }
+
+    return $eventType;
   }
 }
