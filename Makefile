@@ -22,7 +22,7 @@ ps: ## Displays container statuses
 	@$(COMPOSE) ps
 
 ssh: ## Enters the web container
-	@$(COMPOSE) exec --user 33 web bash
+	@$(COMPOSE) exec --user application web bash
 
 ssh-root: ## Enters the web container
 	@$(COMPOSE) exec web bash
@@ -37,28 +37,28 @@ install-magento: ## Installs Magento in the container
 	@$(COMPOSE) exec web install-magento
 
 install-sampledata: ## Installs Magento sample data in the container
-	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
+	@$(COMPOSE) exec --user application web bin/magento cache:flush
 	@$(COMPOSE) exec web install-sampledata
 
 magento: ## Runs Magento CLI command (make magento command=your-command)
-	@$(COMPOSE) exec --user 33 web bin/magento $(command)
+	@$(COMPOSE) exec --user application web bin/magento $(command)
 
 upgrade: ## Runs Magento CLI setup:upgrade command
-	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
-	@$(COMPOSE) exec --user 33 web bin/magento setup:upgrade
+	@$(COMPOSE) exec --user application web bin/magento cache:flush
+	@$(COMPOSE) exec --user application web bin/magento setup:upgrade
 
 compile: ## Runs Magento CLI setup:di:compile command
-	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
-	@$(COMPOSE) exec --user 33 web bin/magento setup:di:compile
+	@$(COMPOSE) exec --user application web bin/magento cache:flush
+	@$(COMPOSE) exec --user application web bin/magento setup:di:compile
 
 flush: ## Runs Magento CLI cache:flush command
-	@$(COMPOSE) exec --user 33 web rm -rf generated/code/
-	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
+	@$(COMPOSE) exec --user application web rm -rf generated/code/
+	@$(COMPOSE) exec --user application web bin/magento cache:flush
 
 uninstall: ## Uninstalls the extension from the Magento instance
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} < /opt/uninstall-extension.sql'
-	@$(COMPOSE) exec --user 33 web rm -rf generated/code/Magento/
-	@$(COMPOSE) exec --user 33 web bin/magento cache:flush
+	@$(COMPOSE) exec --user application web rm -rf generated/code/Magento/
+	@$(COMPOSE) exec --user application web bin/magento cache:flush
 
 mysql: ## Enter MYSQL command line
 	@$(COMPOSE) exec db mysql -u magento -p${MYSQL_PASSWORD}

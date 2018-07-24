@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   web:
-    image: eu.gcr.io/ems-plugins/magento:2.2.3
+    image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.3
     ports:
       - "8888:80"
     links:
@@ -9,19 +9,17 @@ services:
     env_file:
       - .env
     volumes:
-      - ./Magento/composer.json:/var/www/html/composer.json
-      - ./..:/var/www/html/vendor/emartech/emarsys-magento2-extension
-      - ./setup:/etc/my_init.d/setup
-      - ./php.ini:/usr/local/etc/php/php.ini
-    command: ["/opt/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/sbin/my_init"]
+      - ./Magento/composer.json:/app/composer.json
+      - ./..:/app/vendor/emartech/emarsys-magento2-extension
+      - ./setup:/opt/emartech/setup
+      - ./php.ini:/opt/docker/etc/php/php.ini
+    command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   db:
     image: healthcheck/percona
     restart: always
     volumes:
-      - ./fresh-magento-sampledata.sql:/docker-entrypoint-initdb.d/magento.sql
       - magento-db:/var/lib/mysql
       - ./uninstall-extension.sql:/opt/uninstall-extension.sql
-      - ./magento.sql:/opt/magento.sql
     ports:
       - "13306:3306"
     env_file:

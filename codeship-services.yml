@@ -1,19 +1,16 @@
 db:
   image: healthcheck/percona
   cached: true
-  volumes:
-    - ./dev/fresh-magento-sampledata.sql:/docker-entrypoint-initdb.d/magento.sql
-
   encrypted_env_file: codeship.env.encrypted
 web:
-  image: eu.gcr.io/ems-plugins/magento:2.2.3
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.3
   depends_on:
     - db
   volumes:
-    - ./dev/Magento/composer.json:/var/www/html/composer.json
-    - ./dev/setup:/etc/my_init.d/setup
-    - .:/var/www/html/vendor/emartech/emarsys-magento2-extension
-  cached: true
+    - ./dev/Magento/composer.json:/app/composer.json
+    - ./dev/setup:/opt/emartech/setup
+    - .:/app/vendor/emartech/emarsys-magento2-extension
+  cached: false
   encrypted_env_file: codeship.env.encrypted
   dockercfg_service: dockercfg_generator
 dockercfg_generator:

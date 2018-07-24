@@ -54,6 +54,10 @@
     "1": {
       "type": "vcs",
       "url": "git@github.com:emartech/magento2-extension.git"
+    },
+    "emartech": {
+      "type": "vcs",
+      "url": "git@github.com:emartech/magento2-extension.git"
     }
   },
   "extra": {
