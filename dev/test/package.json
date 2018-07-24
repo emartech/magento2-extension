@@ -17,7 +17,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@emartech/magento2-api": "3.2.0",
+    "@emartech/magento2-api": "3.3.0",
     "axios": "0.18.0",
     "chai": "4.1.2",
     "chai-string": "1.4.0",
