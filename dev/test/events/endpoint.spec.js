@@ -1,9 +1,5 @@
 'use strict';
 
-const Magento2ApiClient = require('@emartech/magento2-api');
-
-let magentoApi;
-
 const customers = [
   {
     group_id: 0,
@@ -38,13 +34,6 @@ const customers = [
 ];
 
 describe('Events API endpoint', function() {
-  before(function() {
-    magentoApi = new Magento2ApiClient({
-      baseUrl: 'http://web',
-      token: this.token
-    });
-  });
-
   afterEach(async function() {
     await this.db.raw(
       'DELETE FROM customer_entity where email in ("yolo@yolo.net", "doggo@yolo.net", "pupper@yolo.net")'
@@ -53,19 +42,19 @@ describe('Events API endpoint', function() {
 
   it.skip('returns number of events defined in page_size and deletes events before since_id', async function() {
     const pageSize = 2;
-    await magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
+    await this.magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
     for (const customer of customers) {
       await this.createCustomer(customer);
     }
 
-    const eventsResponse = await magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize });
+    const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize });
 
     expect(eventsResponse.events.length).to.equal(pageSize);
     expect(eventsResponse.last_page).to.equal(3);
 
     let sinceId = eventsResponse.events.pop().event_id;
 
-    const secondEventsResponse = await magentoApi.execute('events', 'getSinceId', { sinceId, pageSize });
+    const secondEventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId, pageSize });
 
     expect(secondEventsResponse.last_page).to.equal(2);
 
