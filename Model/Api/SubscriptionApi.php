@@ -139,7 +139,7 @@ class SubscriptionApi implements SubscriptionApiInterface
      * @param $subscribed
      * @param $subscriptions
      */
-    private function addSubscriptionStatusFilter($subscribed, $subscriptions): void
+    private function addSubscriptionStatusFilter($subscribed, $subscriptions)
     {
         if ($subscribed === true) {
             $subscriptions->addFieldToFilter(
@@ -157,7 +157,7 @@ class SubscriptionApi implements SubscriptionApiInterface
     /**
      * @param $subscriptions
      */
-    private function addCustomerFilter($subscriptions): void
+    private function addCustomerFilter($subscriptions)
     {
         $subscriptions->addFieldToFilter(
             'customer_id',
