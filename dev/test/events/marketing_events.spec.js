@@ -1,7 +1,5 @@
 'use strict';
 
-const axios = require('axios');
-
 const customer = {
   group_id: 0,
   dob: '1977-11-12',
