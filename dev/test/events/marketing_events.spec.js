@@ -1,8 +1,6 @@
 'use strict';
 
-const Magento2ApiClient = require('@emartech/magento2-api');
-
-let magentoApi;
+const axios = require('axios');
 
 const customer = {
   group_id: 0,
@@ -16,40 +14,82 @@ const customer = {
 };
 
 describe('Marketing events', function() {
-  before(function() {
-    magentoApi = new Magento2ApiClient({
-      baseUrl: 'http://web',
-      token: this.token
+  context.skip('customer_new_account_registered_no_password', function() {
+    afterEach(async function() {
+      await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
+    });
+
+    it('should create event if collectMarketingEvents is enabled', async function() {
+      await this.magentoApi.setSettings({ collectMarketingEvents: 'enabled' });
+      await this.createCustomer(customer);
+
+      const event = await this.db
+        .select()
+        .from('emarsys_events')
+        .where({ event_type: 'customer_new_account_registered_no_password' })
+        .first();
+
+      const eventData = JSON.parse(event.event_data);
+      expect(eventData.customer.email).to.eql(customer.email);
+    });
+
+    it('should create event if collectMarketingEvents is disabled', async function() {
+      await this.createCustomer(customer);
+
+      const event = await this.db
+        .select()
+        .from('emarsys_events')
+        .where({ event_type: 'customer_new_account_registered_no_password' })
+        .first();
+
+      expect(event).to.be.undefined;
     });
   });
 
-  afterEach(async function() {
-    await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
-  });
+  context.skip('customer_password_reset_confirmation', function() {
+    before(async function() {
+      await this.db.truncate('emarsys_events');
+    });
 
-  it.skip('are saved in DB if collectMarketingEvents is enabled', async function() {
-    await magentoApi.setSettings({ collectMarketingEvents: 'enabled' });
-    await this.createCustomer(customer);
+    it('should create an event if collectMarketingEvents turned on', async function() {
+      await this.magentoApi.setSettings({ collectMarketingEvents: 'enabled' });
 
-    const event = await this.db
-      .select()
-      .from('emarsys_events')
-      .where({ event_type: 'customer_new_account_registered_no_password' })
-      .first();
+      await this.magentoApi.put({
+        path: '/index.php/rest/V1/customers/password',
+        payload: {
+          email: this.customer.email,
+          template: 'email_reset',
+          websiteId: this.customer.website_id
+        }
+      });
 
-    const eventData = JSON.parse(event.event_data);
-    expect(eventData.customer.email).to.eql(customer.email);
-  });
+      const event = await this.db
+        .select()
+        .from('emarsys_events')
+        .first();
 
-  it.skip('are not saved in DB if collectMarketingEvents is disabled', async function() {
-    await this.createCustomer(customer);
+      expect(event.event_type).to.be.equal('customer_password_reset_confirmation');
 
-    const event = await this.db
-      .select()
-      .from('emarsys_events')
-      .where({ event_type: 'customer_new_account_registered_no_password' })
-      .first();
+      const eventData = JSON.parse(event.event_data);
+      expect(eventData.email).to.equal(this.customer.email);
+    });
 
-    expect(event).to.be.undefined;
+    it('should not create an event if collectMarketingEvents turned off', async function() {
+      await this.magentoApi.put({
+        path: '/index.php/rest/V1/customers/password',
+        payload: {
+          email: this.customer.email,
+          template: 'email_reset',
+          websiteId: this.customer.website_id
+        }
+      });
+
+      const event = await this.db
+        .select()
+        .from('emarsys_events')
+        .first();
+
+      expect(event).to.be.undefined;
+    });
   });
 });
