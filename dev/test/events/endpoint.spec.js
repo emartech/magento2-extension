@@ -51,7 +51,7 @@ describe('Events API endpoint', function() {
     );
   });
 
-  it('returns number of events defined in page_size and deletes events before since_id', async function() {
+  it.skip('returns number of events defined in page_size and deletes events before since_id', async function() {
     const pageSize = 2;
     await magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
     for (const customer of customers) {
