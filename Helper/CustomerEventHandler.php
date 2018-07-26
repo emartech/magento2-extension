@@ -54,6 +54,7 @@ class CustomerEventHandler extends AbstractHelper
     /** @var Customer $customer */
     $customer = $this->customerFactory->create()->load($customerId);
     $customerData = $customer->toArray();
+    $customerData['id'] = $customerData['entity_id'];
 
     if ($customer->getDefaultBillingAddress()) {
       $customerData['billing_address'] = $customer->getDefaultBillingAddress()->toArray();
@@ -63,7 +64,7 @@ class CustomerEventHandler extends AbstractHelper
     }
 
     $subscription = $this->subscriber->loadByCustomerId($customerId);
-    $customerData['subscription'] = $subscription->getStatus();
+    $customerData['accepts_marketing'] = $subscription->getStatus();
 
     /** @var \Emartech\Emarsys\Model\Event $eventModel */
     $eventModel = $this->eventFactory->create();
