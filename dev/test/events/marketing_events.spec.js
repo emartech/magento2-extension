@@ -45,10 +45,6 @@ describe('Marketing events', function() {
   });
 
   context.skip('customer_password_reset_confirmation', function() {
-    before(async function() {
-      await this.db.truncate('emarsys_events');
-    });
-
     it('should create an event if collectMarketingEvents turned on', async function() {
       await this.magentoApi.setSettings({ collectMarketingEvents: 'enabled' });
 
@@ -69,7 +65,7 @@ describe('Marketing events', function() {
       expect(event.event_type).to.be.equal('customer_password_reset_confirmation');
 
       const eventData = JSON.parse(event.event_data);
-      expect(eventData.email).to.equal(this.customer.email);
+      expect(eventData.customer.email).to.equal(this.customer.email);
     });
 
     it('should not create an event if collectMarketingEvents turned off', async function() {
@@ -78,6 +74,53 @@ describe('Marketing events', function() {
         payload: {
           email: this.customer.email,
           template: 'email_reset',
+          websiteId: this.customer.website_id
+        }
+      });
+
+      const event = await this.db
+        .select()
+        .from('emarsys_events')
+        .first();
+
+      expect(event).to.be.undefined;
+    });
+  });
+
+  context.skip('customer_password_reminder', function() {
+    before(async function() {
+      await this.db.truncate('emarsys_events');
+    });
+
+    it('should create an event if collectMarketingEvents turned on', async function() {
+      await this.magentoApi.setSettings({ collectMarketingEvents: 'enabled' });
+
+      await this.magentoApi.put({
+        path: '/index.php/rest/V1/customers/password',
+        payload: {
+          email: this.customer.email,
+          template: 'email_reminder',
+          websiteId: this.customer.website_id
+        }
+      });
+
+      const event = await this.db
+        .select()
+        .from('emarsys_events')
+        .first();
+
+      expect(event.event_type).to.be.equal('customer_password_reminder');
+
+      const eventData = JSON.parse(event.event_data);
+      expect(eventData.customer.email).to.equal(this.customer.email);
+    });
+
+    it('should not create an event if collectMarketingEvents turned off', async function() {
+      await this.magentoApi.put({
+        path: '/index.php/rest/V1/customers/password',
+        payload: {
+          email: this.customer.email,
+          template: 'email_reminder',
           websiteId: this.customer.website_id
         }
       });
