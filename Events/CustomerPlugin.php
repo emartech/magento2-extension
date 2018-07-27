@@ -18,6 +18,16 @@ use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
  */
 class CustomerPlugin
 {
+    const EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL = 'newsletter_send_confirmation_success_email';
+    const EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL = 'newsletter_send_confirmation_request_email';
+    const EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL = 'newsletter_send_unsubscription_email';
+    const EVENT_CUSTOMER_NEW_ACCOUNT = 'customer_new_account_';
+    const EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED = 'customer_email_and_password_changed';
+    const EVENT_CUSTOMER_EMAIL_CHANGED = 'customer_email_changed';
+    const EVENT_CUSTOMER_PASSWORD_RESET = 'customer_password_reset';
+    const EVENT_CUSTOMER_PASSWORD_REMINDER = 'customer_password_reminder';
+    const EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION = 'customer_password_reset_confirmation';
+
     /**
      * @var ScopeConfigInterface
      */
@@ -122,7 +132,7 @@ class CustomerPlugin
         }*/
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('newsletter_send_confirmation_success_email');
+        $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL);
 
         $data = [
             'subscriber' => $subscriber->getData(),
@@ -135,11 +145,11 @@ class CustomerPlugin
         }
         if ($subscriber->getCustomerId()) {
             try {
-                $customer = $this->getFullCustomerObject($this->customerRegistry->retrieve($subscriber->getCustomerId()));
+                $customer = $this->customerRegistry->retrieve($subscriber->getCustomerId());
 
                 // Select needed data
                 $data = [
-                    'customer' => $customer->getData(),
+                    'customer' => $this->getFullCustomerObject($customer)->getData(),
                 ];
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
@@ -173,7 +183,7 @@ class CustomerPlugin
         }*/
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('newsletter_send_confirmation_request_email');
+        $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL);
 
         $data = [
             'subscriber' => $subscriber->getData(),
@@ -186,11 +196,11 @@ class CustomerPlugin
         }
         if ($subscriber->getCustomerId()) {
             try {
-                $customer = $this->getFullCustomerObject($this->customerRegistry->retrieve($subscriber->getCustomerId()));
+                $customer = $this->customerRegistry->retrieve($subscriber->getCustomerId());
 
                 // Select needed data
                 $data = [
-                    'customer' => $customer->getData(),
+                    'customer' => $this->getFullCustomerObject($customer)->getData(),
                 ];
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
@@ -224,7 +234,7 @@ class CustomerPlugin
         }*/
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('newsletter_send_unsubscription_email');
+        $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL);
 
         $data = [
             'subscriber' => $subscriber->getData(),
@@ -237,11 +247,11 @@ class CustomerPlugin
         }
         if ($subscriber->getCustomerId()) {
             try {
-                $customer = $this->getFullCustomerObject($this->customerRegistry->retrieve($subscriber->getCustomerId()));
+                $customer = $this->customerRegistry->retrieve($subscriber->getCustomerId());
 
                 // Select needed data
                 $data = [
-                    'customer' => $customer->getData(),
+                    'customer' => $this->getFullCustomerObject($customer)->getData(),
                 ];
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
@@ -289,10 +299,10 @@ class CustomerPlugin
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('customer_new_account_'. $type);
+        $eventModel->setEventType(self::EVENT_CUSTOMER_NEW_ACCOUNT . $type);
 
         $data = [
-            'customer' => $this->getFullCustomerObject($customer),
+            'customer' => $this->getFullCustomerObject($customer)->getData(),
             'back_url' => $backUrl,
             'store' => $store->getData(),
         ];
@@ -301,117 +311,77 @@ class CustomerPlugin
         $this->eventRepository->save($eventModel);
     }
 
+
     /**
      * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
      * @param callable $proceed
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param string $email
-     *
+     * @param CustomerInterface $savedCustomer
+     * @param $origCustomerEmail
+     * @param bool $isPasswordChanged
      * @return mixed
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function aroundEmailAndPasswordChanged(
+    public function aroundCredentialsChanged(
         \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
         callable $proceed,
-        \Magento\Customer\Api\Data\CustomerInterface $customer,
-        $email
+        CustomerInterface $savedCustomer,
+        $origCustomerEmail,
+        $isPasswordChanged = false
     ) {
-        $storeId = $storeId = $this->getWebsiteStoreId($customer);
+        $storeId = $storeId = $this->getWebsiteStoreId($savedCustomer);
         /*if (! $this->scopeConfig->getValue(
             path_in_the_config_table,
             'store',
             $storeId
         )
         ) {
-            return $proceed($customer, $email);
+            return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
         }*/
 
         $store = $this->storeManager->getStore($storeId);
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('customer_email_and_password_changed');
+        if ($origCustomerEmail != $savedCustomer->getEmail()) {
+            if ($isPasswordChanged) {
+                /** @var \Emartech\Emarsys\Model\Event $eventModel */
+                $eventModel = $this->eventFactory->create();
+                $eventModel->setEventType(self::EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED);
+                $data = [
+                    'customer' => $this->getFullCustomerObject($origCustomerEmail)->getData(),
+                    'store' => $store->getData(),
+                    'orig_customer_email' => $origCustomerEmail,
+                    'new_customer_email' => $savedCustomer->getEmail()
+                ];
+                $eventModel->setEventData($this->json->serialize($data));
+                $this->eventRepository->save($eventModel);
+                return;
+            }
 
-        $data = [
-            'customer' => $this->getFullCustomerObject($customer),
-            'store' => $store->getData()
-        ];
+            /** @var \Emartech\Emarsys\Model\Event $eventModel */
+            $eventModel = $this->eventFactory->create();
+            $eventModel->setEventType(self::EVENT_CUSTOMER_EMAIL_CHANGED);
+            $data = [
+                'customer' => $this->getFullCustomerObject($origCustomerEmail)->getData(),
+                'store' => $store->getData(),
+                'orig_customer_email' => $origCustomerEmail,
+                'new_customer_email' => $savedCustomer->getEmail()
+            ];
+            $eventModel->setEventData($this->json->serialize($data));
+            $this->eventRepository->save($eventModel);
+            return;
+        }
 
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
-    }
-
-    /**
-     * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
-     * @param callable $proceed
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param string $email
-     *
-     * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function aroundEmailChanged(
-        \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
-        callable $proceed,
-        \Magento\Customer\Api\Data\CustomerInterface $customer,
-        $email
-    ) {
-        $storeId = $storeId = $this->getWebsiteStoreId($customer);
-        /*if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed($customer, $email);
-        }*/
-        $store = $this->storeManager->getStore($storeId);
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('customer_email_changed');
-
-        $data = [
-            'customer' => $this->getFullCustomerObject($customer),
-            'store' => $store->getId()
-        ];
-
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
-    }
-
-    /**
-     * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
-     * @param callable $proceed
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     *
-     * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    public function aroundPasswordReset(
-        \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
-        callable $proceed,
-        \Magento\Customer\Api\Data\CustomerInterface $customer
-    ) {
-        $storeId = $storeId = $this->getWebsiteStoreId($customer);
-        /* if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed($customer);
-        }*/
-        $store = $this->storeManager->getStore($storeId);
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('customer_password_reset');
-
-        $data = [
-            'customer' => $this->getFullCustomerObject($customer),
-            $store->getId()
-        ];
-
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
+        if ($isPasswordChanged) {
+            /** @var \Emartech\Emarsys\Model\Event $eventModel */
+            $eventModel = $this->eventFactory->create();
+            $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET);
+            $data = [
+                'customer' => $this->getFullCustomerObject($origCustomerEmail)->getData(),
+                'store' => $store->getData(),
+                'orig_customer_email' => $origCustomerEmail,
+                'new_customer_email' => $savedCustomer->getEmail()
+            ];
+            $eventModel->setEventData($this->json->serialize($data));
+            $this->eventRepository->save($eventModel);
+        }
     }
 
     /**
@@ -439,10 +409,10 @@ class CustomerPlugin
         $store = $this->storeManager->getStore($storeId);
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('customer_password_reminder');
+        $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_REMINDER);
 
         $data = [
-            'customer' => $this->getFullCustomerObject($customer),
+            'customer' => $this->getFullCustomerObject($customer)->getData(),
             $store->getData()
         ];
 
@@ -475,10 +445,10 @@ class CustomerPlugin
         $store = $this->storeManager->getStore($storeId);
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType('customer_password_reset_confirmation');
+        $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION);
 
         $data = [
-            'customer' => $this->getFullCustomerObject($customer),
+            'customer' => $this->getFullCustomerObject($customer)->getData(),
             $store->getData()
         ];
 
