@@ -28,7 +28,7 @@ const createNewOrder = async (magentoApi, customer) => {
                 option_value: 50
               },
               {
-                option_id: 142,
+                option_id: 145,
                 option_value: 167
               }
             ]
