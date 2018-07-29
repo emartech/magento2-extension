@@ -12,6 +12,7 @@ use Magento\Customer\Helper\View as CustomerViewHelper;
 use \Psr\Log\LoggerInterface;
 use Magento\Customer\Model\CustomerRegistry;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
+use Emartech\Emarsys\Helper\Data as EmarsysData;
 
 /**
  * Customer Events
@@ -69,6 +70,11 @@ class CustomerPlugin
     public $customerViewHelper;
 
     /**
+     * @var EmarsysData
+     */
+    public $emarsysData;
+
+    /**
      * @var Json
      */
     public $json;
@@ -83,6 +89,7 @@ class CustomerPlugin
      * @param EmarsysEventFactory $eventFactory
      * @param DataObjectProcessor $dataProcessor
      * @param CustomerViewHelper $customerViewHelper
+     * @param EmarsysData $emarsysData
      * @param Json $json
      */
     public function __construct(
@@ -94,8 +101,8 @@ class CustomerPlugin
         EmarsysEventFactory $eventFactory,
         DataObjectProcessor $dataProcessor,
         CustomerViewHelper $customerViewHelper,
+        EmarsysData $emarsysData,
         Json $json
-
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
@@ -105,6 +112,7 @@ class CustomerPlugin
         $this->eventFactory = $eventFactory;
         $this->dataProcessor = $dataProcessor;
         $this->customerViewHelper = $customerViewHelper;
+        $this->emarsysData = $emarsysData;
         $this->json = $json;
     }
 
@@ -120,6 +128,10 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
+        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+            return $proceed($subscriber);
+        }
+
         $storeId = $subscriber->getStoreId();
         //add config later
         /*if (! $this->scopeConfig->getValue(
@@ -171,6 +183,10 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
+        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+            return $proceed($subscriber);
+        }
+
         $storeId = $subscriber->getStoreId();
         //add config later
         /*if (! $this->scopeConfig->getValue(
@@ -222,6 +238,10 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
+        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+            return $proceed($subscriber);
+        }
+
         $storeId = $subscriber->getStoreId();
         //add config later
         /*if (! $this->scopeConfig->getValue(
@@ -282,6 +302,10 @@ class CustomerPlugin
         $storeId = 0,
         $sendemailStoreId = null
     ) {
+        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+            return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
+        }
+
         if (!$storeId) {
             $storeId = $this->getWebsiteStoreId($customer, $sendemailStoreId);
         }
@@ -328,6 +352,10 @@ class CustomerPlugin
         $origCustomerEmail,
         $isPasswordChanged = false
     ) {
+        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+            return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
+        }
+
         $storeId = $storeId = $this->getWebsiteStoreId($savedCustomer);
         /*if (! $this->scopeConfig->getValue(
             path_in_the_config_table,
@@ -397,6 +425,10 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
+        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+            return $proceed($customer);
+        }
+
         $storeId = $storeId = $this->getWebsiteStoreId($customer);
         /* if (! $this->scopeConfig->getValue(
             path_in_the_config_table,
@@ -433,6 +465,10 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
+        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+            return $proceed($customer);
+        }
+
         $storeId = $storeId = $this->getWebsiteStoreId($customer);
         /* if (! $this->scopeConfig->getValue(
             path_in_the_config_table,
