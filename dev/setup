@@ -4,12 +4,8 @@ export PATH=/bin:/usr/local/bin:$PATH
 
 cd /app
 
-echo "-|| Checking base URL..."
-if [[ ! $(bin/magento config:show | grep $MAGENTO_URL) ]]
-then
-  echo "   >> Setting base URL"
-  bin/magento config:set web/unsecure/base_url ${MAGENTO_URL}/
-fi
+echo "-|| Setting base URL"
+bin/magento config:set web/unsecure/base_url ${MAGENTO_URL}/
 
 echo "-|| Install plugin..."
 if [[ ! $(bin/magento module:status | grep Emartech_Emarsys) ]]
