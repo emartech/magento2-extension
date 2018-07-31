@@ -14,6 +14,7 @@ class ConfigApi implements ConfigApiInterface
   protected $defaultConfig = [
   'collectCustomerEvents' => 'disabled',
   'collectSalesEvents' => 'disabled',
+  'collectMarketingEvents' => 'disabled',
   'injectSnippet' => 'disabled',
   'merchantId' => null,
   'webTrackingSnippetUrl' => null

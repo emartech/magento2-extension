@@ -5,6 +5,7 @@ const Magento2ApiClient = require('@emartech/magento2-api');
 const defaults = {
   collectCustomerEvents: 'disabled',
   collectSalesEvents: 'disabled',
+  collectMarketingEvents: 'disabled',
   injectSnippet: 'disabled',
   merchantId: null,
   webTrackingSnippetUrl: null
@@ -52,6 +53,7 @@ describe('Config endpoint', function() {
       const testConfig = {
         collectCustomerEvents: 'enabled',
         collectSalesEvents: 'enabled',
+        collectMarketingEvents: 'enabled',
         injectSnippet: 'enabled',
         merchantId: '1234567',
         webTrackingSnippetUrl: 'https://path/to/snippet'
