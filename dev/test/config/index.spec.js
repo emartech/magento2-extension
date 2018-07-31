@@ -1,7 +1,5 @@
 'use strict';
 
-const Magento2ApiClient = require('@emartech/magento2-api');
-
 const defaults = {
   collectCustomerEvents: 'disabled',
   collectSalesEvents: 'disabled',
@@ -11,24 +9,29 @@ const defaults = {
   webTrackingSnippetUrl: null
 };
 
-const scopeId = 8;
+const dbKeys = {
+  collectCustomerEvents: 'collect_customer_events',
+  collectSalesEvents: 'collect_sales_events',
+  collectMarketingEvents: 'collect_marketing_events',
+  injectSnippet: 'inject_webextend_snippets',
+  merchantId: 'merchant_id',
+  webTrackingSnippetUrl: 'web_tracking_snippet_url'
+};
 
+const scopeId = 1;
 describe('Config endpoint', function() {
   afterEach(async function() {
-    await this.db
-      .delete()
-      .from('core_config_data')
-      .where('scope_id', scopeId);
+    this.magentoApi.setDefaultConfig(1);
   });
 
   describe('setDefaultConfig', function() {
     it('should create default config for website', async function() {
-      const magentoApi = new Magento2ApiClient({
-        baseUrl: 'http://web',
-        token: this.token
-      });
+      await this.db
+        .delete()
+        .from('core_config_data')
+        .where('path', 'like', 'emartech/emarsys/config/%');
 
-      await magentoApi.setDefaultConfig(scopeId);
+      await this.magentoApi.setDefaultConfig(scopeId);
 
       const config = await this.db
         .select()
@@ -37,7 +40,9 @@ describe('Config endpoint', function() {
         .andWhere('path', 'like', 'emartech/emarsys/config/%');
 
       for (const key in defaults) {
-        const configItem = config.find(item => item.path === `emartech/emarsys/config/${key}`);
+        const configItem = config.find(item => {
+          return item.path === `emartech/emarsys/config/${dbKeys[key]}`;
+        });
         expect(configItem.value).to.be.equal(defaults[key]);
       }
     });
@@ -45,11 +50,6 @@ describe('Config endpoint', function() {
 
   describe('set', function() {
     it('should modify config values for website', async function() {
-      const magentoApi = new Magento2ApiClient({
-        baseUrl: 'http://web',
-        token: this.token
-      });
-
       const testConfig = {
         collectCustomerEvents: 'enabled',
         collectSalesEvents: 'enabled',
@@ -59,7 +59,7 @@ describe('Config endpoint', function() {
         webTrackingSnippetUrl: 'https://path/to/snippet'
       };
 
-      await magentoApi.execute('config', 'set', {
+      await this.magentoApi.execute('config', 'set', {
         websiteId: scopeId,
         config: testConfig
       });
@@ -71,7 +71,7 @@ describe('Config endpoint', function() {
         .andWhere('path', 'like', 'emartech/emarsys/config/%');
 
       for (const key in testConfig) {
-        const configItem = config.find(item => item.path === `emartech/emarsys/config/${key}`);
+        const configItem = config.find(item => item.path === `emartech/emarsys/config/${dbKeys[key]}`);
         expect(configItem.value).to.be.equal(testConfig[key]);
       }
     });

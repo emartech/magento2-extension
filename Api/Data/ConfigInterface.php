@@ -8,6 +8,12 @@ interface ConfigInterface
 {
   const CONFIG_ENABLED = 'enabled';
   const CONFIG_DISBALED = 'disabled';
+  const CUSTOMER_EVENTS = 'collect_customer_events';
+  const SALES_EVENTS = 'collect_sales_events';
+  const MARKETING_EVENTS = 'collect_marketing_events';
+  const INJECT_WEBEXTEND_SNIPPETS = 'inject_webextend_snippets';
+  const MERCHANT_ID = 'merchant_id';
+  const SNIPPET_URL = 'web_tracking_snippet_url';
 
 
   /**

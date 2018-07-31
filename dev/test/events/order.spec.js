@@ -107,7 +107,7 @@ const cancelOrder = async (magentoApi, orderId) => {
 
 describe('Order events', function() {
   it('creates orders/new event and an orders/fulfilled', async function() {
-    await this.magentoApi.setSettings({ collectSalesEvents: 'enabled' });
+    await this.magentoApi.setConfig({ websiteId: 1, config: { collectSalesEvents: 'enabled' } });
 
     const { orderId } = await createNewOrder(this.magentoApi, this.customer);
 
@@ -125,13 +125,15 @@ describe('Order events', function() {
   });
 
   it('should not create events until disabled and after enable should create an orders/cancelled', async function() {
+    await this.magentoApi.setDefaultConfig(1);
+
     const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.product);
 
     const createEvent = await getLastEvent(this.db);
 
     expect(createEvent).to.be.undefined;
 
-    await this.magentoApi.setSettings({ collectSalesEvents: 'enabled' });
+    await this.magentoApi.setConfig({ websiteId: 1, config: { collectSalesEvents: 'enabled' } });
 
     await cancelOrder(this.magentoApi, orderId);
 

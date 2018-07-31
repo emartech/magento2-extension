@@ -77,6 +77,8 @@ before(async function() {
     token: this.token
   });
 
+  await this.magentoApi.setDefaultConfig(1);
+
   if (!process.env.QUICK_TEST) {
     this.createCustomer = createCustomer(this.magentoApi, this.db);
     this.createProduct = createProduct(this.magentoApi);

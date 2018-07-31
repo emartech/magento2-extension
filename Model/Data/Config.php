@@ -15,7 +15,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function getCollectCustomerEvents()
   {
-    return $this->_data['collectCustomerEvents'];
+    return $this->_data[ConfigInterface::CUSTOMER_EVENTS];
   }
 
   /**
@@ -24,7 +24,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function setCollectCustomerEvents($collectCustomerEvents)
   {
-    $this->_data['collectCustomerEvents'] = $collectCustomerEvents;
+    $this->_data[ConfigInterface::CUSTOMER_EVENTS] = $collectCustomerEvents;
     return $this;
   }
 
@@ -33,7 +33,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function getCollectSalesEvents()
   {
-    return $this->_data['collectSalesEvents'];
+    return $this->_data[ConfigInterface::SALES_EVENTS];
   }
 
   /**
@@ -42,7 +42,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function setCollectSalesEvents($collectSalesEvents)
   {
-    $this->_data['collectSalesEvents'] = $collectSalesEvents;
+    $this->_data[ConfigInterface::SALES_EVENTS] = $collectSalesEvents;
     return $this;
   }
 
@@ -51,7 +51,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function getCollectMarketingEvents()
   {
-    return $this->_data['collectMarketingEvents'];
+    return $this->_data[ConfigInterface::MARKETING_EVENTS];
   }
 
   /**
@@ -60,7 +60,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function setCollectMarketingEvents($collectMarketingEvents)
   {
-    $this->_data['collectMarketingEvents'] = $collectMarketingEvents;
+    $this->_data[ConfigInterface::MARKETING_EVENTS] = $collectMarketingEvents;
     return $this;
   }
 
@@ -69,7 +69,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function getMerchantId()
   {
-    return $this->_data['merchantId'];
+    return $this->_data[ConfigInterface::MERCHANT_ID];
   }
 
   /**
@@ -78,7 +78,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function setMerchantId($merchantId)
   {
-    $this->_data['merchantId'] = $merchantId;
+    $this->_data[ConfigInterface::MERCHANT_ID] = $merchantId;
     return $this;
   }
 
@@ -87,7 +87,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function getInjectSnippet()
   {
-    return $this->_data['injectSnippet'];
+    return $this->_data[ConfigInterface::INJECT_WEBEXTEND_SNIPPETS];
   }
 
   /**
@@ -96,7 +96,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function setInjectSnippet($injectSnippet)
   {
-    $this->_data['injectSnippet'] = $injectSnippet;
+    $this->_data[ConfigInterface::INJECT_WEBEXTEND_SNIPPETS] = $injectSnippet;
     return $this;
   }
 
@@ -105,7 +105,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function getWebTrackingSnippetUrl()
   {
-    return $this->_data['webTrackingSnippetUrl'];
+    return $this->_data[ConfigInterface::SNIPPET_URL];
   }
 
   /**
@@ -114,7 +114,7 @@ class Config extends DataObject implements ConfigInterface
    */
   public function setWebTrackingSnippetUrl($webTrackingSnippetUrl)
   {
-    $this->_data['webTrackingSnippetUrl'] = $webTrackingSnippetUrl;
+    $this->_data[ConfigInterface::SNIPPET_URL] = $webTrackingSnippetUrl;
     return $this;
   }
 

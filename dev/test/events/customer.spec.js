@@ -3,7 +3,7 @@
 const customer = {
   group_id: 0,
   dob: '1977-11-12',
-  email: 'yolo@yolo.net',
+  email: 'yolo99@yolo.net',
   firstname: 'Yolo',
   lastname: 'World',
   store_id: 1,
@@ -13,11 +13,12 @@ const customer = {
 
 describe('Customer events', function() {
   afterEach(async function() {
-    await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
+    await this.db.raw('DELETE FROM customer_entity where email = "yolo99@yolo.net"');
+    this.magentoApi.setDefaultConfig(1);
   });
 
   it('are saved in DB if collectCustomerEvents is enabled', async function() {
-    await this.magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
+    await this.magentoApi.setConfig({ websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
     await this.createCustomer(customer);
 
     const event = await this.db
@@ -36,7 +37,7 @@ describe('Customer events', function() {
     const event = await this.db
       .select()
       .from('emarsys_events')
-      .where({ event_type: 'customer_account' })
+      .where({ event_type: 'customers/update' })
       .first();
 
     expect(event).to.be.undefined;
