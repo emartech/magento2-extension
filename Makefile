@@ -83,7 +83,9 @@ test: ## Runs tests
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
 
 quick-test: ## Runs tests
-	@$(COMPOSE) run --rm node npm t
+	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento'/'dbname' => 'magento_test'/g\" app/etc/env.php"
+	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run quick-test
+	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
 
 npm-install: ##
 	@$(COMPOSE) run --rm node npm i
