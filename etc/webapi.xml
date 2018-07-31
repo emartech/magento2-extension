@@ -12,6 +12,12 @@
             <resource ref="Magento_Backend::content"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/config/setDefault" method="POST">
+        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setDefault"/>
+        <resources>
+            <resource ref="Magento_Backend::content"/>
+        </resources>
+    </route>
     <route url="/V1/emarsys/events" method="POST">
         <service class="Emartech\Emarsys\Api\EventsApiInterface" method="get"/>
         <resources>

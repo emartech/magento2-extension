@@ -11,6 +11,13 @@ use Magento\Framework\App\Config\Storage\WriterInterface;
 
 class ConfigApi implements ConfigApiInterface
 {
+  protected $defaultConfig = [
+  'collectCustomerEvents' => 'disabled',
+  'collectSalesEvents' => 'disabled',
+  'injectSnippet' => 'disabled',
+  'merchantId' => null,
+  'webTrackingSnippetUrl' => null
+  ];
 
   /** @var ScopeConfigInterface */
   protected $scopeConfig;
@@ -38,6 +45,18 @@ class ConfigApi implements ConfigApiInterface
   )
   {
     foreach ($config->getData() as $key => $value) {
+      $this->configWriter->save('emartech/emarsys/config/' . $key, $value, 'website', $websiteId);
+    }
+    return 'OK';
+  }
+
+  /**
+   * @param int $websiteId
+   * @return mixed
+   */
+  public function setDefault($websiteId)
+  {
+    foreach ($this->defaultConfig as $key => $value) {
       $this->configWriter->save('emartech/emarsys/config/' . $key, $value, 'website', $websiteId);
     }
     return 'OK';

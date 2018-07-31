@@ -17,4 +17,10 @@ interface ConfigApiInterface
       $websiteId,
       ConfigInterface $config
   );
+
+  /**
+   * @param int $websiteId
+   * @return mixed
+   */
+  public function setDefault($websiteId);
 }
