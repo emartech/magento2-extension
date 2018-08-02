@@ -84,7 +84,7 @@ class OrderNotifierPlugin
         callable $proceed,
         \Magento\Sales\Model\AbstractModel $model
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if ($this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($model);
         }
 
