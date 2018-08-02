@@ -4,7 +4,8 @@ namespace Emartech\Emarsys\Events;
 
 use Magento\Sales\Model\OrderNotifier;
 use Magento\Sales\Model\Order;
-use Emartech\Emarsys\Helper\Data as EmarsysData;
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -20,9 +21,9 @@ class OrderNotifierPlugin
     const EVENT_ORDER_SEND = 'order_';
 
     /**
-     * @var EmarsysData
+     * @var ConfigReader
      */
-    public $emarsysData;
+    public $configReader;
     /**
      * @var EmarsysEventFactory
      */
@@ -46,7 +47,7 @@ class OrderNotifierPlugin
 
     /**
      * NotifySenderPlugin constructor.
-     * @param EmarsysData $emarsysData
+     * @param ConfigReader $configReader
      * @param EmarsysEventFactory $eventFactory
      * @param EventRepository $eventRepository
      * @param CustomerRepositoryInterface $customerRepositoryInterface
@@ -54,14 +55,14 @@ class OrderNotifierPlugin
      * @param Json $json
      */
     public function __construct(
-        EmarsysData $emarsysData,
+        ConfigReader $configReader,
         EmarsysEventFactory $eventFactory,
         EventRepository $eventRepository,
         CustomerRepositoryInterface $customerRepositoryInterface,
         CustomerViewHelper $customerViewHelper,
         Json $json
     ) {
-        $this->emarsysData = $emarsysData;
+        $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
         $this->eventRepository = $eventRepository;
         $this->customerRepositoryInterface = $customerRepositoryInterface;
@@ -134,7 +135,7 @@ class OrderNotifierPlugin
         Order $order,
         $forceSyncMode = false
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if ($this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($order, $forceSyncMode);
         }
 

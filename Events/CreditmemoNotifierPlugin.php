@@ -4,7 +4,8 @@ namespace Emartech\Emarsys\Events;
 
 use Magento\Sales\Model\Order\CreditmemoNotifier;
 use Magento\Sales\Model\Order;
-use Emartech\Emarsys\Helper\Data as EmarsysData;
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -17,9 +18,9 @@ use Magento\Framework\Serialize\Serializer\Json;
 class CreditmemoNotifierPlugin
 {
     /**
-     * @var EmarsysData
+     * @var ConfigReader
      */
-    public $emarsysData;
+    public $configReader;
     /**
      * @var EmarsysEventFactory
      */
@@ -31,16 +32,16 @@ class CreditmemoNotifierPlugin
 
     /**
      * NotifySenderPlugin constructor.
-     * @param EmarsysData $emarsysData
+     * @param ConfigReader $configReader
      * @param EmarsysEventFactory $eventFactory
      * @param EventRepository $eventRepository
      */
     public function __construct(
-        EmarsysData $emarsysData,
+        ConfigReader $configReader,
         EmarsysEventFactory $eventFactory,
         EventRepository $eventRepository
     ) {
-        $this->emarsysData = $emarsysData;
+        $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
         $this->eventRepository = $eventRepository;
     }
@@ -58,10 +59,9 @@ class CreditmemoNotifierPlugin
         callable $proceed,
         \Magento\Sales\Model\AbstractModel $model
     ) {
-        if ($this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if ($this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($model);
         }
-
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
