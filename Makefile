@@ -79,6 +79,7 @@ create-test-db: ## Creates magento-test database
 test: ## Runs tests
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} magento_test < /opt/magento_test.sql'
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento'/'dbname' => 'magento_test'/g\" app/etc/env.php"
+	@$(COMPOSE) exec web bash -c "bin/magento cache:flush"
 	-@$(COMPOSE) run --rm node npm t
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
 
