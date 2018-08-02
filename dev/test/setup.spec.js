@@ -77,47 +77,51 @@ before(async function() {
     token: this.token
   });
 
-  this.createCustomer = createCustomer(this.magentoApi, this.db);
-  this.createProduct = createProduct(this.magentoApi);
-  this.deleteProduct = deleteProduct(this.magentoApi);
-  this.createCategory = createCategory(this.magentoApi);
-  this.deleteCategory = deleteCategory(this.magentoApi);
+  await this.magentoApi.setDefaultConfig(1);
 
-  this.customer = await this.createCustomer({
-    group_id: 0,
-    dob: '1977-11-12',
-    email: 'default@yolo.net',
-    firstname: 'Yolo',
-    lastname: 'Default',
-    store_id: 1,
-    website_id: 1,
-    disable_auto_group_change: 0
-  });
+  if (!process.env.QUICK_TEST) {
+    this.createCustomer = createCustomer(this.magentoApi, this.db);
+    this.createProduct = createProduct(this.magentoApi);
+    this.deleteProduct = deleteProduct(this.magentoApi);
+    this.createCategory = createCategory(this.magentoApi);
+    this.deleteCategory = deleteCategory(this.magentoApi);
 
-  const { parentIds, childIds } = await createCategories(this.createCategory);
-  this.createdParentCategoryIds = parentIds;
+    this.customer = await this.createCustomer({
+      group_id: 0,
+      dob: '1977-11-12',
+      email: 'default@yolo.net',
+      firstname: 'Yolo',
+      lastname: 'Default',
+      store_id: 1,
+      website_id: 1,
+      disable_auto_group_change: 0
+    });
 
-  this.product = await this.createProduct(productFactory({}));
-  this.storedProductsForProductSync = [];
-  const productsForProductSync = [
-    productFactory({
-      sku: 'PRODUCT-SYNC-SKU',
-      name: 'Product For Product Sync',
-      custom_attributes: [
-        {
-          attribute_code: 'description',
-          value: 'Default products description'
-        },
-        {
-          attribute_code: 'category_ids',
-          value: [parentIds[1].toString(), childIds[0].toString()]
-        }
-      ]
-    })
-  ];
-  for (const productForProductSync of productsForProductSync) {
-    const result = await this.createProduct(productForProductSync);
-    this.storedProductsForProductSync.push(result);
+    const { parentIds, childIds } = await createCategories(this.createCategory);
+    this.createdParentCategoryIds = parentIds;
+
+    this.product = await this.createProduct(productFactory({}));
+    this.storedProductsForProductSync = [];
+    const productsForProductSync = [
+      productFactory({
+        sku: 'PRODUCT-SYNC-SKU',
+        name: 'Product For Product Sync',
+        custom_attributes: [
+          {
+            attribute_code: 'description',
+            value: 'Default products description'
+          },
+          {
+            attribute_code: 'category_ids',
+            value: [parentIds[1].toString(), childIds[0].toString()]
+          }
+        ]
+      })
+    ];
+    for (const productForProductSync of productsForProductSync) {
+      const result = await this.createProduct(productForProductSync);
+      this.storedProductsForProductSync.push(result);
+    }
   }
 });
 

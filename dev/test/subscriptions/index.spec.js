@@ -132,12 +132,12 @@ describe('Subscriptions api', function() {
             subscriber_status: '3'
           }
         ],
-        total_count: 4
+        subscriptionCount: 4
       };
 
       const actualSubscriptions = await this.magentoApi.getSubscriptions({ withCustomers: true });
 
-      expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
+      expect(actualSubscriptions.subscriptionCount).to.be.eql(expectedSubscriptions.subscriptionCount);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
     });
 
@@ -151,7 +151,7 @@ describe('Subscriptions api', function() {
             subscriber_status: '1'
           }
         ],
-        total_count: 1
+        subscriptionCount: 1
       };
 
       const actualSubscriptions = await this.magentoApi.getSubscriptions({
@@ -165,7 +165,7 @@ describe('Subscriptions api', function() {
     it('should give empty result for not existing email filter', async function() {
       const expectedSubscriptions = {
         subscriptions: [],
-        total_count: 0
+        subscriptionCount: 0
       };
 
       const actualSubscriptions = await this.magentoApi.getSubscriptions({
@@ -192,7 +192,7 @@ describe('Subscriptions api', function() {
             subscriber_status: '1'
           }
         ],
-        total_count: 2
+        subscriptionCount: 2
       };
 
       const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: true, withCustomers: true });
@@ -216,7 +216,7 @@ describe('Subscriptions api', function() {
             subscriber_status: '3'
           }
         ],
-        total_count: 2
+        subscriptionCount: 2
       };
 
       const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: false, withCustomers: true });
@@ -240,12 +240,12 @@ describe('Subscriptions api', function() {
             subscriber_status: '3'
           }
         ],
-        total_count: 2
+        subscriptionCount: 2
       };
 
       const actualSubscriptions = await this.magentoApi.getSubscriptions({ withCustomers: false });
 
-      expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
+      expect(actualSubscriptions.subscriptionCount).to.be.eql(expectedSubscriptions.subscriptionCount);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
     });
   });

@@ -4,13 +4,13 @@
 namespace Emartech\Emarsys\Helper;
 
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Model\ResourceModel\Event;
 use Emartech\Emarsys\Model\SettingsFactory;
 use Emartech\Emarsys\Model\EventFactory;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Newsletter\Model\Subscriber;
-use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface;
 
 class SalesEventHandler extends AbstractHelper
@@ -20,10 +20,11 @@ class SalesEventHandler extends AbstractHelper
   protected $eventFactory;
   protected $eventResource;
   protected $subscriber;
-  protected $emarsysData;
+  /** @var ConfigReader */
+  protected $configReader;
 
   public function __construct(
-    Data $emarsysData,
+    ConfigReader $configReader,
     OrderFactory $orderFactory,
     EventFactory $eventFactory,
     Event $eventResource,
@@ -37,7 +38,7 @@ class SalesEventHandler extends AbstractHelper
     $this->logger = $logger;
     $this->subscriber = $subscriber;
 
-    $this->emarsysData = $emarsysData;
+    $this->configReader = $configReader;
   }
 
   /**
@@ -48,7 +49,7 @@ class SalesEventHandler extends AbstractHelper
    */
   public function store($event_type, $orderData)
   {
-    if (!$this->emarsysData->isEnabled(Data::SALES_EVENTS)) return;
+    if (!$this->configReader->isEnabled(ConfigInterface::SALES_EVENTS)) return;
 
     /** @var \Emartech\Emarsys\Model\Event $eventModel */
     $eventModel = $this->eventFactory->create();

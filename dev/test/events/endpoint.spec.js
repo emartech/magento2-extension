@@ -38,11 +38,12 @@ describe('Events API endpoint', function() {
     await this.db.raw(
       'DELETE FROM customer_entity where email in ("yolo@yolo.net", "doggo@yolo.net", "pupper@yolo.net")'
     );
+    await this.magentoApi.setDefaultConfig(1);
   });
 
-  it.skip('returns number of events defined in page_size and deletes events before since_id', async function() {
+  it('returns number of events defined in page_size and deletes events before since_id', async function() {
     const pageSize = 2;
-    await this.magentoApi.setSettings({ collectCustomerEvents: 'enabled' });
+    await this.magentoApi.setConfig({ websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
     for (const customer of customers) {
       await this.createCustomer(customer);
     }

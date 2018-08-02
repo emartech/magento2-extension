@@ -5,6 +5,7 @@ namespace Emartech\Emarsys\Helper;
 
 
 use Emartech\Emarsys\Model\ResourceModel\Event;
+use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Model\EventFactory;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\CustomerFactory;
@@ -15,17 +16,15 @@ use Psr\Log\LoggerInterface;
 class CustomerEventHandler extends AbstractHelper
 {
   protected $logger;
-  private $customerFactory;
+  protected $customerFactory;
   protected $eventFactory;
   protected $eventResource;
-  private $subscriber;
-  /**
-   * @var Data
-   */
-  private $emarsysData;
+  protected $subscriber;
+  /** @var ConfigReader */
+  protected $configReader;
 
   public function __construct(
-    Data $emarsysData,
+    ConfigReader $configReader,
     CustomerFactory $customerFactory,
     EventFactory $eventFactory,
     Event $eventResource,
@@ -38,7 +37,7 @@ class CustomerEventHandler extends AbstractHelper
     $this->eventResource = $eventResource;
     $this->logger = $logger;
     $this->subscriber = $subscriber;
-    $this->emarsysData = $emarsysData;
+    $this->configReader = $configReader;
   }
 
   /**
@@ -49,7 +48,7 @@ class CustomerEventHandler extends AbstractHelper
    */
   public function store($type, $customerId)
   {
-    if (!$this->emarsysData->isEnabled(Data::CUSTOMER_EVENTS)) return;
+    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS)) return;
 
     /** @var Customer $customer */
     $customer = $this->customerFactory->create()->load($customerId);

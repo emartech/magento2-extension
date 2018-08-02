@@ -2,6 +2,8 @@
 
 namespace Emartech\Emarsys\Events;
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Model\EventRepository;
 use Emartech\Emarsys\Model\SettingsFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -12,7 +14,6 @@ use Magento\Customer\Helper\View as CustomerViewHelper;
 use \Psr\Log\LoggerInterface;
 use Magento\Customer\Model\CustomerRegistry;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
-use Emartech\Emarsys\Helper\Data as EmarsysData;
 
 /**
  * Customer Events
@@ -70,16 +71,16 @@ class CustomerPlugin
     public $customerViewHelper;
 
     /**
-     * @var EmarsysData
-     */
-    public $emarsysData;
-
-    /**
      * @var Json
      */
     public $json;
-
+    
     /**
+     * @var ConfigReader
+     */
+    public $configReader;
+
+  /**
      * CustomerPlugin constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
@@ -89,7 +90,7 @@ class CustomerPlugin
      * @param EmarsysEventFactory $eventFactory
      * @param DataObjectProcessor $dataProcessor
      * @param CustomerViewHelper $customerViewHelper
-     * @param EmarsysData $emarsysData
+     * @param ConfigReader $configReader
      * @param Json $json
      */
     public function __construct(
@@ -101,7 +102,7 @@ class CustomerPlugin
         EmarsysEventFactory $eventFactory,
         DataObjectProcessor $dataProcessor,
         CustomerViewHelper $customerViewHelper,
-        EmarsysData $emarsysData,
+        ConfigReader $configReader,
         Json $json
     ) {
         $this->scopeConfig = $scopeConfig;
@@ -112,8 +113,8 @@ class CustomerPlugin
         $this->eventFactory = $eventFactory;
         $this->dataProcessor = $dataProcessor;
         $this->customerViewHelper = $customerViewHelper;
-        $this->emarsysData = $emarsysData;
         $this->json = $json;
+        $this->configReader = $configReader;
     }
 
     /**
@@ -128,7 +129,7 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($subscriber);
         }
 
@@ -183,7 +184,7 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($subscriber);
         }
 
@@ -238,7 +239,7 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($subscriber);
         }
 
@@ -302,7 +303,7 @@ class CustomerPlugin
         $storeId = 0,
         $sendemailStoreId = null
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
         }
 
@@ -352,7 +353,7 @@ class CustomerPlugin
         $origCustomerEmail,
         $isPasswordChanged = false
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
         }
 
@@ -425,7 +426,7 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($customer);
         }
 
@@ -465,7 +466,7 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->emarsysData->isEnabled(EmarsysData::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($customer);
         }
 

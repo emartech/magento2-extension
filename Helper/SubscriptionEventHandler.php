@@ -4,9 +4,9 @@
 namespace Emartech\Emarsys\Helper;
 
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Model\ResourceModel\Event;
 use Emartech\Emarsys\Model\EventFactory;
-use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Newsletter\Model\Subscriber;
@@ -19,13 +19,11 @@ class SubscriptionEventHandler extends AbstractHelper
   protected $eventFactory;
   protected $eventResource;
   private $subscriber;
-  /**
-   * @var Data
-   */
-  private $emarsysData;
+  /** @var ConfigReader */
+  private $configReader;
 
   public function __construct(
-    Data $emarsysData,
+    ConfigReader $configReader,
     CustomerFactory $customerFactory,
     EventFactory $eventFactory,
     Event $eventResource,
@@ -38,7 +36,7 @@ class SubscriptionEventHandler extends AbstractHelper
     $this->eventResource = $eventResource;
     $this->logger = $logger;
     $this->subscriber = $subscriber;
-    $this->emarsysData = $emarsysData;
+    $this->configReader = $configReader;
   }
 
   /**
@@ -49,7 +47,7 @@ class SubscriptionEventHandler extends AbstractHelper
    */
   public function store($subscription, $eventName)
   {
-    if (!$this->emarsysData->isEnabled(Data::CUSTOMER_EVENTS)) return;
+    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS)) return;
 
     $eventData = $subscription->getData();
 

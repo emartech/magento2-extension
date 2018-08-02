@@ -36,6 +36,16 @@ class InstallData implements InstallDataInterface
     $this->integration->create();
     $this->integration->saveConnectTokenToConfig();
 
+    $this->createDefaultSettings($setup);
+
+    $setup->endSetup();
+  }
+
+  /**
+   * @param ModuleDataSetupInterface $setup
+   */
+  protected function createDefaultSettings(ModuleDataSetupInterface $setup): void
+  {
     $tableName = $setup->getTable('emarsys_settings');
     if ($setup->getConnection()->isTableExists($tableName) === true) {
       $data = [
@@ -73,7 +83,5 @@ class InstallData implements InstallDataInterface
         $setup->getConnection()->insert($tableName, $item);
       }
     }
-
-    $setup->endSetup();
   }
 }

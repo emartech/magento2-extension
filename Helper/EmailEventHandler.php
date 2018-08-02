@@ -4,6 +4,7 @@
 namespace Emartech\Emarsys\Helper;
 
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Model\ResourceModel\Event;
 use Emartech\Emarsys\Model\EventFactory;
 use Magento\Customer\Model\CustomerFactory;
@@ -19,9 +20,11 @@ class EmailEventHandler extends AbstractHelper
   protected $eventResource;
   protected $subscriber;
   protected $emarsysData;
+  /** @var ConfigReader */
+  protected $configReader;
 
   public function __construct(
-    Data $emarsysData,
+    ConfigReader $configReader,
     CustomerFactory $customerFactory,
     EventFactory $eventFactory,
     Event $eventResource,
@@ -35,7 +38,7 @@ class EmailEventHandler extends AbstractHelper
     $this->logger = $logger;
     $this->subscriber = $subscriber;
 
-    $this->emarsysData = $emarsysData;
+    $this->configReader = $configReader;
   }
 
   /**
@@ -46,7 +49,7 @@ class EmailEventHandler extends AbstractHelper
    */
   public function store($template, $args)
   {
-    if (!$this->emarsysData->isEnabled(Data::MARKETING_EVENTS)) return;
+    if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) return;
 
     $emailData = [
       'customer' => $args[0]['customer']->getData(),

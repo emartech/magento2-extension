@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "test": "npm run mocha && npm run code-style",
+    "quick-test": "npm run mocha",
     "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./setup.spec.js '!(node_modules)/**/*.spec.js'",
     "code-style": "eslint '!(node_modules)/**/**.js'"
   },
@@ -17,7 +18,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@emartech/magento2-api": "3.3.0",
+    "@emartech/magento2-api": "3.5.0",
     "axios": "0.18.0",
     "chai": "4.1.2",
     "chai-string": "1.4.0",
