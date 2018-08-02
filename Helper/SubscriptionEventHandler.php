@@ -10,6 +10,7 @@ use Emartech\Emarsys\Model\EventFactory;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Newsletter\Model\Subscriber;
+use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
 class SubscriptionEventHandler extends AbstractHelper
@@ -18,16 +19,17 @@ class SubscriptionEventHandler extends AbstractHelper
   private $customerFactory;
   protected $eventFactory;
   protected $eventResource;
-  private $subscriber;
   /** @var ConfigReader */
-  private $configReader;
+  protected $configReader;
+  /** @var StoreManagerInterface */
+  protected $storeManager;
 
   public function __construct(
     ConfigReader $configReader,
+    StoreManagerInterface $storeManager,
     CustomerFactory $customerFactory,
     EventFactory $eventFactory,
     Event $eventResource,
-    Subscriber $subscriber,
     LoggerInterface $logger
   )
   {
@@ -35,8 +37,8 @@ class SubscriptionEventHandler extends AbstractHelper
     $this->eventFactory = $eventFactory;
     $this->eventResource = $eventResource;
     $this->logger = $logger;
-    $this->subscriber = $subscriber;
     $this->configReader = $configReader;
+    $this->storeManager = $storeManager;
   }
 
   /**
@@ -45,9 +47,11 @@ class SubscriptionEventHandler extends AbstractHelper
    * @throws \Exception
    * @throws \Magento\Framework\Exception\AlreadyExistsException
    */
-  public function store($subscription, $eventName)
+  public function store(Subscriber $subscription, $eventName)
   {
-    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS)) return;
+    $websiteId = $this->storeManager->getStore($subscription->getStoreId())->getWebsiteId();
+
+    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
 
     $eventData = $subscription->getData();
 

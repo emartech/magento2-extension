@@ -84,7 +84,7 @@ class OrderNotifierPlugin
         callable $proceed,
         \Magento\Sales\Model\AbstractModel $model
     ) {
-        if ($this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($model);
         }
 
@@ -142,7 +142,7 @@ class OrderNotifierPlugin
         Order $order,
         $forceSyncMode = false
     ) {
-        if ($this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
             return $proceed($order, $forceSyncMode);
         }
 

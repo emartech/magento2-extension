@@ -32,6 +32,8 @@ describe('Customer events', function() {
   });
 
   it('are not saved in DB if collectCustomerEvents is disabled', async function() {
+    await this.magentoApi.setDefaultConfig(1);
+
     await this.createCustomer(customer);
 
     const event = await this.db

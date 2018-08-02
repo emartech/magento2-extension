@@ -43,8 +43,6 @@ class SubscriptionObserver implements ObserverInterface
    */
   public function execute(Observer $observer)
   {
-    $this->logger->info('name: '.json_encode($observer->getName()));
-    $this->logger->info('event name: '.json_encode($observer->getEventName()));
     /** @var Subscriber $subscriber */
     $subscriber = $observer->getSubscriber();
 

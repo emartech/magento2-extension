@@ -48,10 +48,12 @@ class CustomerEventHandler extends AbstractHelper
    */
   public function store($type, $customerId)
   {
-    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS)) return;
-
     /** @var Customer $customer */
     $customer = $this->customerFactory->create()->load($customerId);
+    $websiteId = $customer->getWebsiteId();
+
+    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
+
     $customerData = $customer->toArray();
     $customerData['id'] = $customerData['entity_id'];
 

@@ -107,7 +107,10 @@ const cancelOrder = async (magentoApi, orderId) => {
 
 describe('Order events', function() {
   it('creates orders/new event and an orders/fulfilled', async function() {
-    await this.magentoApi.setConfig({ websiteId: 1, config: { collectSalesEvents: 'enabled' } });
+    await this.magentoApi.setConfig({
+      websiteId: 1,
+      config: { collectSalesEvents: 'enabled' }
+    });
 
     const { orderId } = await createNewOrder(this.magentoApi, this.customer);
 

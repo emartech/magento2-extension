@@ -25,14 +25,16 @@ class ConfigReader extends AbstractHelper
     $this->storeManager = $storeManager;
   }
 
-  public function getConfigValue($key)
+  public function getConfigValue($key, $websiteId = null)
   {
-    $websiteId = $this->storeManager->getWebsite()->getId();
+    if (!$websiteId) {
+      $websiteId = $this->storeManager->getWebsite()->getId();
+    }
     return $this->scopeConfig->getValue('emartech/emarsys/config/' . $key, 'website', $websiteId);
   }
 
-  public function isEnabled($key)
+  public function isEnabled($key, $websiteId = 0)
   {
-    return $this->getConfigValue($key) === ConfigInterface::CONFIG_ENABLED;
+    return $this->getConfigValue($key, $websiteId) === ConfigInterface::CONFIG_ENABLED;
   }
 }

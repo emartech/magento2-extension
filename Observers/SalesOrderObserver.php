@@ -36,56 +36,10 @@ class SalesOrderObserver implements ObserverInterface
     /** @var Order $order */
     $order = $observer->getEvent()->getOrder();
 
-    $orderData = $order->getData();
-    $this->logger->info(json_encode($orderData));
-    $orderItems = $order->getAllItems();
-    $orderData['items'] = [];
-    $orderData['addresses'] = [];
-
-    foreach ($orderItems as $item) {
-      $arrayItem = $item->toArray();
-      $parentItem = $item->getParentItem();
-      if (!is_null($parentItem)) {
-        $arrayItem['parent_item'] = $parentItem->toArray();
-      }
-      $orderData['items'][] = $arrayItem;
-    }
-
-    $orderData['addresses']['shipping'] = $order->getShippingAddress()->toArray();
-    $orderData['addresses']['billing'] = $order->getBillingAddress()->toArray();
-
-    $orderData['payments'] = $order->getAllPayments();
-
-    $orderData['shipments'] = $order->getShipmentsCollection()->toArray();
-    $orderData['tracks'] = $order->getTracksCollection()->toArray();
-
-    $event_type = $this->getEventType($orderData['state']);
-
     try {
-      $this->salesEventHandler->store($event_type, $orderData);
+      $this->salesEventHandler->store($order);
     } catch (\Exception $e) {
-      $this->logger->warning('Emartech\\Emarsys\\Observers\\OrderObserver: ' . $e->getMessage());
+      $this->logger->warning('Emartech\\Emarsys\\Observers\\SalesOrderObserver: ' . $e->getMessage());
     }
-  }
-
-  /**
-   * @param $state
-   * @return string
-   */
-  private function getEventType($state)
-  {
-    if ($state === 'new') {
-      return 'orders/create';
-    }
-
-    if ($state === 'canceled') {
-      return 'orders/cancelled';
-    }
-
-    if ($state === 'complete') {
-      return 'orders/fulfilled';
-    }
-
-    return 'orders/' . $state;
   }
 }
