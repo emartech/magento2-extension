@@ -19,4 +19,21 @@
     <type name="Magento\Customer\Model\EmailNotificationInterface">
         <plugin name="emarsys_customer_email" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
     </type>
+
+    <type name="Magento\Sales\Model\OrderNotifier">
+        <plugin name="emarsys_order_email" type="\Emartech\Emarsys\Events\OrderNotifierPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Email\Sender\OrderSender">
+        <plugin name="emarsys_order_email_front" type="\Emartech\Emarsys\Events\OrderNotifierPlugin" sortOrder="1" disabled="false"/>
+    </type>
+
+    <!--type name="Magento\Shipping\Model\ShipmentNotifier">
+        <plugin name="emarsys_shipment_email" type="\Emartech\Emarsys\Events\ShipmentNotifierPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\InvoiceNotifier">
+        <plugin name="emarsys_invoice_email" type="\Emartech\Emarsys\Events\InvoiceNotifierPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\CreditmemoNotifier">
+        <plugin name="emarsys_creditmemo_email" type="\Emartech\Emarsys\Events\CreditmemoNotifierPlugin" sortOrder="1" disabled="false"/>
+    </type-->
 </config>
