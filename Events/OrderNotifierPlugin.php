@@ -91,7 +91,14 @@ class OrderNotifierPlugin
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType(self::EVENT_ORDER_SEND . $model->getState());
+
+        $key = self::EVENT_ORDER_SEND . $model->getState();
+
+        if ($model->getCustomerIsGuest()) {
+            $key .= '_guest';
+        }
+
+        $eventModel->setEventType($key);
 
         $customer = [];
         if ($model->getCustomerId()) {
@@ -141,7 +148,14 @@ class OrderNotifierPlugin
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType(self::EVENT_ORDER_SEND . $order->getState());
+
+        $key = self::EVENT_ORDER_SEND . $order->getState();
+
+        if ($order->getCustomerIsGuest()) {
+            $key .= '_guest';
+        }
+
+        $eventModel->setEventType($key);
 
         $customer = [];
         if ($order->getCustomerId()) {
