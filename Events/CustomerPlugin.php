@@ -74,13 +74,13 @@ class CustomerPlugin
      * @var Json
      */
     public $json;
-    
+
     /**
      * @var ConfigReader
      */
     public $configReader;
 
-  /**
+    /**
      * CustomerPlugin constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
@@ -129,20 +129,13 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        $storeId = $subscriber->getStoreId();
+        $store = $this->storeManager->getStore($storeId);
+
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($subscriber);
         }
 
-        $storeId = $subscriber->getStoreId();
-        //add config later
-        /*if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed();
-        }*/
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL);
@@ -184,20 +177,13 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        $storeId = $subscriber->getStoreId();
+        $store = $this->storeManager->getStore($storeId);
+
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($subscriber);
         }
 
-        $storeId = $subscriber->getStoreId();
-        //add config later
-        /*if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed();
-        }*/
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL);
@@ -239,20 +225,13 @@ class CustomerPlugin
         \Magento\Newsletter\Model\Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        $storeId = $subscriber->getStoreId();
+        $store = $this->storeManager->getStore($storeId);
+
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($subscriber);
         }
 
-        $storeId = $subscriber->getStoreId();
-        //add config later
-        /*if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed();
-        }*/
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL);
@@ -303,24 +282,14 @@ class CustomerPlugin
         $storeId = 0,
         $sendemailStoreId = null
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
-            return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
-        }
-
         if (!$storeId) {
             $storeId = $this->getWebsiteStoreId($customer, $sendemailStoreId);
         }
+        $store = $this->storeManager->getStore($storeId);
 
-        $store = $this->storeManager->getStore($customer->getStoreId());
-
-        /*if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
-        }*/
+        }
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
@@ -340,41 +309,32 @@ class CustomerPlugin
     /**
      * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
      * @param callable $proceed
-     * @param CustomerInterface $savedCustomer
+     * @param \Magento\Customer\Api\Data\CustomerInterface $savedCustomer
      * @param $origCustomerEmail
      * @param bool $isPasswordChanged
      * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function aroundCredentialsChanged(
         \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
         callable $proceed,
-        CustomerInterface $savedCustomer,
+        \Magento\Customer\Api\Data\CustomerInterface $savedCustomer,
         $origCustomerEmail,
         $isPasswordChanged = false
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $savedCustomer->getWebsiteId())) {
             return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
         }
 
-        $storeId = $storeId = $this->getWebsiteStoreId($savedCustomer);
-        /*if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
-        }*/
-
-        $store = $this->storeManager->getStore($storeId);
+        $store = $this->storeManager->getStore($savedCustomer->getStoreId());
         if ($origCustomerEmail != $savedCustomer->getEmail()) {
             if ($isPasswordChanged) {
                 /** @var \Emartech\Emarsys\Model\Event $eventModel */
                 $eventModel = $this->eventFactory->create();
                 $eventModel->setEventType(self::EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED);
                 $data = [
-                    'customer' => $this->getFullCustomerObject($origCustomerEmail)->getData(),
+                    'customer' => $this->getFullCustomerObject($savedCustomer)->getData(),
                     'store' => $store->getData(),
                     'orig_customer_email' => $origCustomerEmail,
                     'new_customer_email' => $savedCustomer->getEmail()
@@ -388,7 +348,7 @@ class CustomerPlugin
             $eventModel = $this->eventFactory->create();
             $eventModel->setEventType(self::EVENT_CUSTOMER_EMAIL_CHANGED);
             $data = [
-                'customer' => $this->getFullCustomerObject($origCustomerEmail)->getData(),
+                'customer' => $this->getFullCustomerObject($savedCustomer)->getData(),
                 'store' => $store->getData(),
                 'orig_customer_email' => $origCustomerEmail,
                 'new_customer_email' => $savedCustomer->getEmail()
@@ -403,7 +363,7 @@ class CustomerPlugin
             $eventModel = $this->eventFactory->create();
             $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET);
             $data = [
-                'customer' => $this->getFullCustomerObject($origCustomerEmail)->getData(),
+                'customer' => $this->getFullCustomerObject($savedCustomer)->getData(),
                 'store' => $store->getData(),
                 'orig_customer_email' => $origCustomerEmail,
                 'new_customer_email' => $savedCustomer->getEmail()
@@ -426,20 +386,11 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
             return $proceed($customer);
         }
 
-        $storeId = $storeId = $this->getWebsiteStoreId($customer);
-        /* if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed($customer);
-        }*/
-        $store = $this->storeManager->getStore($storeId);
+        $store = $this->storeManager->getStore($customer->getStoreId());
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_REMINDER);
@@ -466,20 +417,12 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) {
+        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
             return $proceed($customer);
         }
 
-        $storeId = $storeId = $this->getWebsiteStoreId($customer);
-        /* if (! $this->scopeConfig->getValue(
-            path_in_the_config_table,
-            'store',
-            $storeId
-        )
-        ) {
-            return $proceed($customer);
-        }*/
-        $store = $this->storeManager->getStore($storeId);
+        $store = $this->storeManager->getStore($customer->getStoreId());
+
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION);
