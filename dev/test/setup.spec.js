@@ -15,8 +15,8 @@ chai.use(chaiSubset);
 chai.use(sinonChai);
 global.expect = chai.expect;
 
-const createCustomer = (magentoApi, db) => async customer => {
-  await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer } });
+const createCustomer = (magentoApi, db) => async (customer, password) => {
+  await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer, password } });
 
   const { entity_id: entityId } = await db
     .select('entity_id')
@@ -24,7 +24,7 @@ const createCustomer = (magentoApi, db) => async customer => {
     .where({ email: customer.email })
     .first();
 
-  return Object.assign({}, customer, { entityId });
+  return Object.assign({}, customer, { entityId, password });
 };
 
 const createProduct = magentoApi => async product => {
@@ -41,7 +41,6 @@ const createCategory = magentoApi => async category => {
   try {
     return await magentoApi.createCategory(category);
   } catch (error) {
-    console.log('cat create error', error.response);
     throw error;
   }
 };
@@ -95,7 +94,7 @@ before(async function() {
       store_id: 1,
       website_id: 1,
       disable_auto_group_change: 0
-    });
+    }, 'Password1234');
 
     const { parentIds, childIds } = await createCategories(this.createCategory);
     this.createdParentCategoryIds = parentIds;
