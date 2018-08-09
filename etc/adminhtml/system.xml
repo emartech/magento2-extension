@@ -20,6 +20,7 @@
                 <label>Connect token</label>
                 <field id="connecttoken" translate="label" type="textarea" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
                     <comment>Please copy this token and paste in at your Emarsys Integration page.</comment>
+                    <frontend_model>Emartech\Emarsys\Block\System\Config\Form\Field\Disabled</frontend_model>
                 </field>
             </group>
         </section>
