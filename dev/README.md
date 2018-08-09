@@ -43,18 +43,6 @@ Before you make any changes on the Magento instance, it's a good idea to create 
 $ make create-test-db
 ```
 
-### Sample data
-If you want sample data use:
-```
-$ make install-sampledata
-```
-
-Removing sample data:
-```
-  make down
-  docker volume rm mage_magento-db
-  make up
-```
 ---
 ## Usage
 ### Working with containers

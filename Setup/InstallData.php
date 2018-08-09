@@ -44,7 +44,7 @@ class InstallData implements InstallDataInterface
   /**
    * @param ModuleDataSetupInterface $setup
    */
-  protected function createDefaultSettings(ModuleDataSetupInterface $setup): void
+  protected function createDefaultSettings(ModuleDataSetupInterface $setup)
   {
     $tableName = $setup->getTable('emarsys_settings');
     if ($setup->getConnection()->isTableExists($tableName) === true) {

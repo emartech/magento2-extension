@@ -30,10 +30,9 @@ node:
   expose:
     - "8081"
   encrypted_env_file: codeship.env.encrypted
-deploy:
-  build:
-    image: emarsys/magento-extension-deploy
-    dockerfile: ./dev/Deploy/Dockerfile
+deployment:
+  image: codeship/google-cloud-deployment
   encrypted_env_file: codeship.env.encrypted
+  add_docker: true
   volumes:
-    - ./.ssh:/root/.ssh
+    - ./dev/Deploy/restart.sh:/deploy/restart.sh

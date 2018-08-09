@@ -1,9 +1,6 @@
 - name: install-and-test
   service: node
   command: /bin/sh -c "npm i && npm t"
-- name: store key to id_rsa file and chmod file to r/w for user
-  service: deploy
-  command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa"
-- name: deploy to staging on Google Cloud
-  service: deploy
-  command: /bin/bash -c "ssh -T -o StrictHostKeychecking=no bitnami@35.204.248.33 'command; sh deploy.sh'"
+- name: deploy to staging on Google Kubernetes Engine
+  service: deployment
+  command: /bin/bash -c "codeship_google authenticate && gcloud container clusters get-credentials cluster-1 --region=europe-west2 && sh /deploy/restart.sh web-staging"
