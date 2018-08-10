@@ -12,17 +12,12 @@
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
     </type>
-    <type name="Magento\Email\Model\Template">
-        <plugin name="emarsys_template_plugin" type="\Emartech\Emarsys\Plugin\Email"/>
-    </type>
-
     <type name="Magento\Newsletter\Model\Subscriber">
         <plugin name="emarsys_newsletter" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
     </type>
     <type name="Magento\Customer\Model\EmailNotificationInterface">
         <plugin name="emarsys_customer_email" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
     </type>
-
     <type name="Magento\Sales\Model\Order\Email\SenderBuilder">
         <plugin name="emarsys_order_email_sender_builder" type="\Emartech\Emarsys\Events\SenderBuilderPlugin" sortOrder="1" disabled="false"/>
     </type>
