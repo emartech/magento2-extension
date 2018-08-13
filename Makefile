@@ -43,6 +43,9 @@ install-sampledata: ## Installs Magento sample data in the container
 magento: ## Runs Magento CLI command (make magento command=your-command)
 	@$(COMPOSE) exec --user application web bin/magento $(command)
 
+clear-db: ## Clears magento db
+	docker volume rm mage_magento-db
+
 upgrade: ## Runs Magento CLI setup:upgrade command
 	@$(COMPOSE) exec --user application web bin/magento cache:flush
 	@$(COMPOSE) exec --user application web bin/magento setup:upgrade
@@ -79,7 +82,8 @@ create-test-db: ## Creates magento-test database
 test: ## Runs tests
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} magento_test < /opt/magento_test.sql'
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento'/'dbname' => 'magento_test'/g\" app/etc/env.php"
-	@$(COMPOSE) exec web bash -c "bin/magento cache:flush"
+	@$(COMPOSE) exec --user application web rm -rf generated/code/
+	@$(COMPOSE) exec --user application web bin/magento cache:flush
 	-@$(COMPOSE) run --rm node npm t
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
 
