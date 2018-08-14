@@ -1,0 +1,11 @@
+{
+  "confirmation_link": {
+    "subscriber_id": "10",
+    "store_id": "1",
+    "change_status_at": "2018-08-14 12:26:50",
+    "customer_id": "0",
+    "subscriber_email": "yolo127@yolo.net",
+    "subscriber_status": 3,
+    "subscriber_confirm_code": "nwm2apierv3a0ybaayeyo432havkueue"
+  }
+}
