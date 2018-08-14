@@ -127,7 +127,7 @@ Structure:
 ```
 
 ### `customer_password_reset`
-Triggered when customer clicks changes password when logged in. [Example data](docs/MarketingEvents/customer_password_reset.json).
+Triggered when customer changes password when logged in. [Example data](docs/MarketingEvents/customer_password_reset.json).
 
 Structure:
 ```json
