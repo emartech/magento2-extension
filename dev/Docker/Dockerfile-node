@@ -1,0 +1,10 @@
+FROM cypress/base:10
+ARG NPM_TOKEN
+
+RUN mkdir /projectroot
+WORKDIR /projectroot
+
+COPY ["./test/package.json", "./test/.npmrc", "./"]
+RUN npm i && \
+    ./node_modules/.bin/cypress install && \
+    ./node_modules/.bin/cypress verify

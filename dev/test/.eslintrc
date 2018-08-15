@@ -14,7 +14,8 @@
   "globals": {
     "inject": true,
     "onmessage": true,
-    "expect": true
+    "expect": true,
+    "describe": true
   },
   "parserOptions": {
     "ecmaVersion": 8

@@ -77,19 +77,40 @@ log: ## Tail Magento exception logs
 create-test-db: ## Creates magento-test database
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "create database if not exists magento_test;"'
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON magento_test.* TO \"magento\"@\"%\";"'
+	@$(COMPOSE) exec --user application web bash -c "bin/magento config:set web/unsecure/base_url http://web/"
 	@$(COMPOSE) exec db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento > /opt/magento_test.sql'
+	@$(COMPOSE) exec --user application web bash -c "bin/magento config:set web/unsecure/base_url http://magento.local:8888/"
 
-test: ## Runs tests
+switch-to-test-db:
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} magento_test < /opt/magento_test.sql'
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento'/'dbname' => 'magento_test'/g\" app/etc/env.php"
-	@$(COMPOSE) exec --user application web rm -rf generated/code/
-	@$(COMPOSE) exec --user application web bin/magento cache:flush
+
+switch-back-prod-db:
+  @$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
+
+test-code-style:
+	-@$(COMPOSE) run --rm node npm run code-style
+
+run-npmt:
 	-@$(COMPOSE) run --rm node npm t
-	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
+
+run-e2e:
+	-@$(COMPOSE) run --rm node npm run e2e
+
+mocha: switch-to-test-db flush run-npmt switch-back-prod-db
+
+e2e: switch-to-test-db flush run-e2e switch-back-prod-db
+
+test: switch-to-test-db flush run-npmt run-e2e switch-back-prod-db
 
 quick-test: ## Runs tests
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento'/'dbname' => 'magento_test'/g\" app/etc/env.php"
 	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run quick-test
+	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
+
+quick-e2e: ## Runs tests
+	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento'/'dbname' => 'magento_test'/g\" app/etc/env.php"
+	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run e2e
 	@$(COMPOSE) exec web bash -c "sed -i \"s/'dbname' => 'magento_test'/'dbname' => 'magento'/g\" app/etc/env.php"
 
 npm-install: ##

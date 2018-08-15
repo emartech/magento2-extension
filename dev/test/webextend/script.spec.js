@@ -4,7 +4,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const getEmarsysSnippetContents = async path => {
-  const response = await axios.get(`http://magento.local/index.php/${path}`);
+  const response = await axios.get(`http://web/index.php/${path}`);
   const $ = cheerio.load(response.data);
   return $('.emarsys-snippets')
     .html()

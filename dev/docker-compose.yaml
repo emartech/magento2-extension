@@ -25,17 +25,18 @@ services:
     env_file:
       - .env
   node:
-    image: "node:9.11.1-alpine"
+    container_name: mage_node
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile-node
+      args:
+        - NPM_TOKEN=$NPM_TOKEN
+    volumes:
+      - ./test:/projectroot/test
+    env_file:
+      - .env
     links:
       - web:magento.local
       - db
-    working_dir: /test
-    env_file:
-      - .env
-    volumes:
-      - ./test:/test
-    expose:
-      - "8081"
-    command: "npm i"
 volumes:
   magento-db:

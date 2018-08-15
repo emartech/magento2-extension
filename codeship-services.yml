@@ -18,17 +18,17 @@ dockercfg_generator:
   add_docker: true
   encrypted_env_file: codeship.env.encrypted
 node:
-  image: "node:9.11.1-alpine"
-  links:
-    - web:magento.local
+  container_name: mage_node
+  build:
+    context: ./dev
+    dockerfile: ./Docker/Dockerfile-node
+    encrypted_args_file: codeship.env.encrypted
+  volumes:
+    - ./dev/test:/projectroot/test
   depends_on:
     - db
     - web
-  working_dir: /test
-  volumes:
-    - ./dev/test:/test
-  expose:
-    - "8081"
+  cached: true
   encrypted_env_file: codeship.env.encrypted
 deployment:
   image: codeship/google-cloud-deployment

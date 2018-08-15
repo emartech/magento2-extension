@@ -4,8 +4,9 @@
   "description": "",
   "scripts": {
     "test": "npm run mocha && npm run code-style",
+    "e2e": "cypress run --project ./test",
     "quick-test": "npm run mocha",
-    "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./setup.spec.js '!(node_modules)/**/*.spec.js'",
+    "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./test/setup.spec.js './!(node_modules)/!(cypress)/**/*.spec.js'",
     "code-style": "eslint '!(node_modules)/**/**.js'"
   },
   "repository": {
@@ -34,6 +35,7 @@
     "sinon": "5.0.10",
     "sinon-chai": "3.1.0",
     "form-data": "2.3.2",
-    "cheerio": "1.0.0-rc.2"
+    "cheerio": "1.0.0-rc.2",
+    "cypress": "3.1.0"
   }
 }
