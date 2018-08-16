@@ -1,4 +1,6 @@
 {
   "video": false,
-  "trashAssetsBeforeRuns": false
+  "trashAssetsBeforeRuns": false,
+  "requestTimeout": 60000,
+  "defaultCommandTimeout": 60000
 }
