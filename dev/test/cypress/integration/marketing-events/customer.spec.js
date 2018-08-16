@@ -1,8 +1,8 @@
 'use strict';
 
 describe('Marketing Events', function() {
-  context('with settings off', function () {
-    it('should create newsletter_send_confirmation_success_email event', function() {
+  context('with settings off', function() {
+    it('should not create newsletter_send_confirmation_success_email event', function() {
       const guestEmail = 'guest.email2@guest.com';
       cy.visit('http://web/');
 
@@ -13,7 +13,7 @@ describe('Marketing Events', function() {
     });
   });
 
-  context('with settings on', function () {
+  context('with settings on', function() {
     it('should create newsletter_send_confirmation_success_email event', function() {
       cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
 
