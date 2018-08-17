@@ -500,7 +500,7 @@ Structure:
 ```
 
 ### `sales_email_order_comment_template` & `sales_email_order_comment_guest_template`
-Triggered on order comment. [Example data](docs/MarketingEvents/sales_email_comment_template.json).
+Triggered on order comment. [Example data](docs/MarketingEvents/sales_email_order_comment_template.json).
 
 Structure:
 ```json
