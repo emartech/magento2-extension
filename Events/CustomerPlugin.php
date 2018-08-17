@@ -13,6 +13,7 @@ use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Customer\Helper\View as CustomerViewHelper;
 use \Psr\Log\LoggerInterface;
 use Magento\Customer\Model\CustomerRegistry;
+use Magento\Customer\Model\CustomerFactory;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 
 /**
@@ -81,12 +82,18 @@ class CustomerPlugin
     public $configReader;
 
     /**
+     * @var CustomerFactory
+     */
+    private $customerFactory;
+
+  /**
      * CustomerPlugin constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
      * @param LoggerInterface $logger
      * @param EventRepository $eventRepository
      * @param CustomerRegistry $customerRegistry
+     * @param CustomerFactory $customerFactory
      * @param EmarsysEventFactory $eventFactory
      * @param DataObjectProcessor $dataProcessor
      * @param CustomerViewHelper $customerViewHelper
@@ -99,6 +106,7 @@ class CustomerPlugin
         LoggerInterface $logger,
         EventRepository $eventRepository,
         CustomerRegistry $customerRegistry,
+        CustomerFactory $customerFactory,
         EmarsysEventFactory $eventFactory,
         DataObjectProcessor $dataProcessor,
         CustomerViewHelper $customerViewHelper,
@@ -115,6 +123,7 @@ class CustomerPlugin
         $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->configReader = $configReader;
+      $this->customerFactory = $customerFactory;
     }
 
     /**
@@ -140,27 +149,7 @@ class CustomerPlugin
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL);
 
-        $data = [
-            'subscriber' => $subscriber->getData(),
-        ];
-
-        if ($subscriber->getConfirmationLink()) {
-            $data = [
-                'confirmation_link' => $subscriber->getData(),
-            ];
-        }
-        if ($subscriber->getCustomerId()) {
-            try {
-                $customer = $this->customerRegistry->retrieve($subscriber->getCustomerId());
-
-                // Select needed data
-                $data = [
-                    'customer' => $this->getFullCustomerObject($customer)->getData(),
-                ];
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
-            }
-        }
+        $data = $this->getDataFromSubscription($subscriber);
         $eventModel->setEventData($this->json->serialize($data));
         $this->eventRepository->save($eventModel);
     }
@@ -188,27 +177,7 @@ class CustomerPlugin
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL);
 
-        $data = [
-            'subscriber' => $subscriber->getData(),
-        ];
-
-        if ($subscriber->getConfirmationLink()) {
-            $data = [
-                'confirmation_link' => $subscriber->getData(),
-            ];
-        }
-        if ($subscriber->getCustomerId()) {
-            try {
-                $customer = $this->customerRegistry->retrieve($subscriber->getCustomerId());
-
-                // Select needed data
-                $data = [
-                    'customer' => $this->getFullCustomerObject($customer)->getData(),
-                ];
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
-            }
-        }
+        $data = $this->getDataFromSubscription($subscriber);
         $eventModel->setEventData($this->json->serialize($data));
         $this->eventRepository->save($eventModel);
     }
@@ -236,27 +205,7 @@ class CustomerPlugin
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL);
 
-        $data = [
-            'subscriber' => $subscriber->getData(),
-        ];
-
-        if ($subscriber->getConfirmationLink()) {
-            $data = [
-                'confirmation_link' => $subscriber->getData(),
-            ];
-        }
-        if ($subscriber->getCustomerId()) {
-            try {
-                $customer = $this->customerRegistry->retrieve($subscriber->getCustomerId());
-
-                // Select needed data
-                $data = [
-                    'customer' => $this->getFullCustomerObject($customer)->getData(),
-                ];
-            } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
-            }
-        }
+        $data = $this->getDataFromSubscription($subscriber);
         $eventModel->setEventData($this->json->serialize($data));
         $this->eventRepository->save($eventModel);
     }
@@ -468,8 +417,28 @@ class CustomerPlugin
         $customerData = $this->dataProcessor
             ->buildOutputDataArray($customer, \Magento\Customer\Api\Data\CustomerInterface::class);
         $mergedCustomerData->addData($customerData);
-        $mergedCustomerData->setData('name', $this->customerViewHelper->getCustomerName($customer));
+        //$mergedCustomerData->setData('name', $this->customerViewHelper->getCustomerName($customer));
         return $mergedCustomerData;
     }
+
+  /**
+   * @param \Magento\Newsletter\Model\Subscriber $subscriber
+   * @return array
+   */
+  protected function getDataFromSubscription(\Magento\Newsletter\Model\Subscriber $subscriber)
+  {
+    $data = [
+      'subscriber' => $subscriber->getData(),
+    ];
+
+    if ($subscriber->getConfirmationLink()) {
+      $data['confirmation_link'] = $subscriber->getData();
+    }
+    if ($subscriber->getCustomerId()) {
+      $customer = $this->customerFactory->create()->load($subscriber->getCustomerId());
+      $data['customer'] = $customer->getData();
+    }
+    return $data;
+  }
 
 }
