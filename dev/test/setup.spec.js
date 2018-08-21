@@ -67,12 +67,14 @@ before(async function() {
     .where({ path: 'emartech/emarsys/connecttoken' })
     .first();
 
-  const { token } = JSON.parse(Buffer.from(result.value, 'base64'));
+  const { hostname, token } = JSON.parse(Buffer.from(result.value, 'base64'));
+  this.hostname = hostname;
   this.token = token;
+  console.log('host', hostname);
   console.log('Token: ' + token);
 
   this.magentoApi = new Magento2ApiClient({
-    baseUrl: 'http://web',
+    baseUrl: `http://${this.hostname}`,
     token: this.token
   });
 
@@ -85,16 +87,21 @@ before(async function() {
     this.createCategory = createCategory(this.magentoApi);
     this.deleteCategory = deleteCategory(this.magentoApi);
 
-    this.customer = await this.createCustomer({
-      group_id: 0,
-      dob: '1977-11-12',
-      email: 'default@yolo.net',
-      firstname: 'Yolo',
-      lastname: 'Default',
-      store_id: 1,
-      website_id: 1,
-      disable_auto_group_change: 0
-    }, 'Password1234');
+    try {
+
+      this.customer = await this.createCustomer({
+        group_id: 0,
+        dob: '1977-11-12',
+        email: 'default@yolo.net',
+        firstname: 'Yolo',
+        lastname: 'Default',
+        store_id: 1,
+        website_id: 1,
+        disable_auto_group_change: 0
+      }, 'Password1234');
+    } catch (e) {
+      console.log(e.response);
+    }
 
     const { parentIds, childIds } = await createCategories(this.createCategory);
     this.createdParentCategoryIds = parentIds;

@@ -25,9 +25,9 @@ describe('Products endpoint', function() {
     expect(product.price).to.equal('5.0000');
     expect(product.link).to.include('/index.php/sprite-foam-yoga-brick.html');
     expect(product.images).to.eql({
-      image: 'http://web/pub/media/catalog/product/l/u/luma-yoga-brick.jpg',
-      small_image: 'http://web/pub/media/catalog/product/l/u/luma-yoga-brick.jpg',
-      thumbnail: 'http://web/pub/media/catalog/product/l/u/luma-yoga-brick.jpg'
+      image: `http://${this.hostname}/pub/media/catalog/product/l/u/luma-yoga-brick.jpg`,
+      small_image: `http://${this.hostname}/pub/media/catalog/product/l/u/luma-yoga-brick.jpg`,
+      thumbnail: `http://${this.hostname}/pub/media/catalog/product/l/u/luma-yoga-brick.jpg`
     });
     expect(product.qty).to.equal('100.0000');
     expect(product.is_in_stock).to.equal('1');

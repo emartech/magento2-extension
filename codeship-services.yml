@@ -4,6 +4,7 @@ db:
   encrypted_env_file: codeship.env.encrypted
 web:
   image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.3
+  container_name: magento-test.local
   depends_on:
     - db
   volumes:
@@ -12,8 +13,8 @@ web:
     - .:/app/vendor/emartech/emarsys-magento2-extension
   cached: false
   encrypted_env_file: codeship.env.encrypted
-  dockercfg_service: dockercfg_generator
-dockercfg_generator:
+  dockercfg_service: dockercfg-generator
+dockercfg-generator:
   image: codeship/gcr-dockercfg-generator
   add_docker: true
   encrypted_env_file: codeship.env.encrypted

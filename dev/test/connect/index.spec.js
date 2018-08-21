@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Connect', function() {
-  it.skip('should store hostname, token', async function() {
+  it('should store hostname, token', async function() {
     const result = await this.db
       .select('value')
       .from('core_config_data')
@@ -9,7 +9,7 @@ describe('Connect', function() {
       .first();
 
     const { hostname, token } = JSON.parse(Buffer.from(result.value, 'base64'));
-    expect('http://web/'.includes(hostname)).to.be.true;
+    expect('http://magento-test.local/'.includes(hostname)).to.be.true;
     expect(token).not.to.be.undefined;
   });
 });
