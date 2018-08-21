@@ -36,7 +36,7 @@ describe('Marketing events: customer', function() {
   after(async function() {
     await this.db.raw('DELETE FROM newsletter_subscriber');
     await this.db.raw(
-      'DELETE FROM customer_entity where email = "yolo@yolo.net" AND WHERE email = "yolo@newsletter.net"'
+      'DELETE FROM customer_entity where email = "yolo@yolo.net" OR email = "yolo@newsletter.net"'
     );
   });
 
