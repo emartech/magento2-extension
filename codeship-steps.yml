@@ -1,6 +1,6 @@
 - name: install-and-test
   service: node
-  command: /bin/sh -c "sh /projectroot/test/update-hosts-file.sh && npm t && npm run e2e"
+  command: /bin/sh -c "sh /test/update-hosts-file.sh && npm t && npm run e2e"
 - name: deploy to staging on Google Kubernetes Engine
   service: deployment
   command: /bin/bash -c "codeship_google authenticate && gcloud container clusters get-credentials cluster-1 --region=europe-west2 && sh /deploy/restart.sh web-staging"
