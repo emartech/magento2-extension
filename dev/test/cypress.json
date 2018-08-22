@@ -1,6 +1,8 @@
 {
+  "baseUrl": "http://magento-test.local/",
   "video": false,
   "trashAssetsBeforeRuns": false,
   "requestTimeout": 60000,
-  "defaultCommandTimeout": 60000
+  "defaultCommandTimeout": 60000,
+  "pageLoadTimeout": 60000
 }

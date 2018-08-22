@@ -25,7 +25,7 @@ node:
     dockerfile: ./Docker/Dockerfile-node
     encrypted_args_file: codeship.env.encrypted
   volumes:
-    - ./dev/test:/projectroot/test
+    - ./dev/test:/test
   depends_on:
     - db
     - web

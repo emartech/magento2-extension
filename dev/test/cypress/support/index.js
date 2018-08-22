@@ -3,5 +3,5 @@
 require('./commands');
 
 afterEach(() => {
-  cy.task('clearDb');
+  cy.task('clearEvents');
 });

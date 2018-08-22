@@ -14,3 +14,14 @@ Cypress.Commands.add('shouldNotExistsEvents', () => {
     expect(events.length).to.be.empty;
   });
 });
+
+Cypress.Commands.add('loginWithCustomer', ({ customer }) => {
+  cy.visit('/index.php/customer/account/login');
+
+  cy.get('input[name="login[username]"]').type(customer.email);
+  cy.get('input[name="login[password]"]').type(customer.password);
+  cy.get('button.login').click();
+
+  cy.wait(3000);
+  cy.get('.customer-name').should('be.visible');
+});
