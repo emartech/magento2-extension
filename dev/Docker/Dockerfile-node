@@ -4,5 +4,6 @@ ARG NPM_TOKEN
 WORKDIR /test
 
 COPY ["./test/", "./"]
-RUN ./node_modules/.bin/cypress install && \
+RUN npm i && \
+    ./node_modules/.bin/cypress install && \
     ./node_modules/.bin/cypress verify
