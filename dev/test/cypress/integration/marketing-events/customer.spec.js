@@ -42,6 +42,20 @@ describe('Marketing Events', function() {
 
     it('should create customer_password_reset event', function() {
       cy.loginWithCustomer({ customer: this.defaultCustomer });
+
+      cy.visit('/index.php/customer/account/edit/changepass/1/');
+
+      const newPassword = 'newPassword1';
+
+      cy.get('input[name="current_password"]').type(this.defaultCustomer.password);
+      cy.get('#password').type(newPassword);
+      cy.get('#password-confirmation').type(newPassword);
+
+      cy.get('.action.save.primary').click();
+
+      cy.shouldCreateEvent('customer_password_reset', {
+        new_customer_email: this.defaultCustomer.email
+      });
     });
   });
 });

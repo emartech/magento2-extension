@@ -128,6 +128,10 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
       const config = await db.select().from('core_config_data').where('path', 'like', '%emartech%');
       console.log(config);
       return true;
+    },
+    setDefaultCustomerProperty: (customerData) => {
+      defaultCustomer = Object.assign({}, defaultCustomer, customerData);
+      return defaultCustomer;
     }
   });
 };
