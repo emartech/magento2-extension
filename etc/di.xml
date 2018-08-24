@@ -9,6 +9,12 @@
     <preference for="Emartech\Emarsys\Api\SubscriptionApiInterface" type="Emartech\Emarsys\Model\Api\SubscriptionApi" />
     <preference for="Emartech\Emarsys\Api\ConfigApiInterface" type="Emartech\Emarsys\Model\Api\ConfigApi" />
     <preference for="Emartech\Emarsys\Api\Data\ConfigInterface" type="Emartech\Emarsys\Model\Data\Config" />
+
+    <preference for="Emartech\Emarsys\Api\Data\CustomersApiResponseInterface" type="Emartech\Emarsys\Model\Data\CustomersApiResponse" />
+    <preference for="Emartech\Emarsys\Api\Data\CustomerInterface" type="Emartech\Emarsys\Model\Data\Customer" />
+    <preference for="Emartech\Emarsys\Api\Data\CustomerAddressInterface" type="Emartech\Emarsys\Model\Data\CustomerAddress" />
+
+
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
     </type>

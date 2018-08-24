@@ -57,7 +57,7 @@ class SubscriptionApi implements SubscriptionApiInterface
             $this->addCustomerFilter($subscriptions);
         }
 
-        $total_count = $subscriptions->count();
+        $total_count = $subscriptions->getSize();
 
         $subscriptions
             ->setCurPage($page)
