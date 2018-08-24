@@ -44,7 +44,7 @@ describe('Customers endpoint', function() {
     const customer = customers[0];
 
     expect(customers.length).to.equal(2);
-    expect(customer.entity_id).to.equal('1');
+    expect(customer.id).to.equal(1);
     expect(lastPage).to.equal(2);
 
     expect(customer).to.have.property('id');
