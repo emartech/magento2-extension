@@ -35,12 +35,29 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     private $customersResponse;
 
     /**
+     * @var \Magento\Customer\Model\ResourceModel\Customer\Collection
+     */
+    private $customerCollection;
+
+    /**
+     * @var string
+     */
+    private $customerAddressEntityTable;
+
+    /**
+     * @var string
+     */
+    private $subscriptionTable;
+
+    /**
      * CustomersApi constructor.
      *
      * @param \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $collectionFactory
      * @param \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory              $customerInterface
      * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory       $customerAddressInterfaceFactory
      * @param \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory  $customersResponse
+     *
+     * @throws \ReflectionException
      */
     public function __construct(
         \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $collectionFactory,
@@ -55,43 +72,92 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
 
         $customerAddressInterfaceReflection = new \ReflectionClass('\Emartech\Emarsys\Api\Data\CustomerAddressInterface');
         $this->addressFields = $customerAddressInterfaceReflection->getConstants();
+
+        $this->customerCollection = $this->collectionFactory->create();
+        $this->customerAddressEntityTable = $this->customerCollection->getResource()->getTable('customer_address_entity');
+        $this->subscriptionTable = $this->customerCollection->getResource()->getTable('newsletter_subscriber');
     }
 
     /**
-     * @param int  $page
-     * @param int  $pageSize
-     * @param null $websiteId
+     * @param int   $page
+     * @param int   $pageSize
+     * @param null  $websiteId
+     * @param mixed $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function get($page, $pageSize, $websiteId = null)
+    public function get($page, $pageSize, $websiteId = null, $storeId = null)
     {
-        /** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $customerCollection */
-        $customerCollection = $this->collectionFactory->create()
-            ->addAttributeToSelect(['is_subscribed'])
+        $this
+            ->filterWebsite($websiteId)
+            ->filterStoreId($storeId)
+            ->joinAddress('billing')
+            ->joinAddress('shipping')
+            ->joinSubscriptionStatus()
             ->setPage($page, $pageSize);
 
-        if ($websiteId) {
-            $customerCollection->addAttributeToFilter('website_id', ['eq' => $websiteId]);
-        }
+        return $this->customersResponse->create()
+            ->setCurrentPage($this->customerCollection->getCurPage())
+            ->setLastPage($this->customerCollection->getLastPageNumber())
+            ->setPageSize($this->customerCollection->getPageSize())
+            ->setCustomers($this->handleCustomers());
+    }
+    
+    /**
+     * @param int $page
+     * @param int $pageSize
+     *
+     * @return $this
+     */
+    protected function setPage($page, $pageSize)
+    {
+        $this->customerCollection->setPage($page, $pageSize);
+        return $this;
+    }
 
-        $this
-            ->joinAddress($customerCollection, 'billing')
-            ->joinAddress($customerCollection, 'shipping')
-            ->joinSubscriptionStatus($customerCollection);
-
+    /**
+     * @return array
+     */
+    protected function handleCustomers()
+    {
         $customerArray = [];
-
-        foreach ($customerCollection as $customer) {
+        foreach ($this->customerCollection as $customer) {
             $customerArray[] = $this->parseCustomer($customer);
         }
 
-        return $this->customersResponse->create()
-            ->setCurrentPage($customerCollection->getCurPage())
-            ->setLastPage($customerCollection->getLastPageNumber())
-            ->setPageSize($customerCollection->getPageSize())
-            ->setCustomers($customerArray);
+        return $customerArray;
+    }
+
+    /**
+     * @param mixed $websiteId
+     *
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    protected function filterWebsite($websiteId = null)
+    {
+        if ($websiteId) {
+            $this->customerCollection->addAttributeToFilter('website_id', ['eq' => $websiteId]);
+        }
+        return $this;
+    }
+
+    /**
+     * @param mixed $storeId
+     *
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    protected function filterStoreId($storeId = null)
+    {
+        if ($storeId) {
+            if (!is_array($storeId)) {
+                $storeId = explode(',', $storeId);
+            }
+            $this->customerCollection->addAttributeToFilter('store_id', ['in' => $storeId]);
+        }
+        return $this;
     }
 
     /**
@@ -138,31 +204,28 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     }
 
     /**
-     * @param \Magento\Customer\Model\ResourceModel\Customer\Collection $collection
-     *
-     * @return void
+     * @return $this
      */
-    protected function joinSubscriptionStatus($collection)
+    protected function joinSubscriptionStatus()
     {
-        $subscriptionTable = $collection->getResource()->getTable('newsletter_subscriber');
         $tableAlias = 'newsletter';
 
-        $collection->getSelect()->joinLeft(
-            [$tableAlias => $subscriptionTable],
+        $this->customerCollection->getSelect()->joinLeft(
+            [$tableAlias => $this->subscriptionTable],
             $tableAlias . '.customer_id = e.entity_id',
             ['accepts_marketing' => 'subscriber_status']
         );
+
+        return $this;
     }
 
     /**
-     * @param \Magento\Customer\Model\ResourceModel\Customer\Collection $customerCollection
-     * @param string                                                    $addressType
+     * @param string $addressType
      *
      * @return $this
      */
-    protected function joinAddress($customerCollection, $addressType = 'billing')
+    protected function joinAddress($addressType = 'billing')
     {
-        $customerAddressEntityTable = $customerCollection->getResource()->getTable('customer_address_entity');
         $tableAlias = $addressType . '_address';
 
         $attributes = [];
@@ -170,8 +233,8 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
             $attributes[$addressType . '.' . $addressField] = $tableAlias . '.' . $addressField;
         }
 
-        $customerCollection->getSelect()->joinLeft(
-            [$tableAlias => $customerAddressEntityTable],
+        $this->customerCollection->getSelect()->joinLeft(
+            [$tableAlias => $this->customerAddressEntityTable],
             $tableAlias . '.entity_id = e.default_' . $addressType,
             $attributes
         );
