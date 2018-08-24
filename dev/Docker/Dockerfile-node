@@ -1,10 +1,9 @@
-FROM cypress/base:10
+FROM cypress/browsers:chrome67
 ARG NPM_TOKEN
 
-RUN mkdir /projectroot
-WORKDIR /projectroot
+WORKDIR /test
 
-COPY ["./test/package.json", "./test/.npmrc", "./"]
+COPY ["./test/", "./"]
 RUN npm i && \
     ./node_modules/.bin/cypress install && \
     ./node_modules/.bin/cypress verify

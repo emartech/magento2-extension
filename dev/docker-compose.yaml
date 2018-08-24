@@ -2,6 +2,8 @@ version: '3.0'
 services:
   magento-test:
     image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.3
+    ports:
+      - "8889:80"
     links:
       - db
     env_file:
@@ -50,11 +52,11 @@ services:
       args:
         - NPM_TOKEN=$NPM_TOKEN
     volumes:
-      - ./test:/projectroot/test
+      - ./test:/test
     env_file:
       - .env
     environment:
-      - MYSQL_DB=magento_test
+      - MYSQL_DATABASE=magento_test
       - MAGENTO_URL=magento-test.local
     links:
       - magento-test:magento-test.local

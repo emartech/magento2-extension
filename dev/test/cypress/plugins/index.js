@@ -1,29 +1,29 @@
 'use strict';
 
-// ***********************************************************
-// This example plugins/index.js can be used to load plugins
-//
-// You can change the location of this file or turn off loading
-// the plugins file with the 'pluginsFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/plugins-guide
-// ***********************************************************
-
-// This function is called when a project is opened or re-opened (e.g. due to
-// the project's config changing)
-
 const knex = require('knex');
 const Magento2ApiClient = require('@emartech/magento2-api');
 
-const db = knex({
-  client: 'mysql',
-  connection: {
+const getDbConnectionConfig = () => {
+  if (process.env.CYPRESS_baseUrl) {
+    return {
+      host: '127.0.0.1',
+      port: 13306,
+      user: 'magento',
+      password: 'magento',
+      database: 'magento_test'
+    };
+  }
+  return {
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_TEST_DATABASE
-  }
+    database: process.env.MYSQL_DATABASE
+  };
+};
+
+const db = knex({
+  client: 'mysql',
+  connection: getDbConnectionConfig()
 });
 
 let magentoToken = null;
@@ -45,9 +45,27 @@ const getMagentoApi = async () => {
   const token = await getMagentoToken();
 
   return new Magento2ApiClient({
-    baseUrl: 'http://web',
+    baseUrl: process.env.CYPRESS_baseUrl || 'http://magento-test.local',
     token
   });
+};
+
+let defaultCustomer = null;
+const createCustomer = async (customer, password) => {
+  const magentoApi = await getMagentoApi();
+  await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer, password } });
+
+  const { entity_id: entityId } = await db
+    .select('entity_id')
+    .from('customer_entity')
+    .where({ email: customer.email })
+    .first();
+
+  return Object.assign({}, customer, { entityId, password });
+};
+
+const clearEvents = async () => {
+  return await db.truncate('emarsys_events');
 };
 
 module.exports = (on, config) => { // eslint-disable-line no-unused-vars
@@ -56,8 +74,11 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
 
   on('task', {
     clearDb: async () => {
-      await db.truncate('emarsys_events');
-      // await db.raw('delete from newsletter_subscriber');
+      await clearEvents();
+      return true;
+    },
+    clearEvents: async () => {
+      await clearEvents();
       return true;
     },
     setConfig: async ({ websiteId = 1, config = {} }) => {
@@ -82,6 +103,35 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
     },
     getAllEvents: async () => {
       return await db.select().from('emarsys_events');
+    },
+    createCustomer: async ({ customer }) => {
+      return await createCustomer(customer, 'Password1234');
+    },
+    getDefaultCustomer: async () => {
+      if (!defaultCustomer) {
+        const customer = {
+          group_id: 0,
+          dob: '1977-11-12',
+          email: 'default@cypress.com',
+          firstname: 'Cypress',
+          lastname: 'Default',
+          store_id: 1,
+          website_id: 1,
+          disable_auto_group_change: 0
+        };
+        defaultCustomer = await createCustomer(customer, 'Password1234');
+        await clearEvents();
+      }
+      return defaultCustomer;
+    },
+    getCoreConfig: async () => {
+      const config = await db.select().from('core_config_data').where('path', 'like', '%emartech%');
+      console.log(config);
+      return true;
+    },
+    setDefaultCustomerProperty: (customerData) => {
+      defaultCustomer = Object.assign({}, defaultCustomer, customerData);
+      return defaultCustomer;
     }
   });
 };

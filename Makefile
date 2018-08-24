@@ -1,4 +1,5 @@
 include dev/.env
+include tasks/tests.mk
 
 COMPOSE_FILE=dev/docker-compose.yaml
 COMPOSE=docker-compose -f $(COMPOSE_FILE) -p mage
@@ -7,7 +8,12 @@ COMPOSE=docker-compose -f $(COMPOSE_FILE) -p mage
 default: help
 
 up: ## Creates containers and starts app
+	cd ./dev/test && npm i
 	@$(COMPOSE) up -d --build
+
+dup: ## Creates containers and starts app
+	cd ./dev/test && npm i
+	@$(COMPOSE) up --build
 
 down: ## Destorys containers
 	@$(COMPOSE) down
@@ -25,7 +31,7 @@ ssh: ## Enters the web container
 	@$(COMPOSE) exec --user application magento-dev bash
 
 ssh-root: ## Enters the web container
-	@$(COMPOSE) exec magento-magento-dev bash
+	@$(COMPOSE) exec magento-dev bash
 
 ssh-node: ## Enters the web container
 	@$(COMPOSE) run --rm node /bin/sh
@@ -66,36 +72,6 @@ exception: ## Tail Magento exception logs
 log: ## Tail Magento exception logs
 	@echo "Following var/log/system.log\n"
 	@$(COMPOSE) exec magento-dev tail -f -n 10 var/log/system.log
-
-create-test-db: ## Creates magento-test database
-	@$(COMPOSE) exec db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento_test > /opt/magento_test.sql'
-
-reset-test-db:
-	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} magento_test < /opt/magento_test.sql'
-
-test-code-style:
-	-@$(COMPOSE) run --rm node npm run code-style
-
-run-npmt:
-	-@$(COMPOSE) run --rm node npm t
-
-run-e2e:
-	-@$(COMPOSE) run --rm node npm run e2e
-
-mocha: reset-test-db run-npmt
-
-e2e: reset-test-db run-e2e
-
-test: run-npmt run-e2e
-
-quick-test: ## Runs tests
-	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run quick-test
-
-quick-e2e: ## Runs tests
-	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run e2e
-
-npm-install: ##
-	@$(COMPOSE) run --rm node npm i
 
 help: ## This help message
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' -e 's/:.*#/: #/' | column -t -s '##'

@@ -4,9 +4,10 @@
   "description": "",
   "scripts": {
     "test": "npm run mocha && npm run code-style",
-    "e2e": "cypress run --project ./test",
+    "e2e": "cypress run --browser chrome",
+    "e2e:debug": "DEBUG=cypress:* cypress run --browser chrome",
     "quick-test": "npm run mocha",
-    "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./test/setup.spec.js './!(node_modules)/!(cypress)/**/*.spec.js'",
+    "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./setup.spec.js './!(node_modules|cypress)/**/*.spec.js'",
     "code-style": "eslint '!(node_modules)/**/**.js'"
   },
   "repository": {

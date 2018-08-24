@@ -2,7 +2,7 @@ db:
   image: healthcheck/percona
   cached: true
   encrypted_env_file: codeship.env.encrypted
-web:
+magento-test.local:
   image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.3
   container_name: magento-test.local
   depends_on:
@@ -24,11 +24,9 @@ node:
     context: ./dev
     dockerfile: ./Docker/Dockerfile-node
     encrypted_args_file: codeship.env.encrypted
-  volumes:
-    - ./dev/test:/projectroot/test
   depends_on:
     - db
-    - web
+    - magento-test.local
   cached: true
   encrypted_env_file: codeship.env.encrypted
 deployment:
