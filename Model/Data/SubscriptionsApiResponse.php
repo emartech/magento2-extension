@@ -3,10 +3,10 @@
 namespace Emartech\Emarsys\Model\Data;
 
 /**
- * Class CustomersApiResponse
+ * Class SubscriptionsApiResponse
  * @package Emartech\Emarsys\Model\Data
  */
-class CustomersApiResponse extends \Magento\Framework\DataObject implements \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
+class SubscriptionsApiResponse extends \Magento\Framework\DataObject implements \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
 {
     /**
      * @return int
@@ -17,11 +17,11 @@ class CustomersApiResponse extends \Magento\Framework\DataObject implements \Ema
     }
 
     /**
-     * @return \Emartech\Emarsys\Api\Data\CustomerInterface[]
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface[]
      */
-    public function getCustomers()
+    public function getSubscriptions()
     {
-        return $this->getData(self::CUSTOMERS_KEY);
+        return $this->getData(self::SUBSCRIPTIONS_KEY);
     }
 
     /**
@@ -60,13 +60,13 @@ class CustomersApiResponse extends \Magento\Framework\DataObject implements \Ema
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\CustomerInterface[] $customers
+     * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
      *
      * @return $this
      */
-    public function setCustomers(array $customers)
+    public function setSubscriptions(array $subscriptions)
     {
-        $this->setData(self::CUSTOMERS_KEY, $customers);
+        $this->setData(self::SUBSCRIPTIONS_KEY, $subscriptions);
         return $this;
     }
 

@@ -42,14 +42,14 @@
             <resource ref="Magento_Backend::content"/>
         </resources>
     </route>
-    <route url="/V1/emarsys/subscriptions/list" method="POST">
-        <service class="Emartech\Emarsys\Api\SubscriptionApiInterface" method="getList"/>
+    <route url="/V1/emarsys/subscriptions" method="GET">
+        <service class="Emartech\Emarsys\Api\SubscriptionsApiInterface" method="get"/>
         <resources>
             <resource ref="Magento_Backend::content"/>
         </resources>
     </route>
-    <route url="/V1/emarsys/subscriptions/update" method="POST">
-        <service class="Emartech\Emarsys\Api\SubscriptionApiInterface" method="update"/>
+    <route url="/V1/emarsys/subscriptions" method="POST">
+        <service class="Emartech\Emarsys\Api\SubscriptionsApiInterface" method="update"/>
         <resources>
             <resource ref="Magento_Backend::content"/>
         </resources>

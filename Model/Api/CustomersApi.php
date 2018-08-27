@@ -22,17 +22,17 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     /**
      * @var \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory
      */
-    private $customerInterface;
+    private $customerFactory;
 
     /**
      * @var \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory
      */
-    private $customerAddressInterfaceFactory;
+    private $customerAddressFactory;
 
     /**
-     * @var \Emartech\Emarsys\Api\Data\CustomersInterface
+     * @var \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory
      */
-    private $customersResponse;
+    private $customersResponseFactory;
 
     /**
      * @var \Magento\Customer\Model\ResourceModel\Customer\Collection
@@ -53,22 +53,22 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
      * CustomersApi constructor.
      *
      * @param \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $collectionFactory
-     * @param \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory              $customerInterface
-     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory       $customerAddressInterfaceFactory
-     * @param \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory  $customersResponse
+     * @param \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory              $customerFactory
+     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory       $customerAddressFactory
+     * @param \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory  $customersResponseFactory
      *
      * @throws \ReflectionException
      */
     public function __construct(
         \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $collectionFactory,
-        \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory $customerInterface,
-        \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory $customerAddressInterfaceFactory,
-        \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory $customersResponse
+        \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory $customerFactory,
+        \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory $customerAddressFactory,
+        \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory $customersResponseFactory
     ) {
         $this->collectionFactory = $collectionFactory;
-        $this->customerInterface = $customerInterface;
-        $this->customerAddressInterfaceFactory = $customerAddressInterfaceFactory;
-        $this->customersResponse = $customersResponse;
+        $this->customerFactory = $customerFactory;
+        $this->customerAddressFactory = $customerAddressFactory;
+        $this->customersResponseFactory = $customersResponseFactory;
 
         $customerAddressInterfaceReflection = new \ReflectionClass('\Emartech\Emarsys\Api\Data\CustomerAddressInterface');
         $this->addressFields = $customerAddressInterfaceReflection->getConstants();
@@ -97,10 +97,11 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
             ->joinSubscriptionStatus()
             ->setPage($page, $pageSize);
 
-        return $this->customersResponse->create()
+        return $this->customersResponseFactory->create()
             ->setCurrentPage($this->customerCollection->getCurPage())
             ->setLastPage($this->customerCollection->getLastPageNumber())
             ->setPageSize($this->customerCollection->getPageSize())
+            ->setTotalCount($this->customerCollection->getSize())
             ->setCustomers($this->handleCustomers());
     }
 
@@ -155,7 +156,7 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     protected function parseCustomer($customer)
     {
         /** @var \Emartech\Emarsys\Api\Data\CustomerInterface $customerItem */
-        $customerItem = $this->customerInterface->create()
+        $customerItem = $this->customerFactory->create()
             ->setId($customer->getId())
             ->setBillingAddress($this->getAddressFromCustomer($customer, 'billing'))
             ->setShippingAddress($this->getAddressFromCustomer($customer, 'shipping'));
@@ -176,7 +177,7 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     protected function getAddressFromCustomer($customer, $addressType = 'billing')
     {
         /** @var \Emartech\Emarsys\Api\Data\CustomerAddressInterface $address */
-        $address = $this->customerAddressInterfaceFactory->create();
+        $address = $this->customerAddressFactory->create();
 
         foreach ($customer->getData() as $key => $value) {
             if (strpos($key, $addressType) === 0) {
