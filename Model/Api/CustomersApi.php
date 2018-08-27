@@ -81,7 +81,7 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     /**
      * @param int   $page
      * @param int   $pageSize
-     * @param null  $websiteId
+     * @param mixed $websiteId
      * @param mixed $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
@@ -90,8 +90,8 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     public function get($page, $pageSize, $websiteId = null, $storeId = null)
     {
         $this
-            ->filterWebsite($websiteId)
-            ->filterStoreId($storeId)
+            ->filterMixedParam($websiteId, 'website_id')
+            ->filterMixedParam($storeId, 'store_id')
             ->joinAddress('billing')
             ->joinAddress('shipping')
             ->joinSubscriptionStatus()
@@ -103,7 +103,7 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
             ->setPageSize($this->customerCollection->getPageSize())
             ->setCustomers($this->handleCustomers());
     }
-    
+
     /**
      * @param int $page
      * @param int $pageSize
@@ -113,6 +113,24 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     protected function setPage($page, $pageSize)
     {
         $this->customerCollection->setPage($page, $pageSize);
+        return $this;
+    }
+
+    /**
+     * @param mixed  $param
+     * @param string $type
+     *
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    protected function filterMixedParam($param, $type)
+    {
+        if ($param) {
+            if (!is_array($param)) {
+                $param = explode(',', $param);
+            }
+            $this->customerCollection->addAttributeToFilter($type, ['in' => $param]);
+        }
         return $this;
     }
 
@@ -127,37 +145,6 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
         }
 
         return $customerArray;
-    }
-
-    /**
-     * @param mixed $websiteId
-     *
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    protected function filterWebsite($websiteId = null)
-    {
-        if ($websiteId) {
-            $this->customerCollection->addAttributeToFilter('website_id', ['eq' => $websiteId]);
-        }
-        return $this;
-    }
-
-    /**
-     * @param mixed $storeId
-     *
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    protected function filterStoreId($storeId = null)
-    {
-        if ($storeId) {
-            if (!is_array($storeId)) {
-                $storeId = explode(',', $storeId);
-            }
-            $this->customerCollection->addAttributeToFilter('store_id', ['in' => $storeId]);
-        }
-        return $this;
     }
 
     /**

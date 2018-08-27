@@ -11,7 +11,7 @@ interface CustomersApiInterface
     /**
      * @param int   $page
      * @param int   $pageSize
-     * @param int   $websiteId
+     * @param mixed $websiteId
      * @param mixed $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
