@@ -36,52 +36,6 @@ class InstallData implements InstallDataInterface
     $this->integration->create();
     $this->integration->saveConnectTokenToConfig();
 
-    $this->createDefaultSettings($setup);
-
     $setup->endSetup();
-  }
-
-  /**
-   * @param ModuleDataSetupInterface $setup
-   */
-  protected function createDefaultSettings(ModuleDataSetupInterface $setup)
-  {
-    $tableName = $setup->getTable('emarsys_settings');
-    if ($setup->getConnection()->isTableExists($tableName) === true) {
-      $data = [
-        [
-          'setting' => 'collectCustomerEvents',
-          'value' => 'disabled'
-        ],
-        [
-          'setting' => 'collectSalesEvents',
-          'value' => 'disabled'
-        ],
-        [
-          'setting' => 'collectProductEvents',
-          'value' => 'disabled'
-        ],
-        [
-          'setting' => 'collectMarketingEvents',
-          'value' => 'disabled'
-        ],
-        [
-          'setting' => 'injectSnippet',
-          'value' => 'disabled'
-        ],
-        [
-          'setting' => 'merchantId',
-          'value' => ''
-        ],
-        [
-          'setting' => 'webTrackingSnippetUrl',
-          'value' => ''
-        ]
-      ];
-
-      foreach ($data as $item) {
-        $setup->getConnection()->insert($tableName, $item);
-      }
-    }
   }
 }

@@ -12,7 +12,6 @@ class InstallSchema implements InstallSchemaInterface
   {
     $setup->startSetup();
 
-    $this->createEmarsysSettingsTable($setup);
     $this->createEmarsysEventsTable($setup);
 
     $setup->endSetup();
@@ -73,50 +72,6 @@ class InstallSchema implements InstallSchemaInterface
           ),
           ['created_at'],
           ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX]
-        );
-      $setup->getConnection()->createTable($table);
-    }
-  }
-
-  /**
-   * @param SchemaSetupInterface $setup
-   * @throws \Zend_Db_Exception
-   */
-  private function createEmarsysSettingsTable(SchemaSetupInterface $setup)
-  {
-    $tableName = $setup->getTable('emarsys_settings');
-    if ($setup->getConnection()->isTableExists($tableName) != true) {
-      $table = $setup->getConnection()->newTable(
-        $setup->getTable('emarsys_settings'))
-        ->addColumn(
-          'setting_id',
-          \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-          null,
-          ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-          'Id'
-        )
-        ->addColumn(
-          'setting',
-          \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-          255,
-          ['default' => null, 'nullable' => false],
-          'Setting'
-        )
-        ->addColumn(
-          'value',
-          \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-          null,
-          ['default' => null, 'nullable' => false],
-          'Value'
-        )
-        ->addIndex(
-          $setup->getIdxName(
-            $setup->getTable('emarsys_settings'),
-            ['setting'],
-            \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
-          ),
-          ['setting'],
-          ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
         );
       $setup->getConnection()->createTable($table);
     }

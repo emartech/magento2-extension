@@ -28,13 +28,7 @@ class Uninstall implements UninstallInterface
   {
     $setup->startSetup();
 
-    // Do not re-create integration for development purposes
-    // $this->integration->delete();
-
-    $tableName = $setup->getTable('emarsys_settings');
-    if ($setup->getConnection()->isTableExists($tableName) === true) {
-      $setup->getConnection()->dropTable($tableName);
-    }
+    $this->integration->delete();
 
     $setup->endSetup();
   }
