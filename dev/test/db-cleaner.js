@@ -74,18 +74,6 @@ module.exports = class DbCleaner {
   }
 
   async resetEmarsysData() {
-    await this._db('emarsys_settings').update({
-      value: 'disabled'
-    });
-
-    await this._db('emarsys_settings')
-      .where({ setting: 'merchantId' })
-      .update({ value: '' });
-
-    await this._db('emarsys_settings')
-      .where({ setting: 'webTrackingSnippetUrl' })
-      .update({ value: '' });
-
     await this._db.truncate('emarsys_events_data');
   }
 };
