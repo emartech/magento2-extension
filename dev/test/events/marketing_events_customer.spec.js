@@ -207,8 +207,53 @@ describe('Marketing events: customer', function() {
         });
       });
 
+      it('should NOT create newsletter_send_unsubscription_email event', async function() {
+        await this.magentoApi.put({
+          path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
+          payload: {
+            customer: {
+              id: subscriber.entityId,
+              email: subscriber.email,
+              firstname: subscriber.firstname,
+              lastname: subscriber.lastname,
+              store_id: 1,
+              website_id: 1,
+              extension_attributes: {
+                is_subscribed: true
+              }
+            }
+          }
+        });
+
+        await this.db.raw('DELETE FROM emarsys_events');
+
+        await this.magentoApi.put({
+          path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
+          payload: {
+            customer: {
+              id: subscriber.entityId,
+              email: subscriber.email,
+              firstname: subscriber.firstname,
+              lastname: subscriber.lastname,
+              store_id: 1,
+              website_id: 1,
+              extension_attributes: {
+                is_subscribed: false
+              }
+            }
+          }
+        });
+
+        const event = await this.db
+          .select()
+          .from('emarsys_events')
+          .first();
+
+        expect(event).to.be.undefined;
+      });
+
       context('is enabled', function() {
-        it('should create newsletter_send_confirmation_request_email event', async function() {
+        before(async function() {
           await this.db
             .insert({ scope: 'default', scope_id: 0, path: 'newsletter/subscription/confirm', value: 1 })
             .into('core_config_data');
@@ -217,10 +262,16 @@ describe('Marketing events: customer', function() {
           await this.magentoApi.setConfig({
             websiteId: 1,
             config: {
-              collectMarketingEvents: 'disbaled'
+              collectMarketingEvents: 'disabled'
             }
           });
+        });
 
+        after(async function() {
+          await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
+        });
+
+        it('should NOT create newsletter_send_confirmation_request_email event', async function() {
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
             payload: {
@@ -246,7 +297,7 @@ describe('Marketing events: customer', function() {
           expect(event).to.be.undefined;
         });
 
-        it('should create newsletter_send_unsubscription_email event', async function() {
+        it('should NOT create newsletter_send_unsubscription_email event', async function() {
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
             payload: {
@@ -434,7 +485,6 @@ describe('Marketing events: customer', function() {
 
       context('is disabled', function() {
         it('should create newsletter_send_confirmation_success_email event', async function() {
-          await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
             payload: {
@@ -521,7 +571,7 @@ describe('Marketing events: customer', function() {
       });
 
       context('is enabled', function() {
-        it('should create newsletter_send_confirmation_request_email event', async function() {
+        before(async function() {
           await this.db
             .insert({ scope: 'default', scope_id: 0, path: 'newsletter/subscription/confirm', value: 1 })
             .into('core_config_data');
@@ -533,7 +583,13 @@ describe('Marketing events: customer', function() {
               collectMarketingEvents: 'enabled'
             }
           });
+        });
 
+        after(async function() {
+          await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
+        });
+
+        it('should create newsletter_send_confirmation_request_email event', async function() {
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
             payload: {
