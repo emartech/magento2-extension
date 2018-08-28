@@ -69,7 +69,6 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     /**
      * @param int   $page
      * @param int   $pageSize
-     * @param mixed $email
      * @param mixed $subscribed
      * @param mixed $onlyGuest
      * @param mixed $websiteId
@@ -77,13 +76,12 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
      */
-    public function get($page = 1, $pageSize = 1000, $email = null, $subscribed = null, $onlyGuest = null, $websiteId = null, $storeId = null)
+    public function get($page = 1, $pageSize = 1000, $subscribed = null, $onlyGuest = null, $websiteId = null, $storeId = null)
     {
         $this
             ->joinWebsite()
             ->filterWebsite($websiteId)
             ->filterStore($storeId)
-            ->filterEmail($email)
             ->filterSubscribed($subscribed)
             ->filterCustomers($onlyGuest)
             ->setPage($page, $pageSize);
@@ -206,22 +204,6 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
             $this->subscriptionCollection->addFieldToFilter('store_id', ['in' => $storeId]);
         }
 
-        return $this;
-    }
-
-    /**
-     * @param mixed $email
-     *
-     * @return $this
-     */
-    private function filterEmail($email = null)
-    {
-        if ($email) {
-            if (!is_array($email)) {
-                $email = explode(',', $email);
-            }
-            $this->subscriptionCollection->addFieldToFilter('subscriber_email', ['in' => $email]);
-        }
         return $this;
     }
 

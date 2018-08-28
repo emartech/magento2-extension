@@ -11,7 +11,6 @@ interface SubscriptionsApiInterface
     /**
      * @param int   $page
      * @param int   $pageSize
-     * @param mixed $email
      * @param mixed $subscribed
      * @param mixed $onlyGuest
      * @param mixed $websiteId
@@ -19,7 +18,7 @@ interface SubscriptionsApiInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
      */
-    public function get($page = 1, $pageSize = 1000, $email = null, $subscribed = null, $onlyGuest = null, $websiteId = null, $storeId = null);
+    public function get($page = 1, $pageSize = 1000, $subscribed = null, $onlyGuest = null, $websiteId = null, $storeId = null);
 
     /**
      * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
