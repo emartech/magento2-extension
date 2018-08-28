@@ -24,10 +24,10 @@ class InstallSchema implements InstallSchemaInterface
    */
   private function createEmarsysEventsTable(SchemaSetupInterface $setup)
   {
-    $tableName = $setup->getTable('emarsys_events');
+    $tableName = $setup->getTable('emarsys_events_data');
     if ($setup->getConnection()->isTableExists($tableName) != true) {
       $table = $setup->getConnection()->newTable(
-        $setup->getTable('emarsys_events'))
+        $setup->getTable('emarsys_events_data'))
         ->addColumn(
           'event_id',
           \Magento\Framework\DB\Ddl\Table::TYPE_BIGINT,
@@ -58,7 +58,7 @@ class InstallSchema implements InstallSchemaInterface
         )
         ->addIndex(
           $setup->getIdxName(
-            $setup->getTable('emarsys_events'),
+            $setup->getTable('emarsys_events_data'),
             ['event_type'],
             \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX
           ),
@@ -67,7 +67,7 @@ class InstallSchema implements InstallSchemaInterface
         )
         ->addIndex(
           $setup->getIdxName(
-            $setup->getTable('emarsys_events'),
+            $setup->getTable('emarsys_events_data'),
             ['created_at'],
             \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX
           ),

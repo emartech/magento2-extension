@@ -11,6 +11,6 @@ class Event extends AbstractDb
    */
   protected function _construct()
   {
-    $this->_init('emarsys_events', 'event_id');
+    $this->_init('emarsys_events_data', 'event_id');
   }
 }

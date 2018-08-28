@@ -8,7 +8,6 @@ use Emartech\Emarsys\Api\Data\EventInterface;
 use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -69,12 +68,12 @@ class EventRepository implements EventRepositoryInterface
         return $event;
     }
 
-    /**
-     * @param EventInterface $event
-     * @return SearchResultsInterface
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
-     * @throws NoSuchEntityException
-     */
+  /**
+   * @param EventInterface $event
+   * @return EventInterface
+   * @throws \Exception
+   * @throws \Magento\Framework\Exception\AlreadyExistsException
+   */
     public function save(EventInterface $event)
     {
         $this->eventResource->save($event);
