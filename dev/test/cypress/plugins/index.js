@@ -112,7 +112,7 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
         const customer = {
           group_id: 0,
           dob: '1977-11-12',
-          email: 'default@cypress.com',
+          email: 'cypress@default.com',
           firstname: 'Cypress',
           lastname: 'Default',
           store_id: 1,
@@ -124,9 +124,8 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
       }
       return defaultCustomer;
     },
-    getCoreConfig: async () => {
-      const config = await db.select().from('core_config_data').where('path', 'like', '%emartech%');
-      console.log(config);
+    log: (logObject) => {
+      console.log('LOG', logObject);
       return true;
     },
     setDefaultCustomerProperty: (customerData) => {

@@ -7,13 +7,13 @@ test-code-style:
 
 mocha: reset-test-db run-npmt
 
-run-e2e: reset-test-db run-docker-e2e
+run-e2e: reset-test-db flush run-docker-e2e
 
 run-e2e-debug: reset-test-db run-docker-e2e
 
-open-e2e: reset-test-db open-local-e2e
+open-e2e: reset-test-db set-local-baseurl flush open-local-e2e set-docker-baseurl flush
 
-run-e2e-local: reset-test-db run-local-e2e
+run-e2e-local: reset-test-db set-local-baseurl flush run-local-e2e set-docker-baseurl flush
 
 create-test-db: ## Creates magento-test database
 	@$(COMPOSE) exec db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento_test > /opt/magento_test.sql'
@@ -41,3 +41,9 @@ quick-test: ## Runs tests
 
 quick-e2e: ## Runs tests
 	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run e2e
+
+set-local-baseurl:
+	@$(COMPOSE) exec --user application magento-test bash -c "bin/magento config:set web/unsecure/base_url http://magento-test.local:8889/"
+
+set-docker-baseurl:
+	@$(COMPOSE) exec --user application magento-test bash -c "bin/magento config:set web/unsecure/base_url http://magento-test.local/"
