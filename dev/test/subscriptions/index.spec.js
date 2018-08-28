@@ -19,7 +19,7 @@ const noCustomerEmail2 = 'still-no-customer@a.com';
 const customerEmail = 'roni_cost@example.com';
 const customerId = 1;
 
-describe('Subscriptions api', function() {
+describe.skip('Subscriptions api', function() {
   let subscriptionFor;
 
   before(function() {

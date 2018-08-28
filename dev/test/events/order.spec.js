@@ -3,7 +3,7 @@
 const getLastEvent = async db =>
   await db
     .select()
-    .from('emarsys_events')
+    .from('emarsys_events_data')
     .orderBy('event_id', 'desc')
     .first();
 

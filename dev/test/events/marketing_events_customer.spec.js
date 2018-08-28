@@ -30,7 +30,7 @@ describe('Marketing events: customer', function() {
   afterEach(async function() {
     await resetPasswordResetRequestEvent(this.db);
     await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
-    await this.db.raw('DELETE FROM emarsys_events');
+    await this.db.raw('DELETE FROM emarsys_events_data');
   });
 
   after(async function() {
@@ -52,7 +52,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events')
+        .from('emarsys_events_data')
         .where({ event_type: 'customer_new_account_registered_no_password' })
         .first();
 
@@ -66,7 +66,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events')
+        .from('emarsys_events_data')
         .where({ event_type: 'customer_new_account_registered' })
         .first();
 
@@ -87,7 +87,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events')
+        .from('emarsys_events_data')
         .where({ event_type: 'customer_password_reset_confirmation' })
         .first();
 
@@ -108,7 +108,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events')
+        .from('emarsys_events_data')
         .where({ event_type: 'customer_password_reminder' })
         .first();
 
@@ -124,7 +124,7 @@ describe('Marketing events: customer', function() {
 
       beforeEach(async function() {
         await this.db.raw('DELETE FROM newsletter_subscriber');
-        await this.db.raw('DELETE FROM emarsys_events');
+        await this.db.raw('DELETE FROM emarsys_events_data');
       });
 
       after(async function() {
@@ -155,7 +155,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
 
           expect(event).to.be.undefined;
@@ -179,7 +179,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events');
+          await this.db.raw('DELETE FROM emarsys_events_data');
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -200,7 +200,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
 
           expect(event).to.be.undefined;
@@ -240,7 +240,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
 
           expect(event).to.be.undefined;
@@ -264,7 +264,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events');
+          await this.db.raw('DELETE FROM emarsys_events_data');
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -285,7 +285,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
 
           expect(event).to.be.undefined;
@@ -310,7 +310,7 @@ describe('Marketing events: customer', function() {
           }
         });
 
-        await this.db.raw('DELETE FROM emarsys_events');
+        await this.db.raw('DELETE FROM emarsys_events_data');
 
         await this.magentoApi.put({
           path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -331,7 +331,7 @@ describe('Marketing events: customer', function() {
 
         const event = await this.db
           .select()
-          .from('emarsys_events')
+          .from('emarsys_events_data')
           .first();
 
         expect(event).to.be.undefined;
@@ -347,7 +347,7 @@ describe('Marketing events: customer', function() {
     it('it should create customer_new_account_registered_no_password event', async function() {
       await this.createCustomer(customer);
 
-      const events = await this.db.select().from('emarsys_events');
+      const events = await this.db.select().from('emarsys_events_data');
 
       expect(events.length).to.be.equal(1);
 
@@ -361,7 +361,7 @@ describe('Marketing events: customer', function() {
     it('it should create customer_new_account_registered event', async function() {
       await this.createCustomer(customer, 'Password1234');
 
-      const events = await this.db.select().from('emarsys_events');
+      const events = await this.db.select().from('emarsys_events_data');
 
       expect(events.length).to.be.equal(1);
 
@@ -382,7 +382,7 @@ describe('Marketing events: customer', function() {
         }
       });
 
-      const events = await this.db.select().from('emarsys_events');
+      const events = await this.db.select().from('emarsys_events_data');
 
       expect(events.length).to.be.equal(1);
 
@@ -404,7 +404,7 @@ describe('Marketing events: customer', function() {
         }
       });
 
-      const events = await this.db.select().from('emarsys_events');
+      const events = await this.db.select().from('emarsys_events_data');
 
       expect(events.length).to.be.equal(1);
 
@@ -425,7 +425,7 @@ describe('Marketing events: customer', function() {
 
       beforeEach(async function() {
         await this.db.raw('DELETE FROM newsletter_subscriber');
-        await this.db.raw('DELETE FROM emarsys_events');
+        await this.db.raw('DELETE FROM emarsys_events_data');
       });
 
       after(async function() {
@@ -454,7 +454,7 @@ describe('Marketing events: customer', function() {
 
           const { event_type: createdEventType, event_data: data } = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
           const createdEventData = JSON.parse(data);
 
@@ -485,7 +485,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events');
+          await this.db.raw('DELETE FROM emarsys_events_data');
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -506,7 +506,7 @@ describe('Marketing events: customer', function() {
 
           const { event_type: createdEventType, event_data: data } = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
           const createdEventData = JSON.parse(data);
 
@@ -553,7 +553,7 @@ describe('Marketing events: customer', function() {
 
           const { event_type: createdEventType, event_data: data } = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
           const createdEventData = JSON.parse(data);
 
@@ -585,7 +585,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events');
+          await this.db.raw('DELETE FROM emarsys_events_data');
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -606,7 +606,7 @@ describe('Marketing events: customer', function() {
 
           const { event_type: createdEventType, event_data: data } = await this.db
             .select()
-            .from('emarsys_events')
+            .from('emarsys_events_data')
             .first();
           const createdEventData = JSON.parse(data);
 
@@ -638,7 +638,7 @@ describe('Marketing events: customer', function() {
           }
         });
 
-        await this.db.raw('DELETE FROM emarsys_events');
+        await this.db.raw('DELETE FROM emarsys_events_data');
 
         await this.magentoApi.put({
           path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -659,7 +659,7 @@ describe('Marketing events: customer', function() {
 
         const { event_type: createdEventType, event_data: data } = await this.db
           .select()
-          .from('emarsys_events')
+          .from('emarsys_events_data')
           .first();
         const createdEventData = JSON.parse(data);
 
@@ -693,7 +693,7 @@ describe('Marketing events: customer', function() {
         }
       });
 
-      const events = await this.db.select().from('emarsys_events');
+      const events = await this.db.select().from('emarsys_events_data');
 
       expect(events.length).to.be.equal(1);
 
@@ -726,7 +726,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events')
+        .from('emarsys_events_data')
         .where({ event_type: 'customer_email_change' })
         .first();
 
@@ -758,7 +758,7 @@ describe('Marketing events: customer', function() {
         }
       });
 
-      const events = await this.db.select().from('emarsys_events');
+      const events = await this.db.select().from('emarsys_events_data');
 
       expect(events.length).to.be.equal(1);
 
@@ -785,7 +785,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events')
+        .from('emarsys_events_data')
         .where({ event_type: 'customer_password_reset' })
         .first();
 

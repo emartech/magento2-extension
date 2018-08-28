@@ -23,7 +23,7 @@ describe('Customer events', function() {
 
     const event = await this.db
       .select()
-      .from('emarsys_events')
+      .from('emarsys_events_data')
       .where({ event_type: 'customers/update' })
       .first();
 
@@ -38,7 +38,7 @@ describe('Customer events', function() {
 
     const event = await this.db
       .select()
-      .from('emarsys_events')
+      .from('emarsys_events_data')
       .where({ event_type: 'customers/update' })
       .first();
 

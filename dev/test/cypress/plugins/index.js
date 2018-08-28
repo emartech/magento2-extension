@@ -65,7 +65,7 @@ const createCustomer = async (customer, password) => {
 };
 
 const clearEvents = async () => {
-  return await db.truncate('emarsys_events');
+  return await db.truncate('emarsys_events_data');
 };
 
 module.exports = (on, config) => { // eslint-disable-line no-unused-vars
@@ -92,7 +92,7 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
     getEventTypeFromDb: async (eventType) => {
       const event = await db
         .select()
-        .from('emarsys_events')
+        .from('emarsys_events_data')
         .where({
           event_type: eventType
         })
@@ -102,7 +102,7 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
       return event;
     },
     getAllEvents: async () => {
-      return await db.select().from('emarsys_events');
+      return await db.select().from('emarsys_events_data');
     },
     createCustomer: async ({ customer }) => {
       return await createCustomer(customer, 'Password1234');

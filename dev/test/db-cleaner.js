@@ -86,6 +86,6 @@ module.exports = class DbCleaner {
       .where({ setting: 'webTrackingSnippetUrl' })
       .update({ value: '' });
 
-    await this._db.truncate('emarsys_events');
+    await this._db.truncate('emarsys_events_data');
   }
 };

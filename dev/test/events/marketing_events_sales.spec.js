@@ -3,7 +3,7 @@
 const getLastEvent = async db =>
   await db
     .select()
-    .from('emarsys_events')
+    .from('emarsys_events_data')
     .orderBy('event_id', 'desc')
     .first();
 
@@ -188,7 +188,7 @@ describe('Marketing events: sales', function() {
       websiteId: 1,
       config: { collectMarketingEvents: 'disabled' }
     });
-    await this.db.truncate('emarsys_events');
+    await this.db.truncate('emarsys_events_data');
   });
 
   describe('If config collectMarketingEvents is disabled', function() {
