@@ -69,14 +69,14 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     /**
      * @param int   $page
      * @param int   $pageSize
-     * @param mixed $subscribed
-     * @param mixed $onlyGuest
+     * @param bool $subscribed
+     * @param bool $onlyGuest
      * @param mixed $websiteId
      * @param mixed $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
      */
-    public function get($page = 1, $pageSize = 1000, $subscribed = null, $onlyGuest = null, $websiteId = null, $storeId = null)
+    public function get($page = 1, $pageSize = 1000, $subscribed = null, $onlyGuest = false, $websiteId = null, $storeId = null)
     {
         $this
             ->joinWebsite()
@@ -208,14 +208,17 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     }
 
     /**
-     * @param mixed $subscribed
+     * @param bool $subscribed
      *
      * @return $this
      */
     protected function filterSubscribed($subscribed = null)
     {
-        if ($subscribed !== null) {
-            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => (int)$subscribed]);
+        if ($subscribed === true) {
+            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
+        }
+        elseif ($subscribed === false) {
+            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
         }
         return $this;
     }
