@@ -18,8 +18,9 @@ const noCustomerEmail = 'no-customer@a.com';
 const noCustomerEmail2 = 'still-no-customer@a.com';
 const customerEmail = 'roni_cost@example.com';
 const customerId = 1;
+const websiteId = 0;
 
-describe.skip('Subscriptions api', function() {
+describe('Subscriptions api', function() {
   let subscriptionFor;
 
   before(function() {
@@ -79,7 +80,7 @@ describe.skip('Subscriptions api', function() {
       });
     });
   });
-  describe('list', function() {
+  describe('get', function() {
     let customerEmail2;
     let customerId2;
 
@@ -96,10 +97,15 @@ describe.skip('Subscriptions api', function() {
 
       await this.magentoApi.updateSubscriptions({
         subscriptions: [
-          { subscriber_email: noCustomerEmail, subscriber_status: true },
-          { subscriber_email: noCustomerEmail2, subscriber_status: false },
-          { subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId },
-          { subscriber_email: customerEmail2, subscriber_status: false, customer_id: customerId2 }
+          { subscriber_email: noCustomerEmail, subscriber_status: true, website_id: websiteId },
+          { subscriber_email: noCustomerEmail2, subscriber_status: false, website_id: websiteId },
+          { subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId, website_id: websiteId },
+          {
+            subscriber_email: customerEmail2,
+            subscriber_status: false,
+            customer_id: customerId2,
+            website_id: websiteId
+          }
         ]
       });
     });
@@ -108,94 +114,68 @@ describe.skip('Subscriptions api', function() {
       const expectedSubscriptions = {
         subscriptions: [
           {
-            customer_id: '0',
-            store_id: '0',
-            subscriber_email: noCustomerEmail,
-            subscriber_status: '1'
-          },
-          {
-            customer_id: '' + customerId,
-            store_id: '0',
-            subscriber_email: customerEmail,
-            subscriber_status: '1'
-          },
-          {
-            customer_id: '0',
-            store_id: '0',
+            customer_id: 0,
+            store_id: 0,
             subscriber_email: noCustomerEmail2,
-            subscriber_status: '3'
+            subscriber_status: '3',
+            website_id: websiteId
           },
           {
-            customer_id: '' + customerId2,
-            store_id: '0',
+            customer_id: customerId,
+            store_id: 0,
+            subscriber_email: customerEmail,
+            subscriber_status: '1',
+            website_id: websiteId
+          },
+          {
+            customer_id: 0,
+            store_id: 0,
+            subscriber_email: noCustomerEmail,
+            subscriber_status: '1',
+            website_id: websiteId
+          },
+          {
+            customer_id: customerId2,
+            store_id: 0,
             subscriber_email: customerEmail2,
-            subscriber_status: '3'
+            subscriber_status: '3',
+            website_id: websiteId
           }
         ],
-        subscriptionCount: 4
+        total_count: 4
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ withCustomers: true });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({});
 
-      expect(actualSubscriptions.subscriptionCount).to.be.eql(expectedSubscriptions.subscriptionCount);
+      expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
     });
 
-    it('should give specific subscriber for email filter', async function() {
+    it('should filter with subscribed status true', async function() {
       const expectedSubscriptions = {
         subscriptions: [
           {
-            customer_id: '1',
-            store_id: '0',
-            subscriber_email: 'roni_cost@example.com',
-            subscriber_status: '1'
-          }
-        ],
-        subscriptionCount: 1
-      };
-
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({
-        emails: [customerEmail],
-        withCustomers: true
-      });
-
-      expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
-    });
-
-    it('should give empty result for not existing email filter', async function() {
-      const expectedSubscriptions = {
-        subscriptions: [],
-        subscriptionCount: 0
-      };
-
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({
-        emails: ['not-a-known-address@a.com'],
-        withCustomers: true
-      });
-
-      expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
-    });
-
-    it('should filter with subscribed true', async function() {
-      const expectedSubscriptions = {
-        subscriptions: [
-          {
-            customer_id: '0',
-            store_id: '0',
+            customer_id: 0,
+            store_id: 0,
             subscriber_email: noCustomerEmail,
-            subscriber_status: '1'
+            subscriber_status: '1',
+            website_id: websiteId
           },
           {
-            customer_id: '' + customerId,
-            store_id: '0',
+            customer_id: customerId,
+            store_id: 0,
             subscriber_email: customerEmail,
-            subscriber_status: '1'
+            subscriber_status: '1',
+            website_id: websiteId
           }
         ],
-        subscriptionCount: 2
+        total_count: 2,
+        current_page: 1,
+        last_page: 1,
+        page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: true, withCustomers: true });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: true });
 
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
@@ -204,22 +184,27 @@ describe.skip('Subscriptions api', function() {
       const expectedSubscriptions = {
         subscriptions: [
           {
-            customer_id: '0',
-            store_id: '0',
+            customer_id: 0,
+            store_id: 0,
             subscriber_email: noCustomerEmail2,
-            subscriber_status: '3'
+            subscriber_status: '3',
+            website_id: websiteId
           },
           {
-            customer_id: '' + customerId2,
-            store_id: '0',
+            customer_id: customerId2,
+            store_id: 0,
             subscriber_email: customerEmail2,
-            subscriber_status: '3'
+            subscriber_status: '3',
+            website_id: websiteId
           }
         ],
-        subscriptionCount: 2
+        total_count: 2,
+        current_page: 1,
+        last_page: 1,
+        page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: false, withCustomers: true });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: false, onlyGuest: false });
 
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
@@ -228,24 +213,27 @@ describe.skip('Subscriptions api', function() {
       const expectedSubscriptions = {
         subscriptions: [
           {
-            customer_id: '0',
-            store_id: '0',
+            customer_id: 0,
+            store_id: 0,
             subscriber_email: noCustomerEmail,
             subscriber_status: '1'
           },
           {
-            customer_id: '0',
-            store_id: '0',
+            customer_id: 0,
+            store_id: 0,
             subscriber_email: noCustomerEmail2,
             subscriber_status: '3'
           }
         ],
-        subscriptionCount: 2
+        total_count: 2,
+        current_page: 1,
+        last_page: 1,
+        page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ withCustomers: false });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ onlyGuest: true });
 
-      expect(actualSubscriptions.subscriptionCount).to.be.eql(expectedSubscriptions.subscriptionCount);
+      expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
     });
   });
