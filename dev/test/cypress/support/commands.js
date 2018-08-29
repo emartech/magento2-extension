@@ -35,16 +35,19 @@ Cypress.Commands.add('logout', () => {
 });
 
 Cypress.Commands.add('shouldNotShowErrorMessage', (excludeErrorMessage) => {
-  cy.get('[data-ui-id="message-error"]').as('errorMessage');
   if (excludeErrorMessage) {
-    cy.get('@errorMessage').then((element) => {
-      expect(element).not.to.have.text(excludeErrorMessage);
-    });
+    cy.get('[data-ui-id="message-error"]').invoke('text').should('contain', excludeErrorMessage);
   } else {
-    cy.get('@errorMessage').should('not.be.visible');
+    cy.get('[data-ui-id="message-error"]').should('not.be.visible');
   }
 });
 
 Cypress.Commands.add('clog', (logObject) => {
   cy.task('log', logObject);
+});
+
+Cypress.Commands.add('isSubscribed', (email) => {
+  cy.task('getSubscription', email).then((subscription) => {
+    expect(subscription.subscriber_status).to.be.equal(1);
+  });
 });

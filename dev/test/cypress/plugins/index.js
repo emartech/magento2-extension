@@ -37,6 +37,7 @@ const getMagentoToken = async () => {
 
     const { token } = JSON.parse(Buffer.from(result.value, 'base64'));
     magentoToken = token;
+    console.log('MAGENTO-TOKEN', magentoToken);
   }
   return magentoToken;
 };
@@ -131,6 +132,9 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
     setDefaultCustomerProperty: (customerData) => {
       defaultCustomer = Object.assign({}, defaultCustomer, customerData);
       return defaultCustomer;
+    },
+    getSubscription: async (email) => {
+      return await db.select().from('newsletter_subscriber').where({ subscriber_email: email }).first();
     }
   });
 };

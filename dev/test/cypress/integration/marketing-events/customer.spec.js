@@ -11,8 +11,7 @@ describe('Marketing Events', function() {
     }
     if (email) {
       cy.get('#change-email').check();
-      cy.get('#email').type(customer.email);
-
+      cy.get('#email').clear().type(email);
     }
     cy.get('input[name="current_password"]').type(customer.password);
 
@@ -28,7 +27,7 @@ describe('Marketing Events', function() {
       cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'disabled' } });
     });
 
-    it.skip('should not create newsletter_send_confirmation_success_email event', function() {
+    it('should not create newsletter_send_confirmation_success_email event', function() {
       const guestEmail = 'guest.email2@guest.com';
       cy.visit('/');
 
@@ -37,7 +36,8 @@ describe('Marketing Events', function() {
 
       cy.shouldNotExistsEvents();
       cy.wait(1000);
-      cy.shouldNotShowErrorMessage();
+      cy.shouldNotShowErrorMessage('Something went wrong with the subscription.');
+      cy.isSubscribed(guestEmail);
     });
 
     it('should not create customer_password_reset event', function() {
@@ -51,6 +51,33 @@ describe('Marketing Events', function() {
       cy.shouldNotShowErrorMessage('Unable to send mail.');
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
+    });
+
+    it('should not create customer_email_changed event', function() {
+      const newEmail = 'cypress2@default.com';
+
+      cy.loginWithCustomer({ customer: this.defaultCustomer });
+      changeCredentials(this.defaultCustomer, { email: newEmail });
+
+      cy.shouldNotExistsEvents();
+      cy.wait(1000);
+      cy.shouldNotShowErrorMessage('Unable to send mail.');
+
+      cy.task('setDefaultCustomerProperty', { email: newEmail });
+    });
+
+    it('should create customer_email_and_password_changed event', function() {
+      const newEmail = 'cypress5@default.com';
+      const newPassword = 'newPassword4';
+
+      cy.loginWithCustomer({ customer: this.defaultCustomer });
+      changeCredentials(this.defaultCustomer, { password: newPassword, email: newEmail });
+
+      cy.shouldNotExistsEvents();
+      cy.wait(1000);
+      cy.shouldNotShowErrorMessage('Unable to send mail.');
+
+      cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
     });
   });
 
@@ -70,10 +97,12 @@ describe('Marketing Events', function() {
       cy.shouldCreateEvent('newsletter_send_confirmation_success_email', {
         confirmation_link: { subscriber_email: guestEmail }
       });
+      cy.shouldNotShowErrorMessage();
+
+      cy.isSubscribed(guestEmail);
     });
 
     it('should create customer_password_reset event', function() {
-      cy.clog(this.defaultCustomer.password);
       const newPassword = 'newPassword2';
 
       cy.loginWithCustomer({ customer: this.defaultCustomer });
@@ -82,8 +111,38 @@ describe('Marketing Events', function() {
       cy.shouldCreateEvent('customer_password_reset', {
         new_customer_email: this.defaultCustomer.email
       });
+      cy.shouldNotShowErrorMessage();
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
+    });
+
+    it('should create customer_email_changed event', function() {
+      const newEmail = 'cypress3@default.com';
+
+      cy.loginWithCustomer({ customer: this.defaultCustomer });
+      changeCredentials(this.defaultCustomer, { email: newEmail });
+
+      cy.shouldCreateEvent('customer_email_changed', {
+        new_customer_email: newEmail
+      });
+      cy.shouldNotShowErrorMessage();
+
+      cy.task('setDefaultCustomerProperty', { email: newEmail });
+    });
+
+    it('should create customer_email_and_password_changed event', function() {
+      const newEmail = 'cypress4@default.com';
+      const newPassword = 'newPassword3';
+
+      cy.loginWithCustomer({ customer: this.defaultCustomer });
+      changeCredentials(this.defaultCustomer, { password: newPassword, email: newEmail });
+
+      cy.shouldCreateEvent('customer_email_and_password_changed', {
+        new_customer_email: newEmail
+      });
+      cy.shouldNotShowErrorMessage();
+
+      cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
     });
   });
 });
