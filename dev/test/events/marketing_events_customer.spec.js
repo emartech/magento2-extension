@@ -225,7 +225,7 @@ describe('Marketing events: customer', function() {
           }
         });
 
-        await this.db.raw('DELETE FROM emarsys_events');
+        await this.db.raw('DELETE FROM emarsys_events_data');
 
         await this.magentoApi.put({
           path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -246,7 +246,7 @@ describe('Marketing events: customer', function() {
 
         const event = await this.db
           .select()
-          .from('emarsys_events')
+          .from('emarsys_events_data')
           .first();
 
         expect(event).to.be.undefined;
