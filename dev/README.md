@@ -131,3 +131,40 @@ To run the tests use
 ```
 $ make test
 ```
+
+---
+## Release
+
+Merge `master` to `production` branch, use message like `Prepare release 1.1.1`. Do not merge deleted files (`dev/*`, `codeship*`, etc).
+
+Update the version in `composer.json` on **production branch**
+```json
+{
+  "name": "emartech/emarsys-magento2-extension",
+  "description": "Emarsys Marketing Platform",
+  "license": "MIT",
+  "require": {
+    "magento/framework": "*"
+  },
+  "type": "magento2-module",
+  "version": "1.1.1",
+  "autoload": {
+     "files": [ "registration.php" ],
+     "psr-4": {
+        "Emartech\\Emarsys\\": ""
+     }
+  }
+}
+```
+
+Commit with message that will be the release title. Use `--skip-ci` in description.
+
+Tag with the same version as in `composer.json`.
+
+Push `production` branch with tags.
+
+## Codeship env
+* [Install](https://documentation.codeship.com/pro/jet-cli/installation/) `jet`
+* Download the `aes` key from [Codeship](https://app.codeship.com/projects/290273/configure) into the project directory.
+* Run `$ jet encrypt codeship.env codeship.env.encrypted`
+* Commit `codeship.env.encrypted` into the repo.
