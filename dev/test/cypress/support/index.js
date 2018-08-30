@@ -3,6 +3,7 @@
 require('./commands');
 
 afterEach(() => {
+  cy.wait(2000);
   cy.task('clearEvents');
 });
 

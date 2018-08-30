@@ -36,9 +36,9 @@ Cypress.Commands.add('logout', () => {
 
 Cypress.Commands.add('shouldNotShowErrorMessage', (excludeErrorMessage) => {
   if (excludeErrorMessage) {
-    cy.get('[data-ui-id="message-error"]').invoke('text').should('contain', excludeErrorMessage);
+    return cy.get('[data-ui-id="message-error"]').invoke('text').should('contain', excludeErrorMessage);
   } else {
-    cy.get('[data-ui-id="message-error"]').should('not.be.visible');
+    return cy.get('[data-ui-id="message-error"]').should('not.be.visible');
   }
 });
 

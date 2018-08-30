@@ -5,17 +5,17 @@ describe('Marketing Events', function() {
     cy.visit('/index.php/customer/account/edit/');
 
     if (password) {
-      cy.get('#change-password').check();
-      cy.get('#password').type(password);
-      cy.get('#password-confirmation').type(password);
+      cy.get('.page-wrapper #change-password').check();
+      cy.get('.page-wrapper #password').type(password);
+      cy.get('.page-wrapper #password-confirmation').type(password);
     }
     if (email) {
-      cy.get('#change-email').check();
-      cy.get('#email').clear().type(email);
+      cy.get('.page-wrapper #change-email').check();
+      cy.get('.page-wrapper #email').clear().type(email);
     }
-    cy.get('input[name="current_password"]').type(customer.password);
+    cy.get('.page-wrapper input[name="current_password"]').type(customer.password);
 
-    cy.get('.action.save.primary').click();
+    cy.get('.page-wrapper .action.save.primary').click();
   };
 
   beforeEach(() => {
