@@ -1,6 +1,7 @@
 {
   "name": "emartech/emarsys-magento2-extension",
   "description": "Emarsys Marketing Platform",
+  "license": "MIT",
   "require": {
     "magento/framework": "*"
   },
