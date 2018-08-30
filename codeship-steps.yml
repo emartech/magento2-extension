@@ -1,6 +1,10 @@
-- name: install-and-test
+- type: serial
   service: node
-  command: /bin/sh -c "npm t && npm run e2e"
+  steps:
+  - name: running api tests
+    command: /bin/sh -c "npm t"
+  - name: running e2e tests
+    command: /bin/sh -c "npm run e2e"
 - name: deploy to staging on Google Kubernetes Engine
   service: deployment
   command: /bin/bash -c "codeship_google authenticate && gcloud container clusters get-credentials cluster-1 --region=europe-west2 && sh /deploy/restart.sh web-staging"
