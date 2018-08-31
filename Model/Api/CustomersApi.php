@@ -2,11 +2,24 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
+use Magento\Customer\Model\ResourceModel\Customer\Collection;
+use Magento\Customer\Model\Customer;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+use Emartech\Emarsys\Api\CustomersApiInterface;
+use Emartech\Emarsys\Api\Data\CustomerInterfaceFactory;
+use Emartech\Emarsys\Api\Data\CustomerInterface;
+use Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory;
+use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
+use Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
+
 /**
  * Class CustomersApi
  * @package Emartech\Emarsys\Model\Api
  */
-class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
+class CustomersApi implements CustomersApiInterface
 {
 
     /**
@@ -15,27 +28,27 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     private $addressFields = [];
 
     /**
-     * @var \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory
+     * @var CollectionFactory
      */
     private $collectionFactory;
 
     /**
-     * @var \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory
+     * @var CustomerInterfaceFactory
      */
     private $customerFactory;
 
     /**
-     * @var \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory
+     * @var CustomerAddressInterfaceFactory
      */
     private $customerAddressFactory;
 
     /**
-     * @var \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory
+     * @var CustomersApiResponseInterfaceFactory
      */
     private $customersResponseFactory;
 
     /**
-     * @var \Magento\Customer\Model\ResourceModel\Customer\Collection
+     * @var Collection
      */
     private $customerCollection;
 
@@ -50,46 +63,47 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     private $subscriptionTable;
 
     /**
+     * @var ContainerBuilder
+     */
+    private $containerBuilder;
+
+    /**
      * CustomersApi constructor.
      *
-     * @param \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $collectionFactory
-     * @param \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory              $customerFactory
-     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory       $customerAddressFactory
-     * @param \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory  $customersResponseFactory
-     *
-     * @throws \ReflectionException
+     * @param CollectionFactory                    $collectionFactory
+     * @param CustomerInterfaceFactory             $customerFactory
+     * @param CustomerAddressInterfaceFactory      $customerAddressFactory
+     * @param CustomersApiResponseInterfaceFactory $customersResponseFactory
+     * @param ContainerBuilder                     $containerBuilder
      */
     public function __construct(
-        \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $collectionFactory,
-        \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory $customerFactory,
-        \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory $customerAddressFactory,
-        \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory $customersResponseFactory
+        CollectionFactory $collectionFactory,
+        CustomerInterfaceFactory $customerFactory,
+        CustomerAddressInterfaceFactory $customerAddressFactory,
+        CustomersApiResponseInterfaceFactory $customersResponseFactory,
+        ContainerBuilder $containerBuilder
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->customerFactory = $customerFactory;
         $this->customerAddressFactory = $customerAddressFactory;
         $this->customersResponseFactory = $customersResponseFactory;
-
-        $customerAddressInterfaceReflection = new \ReflectionClass('\Emartech\Emarsys\Api\Data\CustomerAddressInterface');
-        $this->addressFields = $customerAddressInterfaceReflection->getConstants();
-
-        $this->customerCollection = $this->collectionFactory->create();
-        $this->customerAddressEntityTable = $this->customerCollection->getResource()->getTable('customer_address_entity');
-        $this->subscriptionTable = $this->customerCollection->getResource()->getTable('newsletter_subscriber');
+        $this->containerBuilder = $containerBuilder;
     }
 
     /**
-     * @param int   $page
-     * @param int   $pageSize
-     * @param mixed $websiteId
-     * @param mixed $storeId
+     * @param int  $page
+     * @param int  $pageSize
+     * @param null $websiteId
+     * @param null $storeId
      *
-     * @return \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
+     * @return CustomersApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \ReflectionException
      */
     public function get($page, $pageSize, $websiteId = null, $storeId = null)
     {
         $this
+            ->initCollection()
             ->filterMixedParam($websiteId, 'website_id')
             ->filterMixedParam($storeId, 'store_id')
             ->joinAddress('billing')
@@ -106,12 +120,31 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     }
 
     /**
+     * @return $this
+     * @throws \ReflectionException
+     */
+    private function initCollection()
+    {
+        $customerAddressInterfaceReflection = $this->containerBuilder->getReflectionClass(
+            '\Emartech\Emarsys\Api\Data\CustomerAddressInterface'
+        );
+        $this->addressFields = $customerAddressInterfaceReflection->getConstants();
+
+        $this->customerCollection = $this->collectionFactory->create();
+        $this->customerAddressEntityTable = $this->customerCollection->getResource()
+            ->getTable('customer_address_entity');
+        $this->subscriptionTable = $this->customerCollection->getResource()->getTable('newsletter_subscriber');
+
+        return $this;
+    }
+
+    /**
      * @param int $page
      * @param int $pageSize
      *
      * @return $this
      */
-    protected function setPage($page, $pageSize)
+    private function setPage($page, $pageSize)
     {
         $this->customerCollection->setPage($page, $pageSize);
         return $this;
@@ -124,7 +157,7 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function filterMixedParam($param, $type)
+    private function filterMixedParam($param, $type)
     {
         if ($param) {
             if (!is_array($param)) {
@@ -138,7 +171,7 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     /**
      * @return array
      */
-    protected function handleCustomers()
+    private function handleCustomers()
     {
         $customerArray = [];
         foreach ($this->customerCollection as $customer) {
@@ -149,13 +182,13 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     }
 
     /**
-     * @param \Magento\Customer\Model\Customer $customer
+     * @param Customer $customer
      *
-     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     * @return CustomerInterface
      */
-    protected function parseCustomer($customer)
+    private function parseCustomer($customer)
     {
-        /** @var \Emartech\Emarsys\Api\Data\CustomerInterface $customerItem */
+        /** @var CustomerInterface $customerItem */
         $customerItem = $this->customerFactory->create()
             ->setId($customer->getId())
             ->setBillingAddress($this->getAddressFromCustomer($customer, 'billing'))
@@ -169,14 +202,14 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
     }
 
     /**
-     * @param \Magento\Customer\Model\Customer $customer
-     * @param string                           $addressType
+     * @param Customer $customer
+     * @param string   $addressType
      *
-     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+     * @return CustomerAddressInterface
      */
-    protected function getAddressFromCustomer($customer, $addressType = 'billing')
+    private function getAddressFromCustomer($customer, $addressType = 'billing')
     {
-        /** @var \Emartech\Emarsys\Api\Data\CustomerAddressInterface $address */
+        /** @var CustomerAddressInterface $address */
         $address = $this->customerAddressFactory->create();
 
         foreach ($customer->getData() as $key => $value) {
@@ -193,15 +226,18 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
 
     /**
      * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function joinSubscriptionStatus()
+    private function joinSubscriptionStatus()
     {
         $tableAlias = 'newsletter';
 
-        $this->customerCollection->getSelect()->joinLeft(
+        $this->customerCollection->joinTable(
             [$tableAlias => $this->subscriptionTable],
-            $tableAlias . '.customer_id = e.entity_id',
-            ['accepts_marketing' => 'subscriber_status']
+            'customer_id = entity_id',
+            ['accepts_marketing' => 'subscriber_status'],
+            null,
+            'left'
         );
 
         return $this;
@@ -211,20 +247,23 @@ class CustomersApi implements \Emartech\Emarsys\Api\CustomersApiInterface
      * @param string $addressType
      *
      * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function joinAddress($addressType = 'billing')
+    private function joinAddress($addressType = 'billing')
     {
         $tableAlias = $addressType . '_address';
 
         $attributes = [];
         foreach ($this->addressFields as $addressConstantKey => $addressField) {
-            $attributes[$addressType . '.' . $addressField] = $tableAlias . '.' . $addressField;
+            $attributes[$addressType . '.' . $addressField] = $addressField;
         }
 
-        $this->customerCollection->getSelect()->joinLeft(
+        $this->customerCollection->joinTable(
             [$tableAlias => $this->customerAddressEntityTable],
-            $tableAlias . '.entity_id = e.default_' . $addressType,
-            $attributes
+            'entity_id = default_' . $addressType,
+            $attributes,
+            null,
+            'left'
         );
 
         return $this;

@@ -1,15 +1,19 @@
 <?php
 
-
 namespace Emartech\Emarsys\Api;
 
 
+/**
+ * Interface EventsApiInterface
+ * @package Emartech\Emarsys\Api
+ */
 interface EventsApiInterface
 {
-  /**
-   * @param int $since_id
-   * @param int $page_size
-   * @return mixed
-   */
-  public function get($since_id, $page_size);
+    /**
+     * @param int $sinceId
+     * @param int $pageSize
+     *
+     * @return \Emartech\Emarsys\Api\Data\EventsApiResponseInterface
+     */
+    public function get($sinceId, $pageSize);
 }

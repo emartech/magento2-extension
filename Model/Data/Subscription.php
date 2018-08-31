@@ -2,11 +2,15 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Magento\Framework\DataObject;
+
+use Emartech\Emarsys\Api\Data\SubscriptionInterface;
+
 /**
  * Class Subscription
  * @package Emartech\Emarsys\Model\Data
  */
-class Subscription extends \Magento\Framework\DataObject implements \Emartech\Emarsys\Api\Data\SubscriptionInterface
+class Subscription extends DataObject implements SubscriptionInterface
 {
     /**
      * @return int

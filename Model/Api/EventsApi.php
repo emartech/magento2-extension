@@ -1,67 +1,135 @@
 <?php
 
-
 namespace Emartech\Emarsys\Model\Api;
 
-
+use Emartech\Emarsys\Api\Data\EventsApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\Data\EventsApiResponseInterface;
 use Emartech\Emarsys\Api\EventsApiInterface;
+use Emartech\Emarsys\Model\Event;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\Collection;
 
+/**
+ * Class EventsApi
+ * @package Emartech\Emarsys\Model\Api
+ */
 class EventsApi implements EventsApiInterface
 {
-  /**
-   * @var EventFactory
-   */
-  private $eventCollectionFactory;
+    /**
+     * @var CollectionFactory
+     */
+    private $eventCollectionFactory;
 
-  public function __construct(CollectionFactory $eventCollectionFactory)
-  {
-    $this->eventCollectionFactory = $eventCollectionFactory;
-  }
+    /**
+     * @var EventsApiResponseInterfaceFactory
+     */
+    private $eventsApiResponseFactory;
 
-  /**
-   * @param int $since_id
-   * @param int $page_size
-   * @return mixed
-   */
-  public function get($since_id, $page_size)
-  {
-    $this->removeOldEvents($since_id);
+    /**
+     * @var Collection
+     */
+    private $eventCollection;
 
-    /** @var Collection $eventCollection */
-    $eventCollection = $this->eventCollectionFactory->create()
-      ->addFieldToFilter('event_id', ['gt' => $since_id])
-      ->setPageSize($page_size);
-
-    $sinceEvents = [];
-    foreach ($eventCollection as $event) {
-      $sinceEvents[] = [
-        'event_id' => $event->getEventId(),
-        'event_type' => $event->getEventType(),
-        'event_data' => json_decode($event->getEventData()),
-        'created_at' => $event->getCreatedAt()
-      ];
+    /**
+     * EventsApi constructor.
+     *
+     * @param CollectionFactory                 $eventCollectionFactory
+     * @param EventsApiResponseInterfaceFactory $eventsApiResponseFactory
+     */
+    public function __construct(
+        CollectionFactory $eventCollectionFactory,
+        EventsApiResponseInterfaceFactory $eventsApiResponseFactory
+    ) {
+        $this->eventCollectionFactory = $eventCollectionFactory;
+        $this->eventsApiResponseFactory = $eventsApiResponseFactory;
     }
 
-    $responseData = [[
-      'events' => $sinceEvents,
-      'current_page' => $eventCollection->getCurPage(),
-      'last_page' => $eventCollection->getLastPageNumber(),
-      'page_size' => $page_size
-    ]];
+    /**
+     * @param int $sinceId
+     * @param int $pageSize
+     *
+     * @return EventsApiResponseInterface
+     */
+    public function get($sinceId, $pageSize)
+    {
+        $this
+            ->initCollection()
+            ->removeOldEvents($sinceId)
+            ->initCollection()
+            ->getEvents($sinceId)
+            ->setPageSize($pageSize);
 
-    return $responseData;
-  }
+        return $this->eventsApiResponseFactory->create()
+            ->setCurrentPage($this->eventCollection->getCurPage())
+            ->setLastPage($this->eventCollection->getLastPageNumber())
+            ->setPageSize($this->eventCollection->getPageSize())
+            ->setTotalCount($this->eventCollection->getSize())
+            ->setEvents($this->handleEvents());
+    }
 
-  private function removeOldEvents($before_id)
-  {
-    /** @var Collection $oldEvents */
-    $oldEvents = $this->eventCollectionFactory->create()
-      ->addFieldToFilter('event_id', ['lteq' => $before_id]);
+    /**
+     * @return array
+     */
+    private function handleEvents()
+    {
+        $eventsArray = [];
 
-    $oldEvents->walk('delete');
+        /** @var Event $event */
+        foreach ($this->eventCollection as $event) {
+            $eventsArray[] = $event;
+        }
 
-    $oldEvents->clear();
-  }
+        return $eventsArray;
+    }
+
+    /**
+     * @return $this
+     */
+    private function initCollection()
+    {
+        $this->eventCollection = $this->eventCollectionFactory->create();
+
+        return $this;
+    }
+
+    /**
+     * @param int $sinceId
+     *
+     * @return $this
+     */
+    private function getEvents($sinceId)
+    {
+        $this->eventCollection
+            ->addFieldToFilter('event_id', ['gt' => $sinceId]);
+
+        return $this;
+    }
+
+    /**
+     * @param int $pageSize
+     *
+     * @return $this
+     */
+    private function setPageSize($pageSize)
+    {
+        $this->eventCollection
+            ->setPageSize($pageSize);
+
+        return $this;
+    }
+
+    /**
+     * @param int $beforeId
+     *
+     * @return $this
+     */
+    private function removeOldEvents($beforeId)
+    {
+        $oldEvents = $this->eventCollection
+            ->addFieldToFilter('event_id', ['lteq' => $beforeId]);
+
+        $oldEvents->walk('delete');
+
+        return $this;
+    }
 }

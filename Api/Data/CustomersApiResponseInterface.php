@@ -6,7 +6,7 @@ namespace Emartech\Emarsys\Api\Data;
  * Interface CustomersApiResponseInterface
  * @package Emartech\Emarsys\Api\Data
  */
-interface CustomersApiResponseInterface extends CustomersApiResponseBaseInterface
+interface CustomersApiResponseInterface extends ListApiResponseBaseInterface
 {
     const CUSTOMERS_KEY = 'customers';
 

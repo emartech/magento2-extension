@@ -2,7 +2,15 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-class CustomerAddress extends \Magento\Framework\DataObject implements \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+use Magento\Framework\DataObject;
+
+use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
+
+/**
+ * Class CustomerAddress
+ * @package Emartech\Emarsys\Model\Data
+ */
+class CustomerAddress extends DataObject implements CustomerAddressInterface
 {
     /**
      * @return string

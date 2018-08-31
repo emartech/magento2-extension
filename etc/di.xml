@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="Emartech\Emarsys\Api\EventsApiInterface" type="Emartech\Emarsys\Model\Api\EventsApi" />
     <preference for="Emartech\Emarsys\Api\ProductsApiInterface" type="Emartech\Emarsys\Model\Api\ProductsApi" />
     <preference for="Emartech\Emarsys\Api\TemplatesApiInterface" type="Emartech\Emarsys\Model\Api\TemplatesApi" />
     <preference for="Emartech\Emarsys\Api\ConfigApiInterface" type="Emartech\Emarsys\Model\Api\ConfigApi" />
@@ -16,6 +15,9 @@
     <preference for="Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface" type="Emartech\Emarsys\Model\Data\SubscriptionsApiResponse" />
     <preference for="Emartech\Emarsys\Api\Data\SubscriptionInterface" type="Emartech\Emarsys\Model\Data\Subscription" />
     <preference for="Emartech\Emarsys\Api\Data\StatusResponseInterface" type="Emartech\Emarsys\Model\Data\StatusResponse" />
+
+    <preference for="Emartech\Emarsys\Api\EventsApiInterface" type="Emartech\Emarsys\Model\Api\EventsApi" />
+    <preference for="Emartech\Emarsys\Api\Data\EventsApiResponseInterface" type="Emartech\Emarsys\Model\Data\EventsApiResponse" />
 
 
     <type name="Magento\Customer\CustomerData\Customer">

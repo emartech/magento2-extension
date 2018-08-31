@@ -2,83 +2,119 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory;
+use Magento\Newsletter\Model\ResourceModel\Subscriber\Collection;
+use Magento\Newsletter\Model\SubscriberFactory;
 use Magento\Newsletter\Model\Subscriber;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Customer\Model\Config\Share;
+
+use Emartech\Emarsys\Api\SubscriptionsApiInterface;
+use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
+use Emartech\Emarsys\Api\Data\StatusResponseInterface;
+use Emartech\Emarsys\Api\Data\SubscriptionInterfaceFactory;
+use Emartech\Emarsys\Api\Data\SubscriptionInterface;
+use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
 
 /**
  * Class SubscriptionsApi
  * @package Emartech\Emarsys\Model\Api
  */
-class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterface
+class SubscriptionsApi implements SubscriptionsApiInterface
 {
     /**
-     * @var \Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory
+     * @var CollectionFactory
      */
-    protected $subscriberCollectionFactory;
+    private $subscriberCollectionFactory;
 
     /**
-     * @var \Magento\Newsletter\Model\SubscriberFactory
+     * @var SubscriberFactory
      */
-    protected $subscriberFactory;
+    private $subscriberFactory;
 
     /**
-     * @var \Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory
+     * @var StoreManagerInterface
      */
-    protected $statusResponseFactory;
+    private $storeManager;
 
     /**
-     * @var \Emartech\Emarsys\Api\Data\SubscriptionInterfaceFactory
+     * @var Share
      */
-    protected $subscriptionFactory;
+    private $customerModelConfigShare;
 
     /**
-     * @var \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterfaceFactory
+     * @var StatusResponseInterfaceFactory
      */
-    protected $subscriptionsResponseFactory;
+    private $statusResponseFactory;
 
     /**
-     * @var \Magento\Newsletter\Model\ResourceModel\Subscriber\Collection
+     * @var SubscriptionInterfaceFactory
      */
-    protected $subscriptionCollection;
+    private $subscriptionFactory;
 
     /**
-     * Subscription constructor.
+     * @var SubscriptionsApiResponseInterfaceFactory
+     */
+    private $subscriptionsResponseFactory;
+
+    /**
+     * @var Collection
+     */
+    private $subscriptionCollection;
+
+    /**
+     * SubscriptionsApi constructor.
      *
-     * @param \Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory $subscriberCollectionFactory
-     * @param \Magento\Newsletter\Model\SubscriberFactory                          $subscriberFactory
-     * @param \Emartech\Emarsys\Api\Data\SubscriptionInterfaceFactory              $subscriptionFactory
-     * @param \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterfaceFactory  $subscriptionsResponseFactory
-     * @param \Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory            $statusResponseFactory
+     * @param CollectionFactory                        $subscriberCollectionFactory
+     * @param SubscriberFactory                        $subscriberFactory
+     * @param StoreManagerInterface                    $storeManager
+     * @param SubscriptionInterfaceFactory             $subscriptionFactory
+     * @param Share                                    $customerModelConfigShare
+     * @param SubscriptionsApiResponseInterfaceFactory $subscriptionsResponseFactory
+     * @param StatusResponseInterfaceFactory           $statusResponseFactory
      */
     public function __construct(
-        \Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory $subscriberCollectionFactory,
-        \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory,
-        \Emartech\Emarsys\Api\Data\SubscriptionInterfaceFactory $subscriptionFactory,
-        \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterfaceFactory $subscriptionsResponseFactory,
-        \Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory $statusResponseFactory
+        CollectionFactory $subscriberCollectionFactory,
+        SubscriberFactory $subscriberFactory,
+        StoreManagerInterface $storeManager,
+        SubscriptionInterfaceFactory $subscriptionFactory,
+        Share $customerModelConfigShare,
+        SubscriptionsApiResponseInterfaceFactory $subscriptionsResponseFactory,
+        StatusResponseInterfaceFactory $statusResponseFactory
     ) {
+        $this->storeManager = $storeManager;
+        $this->customerModelConfigShare = $customerModelConfigShare;
+
         $this->subscriberFactory = $subscriberFactory;
         $this->statusResponseFactory = $statusResponseFactory;
 
         $this->subscriberCollectionFactory = $subscriberCollectionFactory;
         $this->subscriptionFactory = $subscriptionFactory;
         $this->subscriptionsResponseFactory = $subscriptionsResponseFactory;
-
-        $this->subscriptionCollection = $this->subscriberCollectionFactory->create();
     }
 
     /**
      * @param int   $page
      * @param int   $pageSize
-     * @param bool $subscribed
-     * @param bool $onlyGuest
+     * @param bool  $subscribed
+     * @param bool  $onlyGuest
      * @param mixed $websiteId
      * @param mixed $storeId
      *
-     * @return \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
+     * @return SubscriptionsApiResponseInterface
      */
-    public function get($page = 1, $pageSize = 1000, $subscribed = null, $onlyGuest = false, $websiteId = null, $storeId = null)
-    {
+    public function get(
+        $page = 1,
+        $pageSize = 1000,
+        $subscribed = null,
+        $onlyGuest = false,
+        $websiteId = null,
+        $storeId = null
+    ) {
+
         $this
+            ->initCollection()
             ->joinWebsite()
             ->filterWebsite($websiteId)
             ->filterStore($storeId)
@@ -95,14 +131,16 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
+     * @param SubscriptionInterface[] $subscriptions
      *
-     * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
+     * @return StatusResponseInterface
      * @throws \Exception
      */
     public function update($subscriptions)
     {
-        /** @var \Emartech\Emarsys\Api\Data\SubscriptionInterface $subscription */
+        $this->initCollection();
+
+        /** @var SubscriptionInterface $subscription */
         foreach ($subscriptions as $subscription) {
             $this->changeSubscription(
                 $subscription,
@@ -116,7 +154,20 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
             ->setStatus('ok');
     }
 
-    protected function handleSubscriptions()
+    /**
+     * @return $this
+     */
+    private function initCollection()
+    {
+        $this->subscriptionCollection = $this->subscriberCollectionFactory->create();
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    private function handleSubscriptions()
     {
         $subscriptionArray = [];
         foreach ($this->subscriptionCollection as $subscription) {
@@ -127,13 +178,13 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     }
 
     /**
-     * @param \Magento\Newsletter\Model\Subscriber $subscription
+     * @param $subscription
      *
-     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
+     * @return SubscriptionInterface
      */
-    protected function parseSubscription($subscription)
+    private function parseSubscription($subscription)
     {
-        /** @var \Emartech\Emarsys\Api\Data\SubscriptionInterface $subscriptionItem */
+        /** @var SubscriptionInterface $subscriptionItem */
         $subscriptionItem = $this->subscriptionFactory->create();
 
         foreach ($subscription->getData() as $key => $value) {
@@ -149,7 +200,7 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
      *
      * @return $this
      */
-    protected function setPage($page, $pageSize)
+    private function setPage($page, $pageSize)
     {
         $this->subscriptionCollection
             ->setCurPage($page)
@@ -160,7 +211,7 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     /**
      * @return $this
      */
-    protected function joinWebsite()
+    private function joinWebsite()
     {
         $storeTable = $this->subscriptionCollection->getResource()->getTable('store');
 
@@ -174,11 +225,11 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     }
 
     /**
-     * @param mixed $websiteId
+     * @param int|null $websiteId
      *
      * @return $this
      */
-    protected function filterWebsite($websiteId = null)
+    private function filterWebsite($websiteId = null)
     {
         if ($websiteId) {
             if (!is_array($websiteId)) {
@@ -195,7 +246,7 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
      *
      * @return $this
      */
-    protected function filterStore($storeId = null)
+    private function filterStore($storeId = null)
     {
         if ($storeId) {
             if (!is_array($storeId)) {
@@ -212,12 +263,11 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
      *
      * @return $this
      */
-    protected function filterSubscribed($subscribed = null)
+    private function filterSubscribed($subscribed = null)
     {
         if ($subscribed === true) {
             $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
-        }
-        elseif ($subscribed === false) {
+        } elseif ($subscribed === false) {
             $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
         }
         return $this;
@@ -228,7 +278,7 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
      *
      * @return $this
      */
-    protected function filterCustomers($onlyGuest = null)
+    private function filterCustomers($onlyGuest = null)
     {
         if ((bool)$onlyGuest) {
             $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => 0]);
@@ -237,30 +287,67 @@ class SubscriptionsApi implements \Emartech\Emarsys\Api\SubscriptionsApiInterfac
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface $subscription
-     * @param string                                           $type
+     * @param int $customerId
+     *
+     * @return $this
+     */
+    private function filterCustomer($customerId)
+    {
+        $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => (int)$customerId]);
+
+        return $this;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    private function filterEmail($email)
+    {
+        $this->subscriptionCollection->addFieldToFilter('subscriber_email', ['eq' => $email]);
+
+        return $this;
+    }
+
+    /**
+     * @param SubscriptionInterface $subscription
+     * @param string                $type
      *
      * @return bool
      * @throws \Exception
      */
-    protected function changeSubscription($subscription, $type)
+    private function changeSubscription($subscription, $type)
     {
         if ($subscription->getSubscriberEmail()) {
-            /** @var \Magento\Newsletter\Model\Subscriber $subscriber */
-            $subscriber = $this->subscriberFactory->create()->loadByEmail($subscription->getSubscriberEmail());
+            $this
+                ->filterEmail($subscription->getSubscriberEmail())
+                ->filterCustomer($subscription->getCustomerId());
 
-            if ($subscriber->getId()) {
-                if ($subscriber->getStatus() === $type) {
+            if ($this->customerModelConfigShare->isWebsiteScope()) {
+                $this
+                    ->joinWebsite()
+                    ->filterWebsite($subscription->getWebsiteId());
+            }
+
+            /** @var Subscriber $subscriber |bool */
+            $subscriber = $this->subscriptionCollection->fetchItem();
+
+            if (!$subscriber) {
+                if ($type !== Subscriber::STATUS_SUBSCRIBED) {
                     return false;
                 }
-            } else {
-                foreach ($subscription->getData() as $key => $value) {
-                    $subscriber->setData($key, $value);
-                }
+
+                $subscriber = $this->subscriberFactory->create();
+            }
+
+            foreach ($subscription->getData() as $key => $value) {
+                $subscriber->setData($key, $value);
             }
 
             $subscriber->setStatus($type);
             $subscriber->setStatusChanged(true);
+
             $subscriber->save();
             return true;
         }

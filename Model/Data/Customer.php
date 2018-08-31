@@ -2,11 +2,15 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Magento\Framework\DataObject;
+
+use Emartech\Emarsys\Api\Data\CustomerInterface;
+
 /**
  * Class Customer
  * @package Emartech\Emarsys\Model\Data
  */
-class Customer extends \Magento\Framework\DataObject implements \Emartech\Emarsys\Api\Data\CustomerInterface
+class Customer extends DataObject implements CustomerInterface
 {
     /**
      * @return int

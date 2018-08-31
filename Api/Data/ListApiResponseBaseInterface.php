@@ -3,10 +3,10 @@
 namespace Emartech\Emarsys\Api\Data;
 
 /**
- * Interface CustomersApiResponseBaseInterface
+ * Interface ListApiResponseBaseInterface
  * @package Emartech\Emarsys\Api\Data
  */
-interface CustomersApiResponseBaseInterface
+interface ListApiResponseBaseInterface
 {
     const PAGE_KEY        = 'page';
     const LAST_PAGE_KEY   = 'last_page';
