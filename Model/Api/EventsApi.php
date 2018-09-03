@@ -2,12 +2,16 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Magento\Framework\Data\Collection as DataCollection;
+
 use Emartech\Emarsys\Api\Data\EventsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\EventsApiResponseInterface;
 use Emartech\Emarsys\Api\EventsApiInterface;
 use Emartech\Emarsys\Model\Event;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\Collection;
+use phpDocumentor\Reflection\DocBlock\ExampleFinder;
+use TheSeer\fDOM\fDOMElement;
 
 /**
  * Class EventsApi
@@ -57,6 +61,7 @@ class EventsApi implements EventsApiInterface
             ->removeOldEvents($sinceId)
             ->initCollection()
             ->getEvents($sinceId)
+            ->setOrder()
             ->setPageSize($pageSize);
 
         return $this->eventsApiResponseFactory->create()
@@ -101,6 +106,17 @@ class EventsApi implements EventsApiInterface
     {
         $this->eventCollection
             ->addFieldToFilter('event_id', ['gt' => $sinceId]);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function setOrder()
+    {
+        $this->eventCollection
+            ->setOrder('event_id', DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }
