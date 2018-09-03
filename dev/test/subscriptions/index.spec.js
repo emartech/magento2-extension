@@ -18,7 +18,8 @@ const noCustomerEmail = 'no-customer@a.com';
 const noCustomerEmail2 = 'still-no-customer@a.com';
 const customerEmail = 'roni_cost@example.com';
 const customerId = 1;
-const websiteId = 0;
+const websiteId = 1;
+const storeId = 1;
 
 describe('Subscriptions api', function() {
   let subscriptionFor;
@@ -88,26 +89,17 @@ describe('Subscriptions api', function() {
       customerEmail2 = this.customer.email;
       customerId2 = this.customer.entityId;
 
-      await this.magentoApi.updateSubscriptions({
-        subscriptions: [
-          { subscriber_email: noCustomerEmail2, subscriber_status: true },
-          { subscriber_email: customerEmail2, subscriber_status: true, customer_id: customerId2 }
-        ]
-      });
-
-      await this.magentoApi.updateSubscriptions({
-        subscriptions: [
-          { subscriber_email: noCustomerEmail, subscriber_status: true, website_id: websiteId },
-          { subscriber_email: noCustomerEmail2, subscriber_status: false, website_id: websiteId },
-          { subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId, website_id: websiteId },
-          {
-            subscriber_email: customerEmail2,
-            subscriber_status: false,
-            customer_id: customerId2,
-            website_id: websiteId
-          }
-        ]
-      });
+      await this.db.insert([
+        { subscriber_email: noCustomerEmail, subscriber_status: 1, store_id: storeId },
+        { subscriber_email: noCustomerEmail2, subscriber_status: 3, store_id: storeId },
+        { subscriber_email: customerEmail, subscriber_status: 1, customer_id: customerId, store_id: storeId },
+        {
+          subscriber_email: customerEmail2,
+          subscriber_status: 3,
+          customer_id: customerId2,
+          store_id: storeId
+        }
+      ]).into('newsletter_subscriber');
     });
 
     it('should list all subscriber without filters', async function() {
@@ -115,28 +107,28 @@ describe('Subscriptions api', function() {
         subscriptions: [
           {
             customer_id: 0,
-            store_id: 0,
+            store_id: storeId,
+            subscriber_email: noCustomerEmail,
+            subscriber_status: '1',
+            website_id: websiteId
+          },
+          {
+            customer_id: 0,
+            store_id: storeId,
             subscriber_email: noCustomerEmail2,
             subscriber_status: '3',
             website_id: websiteId
           },
           {
             customer_id: customerId,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: customerEmail,
             subscriber_status: '1',
             website_id: websiteId
           },
           {
-            customer_id: 0,
-            store_id: 0,
-            subscriber_email: noCustomerEmail,
-            subscriber_status: '1',
-            website_id: websiteId
-          },
-          {
             customer_id: customerId2,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: customerEmail2,
             subscriber_status: '3',
             website_id: websiteId
@@ -156,14 +148,14 @@ describe('Subscriptions api', function() {
         subscriptions: [
           {
             customer_id: 0,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: noCustomerEmail,
             subscriber_status: '1',
             website_id: websiteId
           },
           {
             customer_id: customerId,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: customerEmail,
             subscriber_status: '1',
             website_id: websiteId
@@ -185,14 +177,14 @@ describe('Subscriptions api', function() {
         subscriptions: [
           {
             customer_id: 0,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: noCustomerEmail2,
             subscriber_status: '3',
             website_id: websiteId
           },
           {
             customer_id: customerId2,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: customerEmail2,
             subscriber_status: '3',
             website_id: websiteId
@@ -214,13 +206,13 @@ describe('Subscriptions api', function() {
         subscriptions: [
           {
             customer_id: 0,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: noCustomerEmail,
             subscriber_status: '1'
           },
           {
             customer_id: 0,
-            store_id: 0,
+            store_id: storeId,
             subscriber_email: noCustomerEmail2,
             subscriber_status: '3'
           }
