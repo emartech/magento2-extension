@@ -5,6 +5,7 @@ chai.use(chaiSubset);
 
 Cypress.Commands.add('shouldCreateEvent', (type, expectedDataSubset) => {
   cy.task('getEventTypeFromDb', type).then((event) => {
+    expect(event).to.not.null;
     expect(event.event_data).to.containSubset(expectedDataSubset);
   });
 });
@@ -46,8 +47,16 @@ Cypress.Commands.add('clog', (logObject) => {
   cy.task('log', logObject);
 });
 
-Cypress.Commands.add('isSubscribed', (email) => {
+Cypress.Commands.add('isSubscribed', (email, doubleOptin) => {
+  const expectedStatus = doubleOptin ? 2 : 1;
   cy.task('getSubscription', email).then((subscription) => {
-    expect(subscription.subscriber_status).to.be.equal(1);
+    expect(subscription.subscriber_status).to.be.equal(expectedStatus);
+  });
+});
+
+Cypress.Commands.add('isNotSubscribed', (email) => {
+  cy.task('getSubscription', email).then((subscription) => {
+    expect(subscription.subscriber_status).to.not.equal(1);
+    expect(subscription.subscriber_status).to.not.equal(2);
   });
 });

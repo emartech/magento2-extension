@@ -99,6 +99,10 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
         })
         .first();
 
+      if (!event) {
+        return null;
+      }
+
       event.event_data = JSON.parse(event.event_data);
       return event;
     },
@@ -134,7 +138,27 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
       return defaultCustomer;
     },
     getSubscription: async (email) => {
-      return await db.select().from('newsletter_subscriber').where({ subscriber_email: email }).first();
+      return await db
+        .select()
+        .from('newsletter_subscriber')
+        .where({ subscriber_email: email })
+        .first();
+    },
+    setDoubleOptin: async (stateOn) => {
+      if (stateOn) {
+        return await db
+          .insert({
+            scope: 'default',
+            scope_id: 0,
+            path: 'newsletter/subscription/confirm',
+            value: 1
+          })
+          .into('core_config_data');
+      } else {
+        return await db('core_config_data')
+          .where({ path: 'newsletter/subscription/confirm' })
+          .delete();
+      }
     }
   });
 };

@@ -22,22 +22,9 @@ describe('Marketing Events', function() {
     cy.task('getDefaultCustomer').as('defaultCustomer');
   });
 
-  context('with settings off', function() {
+  context('with collectMarketingEvents disabled', function() {
     before(() => {
       cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'disabled' } });
-    });
-
-    it('should not create newsletter_send_confirmation_success_email event', function() {
-      const guestEmail = 'guest.email2@guest.com';
-      cy.visit('/');
-
-      cy.get('#newsletter').type(guestEmail);
-      cy.get('.action.subscribe.primary[type="submit"]').click();
-
-      cy.shouldNotExistsEvents();
-      cy.wait(1000);
-      cy.shouldNotShowErrorMessage('Something went wrong with the subscription.');
-      cy.isSubscribed(guestEmail);
     });
 
     it('should not create customer_password_reset event', function() {
@@ -81,25 +68,9 @@ describe('Marketing Events', function() {
     });
   });
 
-  context('with settings on', function() {
+  context('with collectMarketingEvents enabled', function() {
     before(() => {
       cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
-    });
-
-    it('should create newsletter_send_confirmation_success_email event', function() {
-      const guestEmail = 'guest.email@guest.com';
-      cy.visit('/');
-
-      cy.get('#newsletter').type(guestEmail);
-      cy.get('.action.subscribe.primary[type="submit"]').click();
-
-      cy.wait(1000);
-      cy.shouldCreateEvent('newsletter_send_confirmation_success_email', {
-        confirmation_link: { subscriber_email: guestEmail }
-      });
-      cy.shouldNotShowErrorMessage();
-
-      cy.isSubscribed(guestEmail);
     });
 
     it('should create customer_password_reset event', function() {

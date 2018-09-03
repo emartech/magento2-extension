@@ -1,7 +1,7 @@
 - type: serial
   service: node
   steps:
-  - name: running api tests
+  - name: running api tests and code style
     command: /bin/sh -c "npm t"
   - name: running e2e tests
     command: /bin/sh -c "npm run e2e"
