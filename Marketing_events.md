@@ -169,7 +169,7 @@ Structure:
 ```
 
 ### `customer_password_reminder`
-Triggered when reset customer password is initiated on the admin panel. [Example data](docs/MarketingEvents/customer_password_reminder.json).
+Triggered when reset customer password change is initiated on the admin panel. [Example data](docs/MarketingEvents/customer_password_reminder.json).
 
 Structure:
 ```json
@@ -265,10 +265,83 @@ Structure:
 ```
 
 ### `customer_email_and_password_changed`
-TODO
+Triggred when customer changes his email address & password in account settings. [Example data](docs/MarketingEvents/customer_email_and_password_changed.json)
+```json
+{
+   "customer":{
+      "password_hash":"",
+      "rp_token":null,
+      "rp_token_created_at":null,
+      "deleteable":true,
+      "failures_num":"",
+      "first_failure":"",
+      "lock_expires":null,
+      "id":3,
+      "group_id":1,
+      "created_at":"2018-09-03 08:36:44",
+      "updated_at":"2018-09-03 08:41:13",
+      "created_in":"Default Store View",
+      "email":"yolo@test-test.net",
+      "firstname":"Yolo",
+      "lastname":"Test",
+      "store_id":1,
+      "website_id":1,
+      "addresses":[
+
+      ],
+      "disable_auto_group_change":0
+   },
+   "store":{
+      "store_id":"1",
+      "code":"default",
+      "website_id":"1",
+      "group_id":"1",
+      "name":"Default Store View",
+      "sort_order":"0",
+      "is_active":"1"
+   },
+   "orig_customer_email":"yolo@test.net",
+   "new_customer_email":"yolo@test-test.net"
+}
+```
 
 ### `customer_email_changed`
-TODO
+Triggred when customer changes his email address in account settings. [Example data](docs/MarketingEvents/customer_email_changed.json)
+```json
+{
+  "customer":{
+     "password_hash":"",
+     "rp_token":null,
+     "rp_token_created_at":null,
+     "deleteable":true,
+     "failures_num":"",
+     "first_failure":"",
+     "lock_expires":null,
+     "id":3,
+     "group_id":1,
+     "created_at":"2018-09-03 08:36:44",
+     "updated_at":"2018-09-03 08:40:27",
+     "created_in":"Default Store View",
+     "email":"yolo@test-test.net",
+     "firstname":"Yolo",
+     "lastname":"Test",
+     "store_id":1,
+     "website_id":1,
+     "addresses":[],
+  },
+  "store":{
+     "store_id":"1",
+     "code":"default",
+     "website_id":"1",
+     "group_id":"1",
+     "name":"Default Store View",
+     "sort_order":"0",
+     "is_active":"1"
+  },
+  "orig_customer_email":"yolo@test.net",
+  "new_customer_email":"yolo@test-test.net"
+}
+```
 
 ---
 
