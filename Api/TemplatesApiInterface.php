@@ -7,13 +7,13 @@ namespace Emartech\Emarsys\Api;
 interface TemplatesApiInterface
 {
   /**
-   * @return mixed
+   * @return string
    */
   public function get();
 
   /**
    * @param string $temlateId
-   * @return mixed
+   * @return string
    */
   public function getTemplateVariables($temlateId);
 }

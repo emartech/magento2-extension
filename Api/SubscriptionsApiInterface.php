@@ -9,12 +9,12 @@ namespace Emartech\Emarsys\Api;
 interface SubscriptionsApiInterface
 {
     /**
-     * @param int   $page
-     * @param int   $pageSize
-     * @param bool  $subscribed
-     * @param bool  $onlyGuest
-     * @param mixed $websiteId
-     * @param mixed $storeId
+     * @param int         $page
+     * @param int         $pageSize
+     * @param bool        $subscribed
+     * @param bool        $onlyGuest
+     * @param string|null $websiteId
+     * @param string|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
      */

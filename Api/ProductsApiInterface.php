@@ -9,7 +9,7 @@ interface ProductsApiInterface
   /**
    * @param int $page
    * @param int $page_size
-   * @return mixed
+   * @return string
    */
   public function get($page, $page_size);
 }

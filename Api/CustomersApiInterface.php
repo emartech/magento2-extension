@@ -9,10 +9,10 @@ namespace Emartech\Emarsys\Api;
 interface CustomersApiInterface
 {
     /**
-     * @param int   $page
-     * @param int   $pageSize
-     * @param mixed $websiteId
-     * @param mixed $storeId
+     * @param int         $page
+     * @param int         $pageSize
+     * @param string|null $websiteId
+     * @param string|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
      */

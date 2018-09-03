@@ -64,7 +64,7 @@ class TemplatesApi implements TemplatesApiInterface
 
   /**
    * @param string $temlateId
-   * @return mixed
+   * @return string
    */
   public function getTemplateVariables($temlateId)
   {

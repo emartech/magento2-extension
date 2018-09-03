@@ -91,10 +91,10 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @param int  $page
-     * @param int  $pageSize
-     * @param null $websiteId
-     * @param null $storeId
+     * @param int         $page
+     * @param int         $pageSize
+     * @param string|null $websiteId
+     * @param string|null $storeId
      *
      * @return CustomersApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException

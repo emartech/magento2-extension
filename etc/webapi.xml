@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <route url="/V1/emarsys/config" method="POST">
-        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="set"/>
-        <resources>
-            <resource ref="Magento_Backend::content"/>
-        </resources>
-    </route>
-    <route url="/V1/emarsys/config/setDefault" method="POST">
-        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setDefault"/>
-        <resources>
-            <resource ref="Magento_Backend::content"/>
-        </resources>
-    </route>
-    <route url="/V1/emarsys/events" method="POST">
-        <service class="Emartech\Emarsys\Api\EventsApiInterface" method="get"/>
-        <resources>
-            <resource ref="Magento_Backend::content"/>
-        </resources>
-    </route>
     <route url="/V1/emarsys/products" method="GET">
         <service class="Emartech\Emarsys\Api\ProductsApiInterface" method="get"/>
         <resources>
@@ -30,22 +12,41 @@
             <resource ref="Magento_Backend::content"/>
         </resources>
     </route>
+
     <route url="/V1/emarsys/customers" method="GET">
         <service class="Emartech\Emarsys\Api\CustomersApiInterface" method="get"/>
         <resources>
-            <resource ref="Magento_Backend::content"/>
+            <resource ref="Emartech_Emarsys::api_customers" />
         </resources>
     </route>
     <route url="/V1/emarsys/subscriptions" method="GET">
         <service class="Emartech\Emarsys\Api\SubscriptionsApiInterface" method="get"/>
         <resources>
-            <resource ref="Magento_Backend::content"/>
+            <resource ref="Emartech_Emarsys::api_subscriptions" />
         </resources>
     </route>
     <route url="/V1/emarsys/subscriptions" method="POST">
         <service class="Emartech\Emarsys\Api\SubscriptionsApiInterface" method="update"/>
         <resources>
-            <resource ref="Magento_Backend::content"/>
+            <resource ref="Emartech_Emarsys::api_subscriptions" />
+        </resources>
+    </route>
+    <route url="/V1/emarsys/events" method="POST">
+        <service class="Emartech\Emarsys\Api\EventsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_events" />
+        </resources>
+    </route>
+    <route url="/V1/emarsys/config" method="POST">
+        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="set"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_configs"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/config/setDefault" method="POST">
+        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setDefault"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_configs"/>
         </resources>
     </route>
 </routes>

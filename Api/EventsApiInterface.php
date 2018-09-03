@@ -2,7 +2,6 @@
 
 namespace Emartech\Emarsys\Api;
 
-
 /**
  * Interface EventsApiInterface
  * @package Emartech\Emarsys\Api

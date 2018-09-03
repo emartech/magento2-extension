@@ -95,12 +95,12 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * @param int   $page
-     * @param int   $pageSize
-     * @param bool  $subscribed
-     * @param bool  $onlyGuest
-     * @param mixed $websiteId
-     * @param mixed $storeId
+     * @param int         $page
+     * @param int         $pageSize
+     * @param bool        $subscribed
+     * @param bool        $onlyGuest
+     * @param string|null $websiteId
+     * @param string|null $storeId
      *
      * @return SubscriptionsApiResponseInterface
      */
@@ -225,13 +225,13 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * @param int|null $websiteId
+     * @param int|string|null $websiteId
      *
      * @return $this
      */
     private function filterWebsite($websiteId = null)
     {
-        if ($websiteId) {
+        if ($websiteId !== null) {
             if (!is_array($websiteId)) {
                 $websiteId = explode(',', $websiteId);
             }
@@ -242,13 +242,13 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * @param mixed $storeId
+     * @param int|string|null $storeId
      *
      * @return $this
      */
     private function filterStore($storeId = null)
     {
-        if ($storeId) {
+        if ($storeId !== null) {
             if (!is_array($storeId)) {
                 $storeId = explode(',', $storeId);
             }

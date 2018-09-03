@@ -12,6 +12,8 @@ interface EventInterface
     const EVENT_TYPE_KEY = 'event_type';
     const EVENT_DATA_KEY = 'event_data';
     const CREATED_AT_KEY = 'created_at';
+    const WEBSITE_ID_KEY = 'website_id';
+    const STORE_ID_KEY   = 'store_id';
 
     /**
      * @return int
@@ -32,6 +34,16 @@ interface EventInterface
      * @return string
      */
     public function getCreatedAt();
+
+    /**
+     * @return int
+     */
+    public function getWebsiteId();
+
+    /**
+     * @return int
+     */
+    public function getStoreId();
 
     /**
      * @param int $eventId
@@ -60,4 +72,18 @@ interface EventInterface
      * @return $this
      */
     public function setCreatedAt($createdAt);
+
+    /**
+     * @param int $websiteId
+     *
+     * @return $this
+     */
+    public function setWebsiteId($websiteId);
+
+    /**
+     * @param int $storeId
+     *
+     * @return $this
+     */
+    public function setStoreId($storeId);
 }

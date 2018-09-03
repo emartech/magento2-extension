@@ -1,67 +1,90 @@
 <?php
 
-
 namespace Emartech\Emarsys\Model\Api;
-
 
 use Emartech\Emarsys\Api\ConfigApiInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
-use Magento\Framework\App\Config;
-use Magento\Framework\App\Config\Storage\WriterInterface;
+use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
+use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
+use Emartech\Emarsys\Api\Data\StatusResponseInterface;
 
+/**
+ * Class ConfigApi
+ * @package Emartech\Emarsys\Model\Api
+ */
 class ConfigApi implements ConfigApiInterface
 {
-  protected $defaultConfig = [
-    ConfigInterface::CUSTOMER_EVENTS => 'disabled',
-    ConfigInterface::SALES_EVENTS => 'disabled',
-    ConfigInterface::MARKETING_EVENTS => 'disabled',
-    ConfigInterface::INJECT_WEBEXTEND_SNIPPETS => 'disabled',
-    ConfigInterface::MERCHANT_ID => null,
-    ConfigInterface::SNIPPET_URL => null
-  ];
+    /**
+     * @var array
+     */
+    private $defaultConfig = [
+        ConfigInterface::CUSTOMER_EVENTS           => ConfigInterface::CONFIG_DISABLED,
+        ConfigInterface::SALES_EVENTS              => ConfigInterface::CONFIG_DISABLED,
+        ConfigInterface::MARKETING_EVENTS          => ConfigInterface::CONFIG_DISABLED,
+        ConfigInterface::INJECT_WEBEXTEND_SNIPPETS => ConfigInterface::CONFIG_DISABLED,
+        ConfigInterface::MERCHANT_ID               => ConfigInterface::CONFIG_EMPTY,
+        ConfigInterface::SNIPPET_URL               => ConfigInterface::CONFIG_EMPTY,
+    ];
 
-  /** @var Config */
-  protected $scopeConfig;
+    /**
+     * @var ConfigInterfaceFactory
+     */
+    private $configFactory;
 
-  /** @var WriterInterface */
-  protected $configWriter;
+    /**
+     * @var StatusResponseInterfaceFactory
+     */
+    private $statusResponseFactory;
 
-  public function __construct(
-    WriterInterface $configWriter,
-    Config $scopeConfig
-  )
-  {
-    $this->scopeConfig = $scopeConfig;
-    $this->configWriter = $configWriter;
-  }
-
-  /**
-   * @param int $websiteId
-   * @param ConfigInterface $config
-   * @return mixed
-   */
-  public function set(
-    $websiteId,
-    ConfigInterface $config
-  )
-  {
-    foreach ($config->getData() as $key => $value) {
-      $this->configWriter->save('emartech/emarsys/config/' . $key, $value, 'websites', $websiteId);
+    /**
+     * ConfigApi constructor.
+     *
+     * @param ConfigInterfaceFactory         $configFactory
+     * @param StatusResponseInterfaceFactory $statusResponseFactory
+     */
+    public function __construct(
+        ConfigInterfaceFactory $configFactory,
+        StatusResponseInterfaceFactory $statusResponseFactory
+    ) {
+        $this->configFactory = $configFactory;
+        $this->statusResponseFactory = $statusResponseFactory;
     }
-    $this->scopeConfig->clean();
-    return 'OK';
-  }
 
-  /**
-   * @param int $websiteId
-   * @return mixed
-   */
-  public function setDefault($websiteId)
-  {
-    foreach ($this->defaultConfig as $key => $value) {
-      $this->configWriter->save('emartech/emarsys/config/' . $key, $value, 'websites', $websiteId);
+    /**
+     * @param int             $websiteId
+     * @param ConfigInterface $config
+     *
+     * @return StatusResponseInterface
+     */
+    public function set(
+        $websiteId,
+        ConfigInterface $config
+    ) {
+        foreach ($config->getData() as $key => $value) {
+            $config->setConfigValue($key, $value, $websiteId);
+        }
+        $config->cleanScope();
+
+        return $this->statusResponseFactory->create()
+            ->setStatus('ok');
     }
-    $this->scopeConfig->clean();
-    return 'OK';
-  }
+
+    /**
+     * @param int $websiteId
+     *
+     * @return StatusResponseInterface
+     */
+    public function setDefault($websiteId)
+    {
+        /** @var ConfigInterface $config */
+        $config = $this->configFactory->create();
+
+        foreach ($this->defaultConfig as $key => $value) {
+            $config->setConfigValue($key, $value, $websiteId);
+        }
+        $config->cleanScope();
+
+        return $this->statusResponseFactory->create()
+            ->setStatus('ok');
+    }
 }
