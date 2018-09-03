@@ -85,7 +85,8 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
     setConfig: async ({ websiteId = 1, config = {} }) => {
       const magentoApi = await getMagentoApi();
       const response = await magentoApi.setConfig({ websiteId, config });
-      if (response.data !== 'OK') {
+
+      if (response.data.status !== 'ok') {
         throw new Error('Magento config set failed!');
       }
       return response.data;
