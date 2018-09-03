@@ -35,6 +35,20 @@ class InstallSchema implements InstallSchemaInterface
           'Event Id'
         )
         ->addColumn(
+          'website_id',
+          \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+          null,
+          ['default' => null, 'nullable' => true],
+          'Website ID'
+        )
+        ->addColumn(
+          'store_id',
+          \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+          null,
+          ['default' => null, 'nullable' => true],
+          'Store ID'
+        )
+        ->addColumn(
           'event_type',
           \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
           255,
