@@ -24,6 +24,8 @@ node:
     context: ./dev
     dockerfile: ./Docker/Dockerfile-node
     encrypted_args_file: codeship.env.encrypted
+  volumes:
+    - ./dev/test:/test
   depends_on:
     - db
     - magento-test.local
