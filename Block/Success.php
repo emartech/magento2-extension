@@ -9,7 +9,7 @@ namespace Emartech\Emarsys\Block;
 use Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory as OrderItemCollectionFactory;
 
 /**
- * Class Snippets
+ * Class Success
  * @package Emartech\Emarsys\Block
  */
 class Success extends \Magento\Framework\View\Element\Template
@@ -60,7 +60,7 @@ class Success extends \Magento\Framework\View\Element\Template
             $qty = intval($item->getQtyOrdered());
             $product = $this->getLoadProduct($item->getProductId());
             $sku = $item->getSku();
-            $price = 'fuck';
+            $price = '';
             if (($item->getProductType() == \Magento\Bundle\Model\Product\Type::TYPE_CODE) && (!$product->getPriceType())) {
                 $collection = $this->orderItemCollectionFactory->create()
                     ->addAttributeToFilter('parent_item_id', ['eq' => $item['item_id']])
