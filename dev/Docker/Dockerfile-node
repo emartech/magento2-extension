@@ -3,7 +3,12 @@ ARG NPM_TOKEN
 
 WORKDIR /test
 
-COPY ["./test/", "./"]
+COPY ./test/package.json \
+    ./test/package-lock.json \
+    ./test/cypress.json \
+    ./test/.npmrc \
+    ./test/.nvmrc \
+    ./
 RUN npm i && \
     ./node_modules/.bin/cypress install && \
     ./node_modules/.bin/cypress verify

@@ -25,6 +25,7 @@ describe('Marketing Events', function() {
   context('with collectMarketingEvents disabled', function() {
     before(() => {
       cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'disabled' } });
+      cy.wait(1000);
     });
 
     it('should not create customer_password_reset event', function() {
@@ -71,6 +72,7 @@ describe('Marketing Events', function() {
   context('with collectMarketingEvents enabled', function() {
     before(() => {
       cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
+      cy.wait(1000);
     });
 
     it('should create customer_password_reset event', function() {

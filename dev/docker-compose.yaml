@@ -53,6 +53,7 @@ services:
         - NPM_TOKEN=$NPM_TOKEN
     volumes:
       - ./test:/test
+    ipc: host
     env_file:
       - .env
     environment:
