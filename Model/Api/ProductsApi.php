@@ -551,9 +551,13 @@ class ProductsApi implements ProductsApiInterface
      */
     private function handleLink($product, $store)
     {
-        return $store->getBaseUrl() .
-            $product->getData($this->getAttributeValueAlias('url_key', $store->getId())) .
-            $this->getProductUrlSuffix($store->getId());
+        $link = $product->getData($this->getAttributeValueAlias('url_key', $store->getId()));
+
+        if ($link) {
+            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
+        }
+
+        return '';
     }
 
     /**
