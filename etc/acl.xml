@@ -8,6 +8,7 @@
                     <resource id="Emartech_Emarsys::api_subscriptions" title="Subscriptions API" sortOrder="20"/>
                     <resource id="Emartech_Emarsys::api_events" title="Events API" sortOrder="30"/>
                     <resource id="Emartech_Emarsys::api_configs" title="Config API" sortOrder="40"/>
+                    <resource id="Emartech_Emarsys::api_products" title="Product API" sortOrder="50"/>
                 </resource>
             </resource>
         </resources>

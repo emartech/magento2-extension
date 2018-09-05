@@ -1,11 +1,5 @@
 <?xml version="1.0"?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <route url="/V1/emarsys/products" method="GET">
-        <service class="Emartech\Emarsys\Api\ProductsApiInterface" method="get"/>
-        <resources>
-            <resource ref="Magento_Backend::content"/>
-        </resources>
-    </route>
     <route url="/V1/emarsys/templates" method="GET">
         <service class="Emartech\Emarsys\Api\TemplatesApiInterface" method="get"/>
         <resources>
@@ -47,6 +41,12 @@
         <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setDefault"/>
         <resources>
             <resource ref="Emartech_Emarsys::api_configs"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/products" method="GET">
+        <service class="Emartech\Emarsys\Api\ProductsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_products"/>
         </resources>
     </route>
 </routes>
