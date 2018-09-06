@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Products endpoint', function() {
+describe.skip('Products endpoint', function() {
   before(function() {});
 
   afterEach(async function() {});
