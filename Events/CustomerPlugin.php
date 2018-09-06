@@ -86,7 +86,7 @@ class CustomerPlugin
      */
     private $customerFactory;
 
-  /**
+    /**
      * CustomerPlugin constructor.
      * @param ScopeConfigInterface $scopeConfig
      * @param StoreManagerInterface $storeManager
@@ -123,7 +123,7 @@ class CustomerPlugin
         $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->configReader = $configReader;
-      $this->customerFactory = $customerFactory;
+        $this->customerFactory = $customerFactory;
     }
 
     /**
@@ -421,24 +421,23 @@ class CustomerPlugin
         return $mergedCustomerData;
     }
 
-  /**
-   * @param \Magento\Newsletter\Model\Subscriber $subscriber
-   * @return array
-   */
-  protected function getDataFromSubscription(\Magento\Newsletter\Model\Subscriber $subscriber)
-  {
+    /**
+     * @param \Magento\Newsletter\Model\Subscriber $subscriber
+     * @return array
+     */
+    protected function getDataFromSubscription(\Magento\Newsletter\Model\Subscriber $subscriber)
+    {
     $data = [
-      'subscriber' => $subscriber->getData(),
+        'subscriber' => $subscriber->getData(),
     ];
 
     if ($subscriber->getConfirmationLink()) {
-      $data['confirmation_link'] = $subscriber->getData();
+        $data['subscriber'] = $subscriber->getData();
     }
     if ($subscriber->getCustomerId()) {
-      $customer = $this->customerFactory->create()->load($subscriber->getCustomerId());
-      $data['customer'] = $customer->getData();
+        $customer = $this->customerFactory->create()->load($subscriber->getCustomerId());
+        $data['customer'] = $customer->getData();
     }
     return $data;
-  }
-
+    }
 }

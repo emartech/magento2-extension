@@ -76,7 +76,7 @@ describe('Marketing Events', function() {
 
         cy.wait(1000);
         cy.shouldCreateEvent('newsletter_send_confirmation_success_email', {
-          confirmation_link: { subscriber_email: guestEmail }
+          subscriber: { subscriber_email: guestEmail }
         });
         cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail);
@@ -84,7 +84,7 @@ describe('Marketing Events', function() {
         unsubscribe(guestEmail);
 
         cy.shouldCreateEvent('newsletter_send_unsubscription_email', {
-          confirmation_link: { subscriber_email: guestEmail }
+          subscriber: { subscriber_email: guestEmail }
         });
         cy.shouldNotShowErrorMessage();
         cy.isNotSubscribed(guestEmail);
@@ -107,7 +107,7 @@ describe('Marketing Events', function() {
 
         cy.wait(1000);
         cy.shouldCreateEvent('newsletter_send_confirmation_request_email', {
-          confirmation_link: { subscriber_email: guestEmail }
+          subscriber: { subscriber_email: guestEmail }
         });
         cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail, true);
@@ -115,7 +115,7 @@ describe('Marketing Events', function() {
         unsubscribe(guestEmail);
 
         cy.shouldCreateEvent('newsletter_send_unsubscription_email', {
-          confirmation_link: { subscriber_email: guestEmail }
+          subscriber: { subscriber_email: guestEmail }
         });
         cy.shouldNotShowErrorMessage();
         cy.isNotSubscribed(guestEmail);

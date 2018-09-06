@@ -216,14 +216,14 @@ Triggered on successful subscription. [Example data](docs/MarketingEvents/newsle
 Structure:
 ```json
 {
-  "confirmation_link":{
-     "subscriber_confirm_code":"",
-     "subscriber_status":1,
-     "store_id":"1",
-     "customer_id":"",
-     "subscriber_email":"",
-     "change_status_at":"2018-08-14 12:18:19",
-     "subscriber_id":""
+  "subscriber":{
+    "subscriber_confirm_code":"",
+    "subscriber_status":1,
+    "store_id":"1",
+    "customer_id":"",
+    "subscriber_email":"",
+    "change_status_at":"2018-08-14 12:18:19",
+    "subscriber_id":""
   }
 }
 ```
@@ -234,14 +234,14 @@ Triggered on subscription if confirmation is set to required. [Example data](doc
 Structure:
 ```json
 {
-  "confirmation_link":{
-     "subscriber_confirm_code":"",
-     "subscriber_status":2,
-     "store_id":"1",
-     "customer_id":"",
-     "subscriber_email":"",
-     "change_status_at":"2018-08-14 12:18:19",
-     "subscriber_id":""
+  "subscriber":{
+    "subscriber_confirm_code":"",
+    "subscriber_status":2,
+    "store_id":"1",
+    "customer_id":"",
+    "subscriber_email":"",
+    "change_status_at":"2018-08-14 12:18:19",
+    "subscriber_id":""
   }
 }
 ```
@@ -252,14 +252,14 @@ Triggered on unsubscription. [Example data](docs/MarketingEvents/newsletter_send
 Structure:
 ```json
 {
-  "confirmation_link":{
-     "subscriber_confirm_code":"",
-     "subscriber_status":3,
-     "store_id":"1",
-     "customer_id":"",
-     "subscriber_email":"",
-     "change_status_at":"2018-08-14 12:18:19",
-     "subscriber_id":""
+  "subscriber":{
+    "subscriber_confirm_code":"",
+    "subscriber_status":3,
+    "store_id":"1",
+    "customer_id":"",
+    "subscriber_email":"",
+    "change_status_at":"2018-08-14 12:18:19",
+    "subscriber_id":""
   }
 }
 ```
@@ -268,7 +268,7 @@ Structure:
 Triggred when customer changes his email address & password in account settings. [Example data](docs/MarketingEvents/customer_email_and_password_changed.json)
 ```json
 {
-   "customer":{
+    "customer":{
       "password_hash":"",
       "rp_token":null,
       "rp_token_created_at":null,
@@ -290,8 +290,8 @@ Triggred when customer changes his email address & password in account settings.
 
       ],
       "disable_auto_group_change":0
-   },
-   "store":{
+    },
+    "store":{
       "store_id":"1",
       "code":"default",
       "website_id":"1",
@@ -299,9 +299,9 @@ Triggred when customer changes his email address & password in account settings.
       "name":"Default Store View",
       "sort_order":"0",
       "is_active":"1"
-   },
-   "orig_customer_email":"yolo@test.net",
-   "new_customer_email":"yolo@test-test.net"
+    },
+    "orig_customer_email":"yolo@test.net",
+    "new_customer_email":"yolo@test-test.net"
 }
 ```
 
@@ -310,33 +310,33 @@ Triggred when customer changes his email address in account settings. [Example d
 ```json
 {
   "customer":{
-     "password_hash":"",
-     "rp_token":null,
-     "rp_token_created_at":null,
-     "deleteable":true,
-     "failures_num":"",
-     "first_failure":"",
-     "lock_expires":null,
-     "id":3,
-     "group_id":1,
-     "created_at":"2018-09-03 08:36:44",
-     "updated_at":"2018-09-03 08:40:27",
-     "created_in":"Default Store View",
-     "email":"yolo@test-test.net",
-     "firstname":"Yolo",
-     "lastname":"Test",
-     "store_id":1,
-     "website_id":1,
-     "addresses":[],
+    "password_hash":"",
+    "rp_token":null,
+    "rp_token_created_at":null,
+    "deleteable":true,
+    "failures_num":"",
+    "first_failure":"",
+    "lock_expires":null,
+    "id":3,
+    "group_id":1,
+    "created_at":"2018-09-03 08:36:44",
+    "updated_at":"2018-09-03 08:40:27",
+    "created_in":"Default Store View",
+    "email":"yolo@test-test.net",
+    "firstname":"Yolo",
+    "lastname":"Test",
+    "store_id":1,
+    "website_id":1,
+    "addresses":[],
   },
   "store":{
-     "store_id":"1",
-     "code":"default",
-     "website_id":"1",
-     "group_id":"1",
-     "name":"Default Store View",
-     "sort_order":"0",
-     "is_active":"1"
+    "store_id":"1",
+    "code":"default",
+    "website_id":"1",
+    "group_id":"1",
+    "name":"Default Store View",
+    "sort_order":"0",
+    "is_active":"1"
   },
   "orig_customer_email":"yolo@test.net",
   "new_customer_email":"yolo@test-test.net"
@@ -384,8 +384,8 @@ Structure:
 }
 ```
 
-### `sales_email_invoice_guest_template` & `sales_email_invoice_guest_template`
-Triggered on order invocing. [Example data](docs/MarketingEvents/sales_email_invoice_template.json).
+### `sales_email_invoice_template` & `sales_email_invoice_guest_template`
+Triggered on order invoicing. [Example data](docs/MarketingEvents/sales_email_invoice_template.json).
 
 Structure:
 ```json
@@ -498,7 +498,7 @@ Structure:
 }
 ```
 
-### `sales_email_creditmemo_guest_template` & `sales_email_creditmemo_guest_template`
+### `sales_email_creditmemo_template` & `sales_email_creditmemo_guest_template`
 Triggered on order refund. [Example data](docs/MarketingEvents/sales_email_creditmemo_guest_template.json).
 
 Structure:

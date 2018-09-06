@@ -511,8 +511,8 @@ describe('Marketing events: customer', function() {
           expect(createdEventType).to.equal('newsletter_send_confirmation_success_email');
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(1);
-          expect(createdEventData.confirmation_link.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.confirmation_link.subscriber_status).to.equal(1);
+          expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
+          expect(createdEventData.subscriber.subscriber_status).to.equal(1);
           expect(createdEventData.customer.firstname).to.equal(subscriber.firstname);
           expect(createdEventData.customer.lastname).to.equal(subscriber.lastname);
         });
@@ -563,8 +563,8 @@ describe('Marketing events: customer', function() {
           expect(createdEventType).to.equal('newsletter_send_unsubscription_email');
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(3);
-          expect(createdEventData.confirmation_link.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.confirmation_link.subscriber_status).to.equal(3);
+          expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
+          expect(createdEventData.subscriber.subscriber_status).to.equal(3);
           expect(createdEventData.customer.firstname).to.equal(subscriber.firstname);
           expect(createdEventData.customer.lastname).to.equal(subscriber.lastname);
         });
@@ -616,8 +616,8 @@ describe('Marketing events: customer', function() {
           expect(createdEventType).to.equal('newsletter_send_confirmation_request_email');
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(2);
-          expect(createdEventData.confirmation_link.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.confirmation_link.subscriber_status).to.equal(2);
+          expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
+          expect(createdEventData.subscriber.subscriber_status).to.equal(2);
           expect(createdEventData.customer.firstname).to.equal(subscriber.firstname);
           expect(createdEventData.customer.lastname).to.equal(subscriber.lastname);
         });
@@ -669,8 +669,8 @@ describe('Marketing events: customer', function() {
           expect(createdEventType).to.equal('newsletter_send_unsubscription_email');
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(3);
-          expect(createdEventData.confirmation_link.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.confirmation_link.subscriber_status).to.equal(3);
+          expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
+          expect(createdEventData.subscriber.subscriber_status).to.equal(3);
           expect(createdEventData.customer.firstname).to.equal(subscriber.firstname);
           expect(createdEventData.customer.lastname).to.equal(subscriber.lastname);
         });
@@ -722,8 +722,8 @@ describe('Marketing events: customer', function() {
         expect(createdEventType).to.equal('newsletter_send_unsubscription_email');
         expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
         expect(createdEventData.subscriber.subscriber_status).to.equal(3);
-        expect(createdEventData.confirmation_link.subscriber_email).to.equal(subscriber.email);
-        expect(createdEventData.confirmation_link.subscriber_status).to.equal(3);
+        expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
+        expect(createdEventData.subscriber.subscriber_status).to.equal(3);
         expect(createdEventData.customer.firstname).to.equal(subscriber.firstname);
         expect(createdEventData.customer.lastname).to.equal(subscriber.lastname);
       });
