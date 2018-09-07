@@ -25,6 +25,12 @@
     <preference for="Emartech\Emarsys\Api\Data\ProductInterface" type="Emartech\Emarsys\Model\Data\Product" />
     <preference for="Emartech\Emarsys\Api\Data\ProductsApiResponseInterface" type="Emartech\Emarsys\Model\Data\ProductsApiResponse" />
 
+    <preference for="Emartech\Emarsys\Api\CategoriesApiInterface" type="Emartech\Emarsys\Model\Api\CategoriesApi" />
+    <preference for="Emartech\Emarsys\Api\Data\CategoryStoreDataInterface" type="Emartech\Emarsys\Model\Data\CategoryStoreData" />
+    <preference for="Emartech\Emarsys\Api\Data\CategoryInterface" type="Emartech\Emarsys\Model\Data\Category" />
+    <preference for="Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface" type="Emartech\Emarsys\Model\Data\CategoriesApiResponse" />
+
+
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
     </type>

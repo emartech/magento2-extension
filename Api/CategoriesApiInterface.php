@@ -3,17 +3,17 @@
 namespace Emartech\Emarsys\Api;
 
 /**
- * Interface ProductsApiInterface
+ * Interface CategoriesApiInterface
  * @package Emartech\Emarsys\Api
  */
-interface ProductsApiInterface
+interface CategoriesApiInterface
 {
     /**
      * @param int    $page
      * @param int    $pageSize
      * @param string $storeId
      *
-     * @return \Emartech\Emarsys\Api\Data\ProductsApiResponseInterface
+     * @return \Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface
      */
     public function get($page, $pageSize, $storeId);
 }

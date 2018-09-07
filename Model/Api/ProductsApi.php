@@ -23,11 +23,9 @@ use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
 use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ProductInterface;
 use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ImagesInterface;
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
-use TheSeer\fDOM\fDOMException;
 
 class ProductsApi implements ProductsApiInterface
 {
@@ -164,7 +162,7 @@ class ProductsApi implements ProductsApiInterface
      * @param int    $pageSize
      * @param string $storeId
      *
-     * @return array|ProductsApiResponseInterface
+     * @return ProductsApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \ReflectionException
      */
@@ -286,7 +284,7 @@ class ProductsApi implements ProductsApiInterface
     private function getAttributeValueAlias($attributeCode, $storeId = null)
     {
         $returnValue = $attributeCode;
-        if ($storeId) {
+        if ($storeId !== null) {
             $returnValue .= '_' . $storeId;
         }
         return $returnValue;
@@ -386,10 +384,7 @@ class ProductsApi implements ProductsApiInterface
         $returnArray = [];
 
         foreach ($this->productCollection as $product) {
-            /** @var ProductInterface $tmp */
-            $tmp = $this->productFactory->create();
-
-            $tmp->setType($product->getTypeId())
+            $returnArray[] = $this->productFactory->create()->setType($product->getTypeId())
                 ->setCategories($this->handleCategories($product))
                 ->setChildrenEntityIds($this->handleChildrenEntityIds($product))
                 ->setEntityId($product->getId())
@@ -398,8 +393,6 @@ class ProductsApi implements ProductsApiInterface
                 ->setSku($product->getSku())
                 ->setImages($this->handleImages($product))
                 ->setStoreData($this->handleProductStoreData($product));
-
-            $returnArray[] = $tmp;
         }
 
         return $returnArray;
