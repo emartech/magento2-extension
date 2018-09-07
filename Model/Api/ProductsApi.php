@@ -18,6 +18,7 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
 use Magento\Store\Model\Store;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\Webapi\Exception as WebApiException;
 
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
@@ -169,7 +170,13 @@ class ProductsApi implements ProductsApiInterface
     public function get($page, $pageSize, $storeId)
     {
         $this
-            ->initStores($storeId)
+            ->initStores($storeId);
+
+        if (!array_key_exists(0, $this->storeIds)) {
+            throw new WebApiException(__('Store ID must contain 0'));
+        }
+
+        $this
             ->initCollection()
             ->joinData()
             ->joinStock()
