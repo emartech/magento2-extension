@@ -34,8 +34,6 @@ describe('Customers endpoint', function() {
     await this.db.raw('DELETE FROM customer_entity where email like "%@customer.net"');
   });
 
-  afterEach(async function() {});
-
   it('returns customers according to page and page_size inlcuding last_page', async function() {
     const page = 1;
     const limit = 2;

@@ -14,7 +14,7 @@ const customer = {
 describe('Customer events', function() {
   afterEach(async function() {
     await this.db.raw('DELETE FROM customer_entity where email = "yolo99@yolo.net"');
-    this.magentoApi.setDefaultConfig(1);
+    await this.magentoApi.setDefaultConfig(1);
   });
 
   it('are saved in DB if collectCustomerEvents is enabled', async function() {
