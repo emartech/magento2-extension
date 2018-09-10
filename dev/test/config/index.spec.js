@@ -21,7 +21,7 @@ const dbKeys = {
 const scopeId = 1;
 describe('Config endpoint', function() {
   afterEach(async function() {
-    this.magentoApi.setDefaultConfig(1);
+    await this.magentoApi.setDefaultConfig(1);
   });
 
   describe('setDefaultConfig', function() {
