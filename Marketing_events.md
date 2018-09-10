@@ -347,6 +347,8 @@ Triggred when customer changes his email address in account settings. [Example d
 
 ## Sales related events
 
+Guest events have empty customer property.
+
 ### `sales_email_order_template` & `sales_email_order_guest_template`
 
 Triggered on new order submission. [Example data](docs/MarketingEvents/sales_email_order_template.json).

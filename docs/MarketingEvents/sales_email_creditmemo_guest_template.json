@@ -3,67 +3,7 @@
   "customerEmail": "yolo21@yolo.net",
   "emailCopyTo": false,
   "is_guest": "1",
-  "customer": {
-    "website_id": "1",
-    "email": "yolo21@yolo.net",
-    "group_id": "1",
-    "store_id": "1",
-    "created_at": "2018-08-14 08:59:12",
-    "updated_at": "2018-08-14 08:59:12",
-    "disable_auto_group_change": "0",
-    "created_in": "Default Store View",
-    "prefix": null,
-    "firstname": "Yolo",
-    "middlename": null,
-    "lastname": "21",
-    "suffix": null,
-    "dob": null,
-    "default_billing": "8",
-    "default_shipping": "7",
-    "taxvat": null,
-    "confirmation": null,
-    "gender": null,
-    "addresses": [
-      {
-        "firstname": "Yolo",
-        "lastname": "21",
-        "street": ["21 Yolo Street"],
-        "city": "Yolotown",
-        "country_id": "WF",
-        "region_id": "0",
-        "postcode": "1234",
-        "telephone": "12345678",
-        "region": {
-          "region": null,
-          "region_code": null,
-          "region_id": 0
-        },
-        "id": "7",
-        "customer_id": "29",
-        "default_shipping": true
-      },
-      {
-        "firstname": "Yolo",
-        "lastname": "21",
-        "street": ["21 Yolo Street"],
-        "city": "Yolotown",
-        "country_id": "WF",
-        "region_id": "0",
-        "postcode": "1234",
-        "telephone": "12345678",
-        "region": {
-          "region": null,
-          "region_code": null,
-          "region_id": 0
-        },
-        "id": "8",
-        "customer_id": "29",
-        "default_billing": true
-      }
-    ],
-    "id": "29",
-    "name": "Yolo 21"
-  },
+  "customer": [],
   "order": {
     "entity_id": "13",
     "state": "closed",
