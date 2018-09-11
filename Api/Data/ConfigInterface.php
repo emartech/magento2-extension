@@ -13,6 +13,7 @@ interface ConfigInterface
     const CONFIG_ENABLED            = 'enabled';
     const CONFIG_DISABLED           = 'disabled';
     const CONFIG_EMPTY              = null;
+    const STORE_SLUGS              = 'store_slugs';
     const CUSTOMER_EVENTS           = 'collect_customer_events';
     const SALES_EVENTS              = 'collect_sales_events';
     const MARKETING_EVENTS          = 'collect_marketing_events';
@@ -28,6 +29,18 @@ interface ConfigInterface
      * @return string[]
      */
     public function getData();
+
+    /**
+     * @return string
+     */
+    public function getStoreSlugs();
+
+    /**
+     * @param string $storeSlugs
+     *
+     * @return Config
+     */
+    public function setStoreSlugs($storeSlugs);
 
     /**
      * @return string

@@ -93,8 +93,9 @@ class SenderBuilderPlugin
             $identityContainer = $reflection->getProperty('identityContainer');
             $identityContainer->setAccessible(true);
             $identityContainer = $identityContainer->getValue($senderBuilder);
+            $storeId = $identityContainer->getStore()->getStoreId();
 
-            if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $identityContainer->getStore()->getWebsiteId())) {
+            if (!$this->configReader->isEnabledForStore(ConfigInterface::MARKETING_EVENTS, $storeId)) {
                 return $proceed();
             }
 
@@ -125,10 +126,10 @@ class SenderBuilderPlugin
                         $items[] = $item->getData();
                     }
                     $value['items'] = $items;
-                    $value['addresses'] = [
-                        'shipping' => $order->getShippingAddress()->getData(),
-                        'billing' => $order->getBillingAddress()->getData()
-                    ];
+                    if ($order->getShippingAddress()) {
+                        $value['addresses']['shipping'] = $order->getShippingAddress()->getData();
+                    }
+                    $value['addresses']['billing'] = $order->getBillingAddress()->getData();
                     $data['is_guest'] = $order->getCustomerIsGuest();
                     $customer = [];
                     if ($order->getCustomerId()) {

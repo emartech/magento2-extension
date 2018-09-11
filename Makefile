@@ -57,6 +57,10 @@ flush: ## Runs Magento CLI cache:flush command
 	@$(COMPOSE) exec --user application magento-dev rm -rf generated/code/
 	@$(COMPOSE) exec --user application magento-dev bin/magento cache:flush
 
+flush-test: ## Runs Magento CLI cache:flush command
+	@$(COMPOSE) exec --user application magento-test rm -rf generated/code/
+	@$(COMPOSE) exec --user application magento-test bin/magento cache:flush
+
 uninstall: ## Uninstalls the extension from the Magento instance
 	@$(COMPOSE) exec db bash -c 'mysql -u root -p${MYSQL_ROOT_PASSWORD} < /opt/uninstall-extension.sql'
 	@$(COMPOSE) exec --user application magento-dev rm -rf generated/code/Magento/

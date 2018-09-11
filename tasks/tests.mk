@@ -5,15 +5,15 @@ test: mocha run-e2e
 test-code-style:
 	-@$(COMPOSE) run --rm node npm run code-style
 
-mocha: reset-test-db run-npmt
+mocha: reset-test-db flush-test run-npmt
 
-run-e2e: reset-test-db flush run-docker-e2e
+run-e2e: reset-test-db flush-test run-docker-e2e
 
 run-e2e-debug: reset-test-db run-docker-e2e
 
-open-e2e: reset-test-db set-local-baseurl flush open-local-e2e set-docker-baseurl flush
+open-e2e: reset-test-db set-local-baseurl flush-test open-local-e2e set-docker-baseurl flush-test
 
-run-e2e-local: reset-test-db set-local-baseurl flush run-local-e2e set-docker-baseurl flush
+run-e2e-local: reset-test-db set-local-baseurl flush-test run-local-e2e set-docker-baseurl flush-test
 
 create-test-db: ## Creates magento-test database
 	@$(COMPOSE) exec db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento_test > /opt/magento_test.sql'

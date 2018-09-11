@@ -64,6 +64,26 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return string
      */
+    public function getStoreSlugs()
+    {
+        return $this->getData(self::STORE_SLUGS);
+    }
+
+    /**
+     * @param string $storeSlugs
+     *
+     * @return $this
+     */
+    public function setStoreSlugs($storeSlugs)
+    {
+        $this->setData(self::STORE_SLUGS, $storeSlugs);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getCollectCustomerEvents()
     {
         return $this->getData(self::CUSTOMER_EVENTS);

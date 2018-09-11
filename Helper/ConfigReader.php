@@ -38,7 +38,7 @@ class ConfigReader extends AbstractHelper
      *
      * @return string
      */
-    public function getConfigValue($key, $websiteId = null)
+    public function getConfigValue($key, int $websiteId = null)
     {
         return $this->config->getConfigValue($key, $websiteId);
     }
@@ -68,8 +68,31 @@ class ConfigReader extends AbstractHelper
     /**
      * @return string
      */
-    public function getModuleName()
+    public function isEnabledForStore($key, $storeId = 0)
     {
-        return $this->_getModuleName();
+        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
+
+        return $this->isStoreEnabled($websiteId, $storeId)
+            && $this->isEnabledForWebsite($key, $websiteId);
+    }
+
+    /**
+     * @param $websiteId
+     * @param int $storeId
+     * @return bool
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function isStoreEnabled($websiteId, int $storeId)
+    {
+        $stores = json_decode($this->getConfigValue(ConfigInterface::STORE_SLUGS, $websiteId), true);
+        if (is_array($stores)) {
+            foreach($stores as $store) {
+                if ( $store['id'] === $storeId ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
