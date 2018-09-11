@@ -55,4 +55,10 @@
             <resource ref="Emartech_Emarsys::api_categories"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/system" method="GET">
+        <service class="Emartech\Emarsys\Api\SystemApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_system"/>
+        </resources>
+    </route>
 </routes>
