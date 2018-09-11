@@ -53,14 +53,11 @@ class Success extends \Magento\Framework\View\Element\Template
     private function getLineItems()
     {
         $items = [];
-        $useBaseCurrency = true;
-        $taxIncluded = true;
         $order = $this->getOrder();
         foreach ($order->getAllVisibleItems() as $item) {
             $qty = intval($item->getQtyOrdered());
             $product = $this->getLoadProduct($item->getProductId());
             $sku = $item->getSku();
-            $price = '';
             if (($item->getProductType() == \Magento\Bundle\Model\Product\Type::TYPE_CODE) && (!$product->getPriceType())) {
                 $collection = $this->orderItemCollectionFactory->create()
                     ->addAttributeToFilter('parent_item_id', ['eq' => $item['item_id']])
@@ -71,17 +68,9 @@ class Success extends \Magento\Framework\View\Element\Template
                     $bundleBaseDiscount += $collPrice['base_discount_amount'];
                     $bundleDiscount += $collPrice['discount_amount'];
                 }
-                if ($taxIncluded) {
-                    $price = $useBaseCurrency? ($item->getBaseRowTotal() + $item->getBaseTaxAmount()) - ($bundleBaseDiscount) : ($item->getRowTotal() + $item->getTaxAmount()) - ($bundleDiscount);
-                } else {
-                    $price = $useBaseCurrency? $item->getBaseRowTotal() - $bundleBaseDiscount : $item->getRowTotal() - $bundleDiscount;
-                }
+                $price = ($item->getBaseRowTotal() + $item->getBaseTaxAmount()) - ($bundleBaseDiscount);
             } else {
-                if ($taxIncluded) {
-                    $price = $useBaseCurrency? ($item->getBaseRowTotal()  + $item->getBaseTaxAmount()) - $item->getBaseDiscountAmount() : ($item->getRowTotal() + $item->getTaxAmount()) - $item->getDiscountAmount();
-                } else {
-                    $price = $useBaseCurrency? $item->getBaseRowTotal() - $item->getBaseDiscountAmount() : $item->getRowTotal() - $item->getDiscountAmount();
-                }
+                $price = ($item->getBaseRowTotal()  + $item->getBaseTaxAmount()) - $item->getBaseDiscountAmount();
             }
 
             $items[] = [
