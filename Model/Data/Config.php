@@ -52,33 +52,14 @@ class Config extends DataObject implements ConfigInterface
         JsonSerializer $jsonSerializer,
         StoreManagerInterface $storeManager,
         array $data = []
-    ) {
+    )
+    {
         parent::__construct($data);
 
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
         $this->jsonSerializer = $jsonSerializer;
         $this->storeManager = $storeManager;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStoreSlugs()
-    {
-        return $this->getData(self::STORE_SLUGS);
-    }
-
-    /**
-     * @param string $storeSlugs
-     *
-     * @return $this
-     */
-    public function setStoreSlugs($storeSlugs)
-    {
-        $this->setData(self::STORE_SLUGS, $storeSlugs);
-
-        return $this;
     }
 
     /**
@@ -222,7 +203,7 @@ class Config extends DataObject implements ConfigInterface
             }, $value);
         }
 
-        if (!is_string($value)) {
+        if (!is_string($value) && $value !== null) {
             $value = $this->jsonSerializer->serialize($value);
         }
 
@@ -242,7 +223,7 @@ class Config extends DataObject implements ConfigInterface
                 $websiteId = $this->storeManager->getWebsite()->getId();
             }
 
-            return $this->scopeConfig->getValue('emartech/emarsys/config/' . $key, 'websites', $websiteId);
+            return (string) $this->scopeConfig->getValue('emartech/emarsys/config/' . $key, 'websites', $websiteId);
         } catch (\Exception $e) {
             return '';
         }
@@ -260,14 +241,17 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
-     * @param string $key
-     * @param int    $storeId
+     * @param string   $key
+     * @param int|null $storeId
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId)
+    public function isEnabledForStore($key, $storeId = null)
     {
         try {
+            if (!$storeId) {
+                $storeId = $this->storeManager->getStore()->getId();
+            }
             $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
             if (!$this->isEnabledForWebsite($key, $websiteId)) {

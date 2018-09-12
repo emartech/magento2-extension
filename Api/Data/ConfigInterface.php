@@ -10,37 +10,24 @@ use Emartech\Emarsys\Model\Data\Config;
  */
 interface ConfigInterface
 {
-    const CONFIG_ENABLED            = 'enabled';
-    const CONFIG_DISABLED           = 'disabled';
-    const CONFIG_EMPTY              = null;
-    const STORE_SLUGS              = 'store_slugs';
-    const CUSTOMER_EVENTS           = 'collect_customer_events';
-    const SALES_EVENTS              = 'collect_sales_events';
-    const MARKETING_EVENTS          = 'collect_marketing_events';
+    const CONFIG_ENABLED = 'enabled';
+    const CONFIG_DISABLED = 'disabled';
+    const CONFIG_EMPTY = null;
+    const CUSTOMER_EVENTS = 'collect_customer_events';
+    const SALES_EVENTS = 'collect_sales_events';
+    const MARKETING_EVENTS = 'collect_marketing_events';
     const INJECT_WEBEXTEND_SNIPPETS = 'inject_webextend_snippets';
-    const MERCHANT_ID               = 'merchant_id';
-    const SNIPPET_URL               = 'web_tracking_snippet_url';
-    const STORE_SETTINGS            = 'store_settings';
+    const MERCHANT_ID = 'merchant_id';
+    const SNIPPET_URL = 'web_tracking_snippet_url';
+    const STORE_SETTINGS = 'store_settings';
 
-    const SCOPE_TYPE_DEFAULT       = 'websites';
+    const SCOPE_TYPE_DEFAULT = 'websites';
     const XML_PATH_EMARSYS_PRE_TAG = 'emartech/emarsys/config/';
 
     /**
      * @return string[]
      */
     public function getData();
-
-    /**
-     * @return string
-     */
-    public function getStoreSlugs();
-
-    /**
-     * @param string $storeSlugs
-     *
-     * @return Config
-     */
-    public function setStoreSlugs($storeSlugs);
 
     /**
      * @return string
@@ -145,7 +132,7 @@ interface ConfigInterface
      * @param string   $key
      * @param null|int $websiteId
      *
-     * @return string
+     * @return string|null
      */
     public function getConfigValue($key, $websiteId = null);
 
@@ -158,10 +145,10 @@ interface ConfigInterface
     public function isEnabledForWebsite($key, $websiteId = 0);
 
     /**
-     * @param string $key
-     * @param int    $storeId
+     * @param string   $key
+     * @param int|null $storeId
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId);
+    public function isEnabledForStore($key, $storeId = null);
 }

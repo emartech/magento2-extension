@@ -27,14 +27,15 @@ class ConfigReader extends AbstractHelper
     public function __construct(
         Context $context,
         ConfigInterface $config
-    ) {
+    )
+    {
         parent::__construct($context);
         $this->config = $config;
     }
 
     /**
      * @param string   $key
-     * @param null\int $websiteId
+     * @param null|int $websiteId
      *
      * @return string
      */
@@ -55,44 +56,13 @@ class ConfigReader extends AbstractHelper
     }
 
     /**
-     * @param string $key
-     * @param int    $storeId
+     * @param string   $key
+     * @param int|null $storeId
      *
      * @return bool
      */
-    public function isEnableForStore($key, $storeId)
+    public function isEnabledForStore($key, $storeId = null)
     {
         return $this->config->isEnabledForStore($key, $storeId);
-    }
-
-    /**
-     * @return string
-     */
-    public function isEnabledForStore($key, $storeId = 0)
-    {
-        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-
-        return $this->isStoreEnabled($websiteId, $storeId)
-            && $this->isEnabledForWebsite($key, $websiteId);
-    }
-
-    /**
-     * @param $websiteId
-     * @param int $storeId
-     * @return bool
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function isStoreEnabled($websiteId, int $storeId)
-    {
-        $stores = json_decode($this->getConfigValue(ConfigInterface::STORE_SLUGS, $websiteId), true);
-        if (is_array($stores)) {
-            foreach($stores as $store) {
-                if ( $store['id'] === $storeId ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }
