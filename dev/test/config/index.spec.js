@@ -24,6 +24,10 @@ describe('Config endpoint', function() {
     await this.magentoApi.setDefaultConfig(1);
   });
 
+  after(async function() {
+    await this.setDefaultStoreSettings();
+  });
+
   describe('setDefaultConfig', function() {
     it('should create default config for website', async function() {
       await this.db

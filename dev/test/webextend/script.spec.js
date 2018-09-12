@@ -73,10 +73,26 @@ describe('Webextend scripts', function() {
         )
       ).to.be.true;
     });
+
+    describe('store is not enabled', function() {
+      before(async function() {
+        await this.clearStoreSettings();
+      });
+
+      after(async function() {
+        await this.setDefaultStoreSettings();
+      });
+
+      it('should not be in the HTML', async function() {
+        await this.magentoApi.setDefaultConfig(1);
+        const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
+        expect(emarsysSnippets).to.eql('');
+      });
+    });
   });
 
   describe('disabled', function() {
-    it('should not be in the HTML if injectsnippet is disabled', async function() {
+    it('should not be in the HTML if injectsnippet setting is disabled', async function() {
       await this.magentoApi.setDefaultConfig(1);
       const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
       expect(emarsysSnippets).to.eql('');

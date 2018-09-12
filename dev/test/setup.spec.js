@@ -50,12 +50,43 @@ const deleteCategory = magentoApi => async categoryId => {
 };
 
 const setCurrencyConfig = async db => {
-  await db('core_config_data').where({ path: 'currency/options/default' }).update({ value: 'UGX' });
-  await db('core_config_data').where({ path: 'currency/options/allow' }).update({ value: 'USD,UGX' });
+  await db('core_config_data')
+    .where({ path: 'currency/options/default' })
+    .update({ value: 'UGX' });
+  await db('core_config_data')
+    .where({ path: 'currency/options/allow' })
+    .update({ value: 'USD,UGX' });
   await db('directory_currency_rate').insert({
     currency_from: 'USD',
     currency_to: 'UGX',
     rate: '2'
+  });
+};
+
+const setDefaultStoreSettings = magentoApi => async () => {
+  return await magentoApi.setConfig({
+    websiteId: 1,
+    config: {
+      storeSettings: [
+        {
+          storeId: 0,
+          slug: 'testadminslug'
+        },
+        {
+          storeId: 1,
+          slug: 'testslug'
+        }
+      ]
+    }
+  });
+};
+
+const clearStoreSettings = magentoApi => async () => {
+  return await magentoApi.setConfig({
+    websiteId: 1,
+    config: {
+      storeSettings: []
+    }
   });
 };
 
@@ -87,8 +118,11 @@ before(async function() {
     baseUrl: `http://${this.hostname}`,
     token: this.token
   });
+  this.setDefaultStoreSettings = setDefaultStoreSettings(this.magentoApi);
+  this.clearStoreSettings = clearStoreSettings(this.magentoApi);
 
   await this.magentoApi.setDefaultConfig(1);
+  await this.setDefaultStoreSettings();
 
   await setCurrencyConfig(this.db);
 
