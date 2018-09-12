@@ -135,7 +135,7 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getConfigValue($key, $websiteId = null): string;
+    public function getConfigValue($key, $websiteId = null): ?string;
 
     /**
      * @param string   $key

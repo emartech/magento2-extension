@@ -10,7 +10,7 @@ use Emartech\Emarsys\Api\Data\StatusResponseInterface;
  * Class StatusResponse
  * @package Emartech\Emarsys\Model\Data
  */
-class StatusResponse extends DataObject implements StoreConfigInterface
+class StatusResponse extends DataObject implements StatusResponseInterface
 {
     /**
      * @return string
@@ -25,7 +25,7 @@ class StatusResponse extends DataObject implements StoreConfigInterface
      *
      * @return $this
      */
-    public function setStatus($status): StoreConfigInterface
+    public function setStatus($status): StatusResponseInterface
     {
         $this->setData(self::STATUS_KEY, $status);
         return $this;
