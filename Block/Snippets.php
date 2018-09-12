@@ -14,6 +14,7 @@ use Magento\Catalog\Model\CategoryFactory;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Registry;
 use Emartech\Emarsys\Model\SettingsFactory;
+use Magento\Directory\Model\CurrencyFactory;
 
 /**
  * Class Snippets
@@ -42,6 +43,11 @@ class Snippets extends Template
   private $configReader;
 
   /**
+   * @var CurrencyFactory
+   */
+  private $currencyFactory;
+
+  /**
    * Snippets constructor.
    *
    * @param Context $context
@@ -49,6 +55,7 @@ class Snippets extends Template
    * @param Http $request
    * @param Registry $registry
    * @param ConfigReader $configReader
+   * @param CurrencyFactory $currencyFactory
    * @param array $data
    */
   public function __construct(
@@ -57,6 +64,7 @@ class Snippets extends Template
     Http $request,
     Registry $registry,
     ConfigReader $configReader,
+    CurrencyFactory $currencyFactory,
     array $data = []
   ) {
     $this->storeManager = $context->getStoreManager();
@@ -64,6 +72,7 @@ class Snippets extends Template
     $this->_request = $request;
     $this->coreRegistry = $registry;
     $this->configReader = $configReader;
+    $this->currencyFactory = $currencyFactory;
     parent::__construct($context, $data);
   }
 
@@ -79,8 +88,28 @@ class Snippets extends Template
       'product' => $this->getCurrentProduct(),
       'category' => $this->getCategory(),
       'store' => $this->getStoreData(),
-      'search' => $this->getSearchData()
+      'search' => $this->getSearchData(),
+      'exchangeRate' => $this->getExchangeRate()
     ];
+  }
+
+  /**
+   * Get Exchange Rate
+   *
+   * @return bool|mixed
+   * @throws \Exception
+   */
+  public function getExchangeRate()
+  {
+    try {
+      $currentCurrency = $this->storeManager->getStore()->getCurrentCurrency()->getCode();
+      $baseCurrency = $this->storeManager->getStore()->getBaseCurrency()->getCode();
+      return (float) $this->currencyFactory->create()->load($baseCurrency)->getAnyRate($currentCurrency);
+    } catch (\Exception $e) {
+      throw $e;
+    }
+
+    return false;
   }
 
   /**

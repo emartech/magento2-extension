@@ -39,7 +39,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"123"},"search":false});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2});</script>'
         )
       ).to.be.true;
     });
@@ -49,7 +49,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"123"},"search":{"term":"magento is shit"}});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"123"},"search":{"term":"magento is shit"},"exchangeRate":2});</script>'
         )
       ).to.be.true;
     });
@@ -59,7 +59,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Tops"],"ids":["11","12"]},"store":{"merchantId":"123"},"search":false});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Tops"],"ids":["11","12"]},"store":{"merchantId":"123"},"search":false,"exchangeRate":2});</script>'
         )
       ).to.be.true;
     });
@@ -69,7 +69,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"729"},"category":false,"store":{"merchantId":"123"},"search":false});</script>'
+          '<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"729"},"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2});</script>'
         )
       ).to.be.true;
     });

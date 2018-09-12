@@ -49,6 +49,16 @@ const deleteCategory = magentoApi => async categoryId => {
   return await magentoApi.deleteCategory(categoryId);
 };
 
+const setCurrencyConfig = async db => {
+  await db('core_config_data').where({ path: 'currency/options/default' }).update({ value: 'UGX' });
+  await db('core_config_data').where({ path: 'currency/options/allow' }).update({ value: 'USD,UGX' });
+  await db('directory_currency_rate').insert({
+    currency_from: 'USD',
+    currency_to: 'UGX',
+    rate: '2'
+  });
+};
+
 before(async function() {
   this.timeout(30000);
   this.db = knex({
@@ -80,6 +90,8 @@ before(async function() {
 
   await this.magentoApi.setDefaultConfig(1);
 
+  await setCurrencyConfig(this.db);
+
   if (!process.env.QUICK_TEST) {
     this.createCustomer = createCustomer(this.magentoApi, this.db);
     this.createProduct = createProduct(this.magentoApi);
@@ -88,17 +100,19 @@ before(async function() {
     this.deleteCategory = deleteCategory(this.magentoApi);
 
     try {
-
-      this.customer = await this.createCustomer({
-        group_id: 0,
-        dob: '1977-11-12',
-        email: 'default@yolo.net',
-        firstname: 'Yolo',
-        lastname: 'Default',
-        store_id: 1,
-        website_id: 1,
-        disable_auto_group_change: 0
-      }, 'Password1234');
+      this.customer = await this.createCustomer(
+        {
+          group_id: 0,
+          dob: '1977-11-12',
+          email: 'default@yolo.net',
+          firstname: 'Yolo',
+          lastname: 'Default',
+          store_id: 1,
+          website_id: 1,
+          disable_auto_group_change: 0
+        },
+        'Password1234'
+      );
     } catch (e) {
       console.log(e.response);
     }
