@@ -106,42 +106,67 @@ const cancelOrder = async (magentoApi, orderId) => {
 };
 
 describe('Order events', function() {
-  it('creates orders/new event and an orders/fulfilled', async function() {
-    await this.magentoApi.setConfig({
-      websiteId: 1,
-      config: { collectSalesEvents: 'enabled' }
+  context('setting enabled', function() {
+    before(async function() {
+      await this.magentoApi.setConfig({
+        websiteId: 1,
+        config: { collectSalesEvents: 'enabled' }
+      });
     });
 
-    const { orderId } = await createNewOrder(this.magentoApi, this.customer);
+    it('should create orders/new event and an orders/fulfilled', async function() {
+      const { orderId } = await createNewOrder(this.magentoApi, this.customer);
 
-    const { event_type: createEventType, event_data: createEventPayload } = await getLastEvent(this.db);
-    const createEventSimpleItem = JSON.parse(createEventPayload).items[1];
+      const { event_type: createEventType, event_data: createEventPayload } = await getLastEvent(this.db);
+      const createEventSimpleItem = JSON.parse(createEventPayload).items[1];
 
-    expect(createEventType).to.be.equal('orders/create');
-    expect(createEventSimpleItem.parent_item).not.to.be.empty;
+      expect(createEventType).to.be.equal('orders/create');
+      expect(createEventSimpleItem.parent_item).not.to.be.empty;
 
-    await fulfillOrder(this.magentoApi, orderId);
+      await fulfillOrder(this.magentoApi, orderId);
 
-    const { event_type: fulfillEventType } = await getLastEvent(this.db);
+      const { event_type: fulfillEventType } = await getLastEvent(this.db);
 
-    expect(fulfillEventType).to.be.equal('orders/fulfilled');
+      expect(fulfillEventType).to.be.equal('orders/fulfilled');
+    });
+
+    it('should create orders/cancelled event', async function() {
+      const { orderId } = await createNewOrder(this.magentoApi, this.customer);
+      await cancelOrder(this.magentoApi, orderId);
+
+      const { event_type: cancelEventType } = await getLastEvent(this.db);
+
+      expect(cancelEventType).to.be.equal('orders/cancelled');
+    });
+
+    context('store is not enabled', function() {
+      before(async function() {
+        await this.clearStoreSettings();
+      });
+
+      after(async function() {
+        await this.setDefaultStoreSettings();
+      });
+
+      it('should not create event', async function() {
+        await this.magentoApi.setDefaultConfig(1);
+
+        await createNewOrder(this.magentoApi, this.customer, this.product);
+        const createEvent = await getLastEvent(this.db);
+
+        expect(createEvent).to.be.undefined;
+      });
+    });
   });
 
-  it('should not create events until disabled and after enable should create an orders/cancelled', async function() {
-    await this.magentoApi.setDefaultConfig(1);
+  context('setting disabled', function() {
+    it('should not create event', async function() {
+      await this.magentoApi.setDefaultConfig(1);
 
-    const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.product);
+      await createNewOrder(this.magentoApi, this.customer, this.product);
+      const createEvent = await getLastEvent(this.db);
 
-    const createEvent = await getLastEvent(this.db);
-
-    expect(createEvent).to.be.undefined;
-
-    await this.magentoApi.setConfig({ websiteId: 1, config: { collectSalesEvents: 'enabled' } });
-
-    await cancelOrder(this.magentoApi, orderId);
-
-    const { event_type: cancelEventType } = await getLastEvent(this.db);
-
-    expect(cancelEventType).to.be.equal('orders/cancelled');
+      expect(createEvent).to.be.undefined;
+    });
   });
 });

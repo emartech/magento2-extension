@@ -45,7 +45,7 @@ describe('Marketing events: customer', function() {
       await this.magentoApi.setDefaultConfig(1);
     });
 
-    it('it should NOT create customer_new_account_registered_no_password event', async function() {
+    it('should NOT create customer_new_account_registered_no_password event', async function() {
       await this.magentoApi.setDefaultConfig(1);
 
       await this.createCustomer(customer);
@@ -59,7 +59,7 @@ describe('Marketing events: customer', function() {
       expect(event).to.be.undefined;
     });
 
-    it('it should NOT create customer_new_account_registered event', async function() {
+    it('should NOT create customer_new_account_registered event', async function() {
       await this.magentoApi.setDefaultConfig(1);
 
       await this.createCustomer(customer, 'Password1234');
@@ -73,7 +73,7 @@ describe('Marketing events: customer', function() {
       expect(event).to.be.undefined;
     });
 
-    it('it should NOT create customer_password_reset_confirmation event', async function() {
+    it('should NOT create customer_password_reset_confirmation event', async function() {
       await this.magentoApi.setDefaultConfig(1);
 
       await this.magentoApi.put({
@@ -94,7 +94,7 @@ describe('Marketing events: customer', function() {
       expect(event).to.be.undefined;
     });
 
-    it('it should NOT create customer_password_reminder event', async function() {
+    it('should NOT create customer_password_reminder event', async function() {
       await this.magentoApi.setDefaultConfig(1);
 
       await this.magentoApi.put({
@@ -395,7 +395,7 @@ describe('Marketing events: customer', function() {
       await this.magentoApi.setConfig({ websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
     });
 
-    it('it should create customer_new_account_registered_no_password event', async function() {
+    it('should create customer_new_account_registered_no_password event', async function() {
       await this.createCustomer(customer);
 
       const events = await this.db.select().from('emarsys_events_data');
@@ -409,7 +409,7 @@ describe('Marketing events: customer', function() {
       expect(eventData.customer.email).to.eql(customer.email);
     });
 
-    it('it should create customer_new_account_registered event', async function() {
+    it('should create customer_new_account_registered event', async function() {
       await this.createCustomer(customer, 'Password1234');
 
       const events = await this.db.select().from('emarsys_events_data');
@@ -423,7 +423,7 @@ describe('Marketing events: customer', function() {
       expect(eventData.customer.email).to.eql(customer.email);
     });
 
-    it('it should create customer_password_reset_confirmation event', async function() {
+    it('should create customer_password_reset_confirmation event', async function() {
       await this.magentoApi.put({
         path: '/index.php/rest/V1/customers/password',
         payload: {
@@ -445,7 +445,7 @@ describe('Marketing events: customer', function() {
       expect(eventData.customer.email).to.equal(this.customer.email);
     });
 
-    it('it should create customer_password_reminder event', async function() {
+    it('should create customer_password_reminder event', async function() {
       await this.magentoApi.put({
         path: '/index.php/rest/V1/customers/password',
         payload: {

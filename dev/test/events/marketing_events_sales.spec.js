@@ -297,6 +297,26 @@ describe('Marketing events: sales', function() {
           });
         });
       });
+
+      describe('store is not enabled', function() {
+        before(async function() {
+          await this.clearStoreSettings();
+          await this.db.truncate('emarsys_events_data');
+        });
+
+        after(async function() {
+          await this.setDefaultStoreSettings();
+        });
+
+        it('should not create event', async function() {
+          await createNewCustomerOrder(this.magentoApi, this.customer);
+
+          const createdEvent = await getLastEvent(this.db);
+          console.log(createdEvent);
+
+          expect(createdEvent).to.be.undefined;
+        });
+      });
     });
 
     describe('when guest', function() {
