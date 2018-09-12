@@ -39,9 +39,6 @@ class CustomerAccountObserver implements ObserverInterface
     {
         $customerId = $observer->getEvent()->getCustomer()->getId();
 
-        var_dump($observer->getEvent()->getData());
-        die();
-
         try {
             $this->customerEventHandler->store('customers/update', $customerId);
         } catch (\Exception $e) {
