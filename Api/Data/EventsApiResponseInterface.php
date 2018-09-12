@@ -13,12 +13,12 @@ interface EventsApiResponseInterface extends ListApiResponseBaseInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\EventInterface[]
      */
-    public function getEvents();
+    public function getEvents(): array;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\EventInterface[] $events
      *
      * @return $this
      */
-    public function setEvents(array $events);
+    public function setEvents(array $events): EventsApiResponseInterface;
 }

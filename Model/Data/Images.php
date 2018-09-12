@@ -15,7 +15,7 @@ class Images extends DataObject implements ImagesInterface
     /**
      * @return string
      */
-    public function getImage()
+    public function getImage(): string
     {
         return $this->getData(self::IMAGE_KEY);
     }
@@ -23,7 +23,7 @@ class Images extends DataObject implements ImagesInterface
     /**
      * @return string
      */
-    public function getSmallImage()
+    public function getSmallImage(): string
     {
         return $this->getData(self::SMALL_IMAGE_KEY);
     }
@@ -31,7 +31,7 @@ class Images extends DataObject implements ImagesInterface
     /**
      * @return string
      */
-    public function getThumbnail()
+    public function getThumbnail(): string
     {
         return $this->getData(self::THUMBNAIL_KEY);
     }
@@ -41,7 +41,7 @@ class Images extends DataObject implements ImagesInterface
      *
      * @return $this
      */
-    public function setImage($image)
+    public function setImage($image): ImagesInterface
     {
         $this->setData(self::IMAGE_KEY, $image);
 
@@ -53,7 +53,7 @@ class Images extends DataObject implements ImagesInterface
      *
      * @return $this
      */
-    public function setSmallImage($smallImage)
+    public function setSmallImage($smallImage): ImagesInterface
     {
         $this->setData(self::SMALL_IMAGE_KEY, $smallImage);
 
@@ -65,7 +65,7 @@ class Images extends DataObject implements ImagesInterface
      *
      * @return $this
      */
-    public function setThumbnail($thumbnail)
+    public function setThumbnail($thumbnail): ImagesInterface
     {
         $this->setData(self::THUMBNAIL_KEY, $thumbnail);
 

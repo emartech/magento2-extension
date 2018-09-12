@@ -13,7 +13,7 @@ class EventsApiResponse extends ListApiResponseBase implements EventsApiResponse
     /**
      * @return \Emartech\Emarsys\Api\Data\EventInterface[]
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->getData(self::EVENTS_KEY);
     }
@@ -23,7 +23,7 @@ class EventsApiResponse extends ListApiResponseBase implements EventsApiResponse
      *
      * @return $this
      */
-    public function setEvents(array $events)
+    public function setEvents(array $events): EventsApiResponseInterface
     {
         $this->setData(self::EVENTS_KEY, $events);
         return $this;

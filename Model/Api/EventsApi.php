@@ -10,8 +10,6 @@ use Emartech\Emarsys\Api\EventsApiInterface;
 use Emartech\Emarsys\Model\Event;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\Collection;
-use phpDocumentor\Reflection\DocBlock\ExampleFinder;
-use TheSeer\fDOM\fDOMElement;
 
 /**
  * Class EventsApi
@@ -54,7 +52,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return EventsApiResponseInterface
      */
-    public function get($sinceId, $pageSize)
+    public function get($sinceId, $pageSize): EventsApiResponseInterface
     {
         $this
             ->initCollection()
@@ -75,7 +73,7 @@ class EventsApi implements EventsApiInterface
     /**
      * @return array
      */
-    private function handleEvents()
+    private function handleEvents(): array
     {
         $eventsArray = [];
 
@@ -90,7 +88,7 @@ class EventsApi implements EventsApiInterface
     /**
      * @return $this
      */
-    private function initCollection()
+    private function initCollection(): EventsApi
     {
         $this->eventCollection = $this->eventCollectionFactory->create();
 
@@ -102,7 +100,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return $this
      */
-    private function getEvents($sinceId)
+    private function getEvents($sinceId): EventsApi
     {
         $this->eventCollection
             ->addFieldToFilter('event_id', ['gt' => $sinceId]);
@@ -113,7 +111,7 @@ class EventsApi implements EventsApiInterface
     /**
      * @return $this
      */
-    private function setOrder()
+    private function setOrder(): EventsApi
     {
         $this->eventCollection
             ->setOrder('event_id', DataCollection::SORT_ORDER_ASC);
@@ -126,7 +124,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return $this
      */
-    private function setPageSize($pageSize)
+    private function setPageSize($pageSize): EventsApi
     {
         $this->eventCollection
             ->setPageSize($pageSize);
@@ -139,7 +137,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return $this
      */
-    private function removeOldEvents($beforeId)
+    private function removeOldEvents($beforeId): EventsApi
     {
         $oldEvents = $this->eventCollection
             ->addFieldToFilter('event_id', ['lteq' => $beforeId]);

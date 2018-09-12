@@ -27,8 +27,7 @@ class ConfigReader extends AbstractHelper
     public function __construct(
         Context $context,
         ConfigInterface $config
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->config = $config;
     }
@@ -39,7 +38,7 @@ class ConfigReader extends AbstractHelper
      *
      * @return string
      */
-    public function getConfigValue($key, int $websiteId = null)
+    public function getConfigValue($key, $websiteId = null): string
     {
         return $this->config->getConfigValue($key, $websiteId);
     }
@@ -50,19 +49,27 @@ class ConfigReader extends AbstractHelper
      *
      * @return bool
      */
-    public function isEnabledForWebsite($key, $websiteId = 0)
+    public function isEnabledForWebsite($key, $websiteId = 0): bool
     {
         return $this->config->isEnabledForWebsite($key, $websiteId);
     }
 
     /**
-     * @param string   $key
-     * @param int|null $storeId
+     * @param string $key
+     * @param int    $storeId
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId = null)
+    public function isEnableForStore($key, $storeId): bool
     {
         return $this->config->isEnabledForStore($key, $storeId);
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->_getModuleName();
     }
 }

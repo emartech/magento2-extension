@@ -13,17 +13,17 @@ use Emartech\Emarsys\Api\Data\CategoryStoreDataInterface;
 class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
 {
     /**
-     * @return mixed|string
+     * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->getData(self::DESCRIPTION_KEY);
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->getData(self::NAME_KEY);
     }
@@ -31,7 +31,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return string
      */
-    public function getImage()
+    public function getImage(): string
     {
         return $this->getData(self::IMAGE_KEY);
     }
@@ -39,7 +39,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return int
      */
-    public function getIsActive()
+    public function getIsActive(): int
     {
         return $this->getData(self::IS_ACTIVE_KEY);
     }
@@ -47,7 +47,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return int
      */
-    public function getStoreId()
+    public function getStoreId(): int
     {
         return $this->getData(self::STORE_ID_KEY);
     }
@@ -57,7 +57,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setDescription($description)
+    public function setDescription($description): CategoryStoreDataInterface
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -69,7 +69,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setName($name)
+    public function setName($name): CategoryStoreDataInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -81,7 +81,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setImage($image)
+    public function setImage($image): CategoryStoreDataInterface
     {
         $this->setData(self::IMAGE_KEY, $image);
 
@@ -93,7 +93,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setIsActive($isActive)
+    public function setIsActive($isActive): CategoryStoreDataInterface
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
 
@@ -105,7 +105,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setStoreId($storeId)
+    public function setStoreId($storeId): CategoryStoreDataInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

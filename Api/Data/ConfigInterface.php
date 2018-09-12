@@ -2,104 +2,105 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-use Emartech\Emarsys\Model\Data\Config;
-
 /**
  * Interface ConfigInterface
  * @package Emartech\Emarsys\Api\Data
  */
 interface ConfigInterface
 {
-    const CONFIG_ENABLED = 'enabled';
-    const CONFIG_DISABLED = 'disabled';
-    const CONFIG_EMPTY = null;
-    const CUSTOMER_EVENTS = 'collect_customer_events';
-    const SALES_EVENTS = 'collect_sales_events';
-    const MARKETING_EVENTS = 'collect_marketing_events';
+    const CONFIG_ENABLED            = 'enabled';
+    const CONFIG_DISABLED           = 'disabled';
+    const CONFIG_EMPTY              = null;
+    const CUSTOMER_EVENTS           = 'collect_customer_events';
+    const SALES_EVENTS              = 'collect_sales_events';
+    const MARKETING_EVENTS          = 'collect_marketing_events';
     const INJECT_WEBEXTEND_SNIPPETS = 'inject_webextend_snippets';
-    const MERCHANT_ID = 'merchant_id';
-    const SNIPPET_URL = 'web_tracking_snippet_url';
-    const STORE_SETTINGS = 'store_settings';
+    const MERCHANT_ID               = 'merchant_id';
+    const SNIPPET_URL               = 'web_tracking_snippet_url';
+    const STORE_SETTINGS            = 'store_settings';
 
-    const SCOPE_TYPE_DEFAULT = 'websites';
+    const SCOPE_TYPE_DEFAULT       = 'websites';
     const XML_PATH_EMARSYS_PRE_TAG = 'emartech/emarsys/config/';
 
     /**
-     * @return string[]
+     * @param string     $key
+     * @param string|int $index
+     *
+     * @return mixed
      */
-    public function getData();
+    public function getData($key = '', $index = null);
 
     /**
      * @return string
      */
-    public function getCollectCustomerEvents();
+    public function getCollectCustomerEvents(): string;
 
     /**
      * @param string $collectCustomerEvents
      *
-     * @return Config
+     * @return $this
      */
-    public function setCollectCustomerEvents($collectCustomerEvents);
+    public function setCollectCustomerEvents($collectCustomerEvents): ConfigInterface;
 
     /**
      * @return string
      */
-    public function getCollectSalesEvents();
+    public function getCollectSalesEvents(): string;
 
     /**
      * @param string $collectSalesEvents
      *
-     * @return Config
+     * @return $this
      */
-    public function setCollectSalesEvents($collectSalesEvents);
+    public function setCollectSalesEvents($collectSalesEvents): ConfigInterface;
 
     /**
      * @return string
      */
-    public function getCollectMarketingEvents();
+    public function getCollectMarketingEvents(): string;
 
     /**
      * @param string $collectMarketingEvents
      *
-     * @return Config
+     * @return $this
      */
-    public function setCollectMarketingEvents($collectMarketingEvents);
+    public function setCollectMarketingEvents($collectMarketingEvents): ConfigInterface;
 
     /**
      * @return string
      */
-    public function getMerchantId();
+    public function getMerchantId(): string;
 
     /**
      * @param string $merchantId
      *
-     * @return Config
+     * @return $this
      */
-    public function setMerchantId($merchantId);
+    public function setMerchantId($merchantId): ConfigInterface;
 
     /**
      * @return string
      */
-    public function getInjectSnippet();
+    public function getInjectSnippet(): string;
 
     /**
      * @param string $injectSnippet
      *
-     * @return Config
+     * @return $this
      */
-    public function setInjectSnippet($injectSnippet);
+    public function setInjectSnippet($injectSnippet): ConfigInterface;
 
     /**
      * @return string
      */
-    public function getWebTrackingSnippetUrl();
+    public function getWebTrackingSnippetUrl(): string;
 
     /**
      * @param string $webTrackingSnippetUrl
      *
-     * @return Config
+     * @return $this
      */
-    public function setWebTrackingSnippetUrl($webTrackingSnippetUrl);
+    public function setWebTrackingSnippetUrl($webTrackingSnippetUrl): ConfigInterface;
 
     /**
      * @param string $xmlPostPath
@@ -119,22 +120,22 @@ interface ConfigInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface[]
      */
-    public function getStoreSettings();
+    public function getStoreSettings(): array;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\StoreConfigInterface[] $storeSettings
      *
      * @return $this
      */
-    public function setStoreSettings($storeSettings);
+    public function setStoreSettings($storeSettings): ConfigInterface;
 
     /**
      * @param string   $key
      * @param null|int $websiteId
      *
-     * @return string|null
+     * @return string
      */
-    public function getConfigValue($key, $websiteId = null);
+    public function getConfigValue($key, $websiteId = null): string;
 
     /**
      * @param string   $key
@@ -142,13 +143,13 @@ interface ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForWebsite($key, $websiteId = 0);
+    public function isEnabledForWebsite($key, $websiteId = null): bool;
 
     /**
      * @param string   $key
-     * @param int|null $storeId
+     * @param null|int $storeId
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId = null);
+    public function isEnabledForStore($key, $storeId = null): bool;
 }

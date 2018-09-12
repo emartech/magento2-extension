@@ -15,7 +15,7 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return int
      */
-    public function getCustomerId()
+    public function getCustomerId(): int
     {
         return $this->getData(self::CUSTOMER_ID_KEY);
     }
@@ -23,7 +23,7 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return string
      */
-    public function getSubscriberEmail()
+    public function getSubscriberEmail(): string
     {
         return $this->getData(self::SUBSCRIBER_EMAIL);
     }
@@ -31,7 +31,7 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return string
      */
-    public function getSubscriberStatus()
+    public function getSubscriberStatus(): string
     {
         return $this->getData(self::SUBSCRIBER_STATUS);
     }
@@ -39,7 +39,7 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return int
      */
-    public function getStoreId()
+    public function getStoreId(): int
     {
         return $this->getData(self::STORE_ID_KEY);
     }
@@ -47,7 +47,7 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return int
      */
-    public function getWebsiteId()
+    public function getWebsiteId(): int
     {
         return $this->getData(self::WEBSITE_ID_KEY);
     }
@@ -57,7 +57,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setCustomerId($customerId)
+    public function setCustomerId($customerId): SubscriptionInterface
     {
         $this->setData(self::CUSTOMER_ID_KEY, $customerId);
         return $this;
@@ -68,7 +68,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setSubscriberEmail($subscriberEmail)
+    public function setSubscriberEmail($subscriberEmail): SubscriptionInterface
     {
         $this->setData(self::SUBSCRIBER_EMAIL, $subscriberEmail);
         return $this;
@@ -79,7 +79,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setSubscriberStatus($subscriberStatus)
+    public function setSubscriberStatus($subscriberStatus): SubscriptionInterface
     {
         $this->setData(self::SUBSCRIBER_STATUS, $subscriberStatus);
         return $this;
@@ -90,7 +90,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setStoreId($storeId)
+    public function setStoreId($storeId): SubscriptionInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
         return $this;
@@ -101,7 +101,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setWebsiteId($websiteId)
+    public function setWebsiteId($websiteId): SubscriptionInterface
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
         return $this;

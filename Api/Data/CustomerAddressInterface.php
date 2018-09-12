@@ -25,156 +25,156 @@ interface CustomerAddressInterface
     /**
      * @return string
      */
-    public function getPrefix();
+    public function getPrefix(): string;
 
     /**
      * @param string $prefix
      *
      * @return $this
      */
-    public function setPrefix($prefix);
+    public function setPrefix($prefix): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getFirstname();
+    public function getFirstname(): string;
 
     /**
      * @param string $firstName
      *
      * @return $this
      */
-    public function setFirstname($firstName);
+    public function setFirstname($firstName): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getMiddlename();
+    public function getMiddlename(): string;
 
     /**
      * @param string $middleName
      *
      * @return $this
      */
-    public function setMiddlename($middleName);
+    public function setMiddlename($middleName): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getLastname();
+    public function getLastname(): string;
 
     /**
      * @param string $lastName
      *
      * @return $this
      */
-    public function setLastname($lastName);
+    public function setLastname($lastName): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getSuffix();
+    public function getSuffix(): string;
 
     /**
      * @param string $suffix
      *
      * @return $this
      */
-    public function setSuffix($suffix);
+    public function setSuffix($suffix): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getCompany();
+    public function getCompany(): string;
 
     /**
      * @param string $company
      *
      * @return $this
      */
-    public function setCompany($company);
+    public function setCompany($company): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getStreet();
+    public function getStreet(): string;
 
     /**
      * @param string $street
      *
      * @return $this
      */
-    public function setStreet($street);
+    public function setStreet($street): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getCity();
+    public function getCity(): string;
 
     /**
      * @param string $city
      *
      * @return $this
      */
-    public function setCity($city);
+    public function setCity($city): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getCountryId();
+    public function getCountryId(): string;
 
     /**
      * @param string $countryId
      *
      * @return $this
      */
-    public function setCountryId($countryId);
+    public function setCountryId($countryId): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getRegion();
+    public function getRegion(): string;
 
     /**
      * @param string $region
      *
      * @return $this
      */
-    public function setRegion($region);
+    public function setRegion($region): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getPostcode();
+    public function getPostcode(): string;
 
     /**
      * @param string $postCode
      *
      * @return $this
      */
-    public function setPostcode($postCode);
+    public function setPostcode($postCode): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getTelephone();
+    public function getTelephone(): string;
 
     /**
      * @param string $telephone
      *
      * @return $this
      */
-    public function setTelephone($telephone);
+    public function setTelephone($telephone): CustomerAddressInterface;
 
     /**
      * @return string
      */
-    public function getFax();
+    public function getFax(): string;
 
     /**
      * @param string $fax
      *
      * @return $this
      */
-    public function setFax($fax);
+    public function setFax($fax): CustomerAddressInterface;
 }

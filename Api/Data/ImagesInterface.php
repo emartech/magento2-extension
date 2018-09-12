@@ -15,36 +15,36 @@ interface ImagesInterface
     /**
      * @return string
      */
-    public function getImage();
+    public function getImage(): string;
 
     /**
      * @return string
      */
-    public function getSmallImage();
+    public function getSmallImage(): string;
 
     /**
      * @return string
      */
-    public function getThumbnail();
+    public function getThumbnail(): string;
 
     /**
      * @param string $image
      *
      * @return $this
      */
-    public function setImage($image);
+    public function setImage($image): ImagesInterface;
 
     /**
      * @param string $smallImage
      *
      * @return $this
      */
-    public function setSmallImage($smallImage);
+    public function setSmallImage($smallImage): ImagesInterface;
 
     /**
      * @param string $thumbnail
      *
      * @return $this
      */
-    public function setThumbnail($thumbnail);
+    public function setThumbnail($thumbnail): ImagesInterface;
 }

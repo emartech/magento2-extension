@@ -22,72 +22,72 @@ interface ProductStoreDataInterface
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @return float
      */
-    public function getPrice();
+    public function getPrice(): float;
 
     /**
      * @return string
      */
-    public function getLink();
+    public function getLink(): string;
 
     /**
      * @return string
      */
-    public function getDescription();
+    public function getDescription(): string;
 
     /**
      * @return int
      */
-    public function getStatus();
+    public function getStatus(): int;
 
     /**
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
      * @param string $name
      *
      * @return $this
      */
-    public function setName($name);
+    public function setName($name): ProductStoreDataInterface;
 
     /**
      * @param float $price
      *
      * @return $this
      */
-    public function setPrice($price);
+    public function setPrice($price): ProductStoreDataInterface;
 
     /**
      * @param string $link
      *
      * @return $this
      */
-    public function setLink($link);
+    public function setLink($link): ProductStoreDataInterface;
 
     /**
      * @param string $description
      *
      * @return $this
      */
-    public function setDescription($description);
+    public function setDescription($description): ProductStoreDataInterface;
 
     /**
      * @param int $status
      *
      * @return $this
      */
-    public function setStatus($status);
+    public function setStatus($status): ProductStoreDataInterface;
 
     /**
      * @param int $storeId
      *
      * @return $this
      */
-    public function setStoreId($storeId);
+    public function setStoreId($storeId): ProductStoreDataInterface;
 }

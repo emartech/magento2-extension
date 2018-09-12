@@ -17,60 +17,60 @@ interface SubscriptionInterface
     /**
      * @return int
      */
-    public function getCustomerId();
+    public function getCustomerId(): int;
 
     /**
      * @param int $customerId
      *
      * @return $this
      */
-    public function setCustomerId($customerId);
+    public function setCustomerId($customerId): SubscriptionInterface;
 
     /**
      * @return int
      */
-    public function getWebsiteId();
+    public function getWebsiteId(): int;
 
     /**
      * @param int $websiteId
      *
      * @return $this
      */
-    public function setWebsiteId($websiteId);
+    public function setWebsiteId($websiteId): SubscriptionInterface;
 
     /**
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
      * @param int $storeId
      *
      * @return $this
      */
-    public function setStoreId($storeId);
+    public function setStoreId($storeId): SubscriptionInterface;
 
     /**
      * @return string
      */
-    public function getSubscriberEmail();
+    public function getSubscriberEmail(): string;
 
     /**
      * @param string $subscriberEmail
      *
      * @return $this
      */
-    public function setSubscriberEmail($subscriberEmail);
+    public function setSubscriberEmail($subscriberEmail): SubscriptionInterface;
 
     /**
      * @return string
      */
-    public function getSubscriberStatus();
+    public function getSubscriberStatus(): string;
 
     /**
      * @param string $subscriberStatus
      *
      * @return $this
      */
-    public function setSubscriberStatus($subscriberStatus);
+    public function setSubscriberStatus($subscriberStatus): SubscriptionInterface;
 }

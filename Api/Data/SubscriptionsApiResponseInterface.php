@@ -13,12 +13,12 @@ interface SubscriptionsApiResponseInterface extends ListApiResponseBaseInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface[]
      */
-    public function getSubscriptions();
+    public function getSubscriptions(): array;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
      *
      * @return $this
      */
-    public function setSubscriptions(array $subscriptions);
+    public function setSubscriptions(array $subscriptions): SubscriptionsApiResponseInterface;
 }

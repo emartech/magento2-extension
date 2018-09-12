@@ -13,12 +13,12 @@ interface StatusResponseInterface
     /**
      * @return string
      */
-    public function getStatus();
+    public function getStatus(): string;
 
     /**
      * @param string $status
      *
      * @return $this
      */
-    public function setStatus($status);
+    public function setStatus($status): StatusResponseInterface;
 }

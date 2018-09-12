@@ -126,9 +126,8 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return CategoriesApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \ReflectionException
      */
-    public function get($page, $pageSize, $storeId)
+    public function get($page, $pageSize, $storeId): CategoriesApiResponseInterface
     {
         $this
             ->initStores($storeId);
@@ -155,7 +154,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return $this
      */
-    private function initStores($storeIds)
+    private function initStores($storeIds): CategoriesApi
     {
         if (!is_array($storeIds)) {
             $storeIds = explode(',', $storeIds);
@@ -175,7 +174,7 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @return $this
      */
-    private function initCollection()
+    private function initCollection(): CategoriesApi
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
 
@@ -185,17 +184,21 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \ReflectionException
      */
-    private function joinData()
+    private function joinData(): CategoriesApi
     {
-        $storeCategoryAttributeCodes = $this->containerBuilder->getReflectionClass(
-            '\Emartech\Emarsys\Api\Data\CategoryStoreDataInterface'
-        )->getConstants();
+        $storeCategoryAttributeCodes = [];
+        $globalCategoryAttributeCodes = [];
+        try {
+            $storeCategoryAttributeCodes = $this->containerBuilder->getReflectionClass(
+                '\Emartech\Emarsys\Api\Data\CategoryStoreDataInterface'
+            )->getConstants();
 
-        $globalCategoryAttributeCodes = $this->containerBuilder->getReflectionClass(
-            '\Emartech\Emarsys\Api\Data\CategoryInterface'
-        )->getConstants();
+            $globalCategoryAttributeCodes = $this->containerBuilder->getReflectionClass(
+                '\Emartech\Emarsys\Api\Data\CategoryInterface'
+            )->getConstants();
+        } catch (\Exception $e) { //@codingStandardsIgnoreLine
+        }
 
         $this->categoryAttributeCollection = $this->categoryAttributeCollectionFactory->create();
         $this->categoryAttributeCollection
@@ -245,7 +248,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return string
      */
-    private function getAttributeValueAlias($attributeCode, $storeId = null)
+    private function getAttributeValueAlias($attributeCode, $storeId = null): string
     {
         $returnValue = $attributeCode;
         if ($storeId !== null) {
@@ -257,7 +260,7 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @return $this
      */
-    private function setOrder()
+    private function setOrder(): CategoriesApi
     {
         $this->categoryCollection
             ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
@@ -271,7 +274,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return $this
      */
-    private function setPage($page, $pageSize)
+    private function setPage($page, $pageSize): CategoriesApi
     {
         $this->categoryCollection->setPage($page, $pageSize);
 
@@ -281,7 +284,7 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @return array
      */
-    private function handleCategories()
+    private function handleCategories(): array
     {
         $returnArray = [];
 
@@ -301,7 +304,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return array
      */
-    private function handleCategoryStoreData($category)
+    private function handleCategoryStoreData($category): array
     {
         $returnArray = [];
 
@@ -323,7 +326,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return string
      */
-    private function handleImage($category, $store)
+    private function handleImage($category, $store): string
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/category/';
         $image = $category->getData($this->getAttributeValueAlias('image', $store->getId()));

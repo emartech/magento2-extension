@@ -14,24 +14,24 @@ interface StoreConfigInterface
     /**
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
      * @return string
      */
-    public function getSlug();
+    public function getSlug(): string;
 
     /**
      * @param int $storeId
      *
      * @return $this
      */
-    public function setStoreId($storeId);
+    public function setStoreId($storeId): StoreConfigInterface;
 
     /**
      * @param string $slug
      *
      * @return $this
      */
-    public function setSlug($slug);
+    public function setSlug($slug): StoreConfigInterface;
 }

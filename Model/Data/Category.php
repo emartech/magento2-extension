@@ -17,7 +17,7 @@ class Category extends DataObject implements CategoryInterface
     /**
      * @return CategoryStoreDataInterface[]
      */
-    public function getStoreData()
+    public function getStoreData(): array
     {
         return $this->getData(self::STORE_DATA_KEY);
     }
@@ -25,7 +25,7 @@ class Category extends DataObject implements CategoryInterface
     /**
      * @return int
      */
-    public function getChildrenCount()
+    public function getChildrenCount(): int
     {
         return $this->getData(self::CHILDREN_COUNT_KEY);
     }
@@ -33,7 +33,7 @@ class Category extends DataObject implements CategoryInterface
     /**
      * @return int
      */
-    public function getEntityId()
+    public function getEntityId(): int
     {
         return $this->getData(self::ENTITY_ID_KEY);
     }
@@ -41,7 +41,7 @@ class Category extends DataObject implements CategoryInterface
     /**
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->getData(self::PATH_KEY);
     }
@@ -51,7 +51,7 @@ class Category extends DataObject implements CategoryInterface
      *
      * @return $this
      */
-    public function setChildrenCount($childrenCount)
+    public function setChildrenCount($childrenCount): CategoryInterface
     {
         $this->setData(self::CHILDREN_COUNT_KEY, $childrenCount);
 
@@ -63,7 +63,7 @@ class Category extends DataObject implements CategoryInterface
      *
      * @return $this
      */
-    public function setEntityId($entityId)
+    public function setEntityId($entityId): CategoryInterface
     {
         $this->setData(self::ENTITY_ID_KEY, $entityId);
 
@@ -75,7 +75,7 @@ class Category extends DataObject implements CategoryInterface
      *
      * @return $this
      */
-    public function setPath($path)
+    public function setPath($path): CategoryInterface
     {
         $this->setData(self::PATH_KEY, $path);
 
@@ -87,7 +87,7 @@ class Category extends DataObject implements CategoryInterface
      *
      * @return $this
      */
-    public function setStoreData($storeData)
+    public function setStoreData($storeData): CategoryInterface
     {
         $this->setData(self::STORE_DATA_KEY, $storeData);
 

@@ -13,12 +13,12 @@ interface CategoriesApiResponseInterface extends ListApiResponseBaseInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface[]
      */
-    public function getCategories();
+    public function getCategories(): array;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\CategoryInterface[] $categories
      *
      * @return $this
      */
-    public function setCategories(array $categories);
+    public function setCategories(array $categories): CategoriesApiResponseInterface;
 }

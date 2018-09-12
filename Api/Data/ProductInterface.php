@@ -2,6 +2,8 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
+use Emartech\Emarsys\Api\Data\ImagesInterface;
+
 /**
  * Interface ProductInterface
  * @package Emartech\Emarsys\Api\Data
@@ -25,108 +27,108 @@ interface ProductInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface[]
      */
-    public function getStoreData();
+    public function getStoreData(): array;
 
     /**
      * @return int
      */
-    public function getEntityId();
+    public function getEntityId(): int;
 
     /**
      * @return string
      */
-    public function getType();
+    public function getType(): string;
 
     /**
      * @return int[]
      */
-    public function getChildrenEntityIds();
+    public function getChildrenEntityIds(): array;
 
     /**
-     * @return mixed
+     * @return string[]
      */
-    public function getCategories();
+    public function getCategories(): array;
 
     /**
      * @return string
      */
-    public function getSku();
+    public function getSku(): string;
 
     /**
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function getImages();
+    public function getImages(): ImagesInterface;
 
     /**
      * @return float|int
      */
-    public function getQty();
+    public function getQty(): float;
 
     /**
      * @return int
      */
-    public function getIsInStock();
+    public function getIsInStock(): int;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\ProductStoreDataInterface[] $storeData
      *
      * @return $this
      */
-    public function setStoreData(array $storeData);
+    public function setStoreData(array $storeData): ProductInterface;
 
     /**
      * @param int $entityId
      *
      * @return $this
      */
-    public function setEntityId($entityId);
+    public function setEntityId($entityId): ProductInterface;
 
     /**
      * @param string $type
      *
      * @return $this
      */
-    public function setType($type);
+    public function setType($type): ProductInterface;
 
     /**
      * @param int[] $childrenEntityIds
      *
      * @return $this
      */
-    public function setChildrenEntityIds($childrenEntityIds);
+    public function setChildrenEntityIds($childrenEntityIds): ProductInterface;
 
     /**
-     * @param mixed $categories
+     * @param string[] $categories
      *
      * @return $this
      */
-    public function setCategories($categories);
+    public function setCategories($categories): ProductInterface;
 
     /**
      * @param string $sku
      *
      * @return $this
      */
-    public function setSku($sku);
+    public function setSku($sku): ProductInterface;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\ImagesInterface $images
      *
      * @return $this
      */
-    public function setImages($images);
+    public function setImages($images): ProductInterface;
 
     /**
      * @param float|int $qty
      *
      * @return $this
      */
-    public function setQty($qty);
+    public function setQty($qty): ProductInterface;
 
     /**
      * @param int $isInStock
      *
      * @return $this
      */
-    public function setIsInStock($isInStock);
+    public function setIsInStock($isInStock): ProductInterface;
 }

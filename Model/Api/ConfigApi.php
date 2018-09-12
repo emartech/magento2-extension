@@ -56,10 +56,8 @@ class ConfigApi implements ConfigApiInterface
      *
      * @return StatusResponseInterface
      */
-    public function set(
-        $websiteId,
-        ConfigInterface $config
-    ) {
+    public function set($websiteId, ConfigInterface $config): StatusResponseInterface
+    {
         foreach ($config->getData() as $key => $value) {
             $config->setConfigValue($key, $value, $websiteId);
         }
@@ -74,7 +72,7 @@ class ConfigApi implements ConfigApiInterface
      *
      * @return StatusResponseInterface
      */
-    public function setDefault($websiteId)
+    public function setDefault($websiteId): StatusResponseInterface
     {
         /** @var ConfigInterface $config */
         $config = $this->configFactory->create();

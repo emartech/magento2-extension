@@ -98,9 +98,8 @@ class CustomersApi implements CustomersApiInterface
      *
      * @return CustomersApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \ReflectionException
      */
-    public function get($page, $pageSize, $websiteId = null, $storeId = null)
+    public function get($page, $pageSize, $websiteId = null, $storeId = null): CustomersApiResponseInterface
     {
         $this
             ->initCollection()
@@ -121,14 +120,16 @@ class CustomersApi implements CustomersApiInterface
 
     /**
      * @return $this
-     * @throws \ReflectionException
      */
-    private function initCollection()
+    private function initCollection(): CustomersApi
     {
-        $customerAddressInterfaceReflection = $this->containerBuilder->getReflectionClass(
-            '\Emartech\Emarsys\Api\Data\CustomerAddressInterface'
-        );
-        $this->addressFields = $customerAddressInterfaceReflection->getConstants();
+        try {
+            $customerAddressInterfaceReflection = $this->containerBuilder->getReflectionClass(
+                '\Emartech\Emarsys\Api\Data\CustomerAddressInterface'
+            );
+            $this->addressFields = $customerAddressInterfaceReflection->getConstants();
+        } catch (\Exception $e) { //@codingStandardsIgnoreLine
+        }
 
         $this->customerCollection = $this->collectionFactory->create();
         $this->customerAddressEntityTable = $this->customerCollection->getResource()
@@ -144,7 +145,7 @@ class CustomersApi implements CustomersApiInterface
      *
      * @return $this
      */
-    private function setPage($page, $pageSize)
+    private function setPage($page, $pageSize): CustomersApi
     {
         $this->customerCollection->setPage($page, $pageSize);
         return $this;
@@ -157,7 +158,7 @@ class CustomersApi implements CustomersApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function filterMixedParam($param, $type)
+    private function filterMixedParam($param, $type): CustomersApi
     {
         if ($param) {
             if (!is_array($param)) {
@@ -171,7 +172,7 @@ class CustomersApi implements CustomersApiInterface
     /**
      * @return array
      */
-    private function handleCustomers()
+    private function handleCustomers(): array
     {
         $customerArray = [];
         foreach ($this->customerCollection as $customer) {
@@ -186,7 +187,7 @@ class CustomersApi implements CustomersApiInterface
      *
      * @return CustomerInterface
      */
-    private function parseCustomer($customer)
+    private function parseCustomer($customer): CustomerInterface
     {
         /** @var CustomerInterface $customerItem */
         $customerItem = $this->customerFactory->create()
@@ -207,7 +208,7 @@ class CustomersApi implements CustomersApiInterface
      *
      * @return CustomerAddressInterface
      */
-    private function getAddressFromCustomer($customer, $addressType = 'billing')
+    private function getAddressFromCustomer($customer, $addressType = 'billing'): CustomerAddressInterface
     {
         /** @var CustomerAddressInterface $address */
         $address = $this->customerAddressFactory->create();
@@ -228,7 +229,7 @@ class CustomersApi implements CustomersApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinSubscriptionStatus()
+    private function joinSubscriptionStatus(): CustomersApi
     {
         $tableAlias = 'newsletter';
 
@@ -249,7 +250,7 @@ class CustomersApi implements CustomersApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinAddress($addressType = 'billing')
+    private function joinAddress($addressType = 'billing'): CustomersApi
     {
         $tableAlias = $addressType . '_address';
 

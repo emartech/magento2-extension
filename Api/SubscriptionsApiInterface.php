@@ -2,6 +2,9 @@
 
 namespace Emartech\Emarsys\Api;
 
+use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
+use Emartech\Emarsys\Api\Data\StatusResponseInterface;
+
 /**
  * Interface SubscriptionsApiInterface
  * @package Emartech\Emarsys\Api
@@ -25,12 +28,12 @@ interface SubscriptionsApiInterface
         $onlyGuest = false,
         $websiteId = null,
         $storeId = null
-    );
+    ): SubscriptionsApiResponseInterface;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
      *
      * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
      */
-    public function update($subscriptions);
+    public function update($subscriptions): StatusResponseInterface;
 }

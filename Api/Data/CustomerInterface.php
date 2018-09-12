@@ -31,228 +31,228 @@ interface CustomerInterface
     /**
      * @return int
      */
-    public function getId();
+    public function getId(): int;
 
     /**
      * @param int $id
      *
      * @return $this
      */
-    public function setId($id);
+    public function setId($id): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getEmail();
+    public function getEmail(): string;
 
     /**
      * @param string $email
      *
      * @return $this
      */
-    public function setEmail($email);
+    public function setEmail($email): CustomerInterface;
 
     /**
      * @return int
      */
-    public function getWebsiteId();
+    public function getWebsiteId(): int;
 
     /**
      * @param int $websiteId
      *
      * @return $this
      */
-    public function setWebsiteId($websiteId);
+    public function setWebsiteId($websiteId): CustomerInterface;
 
     /**
      * @return int
      */
-    public function getGroupId();
+    public function getGroupId(): int;
 
     /**
      * @param int $groupId
      *
      * @return $this
      */
-    public function setGroupId($groupId);
+    public function setGroupId($groupId): CustomerInterface;
 
     /**
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
      * @param int $storeId
      *
      * @return $this
      */
-    public function setStoreId($storeId);
+    public function setStoreId($storeId): CustomerInterface;
 
     /**
      * @return int
      */
-    public function getIsActive();
+    public function getIsActive(): int;
 
     /**
      * @param int $isActive
      *
      * @return $this
      */
-    public function setIsActive($isActive);
+    public function setIsActive($isActive): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getPrefix();
+    public function getPrefix(): string;
 
     /**
      * @param string $prefix
      *
      * @return $this
      */
-    public function setPrefix($prefix);
+    public function setPrefix($prefix): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getFirstname();
+    public function getFirstname(): string;
 
     /**
      * @param string $firstName
      *
      * @return $this
      */
-    public function setFirstname($firstName);
+    public function setFirstname($firstName): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getMiddlename();
+    public function getMiddlename(): string;
 
     /**
      * @param string $middleName
      *
      * @return $this
      */
-    public function setMiddlename($middleName);
+    public function setMiddlename($middleName): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getLastname();
+    public function getLastname(): string;
 
     /**
      * @param string $lastName
      *
      * @return $this
      */
-    public function setLastname($lastName);
+    public function setLastname($lastName): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getSuffix();
+    public function getSuffix(): string;
 
     /**
      * @param string $suffix
      *
      * @return $this
      */
-    public function setSuffix($suffix);
+    public function setSuffix($suffix): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getDob();
+    public function getDob(): string;
 
     /**
      * @param string $dob
      *
      * @return $this
      */
-    public function setDob($dob);
+    public function setDob($dob): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getTaxvat();
+    public function getTaxvat(): string;
 
     /**
      * @param string $taxVat
      *
      * @return $this
      */
-    public function setTaxvat($taxVat);
+    public function setTaxvat($taxVat): CustomerInterface;
 
     /**
      * @return int
      */
-    public function getGender();
+    public function getGender(): int;
 
     /**
      * @param int $gender
      *
      * @return $this
      */
-    public function setGender($gender);
+    public function setGender($gender): CustomerInterface;
 
     /**
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function getBillingAddress();
+    public function getBillingAddress(): CustomerAddressInterface;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface $billingAddress
      *
      * @return $this
      */
-    public function setBillingAddress($billingAddress);
+    public function setBillingAddress($billingAddress): CustomerInterface;
 
     /**
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function getShippingAddress();
+    public function getShippingAddress(): CustomerAddressInterface;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface $shippingAddress
      *
      * @return $this
      */
-    public function setShippingAddress($shippingAddress);
+    public function setShippingAddress($shippingAddress): CustomerInterface;
 
     /**
      * @return int
      */
-    public function getAcceptsMarketing();
+    public function getAcceptsMarketing(): int;
 
     /**
      * @param int $acceptsMarketing
      *
      * @return $this
      */
-    public function setAcceptsMarketing($acceptsMarketing);
+    public function setAcceptsMarketing($acceptsMarketing): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getCreatedAt();
+    public function getCreatedAt(): string;
 
     /**
      * @param string $createdAt
      *
      * @return $this
      */
-    public function setCreatedAt($createdAt);
+    public function setCreatedAt($createdAt): CustomerInterface;
 
     /**
      * @return string
      */
-    public function getUpdatedAt();
+    public function getUpdatedAt(): string;
 
     /**
      * @param string $updatedAt
      *
      * @return $this
      */
-    public function setUpdatedAt($updatedAt);
+    public function setUpdatedAt($updatedAt): CustomerInterface;
 }

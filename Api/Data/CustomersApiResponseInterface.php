@@ -13,12 +13,12 @@ interface CustomersApiResponseInterface extends ListApiResponseBaseInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface[]
      */
-    public function getCustomers();
+    public function getCustomers(): array;
 
     /**
      * @param \Emartech\Emarsys\Api\Data\CustomerInterface[] $customers
      *
      * @return $this
      */
-    public function setCustomers(array $customers);
+    public function setCustomers(array $customers): CustomersApiResponseInterface;
 }

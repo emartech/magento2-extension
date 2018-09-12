@@ -11,6 +11,7 @@
                     <resource id="Emartech_Emarsys::api_products" title="Product API" sortOrder="50"/>
                     <resource id="Emartech_Emarsys::api_categories" title="Category API" sortOrder="60"/>
                     <resource id="Emartech_Emarsys::api_system" title="System information API" sortOrder="70"/>
+                    <resource id="Emartech_Emarsys::api_orders" title="Order API" sortOrder="80"/>
                 </resource>
             </resource>
         </resources>
