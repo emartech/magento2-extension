@@ -94,6 +94,7 @@ class SenderBuilderPlugin
             $identityContainer->setAccessible(true);
             $identityContainer = $identityContainer->getValue($senderBuilder);
             $storeId = $identityContainer->getStore()->getStoreId();
+            $websiteId = $identityContainer->getStore()->getWebsiteId();
 
             if (!$this->configReader->isEnabledForStore(ConfigInterface::MARKETING_EVENTS, $storeId)) {
                 return $proceed();
@@ -109,6 +110,8 @@ class SenderBuilderPlugin
             $eventModel = $this->eventFactory->create();
 
             $eventModel->setEventType($templateContainer->getTemplateId());
+            $eventModel->setStoreId($storeId);
+            $eventModel->setWebsiteId($websiteId);
 
             $data = [
                 'customerName' => $identityContainer->getCustomerName(),

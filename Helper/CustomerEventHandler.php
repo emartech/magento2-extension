@@ -50,6 +50,7 @@ class CustomerEventHandler extends AbstractHelper
   {
     /** @var Customer $customer */
     $customer = $this->customerFactory->create()->load($customerId);
+    $storeId = $customer->getStoreId();
     $websiteId = $customer->getWebsiteId();
 
     if (!$this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
@@ -70,6 +71,8 @@ class CustomerEventHandler extends AbstractHelper
     /** @var \Emartech\Emarsys\Model\Event $eventModel */
     $eventModel = $this->eventFactory->create();
     $eventModel->setData('event_type', $type);
+    $eventModel->setWebsiteId($websiteId);
+    $eventModel->setStoreId($storeId);
     $eventModel->setData('event_data', json_encode($customerData));
     $this->eventResource->save($eventModel);
 

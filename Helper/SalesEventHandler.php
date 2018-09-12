@@ -85,6 +85,8 @@ class SalesEventHandler extends AbstractHelper
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
+        $eventModel->setWebsiteId($websiteId);
+        $eventModel->setStoreId($storeId);
         $eventModel->setData('event_type', $this->getEventType($orderData['state']));
         $eventModel->setData('event_data', json_encode($orderData));
         $this->eventResource->save($eventModel);
