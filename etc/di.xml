@@ -4,6 +4,7 @@
     <preference for="Emartech\Emarsys\Api\TemplatesApiInterface" type="Emartech\Emarsys\Model\Api\TemplatesApi" />
 
     <preference for="Emartech\Emarsys\Api\ConfigApiInterface" type="Emartech\Emarsys\Model\Api\ConfigApi" />
+    <preference for="Emartech\Emarsys\Api\Data\StoreConfigInterface" type="Emartech\Emarsys\Model\Data\StoreConfig" />
     <preference for="Emartech\Emarsys\Api\Data\ConfigInterface" type="Emartech\Emarsys\Model\Data\Config" />
 
     <preference for="Emartech\Emarsys\Api\CustomersApiInterface" type="Emartech\Emarsys\Model\Api\CustomersApi" />

@@ -49,7 +49,7 @@ class EmailEventHandler extends AbstractHelper
    */
   public function store($template, $args)
   {
-    if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS)) return;
+    if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS)) return;
 
     $emailData = [
       'customer' => $args[0]['customer']->getData(),

@@ -52,7 +52,7 @@ class CustomerEventHandler extends AbstractHelper
     $customer = $this->customerFactory->create()->load($customerId);
     $websiteId = $customer->getWebsiteId();
 
-    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
+    if (!$this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
 
     $customerData = $customer->toArray();
     $customerData['id'] = $customerData['entity_id'];

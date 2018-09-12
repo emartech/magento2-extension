@@ -141,7 +141,7 @@ class CustomerPlugin
         $storeId = $subscriber->getStoreId();
         $store = $this->storeManager->getStore($storeId);
 
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($subscriber);
         }
 
@@ -169,7 +169,7 @@ class CustomerPlugin
         $storeId = $subscriber->getStoreId();
         $store = $this->storeManager->getStore($storeId);
 
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($subscriber);
         }
 
@@ -197,7 +197,7 @@ class CustomerPlugin
         $storeId = $subscriber->getStoreId();
         $store = $this->storeManager->getStore($storeId);
 
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($subscriber);
         }
 
@@ -236,7 +236,7 @@ class CustomerPlugin
         }
         $store = $this->storeManager->getStore($storeId);
 
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
             return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
         }
 
@@ -272,7 +272,7 @@ class CustomerPlugin
         $origCustomerEmail,
         $isPasswordChanged = false
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $savedCustomer->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $savedCustomer->getWebsiteId())) {
             return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
         }
 
@@ -335,7 +335,7 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
             return $proceed($customer);
         }
 
@@ -366,7 +366,7 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
             return $proceed($customer);
         }
 

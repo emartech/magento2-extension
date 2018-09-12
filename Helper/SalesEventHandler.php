@@ -56,7 +56,7 @@ class SalesEventHandler extends AbstractHelper
   {
     $websiteId = $this->storeManager->getStore($order->getStoreId())->getWebsiteId();
 
-    if (!$this->configReader->isEnabled(ConfigInterface::SALES_EVENTS, $websiteId)) return;
+    if (!$this->configReader->isEnabledForWebsite(ConfigInterface::SALES_EVENTS, $websiteId)) return;
 
     $orderData = $order->getData();
     $orderItems = $order->getAllItems();

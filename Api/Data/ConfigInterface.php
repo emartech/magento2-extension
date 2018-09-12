@@ -19,6 +19,7 @@ interface ConfigInterface
     const INJECT_WEBEXTEND_SNIPPETS = 'inject_webextend_snippets';
     const MERCHANT_ID               = 'merchant_id';
     const SNIPPET_URL               = 'web_tracking_snippet_url';
+    const STORE_SETTINGS            = 'store_settings';
 
     const SCOPE_TYPE_DEFAULT       = 'websites';
     const XML_PATH_EMARSYS_PRE_TAG = 'emartech/emarsys/config/';
@@ -114,4 +115,40 @@ interface ConfigInterface
      * @return void
      */
     public function cleanScope();
+
+    /**
+     * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface[]
+     */
+    public function getStoreSettings();
+
+    /**
+     * @param \Emartech\Emarsys\Api\Data\StoreConfigInterface[] $storeSettings
+     *
+     * @return $this
+     */
+    public function setStoreSettings($storeSettings);
+
+    /**
+     * @param string   $key
+     * @param null|int $websiteId
+     *
+     * @return string
+     */
+    public function getConfigValue($key, $websiteId = null);
+
+    /**
+     * @param string   $key
+     * @param null|int $websiteId
+     *
+     * @return bool
+     */
+    public function isEnabledForWebsite($key, $websiteId = 0);
+
+    /**
+     * @param string $key
+     * @param int    $storeId
+     *
+     * @return bool
+     */
+    public function isEnabledForStore($key, $storeId);
 }

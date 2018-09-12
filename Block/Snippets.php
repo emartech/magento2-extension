@@ -203,6 +203,6 @@ class Snippets extends Template
    */
   public function isInjectable()
   {
-    return $this->configReader->isEnabled(ConfigInterface::INJECT_WEBEXTEND_SNIPPETS);
+    return $this->configReader->isEnabledForWebsite(ConfigInterface::INJECT_WEBEXTEND_SNIPPETS);
   }
 }

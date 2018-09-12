@@ -51,7 +51,7 @@ class SubscriptionEventHandler extends AbstractHelper
   {
     $websiteId = $this->storeManager->getStore($subscription->getStoreId())->getWebsiteId();
 
-    if (!$this->configReader->isEnabled(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
+    if (!$this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
 
     $eventData = $subscription->getData();
 

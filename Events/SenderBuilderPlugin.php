@@ -94,7 +94,7 @@ class SenderBuilderPlugin
             $identityContainer->setAccessible(true);
             $identityContainer = $identityContainer->getValue($senderBuilder);
 
-            if (!$this->configReader->isEnabled(ConfigInterface::MARKETING_EVENTS, $identityContainer->getStore()->getWebsiteId())) {
+            if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $identityContainer->getStore()->getWebsiteId())) {
                 return $proceed();
             }
 

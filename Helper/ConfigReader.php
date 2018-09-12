@@ -3,9 +3,9 @@
 namespace Emartech\Emarsys\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
-use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Magento\Framework\App\Helper\Context;
-use Magento\Store\Model\StoreManagerInterface;
+
+use Emartech\Emarsys\Api\Data\ConfigInterface;
 
 /**
  * Class ConfigReader
@@ -14,42 +14,55 @@ use Magento\Store\Model\StoreManagerInterface;
 class ConfigReader extends AbstractHelper
 {
     /**
-     * @var StoreManagerInterface
+     * @var ConfigInterface
      */
-    private $storeManager;
+    private $config;
 
     /**
      * ConfigReader constructor.
      *
-     * @param Context               $context
-     * @param StoreManagerInterface $storeManager
+     * @param Context         $context
+     * @param ConfigInterface $config
      */
     public function __construct(
         Context $context,
-        StoreManagerInterface $storeManager
+        ConfigInterface $config
     ) {
         parent::__construct($context);
-        $this->storeManager = $storeManager;
+        $this->config = $config;
     }
 
     /**
-     * @param      $key
-     * @param null $websiteId
+     * @param string   $key
+     * @param null\int $websiteId
      *
-     * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return string
      */
     public function getConfigValue($key, $websiteId = null)
     {
-        if (!$websiteId) {
-            $websiteId = $this->storeManager->getWebsite()->getId();
-        }
-        return $this->scopeConfig->getValue('emartech/emarsys/config/' . $key, 'website', $websiteId);
+        return $this->config->getConfigValue($key, $websiteId);
     }
 
-    public function isEnabled($key, $websiteId = 0)
+    /**
+     * @param string $key
+     * @param int    $websiteId
+     *
+     * @return bool
+     */
+    public function isEnabledForWebsite($key, $websiteId = 0)
     {
-        return $this->getConfigValue($key, $websiteId) === ConfigInterface::CONFIG_ENABLED;
+        return $this->config->isEnabledForWebsite($key, $websiteId);
+    }
+
+    /**
+     * @param string $key
+     * @param int    $storeId
+     *
+     * @return bool
+     */
+    public function isEnableForStore($key, $storeId)
+    {
+        return $this->config->isEnabledForStore($key, $storeId);
     }
 
     /**
