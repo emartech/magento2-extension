@@ -312,7 +312,6 @@ describe('Marketing events: sales', function() {
           await createNewCustomerOrder(this.magentoApi, this.customer);
 
           const createdEvent = await getLastEvent(this.db);
-          console.log(createdEvent);
 
           expect(createdEvent).to.be.undefined;
         });
