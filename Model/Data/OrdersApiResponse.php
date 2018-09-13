@@ -15,7 +15,7 @@ class OrdersApiResponse extends ListApiResponseBase implements OrdersApiResponse
      *
      * @return $this
      */
-    public function setItems(array $items): OrdersApiResponseInterface
+    public function setItems(array $items)
     {
         $this->setData(self::ITEMS_KEY, $items);
 
@@ -25,7 +25,7 @@ class OrdersApiResponse extends ListApiResponseBase implements OrdersApiResponse
     /**
      * @return \Magento\Sales\Api\Data\OrderInterface[]
      */
-    public function getItems(): array
+    public function getItems()
     {
         return $this->getData(self::ITEMS_KEY);
     }

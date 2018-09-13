@@ -15,7 +15,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription()
     {
         return $this->getData(self::DESCRIPTION_KEY);
     }
@@ -23,15 +23,15 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * @return string
      */
-    public function getLink(): string
+    public function getLink()
     {
         return $this->getData(self::LINK_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->getData(self::NAME_KEY);
     }
@@ -39,7 +39,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * @return float
      */
-    public function getPrice(): float
+    public function getPrice()
     {
         return $this->getData(self::PRICE_KEY);
     }
@@ -47,7 +47,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * @return int
      */
-    public function getStatus(): int
+    public function getStatus()
     {
         return $this->getData(self::STATUS_KEY);
     }
@@ -55,7 +55,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * @return int
      */
-    public function getStoreId(): int
+    public function getStoreId()
     {
         return $this->getData(self::STORE_ID_KEY);
     }
@@ -65,7 +65,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setDescription($description): ProductStoreDataInterface
+    public function setDescription($description)
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -77,7 +77,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setLink($link): ProductStoreDataInterface
+    public function setLink($link)
     {
         $this->setData(self::LINK_KEY, $link);
 
@@ -89,7 +89,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setName($name): ProductStoreDataInterface
+    public function setName($name)
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -101,7 +101,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setPrice($price): ProductStoreDataInterface
+    public function setPrice($price)
     {
         $this->setData(self::PRICE_KEY, $price);
 
@@ -113,7 +113,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setStatus($status): ProductStoreDataInterface
+    public function setStatus($status)
     {
         $this->setData(self::STATUS_KEY, $status);
 
@@ -125,7 +125,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setStoreId($storeId): ProductStoreDataInterface
+    public function setStoreId($storeId)
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

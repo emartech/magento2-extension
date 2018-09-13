@@ -13,5 +13,5 @@ interface SystemApiInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function get(): SystemApiResponseInterface;
+    public function get();
 }

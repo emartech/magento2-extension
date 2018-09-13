@@ -16,5 +16,5 @@ interface EventsApiInterface
      *
      * @return \Emartech\Emarsys\Api\Data\EventsApiResponseInterface
      */
-    public function get($sinceId, $pageSize): EventsApiResponseInterface;
+    public function get($sinceId, $pageSize);
 }

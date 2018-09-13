@@ -127,7 +127,7 @@ class CategoriesApi implements CategoriesApiInterface
      * @return CategoriesApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function get($page, $pageSize, $storeId): CategoriesApiResponseInterface
+    public function get($page, $pageSize, $storeId)
     {
         $this
             ->initStores($storeId);
@@ -154,7 +154,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return $this
      */
-    private function initStores($storeIds): CategoriesApi
+    private function initStores($storeIds)
     {
         if (!is_array($storeIds)) {
             $storeIds = explode(',', $storeIds);
@@ -174,7 +174,7 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @return $this
      */
-    private function initCollection(): CategoriesApi
+    private function initCollection()
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
 
@@ -185,7 +185,7 @@ class CategoriesApi implements CategoriesApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinData(): CategoriesApi
+    private function joinData()
     {
         $storeCategoryAttributeCodes = [];
         $globalCategoryAttributeCodes = [];
@@ -248,7 +248,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return string
      */
-    private function getAttributeValueAlias($attributeCode, $storeId = null): string
+    private function getAttributeValueAlias($attributeCode, $storeId = null)
     {
         $returnValue = $attributeCode;
         if ($storeId !== null) {
@@ -260,7 +260,7 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @return $this
      */
-    private function setOrder(): CategoriesApi
+    private function setOrder()
     {
         $this->categoryCollection
             ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
@@ -274,7 +274,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return $this
      */
-    private function setPage($page, $pageSize): CategoriesApi
+    private function setPage($page, $pageSize)
     {
         $this->categoryCollection->setPage($page, $pageSize);
 
@@ -284,7 +284,7 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @return array
      */
-    private function handleCategories(): array
+    private function handleCategories()
     {
         $returnArray = [];
 
@@ -304,7 +304,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return array
      */
-    private function handleCategoryStoreData($category): array
+    private function handleCategoryStoreData($category)
     {
         $returnArray = [];
 
@@ -326,7 +326,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return string
      */
-    private function handleImage($category, $store): string
+    private function handleImage($category, $store)
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/category/';
         $image = $category->getData($this->getAttributeValueAlias('image', $store->getId()));

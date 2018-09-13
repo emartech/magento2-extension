@@ -64,7 +64,7 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return string
      */
-    public function getCollectCustomerEvents(): string
+    public function getCollectCustomerEvents()
     {
         return $this->getData(self::CUSTOMER_EVENTS);
     }
@@ -74,7 +74,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return $this
      */
-    public function setCollectCustomerEvents($collectCustomerEvents): ConfigInterface
+    public function setCollectCustomerEvents($collectCustomerEvents)
     {
         $this->setData(self::CUSTOMER_EVENTS, $collectCustomerEvents);
 
@@ -84,7 +84,7 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return string
      */
-    public function getCollectSalesEvents(): string
+    public function getCollectSalesEvents()
     {
         return $this->getData(self::CUSTOMER_EVENTS);
     }
@@ -94,7 +94,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return $this
      */
-    public function setCollectSalesEvents($collectSalesEvents): ConfigInterface
+    public function setCollectSalesEvents($collectSalesEvents)
     {
         $this->setData(self::SALES_EVENTS, $collectSalesEvents);
 
@@ -104,7 +104,7 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return string
      */
-    public function getCollectMarketingEvents(): string
+    public function getCollectMarketingEvents()
     {
         return $this->getData(self::MARKETING_EVENTS);
     }
@@ -114,7 +114,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return $this
      */
-    public function setCollectMarketingEvents($collectMarketingEvents): ConfigInterface
+    public function setCollectMarketingEvents($collectMarketingEvents)
     {
         $this->setData(self::MARKETING_EVENTS, $collectMarketingEvents);
 
@@ -124,7 +124,7 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return string
      */
-    public function getMerchantId(): string
+    public function getMerchantId()
     {
         return $this->getData(self::MERCHANT_ID);
     }
@@ -134,7 +134,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return $this
      */
-    public function setMerchantId($merchantId): ConfigInterface
+    public function setMerchantId($merchantId)
     {
         $this->setData(self::MERCHANT_ID, $merchantId);
 
@@ -144,7 +144,7 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return string
      */
-    public function getInjectSnippet(): string
+    public function getInjectSnippet()
     {
         return $this->getData(self::INJECT_WEBEXTEND_SNIPPETS);
     }
@@ -154,7 +154,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return $this
      */
-    public function setInjectSnippet($injectSnippet): ConfigInterface
+    public function setInjectSnippet($injectSnippet)
     {
         $this->setData(self::INJECT_WEBEXTEND_SNIPPETS, $injectSnippet);
 
@@ -164,7 +164,7 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return string
      */
-    public function getWebTrackingSnippetUrl(): string
+    public function getWebTrackingSnippetUrl()
     {
         return $this->getData(self::SNIPPET_URL);
     }
@@ -174,7 +174,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return $this
      */
-    public function setWebTrackingSnippetUrl($webTrackingSnippetUrl): ConfigInterface
+    public function setWebTrackingSnippetUrl($webTrackingSnippetUrl)
     {
         $this->setData(self::SNIPPET_URL, $webTrackingSnippetUrl);
 
@@ -215,7 +215,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return string
      */
-    public function getConfigValue($key, $websiteId = null): ?string
+    public function getConfigValue($key, $websiteId = null)
     {
         try {
             if (!$websiteId) {
@@ -234,7 +234,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForWebsite($key, $websiteId = null): bool
+    public function isEnabledForWebsite($key, $websiteId = null)
     {
         return $this->getConfigValue($key, $websiteId) === self::CONFIG_ENABLED;
     }
@@ -245,7 +245,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId = null): bool
+    public function isEnabledForStore($key, $storeId = null)
     {
         try {
             if (!$storeId) {
@@ -282,7 +282,7 @@ class Config extends DataObject implements ConfigInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface[]
      */
-    public function getStoreSettings(): array
+    public function getStoreSettings()
     {
         return $this->getData(self::STORE_SETTINGS);
     }
@@ -292,7 +292,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return $this
      */
-    public function setStoreSettings($storeSettings): ConfigInterface
+    public function setStoreSettings($storeSettings)
     {
         $this->setData(self::STORE_SETTINGS, $storeSettings);
 

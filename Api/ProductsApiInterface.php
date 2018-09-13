@@ -17,5 +17,5 @@ interface ProductsApiInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductsApiResponseInterface
      */
-    public function get($page, $pageSize, $storeId): ProductsApiResponseInterface;
+    public function get($page, $pageSize, $storeId);
 }

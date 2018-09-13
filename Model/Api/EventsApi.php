@@ -52,7 +52,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return EventsApiResponseInterface
      */
-    public function get($sinceId, $pageSize): EventsApiResponseInterface
+    public function get($sinceId, $pageSize)
     {
         $this
             ->initCollection()
@@ -73,7 +73,7 @@ class EventsApi implements EventsApiInterface
     /**
      * @return array
      */
-    private function handleEvents(): array
+    private function handleEvents()
     {
         $eventsArray = [];
 
@@ -88,7 +88,7 @@ class EventsApi implements EventsApiInterface
     /**
      * @return $this
      */
-    private function initCollection(): EventsApi
+    private function initCollection()
     {
         $this->eventCollection = $this->eventCollectionFactory->create();
 
@@ -100,7 +100,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return $this
      */
-    private function getEvents($sinceId): EventsApi
+    private function getEvents($sinceId)
     {
         $this->eventCollection
             ->addFieldToFilter('event_id', ['gt' => $sinceId]);
@@ -111,7 +111,7 @@ class EventsApi implements EventsApiInterface
     /**
      * @return $this
      */
-    private function setOrder(): EventsApi
+    private function setOrder()
     {
         $this->eventCollection
             ->setOrder('event_id', DataCollection::SORT_ORDER_ASC);
@@ -124,7 +124,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return $this
      */
-    private function setPageSize($pageSize): EventsApi
+    private function setPageSize($pageSize)
     {
         $this->eventCollection
             ->setPageSize($pageSize);
@@ -137,7 +137,7 @@ class EventsApi implements EventsApiInterface
      *
      * @return $this
      */
-    private function removeOldEvents($beforeId): EventsApi
+    private function removeOldEvents($beforeId)
     {
         $oldEvents = $this->eventCollection
             ->addFieldToFilter('event_id', ['lteq' => $beforeId]);

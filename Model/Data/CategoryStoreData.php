@@ -15,7 +15,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription()
     {
         return $this->getData(self::DESCRIPTION_KEY);
     }
@@ -23,7 +23,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->getData(self::NAME_KEY);
     }
@@ -31,7 +31,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return string
      */
-    public function getImage(): string
+    public function getImage()
     {
         return $this->getData(self::IMAGE_KEY);
     }
@@ -39,7 +39,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return int
      */
-    public function getIsActive(): int
+    public function getIsActive()
     {
         return $this->getData(self::IS_ACTIVE_KEY);
     }
@@ -47,7 +47,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * @return int
      */
-    public function getStoreId(): int
+    public function getStoreId()
     {
         return $this->getData(self::STORE_ID_KEY);
     }
@@ -57,7 +57,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setDescription($description): CategoryStoreDataInterface
+    public function setDescription($description)
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -69,7 +69,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setName($name): CategoryStoreDataInterface
+    public function setName($name)
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -81,7 +81,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setImage($image): CategoryStoreDataInterface
+    public function setImage($image)
     {
         $this->setData(self::IMAGE_KEY, $image);
 
@@ -93,7 +93,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setIsActive($isActive): CategoryStoreDataInterface
+    public function setIsActive($isActive)
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
 
@@ -105,7 +105,7 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
      *
      * @return $this
      */
-    public function setStoreId($storeId): CategoryStoreDataInterface
+    public function setStoreId($storeId)
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

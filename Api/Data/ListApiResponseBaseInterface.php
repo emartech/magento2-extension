@@ -16,48 +16,48 @@ interface ListApiResponseBaseInterface
     /**
      * @return int
      */
-    public function getCurrentPage(): int;
+    public function getCurrentPage();
 
     /**
      * @param int $currentPage
      *
      * @return $this
      */
-    public function setCurrentPage($currentPage): ListApiResponseBaseInterface;
+    public function setCurrentPage($currentPage);
 
     /**
      * @return int
      */
-    public function getLastPage(): int;
+    public function getLastPage();
 
     /**
      * @param int $lastPage
      *
      * @return $this
      */
-    public function setLastPage($lastPage): ListApiResponseBaseInterface;
+    public function setLastPage($lastPage);
 
     /**
      * @return int
      */
-    public function getPageSize(): int;
+    public function getPageSize();
 
     /**
      * @param int $pageSize
      *
      * @return $this
      */
-    public function setPageSize($pageSize): ListApiResponseBaseInterface;
+    public function setPageSize($pageSize);
 
     /**
      * @return int
      */
-    public function getTotalCount(): int;
+    public function getTotalCount();
 
     /**
      * @param int $totalCount
      *
      * @return $this
      */
-    public function setTotalCount($totalCount): ListApiResponseBaseInterface;
+    public function setTotalCount($totalCount);
 }

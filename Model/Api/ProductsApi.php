@@ -166,7 +166,7 @@ class ProductsApi implements ProductsApiInterface
      * @return ProductsApiResponseInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function get($page, $pageSize, $storeId): ProductsApiResponseInterface
+    public function get($page, $pageSize, $storeId)
     {
         $this
             ->initStores($storeId);
@@ -197,7 +197,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return $this
      */
-    private function initStores($storeIds): ProductsApi
+    private function initStores($storeIds)
     {
         if (!is_array($storeIds)) {
             $storeIds = explode(',', $storeIds);
@@ -217,7 +217,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
-    private function initCollection(): ProductsApi
+    private function initCollection()
     {
         $this->productCollection = $this->productCollectionFactory->create();
 
@@ -228,7 +228,7 @@ class ProductsApi implements ProductsApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinData(): ProductsApi
+    private function joinData()
     {
         $storeProductAttributeCodes = [];
         $globalProductAttributeCodes = [];
@@ -292,7 +292,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
-    private function getAttributeValueAlias($attributeCode, $storeId = null): string
+    private function getAttributeValueAlias($attributeCode, $storeId = null)
     {
         $returnValue = $attributeCode;
         if ($storeId !== null) {
@@ -305,7 +305,7 @@ class ProductsApi implements ProductsApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinStock(): ProductsApi
+    private function joinStock()
     {
         $this->productCollection->joinTable(
             $this->productCollection->getResource()->getTable('cataloginventory_stock_item'),
@@ -322,7 +322,7 @@ class ProductsApi implements ProductsApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinCategories(): ProductsApi
+    private function joinCategories()
     {
         $this->productCollection->joinTable(
             $this->productCollection->getResource()->getTable('catalog_category_product'),
@@ -339,7 +339,7 @@ class ProductsApi implements ProductsApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinChildrenProductIds(): ProductsApi
+    private function joinChildrenProductIds()
     {
         $this->productCollection->joinTable(
             $this->productCollection->getResource()->getTable('catalog_product_super_link'),
@@ -355,7 +355,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
-    private function setOrder(): ProductsApi
+    private function setOrder()
     {
         $this->productCollection
             ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
@@ -366,7 +366,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
-    private function setGroupBy(): ProductsApi
+    private function setGroupBy()
     {
         $this->productCollection
             ->groupByAttribute('entity_id');
@@ -380,7 +380,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return $this
      */
-    private function setPage($page, $pageSize): ProductsApi
+    private function setPage($page, $pageSize)
     {
         $this->productCollection->setPage($page, $pageSize);
 
@@ -390,7 +390,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return array
      */
-    private function handleProducts(): array
+    private function handleProducts()
     {
         $returnArray = [];
 
@@ -414,7 +414,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return ImagesInterface
      */
-    private function handleImages($product): ImagesInterface
+    private function handleImages($product)
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
@@ -444,7 +444,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
-    private function handleChildrenEntityIds($product): array
+    private function handleChildrenEntityIds($product)
     {
         $childrenIds = $product->getData('children_ids');
         if ($childrenIds) {
@@ -459,7 +459,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
-    private function handleCategories($product): array
+    private function handleCategories($product)
     {
         $returnArray = [];
 
@@ -480,7 +480,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
-    private function handleCategory($categoryId): string
+    private function handleCategory($categoryId)
     {
         $categoryData = $this->getCategory($categoryId);
 
@@ -496,7 +496,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return Category | null
      */
-    private function getCategory($categoryId): ?Category
+    private function getCategory($categoryId)
     {
         if (!array_key_exists($categoryId, $this->categories)) {
             $categoryCollection = $this->categoryCollectionFactory->create();
@@ -513,7 +513,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
-    private function getProductUrlSuffix($storeId): string
+    private function getProductUrlSuffix($storeId)
     {
         if (!isset($this->productUrlSuffix[$storeId])) {
             $this->productUrlSuffix[$storeId] = $this->scopeConfig->getValue(
@@ -530,7 +530,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
-    private function handleProductStoreData($product): array
+    private function handleProductStoreData($product)
     {
         $returnArray = [];
 
@@ -553,7 +553,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
-    private function handleLink($product, $store): string
+    private function handleLink($product, $store)
     {
         $link = $product->getData($this->getAttributeValueAlias('url_key', $store->getId()));
 
@@ -568,9 +568,9 @@ class ProductsApi implements ProductsApiInterface
      * @param Product $product
      * @param Store   $store
      *
-     * @return int | float
+     * @return int | float | null
      */
-    private function handlePrice($product, $store): float
+    private function handlePrice($product, $store)
     {
         $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
         $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', $store->getId()));

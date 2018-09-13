@@ -15,7 +15,7 @@ class Event extends AbstractModel implements EventInterface
     /**
      * @return int
      */
-    public function getEventId(): int
+    public function getEventId()
     {
         return $this->_getData(self::EVENT_ID_KEY);
     }
@@ -23,7 +23,7 @@ class Event extends AbstractModel implements EventInterface
     /**
      * @return string
      */
-    public function getEventType(): string
+    public function getEventType()
     {
         return $this->_getData(self::EVENT_TYPE_KEY);
     }
@@ -31,7 +31,7 @@ class Event extends AbstractModel implements EventInterface
     /**
      * @return string
      */
-    public function getEventData(): string
+    public function getEventData()
     {
         return $this->_getData(self::EVENT_DATA_KEY);
     }
@@ -39,7 +39,7 @@ class Event extends AbstractModel implements EventInterface
     /**
      * @return string
      */
-    public function getCreatedAt(): string
+    public function getCreatedAt()
     {
         return $this->_getData(self::CREATED_AT_KEY);
     }
@@ -47,7 +47,7 @@ class Event extends AbstractModel implements EventInterface
     /**
      * @return int
      */
-    public function getWebsiteId(): int
+    public function getWebsiteId()
     {
         return $this->_getData(self::WEBSITE_ID_KEY);
     }
@@ -55,7 +55,7 @@ class Event extends AbstractModel implements EventInterface
     /**
      * @return int
      */
-    public function getStoreId(): int
+    public function getStoreId()
     {
         return $this->_getData(self::STORE_ID_KEY);
     }
@@ -65,7 +65,7 @@ class Event extends AbstractModel implements EventInterface
      *
      * @return $this
      */
-    public function setEventId($eventId): EventInterface
+    public function setEventId($eventId)
     {
         $this->setData(self::EVENT_ID_KEY, $eventId);
 
@@ -77,7 +77,7 @@ class Event extends AbstractModel implements EventInterface
      *
      * @return $this
      */
-    public function setEventType($eventType): EventInterface
+    public function setEventType($eventType)
     {
         $this->setData(self::EVENT_TYPE_KEY, $eventType);
 
@@ -89,7 +89,7 @@ class Event extends AbstractModel implements EventInterface
      *
      * @return $this
      */
-    public function setEventData($eventData): EventInterface
+    public function setEventData($eventData)
     {
         $this->setData(self::EVENT_DATA_KEY, $eventData);
 
@@ -101,7 +101,7 @@ class Event extends AbstractModel implements EventInterface
      *
      * @return $this
      */
-    public function setCreatedAt($createdAt): EventInterface
+    public function setCreatedAt($createdAt)
     {
         $this->setData(self::CREATED_AT_KEY, $createdAt);
 
@@ -113,7 +113,7 @@ class Event extends AbstractModel implements EventInterface
      *
      * @return $this
      */
-    public function setWebsiteId($websiteId): EventInterface
+    public function setWebsiteId($websiteId)
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
 
@@ -125,7 +125,7 @@ class Event extends AbstractModel implements EventInterface
      *
      * @return $this
      */
-    public function setStoreId($storeId): EventInterface
+    public function setStoreId($storeId)
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

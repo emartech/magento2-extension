@@ -13,12 +13,12 @@ interface ConfigApiInterface
      *
      * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
      */
-    public function set($websiteId, ConfigInterface $config): StatusResponseInterface;
+    public function set($websiteId, ConfigInterface $config);
 
     /**
      * @param int $websiteId
      *
      * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
      */
-    public function setDefault($websiteId): StatusResponseInterface;
+    public function setDefault($websiteId);
 }

@@ -13,7 +13,7 @@ class SubscriptionsApiResponse extends ListApiResponseBase implements Subscripti
     /**
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface[]
      */
-    public function getSubscriptions(): array
+    public function getSubscriptions()
     {
         return $this->getData(self::SUBSCRIPTIONS_KEY);
     }
@@ -23,7 +23,7 @@ class SubscriptionsApiResponse extends ListApiResponseBase implements Subscripti
      *
      * @return $this
      */
-    public function setSubscriptions(array $subscriptions): SubscriptionsApiResponseInterface
+    public function setSubscriptions(array $subscriptions)
     {
         $this->setData(self::SUBSCRIPTIONS_KEY, $subscriptions);
         return $this;

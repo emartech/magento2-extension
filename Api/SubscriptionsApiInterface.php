@@ -28,12 +28,12 @@ interface SubscriptionsApiInterface
         $onlyGuest = false,
         $websiteId = null,
         $storeId = null
-    ): SubscriptionsApiResponseInterface;
+    );
 
     /**
      * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
      *
      * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
      */
-    public function update($subscriptions): StatusResponseInterface;
+    public function update($subscriptions);
 }

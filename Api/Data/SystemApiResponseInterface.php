@@ -15,36 +15,36 @@ interface SystemApiResponseInterface
     /**
      * @return string
      */
-    public function getMagentoVersion(): string;
+    public function getMagentoVersion();
 
     /**
      * @return string
      */
-    public function getPhpVersion(): string;
+    public function getPhpVersion();
 
     /**
      * @return string
      */
-    public function getModuleVersion(): string;
+    public function getModuleVersion();
     
     /**
      * @param string $magentoVersion
      *
      * @return $this
      */
-    public function setMagentoVersion($magentoVersion): SystemApiResponseInterface;
+    public function setMagentoVersion($magentoVersion);
 
     /**
      * @param string $phpVersion
      *
      * @return $this
      */
-    public function setPhpVersion($phpVersion): SystemApiResponseInterface;
+    public function setPhpVersion($phpVersion);
 
     /**
      * @param string $moduleVersion
      *
      * @return $this
      */
-    public function setModuleVersion($moduleVersion): SystemApiResponseInterface;
+    public function setModuleVersion($moduleVersion);
 }

@@ -18,72 +18,72 @@ interface EventInterface
     /**
      * @return int
      */
-    public function getEventId(): int;
+    public function getEventId();
 
     /**
      * @return string
      */
-    public function getEventType(): string;
+    public function getEventType();
 
     /**
      * @return string
      */
-    public function getEventData(): string;
+    public function getEventData();
 
     /**
      * @return string
      */
-    public function getCreatedAt(): string;
+    public function getCreatedAt();
 
     /**
      * @return int
      */
-    public function getWebsiteId(): int;
+    public function getWebsiteId();
 
     /**
      * @return int
      */
-    public function getStoreId(): int;
+    public function getStoreId();
 
     /**
      * @param int $eventId
      *
      * @return $this
      */
-    public function setEventId($eventId): EventInterface;
+    public function setEventId($eventId);
 
     /**
      * @param string $eventType
      *
      * @return $this
      */
-    public function setEventType($eventType): EventInterface;
+    public function setEventType($eventType);
 
     /**
      * @param string $eventData
      *
      * @return $this
      */
-    public function setEventData($eventData): EventInterface;
+    public function setEventData($eventData);
 
     /**
      * @param string $createdAt
      *
      * @return $this
      */
-    public function setCreatedAt($createdAt): EventInterface;
+    public function setCreatedAt($createdAt);
 
     /**
      * @param int $websiteId
      *
      * @return $this
      */
-    public function setWebsiteId($websiteId): EventInterface;
+    public function setWebsiteId($websiteId);
 
     /**
      * @param int $storeId
      *
      * @return $this
      */
-    public function setStoreId($storeId): EventInterface;
+    public function setStoreId($storeId);
 }

@@ -13,12 +13,12 @@ interface OrdersApiResponseInterface extends ListApiResponseBaseInterface
     /**
      * @return \Magento\Sales\Api\Data\OrderInterface[]
      */
-    public function getItems(): array;
+    public function getItems();
 
     /**
      * @param \Magento\Sales\Api\Data\OrderInterface[] $items
      *
      * @return $this
      */
-    public function setItems(array $items): OrdersApiResponseInterface;
+    public function setItems(array $items);
 }

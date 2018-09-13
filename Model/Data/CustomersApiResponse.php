@@ -13,7 +13,7 @@ class CustomersApiResponse extends ListApiResponseBase implements CustomersApiRe
     /**
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface[]
      */
-    public function getCustomers(): array
+    public function getCustomers()
     {
         return $this->getData(self::CUSTOMERS_KEY);
     }
@@ -23,7 +23,7 @@ class CustomersApiResponse extends ListApiResponseBase implements CustomersApiRe
      *
      * @return $this
      */
-    public function setCustomers(array $customers): CustomersApiResponseInterface
+    public function setCustomers(array $customers)
     {
         $this->setData(self::CUSTOMERS_KEY, $customers);
         return $this;

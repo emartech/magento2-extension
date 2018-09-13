@@ -17,5 +17,5 @@ interface CategoriesApiInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface
      */
-    public function get($page, $pageSize, $storeId): CategoriesApiResponseInterface;
+    public function get($page, $pageSize, $storeId);
 }

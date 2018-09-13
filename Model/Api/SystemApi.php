@@ -59,7 +59,7 @@ class SystemApi implements SystemApiInterface
     /**
      * @return SystemApiResponseInterface
      */
-    public function get(): SystemApiResponseInterface
+    public function get()
     {
         return $this->systemApiResponseFactory->create()
             ->setMagentoVersion($this->getMagentoVersion())
@@ -70,7 +70,7 @@ class SystemApi implements SystemApiInterface
     /**
      * @return string
      */
-    private function getMagentoVersion(): string
+    private function getMagentoVersion()
     {
         return $this->productMetadata->getVersion();
     }
@@ -78,7 +78,7 @@ class SystemApi implements SystemApiInterface
     /**
      * @return string
      */
-    private function getPhpVersion(): string
+    private function getPhpVersion()
     {
         if (defined(PHP_VERSION)) {
             return PHP_VERSION;
@@ -90,7 +90,7 @@ class SystemApi implements SystemApiInterface
     /**
      * @return string
      */
-    private function getModuleVersion(): string
+    private function getModuleVersion()
     {
         $moduleData = $this->moduleList->getOne($this->configReader->getModuleName());
         if (is_array($moduleData) && array_key_exists('setup_version', $moduleData)) {

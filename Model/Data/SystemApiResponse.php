@@ -15,7 +15,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * @return string
      */
-    public function getMagentoVersion(): string
+    public function getMagentoVersion()
     {
         return $this->getData(self::MAGENTO_VERSION_KEY);
     }
@@ -23,7 +23,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * @return string
      */
-    public function getModuleVersion(): string
+    public function getModuleVersion()
     {
         return $this->getData(self::MODULE_VERSION_KEY);
     }
@@ -31,7 +31,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * @return string
      */
-    public function getPhpVersion(): string
+    public function getPhpVersion()
     {
         return $this->getData(self::PHP_VERSION_KEY);
     }
@@ -41,7 +41,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return $this
      */
-    public function setMagentoVersion($magentoVersion): SystemApiResponseInterface
+    public function setMagentoVersion($magentoVersion)
     {
         $this->setData(self::MAGENTO_VERSION_KEY, $magentoVersion);
 
@@ -53,7 +53,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return $this
      */
-    public function setModuleVersion($moduleVersion): SystemApiResponseInterface
+    public function setModuleVersion($moduleVersion)
     {
         $this->setData(self::MODULE_VERSION_KEY, $moduleVersion);
 
@@ -65,7 +65,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return $this
      */
-    public function setPhpVersion($phpVersion): SystemApiResponseInterface
+    public function setPhpVersion($phpVersion)
     {
         $this->setData(self::PHP_VERSION_KEY, $phpVersion);
 

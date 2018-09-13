@@ -17,60 +17,60 @@ interface CategoryStoreDataInterface
     /**
      * @return string
      */
-    public function getName(): string;
+    public function getName();
 
     /**
      * @return string
      */
-    public function getImage(): string;
+    public function getImage();
 
     /**
      * @return string
      */
-    public function getDescription(): string;
+    public function getDescription();
 
     /**
      * @return int
      */
-    public function getIsActive(): int;
+    public function getIsActive();
 
     /**
      * @return int
      */
-    public function getStoreId(): int;
+    public function getStoreId();
 
     /**
      * @param string $name
      *
      * @return $this
      */
-    public function setName($name): CategoryStoreDataInterface;
+    public function setName($name);
 
     /**
      * @param string $image
      *
      * @return $this
      */
-    public function setImage($image): CategoryStoreDataInterface;
+    public function setImage($image);
 
     /**
      * @param string $description
      *
      * @return $this
      */
-    public function setDescription($description): CategoryStoreDataInterface;
+    public function setDescription($description);
 
     /**
      * @param int $isActive
      *
      * @return $this
      */
-    public function setIsActive($isActive): CategoryStoreDataInterface;
+    public function setIsActive($isActive);
 
     /**
      * @param int $storeId
      *
      * @return $this
      */
-    public function setStoreId($storeId): CategoryStoreDataInterface;
+    public function setStoreId($storeId);
 }

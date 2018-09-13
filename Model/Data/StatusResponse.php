@@ -15,7 +15,7 @@ class StatusResponse extends DataObject implements StatusResponseInterface
     /**
      * @return string
      */
-    public function getStatus(): string
+    public function getStatus()
     {
         return $this->getData(self::STATUS_KEY);
     }
@@ -25,7 +25,7 @@ class StatusResponse extends DataObject implements StatusResponseInterface
      *
      * @return $this
      */
-    public function setStatus($status): StatusResponseInterface
+    public function setStatus($status)
     {
         $this->setData(self::STATUS_KEY, $status);
         return $this;

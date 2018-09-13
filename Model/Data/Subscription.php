@@ -13,9 +13,9 @@ use Emartech\Emarsys\Api\Data\SubscriptionInterface;
 class Subscription extends DataObject implements SubscriptionInterface
 {
     /**
-     * @return int
+     * @return int|null
      */
-    public function getCustomerId(): int
+    public function getCustomerId()
     {
         return $this->getData(self::CUSTOMER_ID_KEY);
     }
@@ -23,7 +23,7 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return string
      */
-    public function getSubscriberEmail(): string
+    public function getSubscriberEmail()
     {
         return $this->getData(self::SUBSCRIBER_EMAIL);
     }
@@ -31,7 +31,7 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return string
      */
-    public function getSubscriberStatus(): string
+    public function getSubscriberStatus()
     {
         return $this->getData(self::SUBSCRIBER_STATUS);
     }
@@ -39,15 +39,15 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * @return int
      */
-    public function getStoreId(): int
+    public function getStoreId()
     {
         return $this->getData(self::STORE_ID_KEY);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getWebsiteId(): int
+    public function getWebsiteId()
     {
         return $this->getData(self::WEBSITE_ID_KEY);
     }
@@ -57,7 +57,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setCustomerId($customerId): SubscriptionInterface
+    public function setCustomerId($customerId)
     {
         $this->setData(self::CUSTOMER_ID_KEY, $customerId);
         return $this;
@@ -68,7 +68,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setSubscriberEmail($subscriberEmail): SubscriptionInterface
+    public function setSubscriberEmail($subscriberEmail)
     {
         $this->setData(self::SUBSCRIBER_EMAIL, $subscriberEmail);
         return $this;
@@ -79,7 +79,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setSubscriberStatus($subscriberStatus): SubscriptionInterface
+    public function setSubscriberStatus($subscriberStatus)
     {
         $this->setData(self::SUBSCRIBER_STATUS, $subscriberStatus);
         return $this;
@@ -90,7 +90,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setStoreId($storeId): SubscriptionInterface
+    public function setStoreId($storeId)
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
         return $this;
@@ -101,7 +101,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return $this
      */
-    public function setWebsiteId($websiteId): SubscriptionInterface
+    public function setWebsiteId($websiteId)
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
         return $this;

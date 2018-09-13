@@ -111,7 +111,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
         $onlyGuest = false,
         $websiteId = null,
         $storeId = null
-    ): SubscriptionsApiResponseInterface {
+    ) {
 
         $this
             ->initCollection()
@@ -136,7 +136,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      * @return StatusResponseInterface
      * @throws \Exception
      */
-    public function update($subscriptions): StatusResponseInterface
+    public function update($subscriptions)
     {
         $this->initCollection();
 
@@ -157,7 +157,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     /**
      * @return $this
      */
-    private function initCollection(): SubscriptionsApi
+    private function initCollection()
     {
         $this->subscriptionCollection = $this->subscriberCollectionFactory->create();
 
@@ -167,7 +167,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     /**
      * @return array
      */
-    private function handleSubscriptions(): array
+    private function handleSubscriptions()
     {
         $subscriptionArray = [];
         foreach ($this->subscriptionCollection as $subscription) {
@@ -182,7 +182,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return SubscriptionInterface
      */
-    private function parseSubscription($subscription): SubscriptionInterface
+    private function parseSubscription($subscription)
     {
         /** @var SubscriptionInterface $subscriptionItem */
         $subscriptionItem = $this->subscriptionFactory->create();
@@ -200,7 +200,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return $this
      */
-    private function setPage($page, $pageSize): SubscriptionsApi
+    private function setPage($page, $pageSize)
     {
         $this->subscriptionCollection
             ->setCurPage($page)
@@ -211,7 +211,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     /**
      * @return $this
      */
-    private function joinWebsite(): SubscriptionsApi
+    private function joinWebsite()
     {
         $storeTable = $this->subscriptionCollection->getResource()->getTable('store');
 
@@ -229,7 +229,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return $this
      */
-    private function filterWebsite($websiteId = null): SubscriptionsApi
+    private function filterWebsite($websiteId = null)
     {
         if ($websiteId !== null) {
             if (!is_array($websiteId)) {
@@ -246,7 +246,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return $this
      */
-    private function filterStore($storeId = null): SubscriptionsApi
+    private function filterStore($storeId = null)
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {
@@ -263,7 +263,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return $this
      */
-    private function filterSubscribed($subscribed = null): SubscriptionsApi
+    private function filterSubscribed($subscribed = null)
     {
         if ($subscribed === true) {
             $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
@@ -278,7 +278,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return $this
      */
-    private function filterCustomers($onlyGuest = null): SubscriptionsApi
+    private function filterCustomers($onlyGuest = null)
     {
         if ((bool)$onlyGuest) {
             $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => 0]);
@@ -291,7 +291,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return $this
      */
-    private function filterCustomer($customerId): SubscriptionsApi
+    private function filterCustomer($customerId)
     {
         $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => (int)$customerId]);
 
@@ -303,7 +303,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return $this
      */
-    private function filterEmail($email): SubscriptionsApi
+    private function filterEmail($email)
     {
         $this->subscriptionCollection->addFieldToFilter('subscriber_email', ['eq' => $email]);
 
@@ -317,7 +317,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      * @return bool
      * @throws \Exception
      */
-    private function changeSubscription($subscription, $type): bool
+    private function changeSubscription($subscription, $type)
     {
         if ($subscription->getSubscriberEmail()) {
             $this

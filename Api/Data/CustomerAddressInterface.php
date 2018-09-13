@@ -23,158 +23,158 @@ interface CustomerAddressInterface
     const FAX_KEY        = 'fax';
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPrefix(): string;
+    public function getPrefix();
 
     /**
      * @param string $prefix
      *
      * @return $this
      */
-    public function setPrefix($prefix): CustomerAddressInterface;
+    public function setPrefix($prefix);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFirstname(): string;
+    public function getFirstname();
 
     /**
      * @param string $firstName
      *
      * @return $this
      */
-    public function setFirstname($firstName): CustomerAddressInterface;
+    public function setFirstname($firstName);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMiddlename(): string;
+    public function getMiddlename();
 
     /**
      * @param string $middleName
      *
      * @return $this
      */
-    public function setMiddlename($middleName): CustomerAddressInterface;
+    public function setMiddlename($middleName);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLastname(): string;
+    public function getLastname();
 
     /**
      * @param string $lastName
      *
      * @return $this
      */
-    public function setLastname($lastName): CustomerAddressInterface;
+    public function setLastname($lastName);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSuffix(): string;
+    public function getSuffix();
 
     /**
      * @param string $suffix
      *
      * @return $this
      */
-    public function setSuffix($suffix): CustomerAddressInterface;
+    public function setSuffix($suffix);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCompany(): string;
+    public function getCompany();
 
     /**
      * @param string $company
      *
      * @return $this
      */
-    public function setCompany($company): CustomerAddressInterface;
+    public function setCompany($company);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getStreet(): string;
+    public function getStreet();
 
     /**
      * @param string $street
      *
      * @return $this
      */
-    public function setStreet($street): CustomerAddressInterface;
+    public function setStreet($street);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCity(): string;
+    public function getCity();
 
     /**
      * @param string $city
      *
      * @return $this
      */
-    public function setCity($city): CustomerAddressInterface;
+    public function setCity($city);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCountryId(): string;
+    public function getCountryId();
 
     /**
      * @param string $countryId
      *
      * @return $this
      */
-    public function setCountryId($countryId): CustomerAddressInterface;
+    public function setCountryId($countryId);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRegion(): string;
+    public function getRegion();
 
     /**
      * @param string $region
      *
      * @return $this
      */
-    public function setRegion($region): CustomerAddressInterface;
+    public function setRegion($region);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPostcode(): string;
+    public function getPostcode();
 
     /**
      * @param string $postCode
      *
      * @return $this
      */
-    public function setPostcode($postCode): CustomerAddressInterface;
+    public function setPostcode($postCode);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTelephone(): string;
+    public function getTelephone();
 
     /**
      * @param string $telephone
      *
      * @return $this
      */
-    public function setTelephone($telephone): CustomerAddressInterface;
+    public function setTelephone($telephone);
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFax(): string;
+    public function getFax();
 
     /**
      * @param string $fax
      *
      * @return $this
      */
-    public function setFax($fax): CustomerAddressInterface;
+    public function setFax($fax);
 }

@@ -52,7 +52,7 @@ class OrdersApi implements OrdersApiInterface
      *
      * @return OrdersApiResponseInterface
      */
-    public function get($page, $pageSize, $storeId = null): OrdersApiResponseInterface
+    public function get($page, $pageSize, $storeId = null)
     {
         $this
             ->initCollection()
@@ -70,7 +70,7 @@ class OrdersApi implements OrdersApiInterface
     /**
      * @return $this
      */
-    private function initCollection(): OrdersApi
+    private function initCollection()
     {
         $this->orderCollection = $this->orderCollectionFactory->create();
 
@@ -82,7 +82,7 @@ class OrdersApi implements OrdersApiInterface
      *
      * @return $this
      */
-    private function filterStore($storeId = null): OrdersApi
+    private function filterStore($storeId = null)
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {
@@ -100,7 +100,7 @@ class OrdersApi implements OrdersApiInterface
      *
      * @return $this
      */
-    private function setPage($page, $pageSize): OrdersApi
+    private function setPage($page, $pageSize)
     {
         $this->orderCollection->setPage($page, $pageSize);
 
@@ -110,7 +110,7 @@ class OrdersApi implements OrdersApiInterface
     /**
      * @return array
      */
-    private function handleItems(): array
+    private function handleItems()
     {
         $returnArray = [];
 

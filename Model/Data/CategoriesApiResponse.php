@@ -14,7 +14,7 @@ class CategoriesApiResponse extends ListApiResponseBase implements CategoriesApi
     /**
      * @return CategoryInterface[]
      */
-    public function getCategories(): array
+    public function getCategories()
     {
         return $this->getData(self::CATEGORIES_KEY);
     }
@@ -24,7 +24,7 @@ class CategoriesApiResponse extends ListApiResponseBase implements CategoriesApi
      *
      * @return $this
      */
-    public function setCategories(array $categories): CategoriesApiResponseInterface
+    public function setCategories(array $categories)
     {
         $this->setData(self::CATEGORIES_KEY, $categories);
 

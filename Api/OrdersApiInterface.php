@@ -17,5 +17,5 @@ interface OrdersApiInterface
      *
      * @return \Emartech\Emarsys\Api\Data\OrdersApiResponseInterface
      */
-    public function get($page, $pageSize, $storeId = null): OrdersApiResponseInterface;
+    public function get($page, $pageSize, $storeId = null);
 }

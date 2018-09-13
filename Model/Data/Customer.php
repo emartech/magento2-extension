@@ -16,7 +16,7 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->getData(self::ID_KEY);
     }
@@ -24,7 +24,7 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return int
      */
-    public function getAcceptsMarketing(): int
+    public function getAcceptsMarketing()
     {
         return $this->getData(self::ACCEPTS_MARKETING_KEY);
     }
@@ -32,7 +32,7 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function getBillingAddress(): CustomerAddressInterface
+    public function getBillingAddress()
     {
         return $this->getData(self::BILLING_ADDRESS_KEY);
     }
@@ -40,39 +40,39 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return string
      */
-    public function getCreatedAt(): string
+    public function getCreatedAt()
     {
         return $this->getData(self::CREATED_AT_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDob(): string
+    public function getDob()
     {
         return $this->getData(self::DOB_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string
+    public function getEmail()
     {
         return $this->getData(self::EMAIL_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFirstname(): string
+    public function getFirstname()
     {
         return $this->getData(self::FIRSTNAME_KEY);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getGender(): int
+    public function getGender()
     {
         return $this->getData(self::GENDER_KEY);
     }
@@ -80,7 +80,7 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return int
      */
-    public function getGroupId(): int
+    public function getGroupId()
     {
         return $this->getData(self::GROUP_ID_KEY);
     }
@@ -88,31 +88,31 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return int
      */
-    public function getIsActive(): int
+    public function getIsActive()
     {
         return $this->getData(self::IS_ACTIVE_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLastname(): string
+    public function getLastname()
     {
         return $this->getData(self::LASTNAME_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMiddlename(): string
+    public function getMiddlename()
     {
         return $this->getData(self::MIDDLENAME_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPrefix(): string
+    public function getPrefix()
     {
         return $this->getData(self::PREFIX_KEY);
     }
@@ -120,31 +120,31 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return CustomerAddressInterface
      */
-    public function getShippingAddress(): CustomerAddressInterface
+    public function getShippingAddress()
     {
         return $this->getData(self::SHIPPING_ADDRESS_KEY);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int
+    public function getStoreId()
     {
         return $this->getData(self::STORE_ID_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSuffix(): string
+    public function getSuffix()
     {
         return $this->getData(self::SUFFIX_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTaxvat(): string
+    public function getTaxvat()
     {
         return $this->getData(self::TAXVAT_KEY);
     }
@@ -152,15 +152,15 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * @return string
      */
-    public function getUpdatedAt(): string
+    public function getUpdatedAt()
     {
         return $this->getData(self::UPDATED_AT_KEY);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getWebsiteId(): int
+    public function getWebsiteId()
     {
         return $this->getData(self::WEBSITE_ID_KEY);
     }
@@ -170,18 +170,18 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setId($id): CustomerInterface
+    public function setId($id)
     {
         $this->setData(self::ID_KEY, $id);
         return $this;
     }
 
     /**
-     * @param int $acceptsMarketing
+     * @param int|null $acceptsMarketing
      *
      * @return $this
      */
-    public function setAcceptsMarketing($acceptsMarketing): CustomerInterface
+    public function setAcceptsMarketing($acceptsMarketing)
     {
         $this->setData(self::ACCEPTS_MARKETING_KEY, $acceptsMarketing);
         return $this;
@@ -192,7 +192,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setBillingAddress($billingAddress): CustomerInterface
+    public function setBillingAddress($billingAddress)
     {
         $this->setData(self::BILLING_ADDRESS_KEY, $billingAddress);
         return $this;
@@ -203,7 +203,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setCreatedAt($createdAt): CustomerInterface
+    public function setCreatedAt($createdAt)
     {
         $this->setData(self::CREATED_AT_KEY, $createdAt);
         return $this;
@@ -214,7 +214,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setDob($dob): CustomerInterface
+    public function setDob($dob)
     {
         $this->setData(self::DOB_KEY, $dob);
         return $this;
@@ -225,7 +225,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setEmail($email): CustomerInterface
+    public function setEmail($email)
     {
         $this->setData(self::EMAIL_KEY, $email);
         return $this;
@@ -236,7 +236,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setFirstname($firstName): CustomerInterface
+    public function setFirstname($firstName)
     {
         $this->setData(self::FIRSTNAME_KEY, $firstName);
         return $this;
@@ -247,7 +247,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setGender($gender): CustomerInterface
+    public function setGender($gender)
     {
         $this->setData(self::GENDER_KEY, $gender);
         return $this;
@@ -258,7 +258,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setGroupId($groupId): CustomerInterface
+    public function setGroupId($groupId)
     {
         $this->setData(self::GROUP_ID_KEY, $groupId);
         return $this;
@@ -269,7 +269,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setIsActive($isActive): CustomerInterface
+    public function setIsActive($isActive)
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
         return $this;
@@ -280,7 +280,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setLastname($lastName): CustomerInterface
+    public function setLastname($lastName)
     {
         $this->setData(self::LASTNAME_KEY, $lastName);
         return $this;
@@ -291,7 +291,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setMiddlename($middleName): CustomerInterface
+    public function setMiddlename($middleName)
     {
         $this->setData(self::MIDDLENAME_KEY, $middleName);
         return $this;
@@ -302,7 +302,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setPrefix($prefix): CustomerInterface
+    public function setPrefix($prefix)
     {
         $this->setData(self::PREFIX_KEY, $prefix);
         return $this;
@@ -313,7 +313,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setShippingAddress($shippingAddress): CustomerInterface
+    public function setShippingAddress($shippingAddress)
     {
         $this->setData(self::SHIPPING_ADDRESS_KEY, $shippingAddress);
         return $this;
@@ -324,7 +324,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setStoreId($storeId): CustomerInterface
+    public function setStoreId($storeId)
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
         return $this;
@@ -335,7 +335,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setSuffix($suffix): CustomerInterface
+    public function setSuffix($suffix)
     {
         $this->setData(self::SUFFIX_KEY, $suffix);
         return $this;
@@ -346,7 +346,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setTaxvat($taxVat): CustomerInterface
+    public function setTaxvat($taxVat)
     {
         $this->setData(self::TAXVAT_KEY, $taxVat);
         return $this;
@@ -357,7 +357,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setUpdatedAt($updatedAt): CustomerInterface
+    public function setUpdatedAt($updatedAt)
     {
         $this->setData(self::UPDATED_AT_KEY, $updatedAt);
         return $this;
@@ -368,7 +368,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setWebsiteId($websiteId): CustomerInterface
+    public function setWebsiteId($websiteId)
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
         return $this;

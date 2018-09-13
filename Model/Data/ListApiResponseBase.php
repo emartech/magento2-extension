@@ -15,7 +15,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
     /**
      * @return int
      */
-    public function getCurrentPage(): int
+    public function getCurrentPage()
     {
         return $this->getData(self::PAGE_KEY);
     }
@@ -23,7 +23,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
     /**
      * @return int
      */
-    public function getLastPage(): int
+    public function getLastPage()
     {
         return $this->getData(self::LAST_PAGE_KEY);
     }
@@ -31,7 +31,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
     /**
      * @return int
      */
-    public function getPageSize(): int
+    public function getPageSize()
     {
         return $this->getData(self::PAGE_SIZE_KEY);
     }
@@ -39,7 +39,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
     /**
      * @return int
      */
-    public function getTotalCount(): int
+    public function getTotalCount()
     {
         return $this->getData(self::TOTAL_COUNT_KEY);
     }
@@ -49,7 +49,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
      *
      * @return $this
      */
-    public function setCurrentPage($currentPage): ListApiResponseBaseInterface
+    public function setCurrentPage($currentPage)
     {
         $this->setData(self::PAGE_KEY, $currentPage);
         return $this;
@@ -60,7 +60,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
      *
      * @return $this
      */
-    public function setLastPage($lastPage): ListApiResponseBaseInterface
+    public function setLastPage($lastPage)
     {
         $this->setData(self::LAST_PAGE_KEY, $lastPage);
         return $this;
@@ -71,7 +71,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
      *
      * @return $this
      */
-    public function setPageSize($pageSize): ListApiResponseBaseInterface
+    public function setPageSize($pageSize)
     {
         $this->setData(self::PAGE_SIZE_KEY, $pageSize);
         return $this;
@@ -82,7 +82,7 @@ class ListApiResponseBase extends DataObject implements ListApiResponseBaseInter
      *
      * @return $this
      */
-    public function setTotalCount($totalCount): ListApiResponseBaseInterface
+    public function setTotalCount($totalCount)
     {
         $this->setData(self::TOTAL_COUNT_KEY, $totalCount);
         return $this;

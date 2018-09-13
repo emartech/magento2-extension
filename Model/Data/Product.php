@@ -16,7 +16,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface[]
      */
-    public function getStoreData(): array
+    public function getStoreData()
     {
         return $this->getData(self::STORE_DATA_KEY);
     }
@@ -24,7 +24,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return string[]
      */
-    public function getCategories(): array
+    public function getCategories()
     {
         return $this->getData(self::CATEGORIES_KEY);
     }
@@ -32,7 +32,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return int[]
      */
-    public function getChildrenEntityIds(): array
+    public function getChildrenEntityIds()
     {
         return $this->getData(self::CHILDREN_ENTITY_IDS_KEY);
     }
@@ -40,7 +40,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return int
      */
-    public function getEntityId(): int
+    public function getEntityId()
     {
         return $this->getData(self::ENTITY_ID_KEY);
     }
@@ -48,7 +48,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return ImagesInterface
      */
-    public function getImages(): ImagesInterface
+    public function getImages()
     {
         return $this->getData(self::IMAGES_KEY);
     }
@@ -56,7 +56,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return int
      */
-    public function getIsInStock(): int
+    public function getIsInStock()
     {
         return $this->getData(self::IS_IN_STOCK_KEY);
     }
@@ -64,7 +64,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return float|int
      */
-    public function getQty(): float
+    public function getQty()
     {
         return $this->getData(self::QTY_KEY);
     }
@@ -72,7 +72,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return string
      */
-    public function getSku(): string
+    public function getSku()
     {
         return $this->getData(self::SKU_KEY);
     }
@@ -80,7 +80,7 @@ class Product extends DataObject implements ProductInterface
     /**
      * @return string
      */
-    public function getType(): string
+    public function getType()
     {
         return $this->getData(self::TYPE_KEY);
     }
@@ -90,7 +90,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setStoreData(array $storeData): ProductInterface
+    public function setStoreData(array $storeData)
     {
         $this->setData(self::STORE_DATA_KEY, $storeData);
 
@@ -102,7 +102,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setCategories($categories): ProductInterface
+    public function setCategories($categories)
     {
         $this->setData(self::CATEGORIES_KEY, $categories);
 
@@ -114,7 +114,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setChildrenEntityIds($childrenEntityIds): ProductInterface
+    public function setChildrenEntityIds($childrenEntityIds)
     {
         $this->setData(self::CHILDREN_ENTITY_IDS_KEY, $childrenEntityIds);
 
@@ -126,7 +126,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setEntityId($entityId): ProductInterface
+    public function setEntityId($entityId)
     {
         $this->setData(self::ENTITY_ID_KEY, $entityId);
 
@@ -138,7 +138,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setImages($images): ProductInterface
+    public function setImages($images)
     {
         $this->setData(self::IMAGES_KEY, $images);
 
@@ -150,7 +150,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setIsInStock($isInStock): ProductInterface
+    public function setIsInStock($isInStock)
     {
         $this->setData(self::IS_IN_STOCK_KEY, $isInStock);
 
@@ -162,7 +162,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setQty($qty): ProductInterface
+    public function setQty($qty)
     {
         $this->setData(self::QTY_KEY, $qty);
 
@@ -174,7 +174,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setSku($sku): ProductInterface
+    public function setSku($sku)
     {
         $this->setData(self::SKU_KEY, $sku);
 
@@ -186,7 +186,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return $this
      */
-    public function setType($type): ProductInterface
+    public function setType($type)
     {
         $this->setData(self::TYPE_KEY, $type);
 

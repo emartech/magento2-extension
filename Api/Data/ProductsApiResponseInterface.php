@@ -13,12 +13,12 @@ interface ProductsApiResponseInterface extends ListApiResponseBaseInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\ProductInterface[]
      */
-    public function getProducts(): array;
+    public function getProducts();
 
     /**
      * @param \Emartech\Emarsys\Api\Data\ProductInterface[] $products
      *
      * @return $this
      */
-    public function setProducts(array $products): ProductsApiResponseInterface;
+    public function setProducts(array $products);
 }

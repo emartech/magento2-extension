@@ -13,105 +13,105 @@ use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
 class CustomerAddress extends DataObject implements CustomerAddressInterface
 {
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCity(): string
+    public function getCity()
     {
         return $this->getData(self::CITY_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCompany(): string
+    public function getCompany()
     {
         return $this->getData(self::COMPANY_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCountryId(): string
+    public function getCountryId()
     {
         return $this->getData(self::COUNTRY_ID_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFax(): string
+    public function getFax()
     {
         return $this->getData(self::FAX_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFirstname(): string
+    public function getFirstname()
     {
         return $this->getData(self::FIRSTNAME_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLastname(): string
+    public function getLastname()
     {
         return $this->getData(self::LASTNAME_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMiddlename(): string
+    public function getMiddlename()
     {
         return $this->getData(self::MIDDLENAME_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPostcode(): string
+    public function getPostcode()
     {
         return $this->getData(self::POSTCODE_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPrefix(): string
+    public function getPrefix()
     {
         return $this->getData(self::PREFIX_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRegion(): string
+    public function getRegion()
     {
         return $this->getData(self::REGION_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getStreet(): string
+    public function getStreet()
     {
         return $this->getData(self::STREET_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSuffix(): string
+    public function getSuffix()
     {
         return $this->getData(self::SUFFIX_KEY);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTelephone(): string
+    public function getTelephone()
     {
         return $this->getData(self::TELEPHONE_KEY);
     }
@@ -121,7 +121,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setCity($city): CustomerAddressInterface
+    public function setCity($city)
     {
         $this->setData(self::CITY_KEY, $city);
         return $this;
@@ -132,7 +132,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setCompany($company): CustomerAddressInterface
+    public function setCompany($company)
     {
         $this->setData(self::COMPANY_KEY, $company);
         return $this;
@@ -143,7 +143,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setCountryId($countryId): CustomerAddressInterface
+    public function setCountryId($countryId)
     {
         $this->setData(self::COUNTRY_ID_KEY, $countryId);
         return $this;
@@ -154,7 +154,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setFax($fax): CustomerAddressInterface
+    public function setFax($fax)
     {
         $this->setData(self::FAX_KEY, $fax);
         return $this;
@@ -165,7 +165,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setFirstname($firstName): CustomerAddressInterface
+    public function setFirstname($firstName)
     {
         $this->setData(self::FIRSTNAME_KEY, $firstName);
         return $this;
@@ -176,7 +176,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setLastname($lastName): CustomerAddressInterface
+    public function setLastname($lastName)
     {
         $this->setData(self::LASTNAME_KEY, $lastName);
         return $this;
@@ -187,7 +187,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setMiddlename($middleName): CustomerAddressInterface
+    public function setMiddlename($middleName)
     {
         $this->setData(self::MIDDLENAME_KEY, $middleName);
         return $this;
@@ -198,7 +198,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setPostcode($postCode): CustomerAddressInterface
+    public function setPostcode($postCode)
     {
         $this->setData(self::POSTCODE_KEY, $postCode);
         return $this;
@@ -209,7 +209,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setPrefix($prefix): CustomerAddressInterface
+    public function setPrefix($prefix)
     {
         $this->setData(self::PREFIX_KEY, $prefix);
         return $this;
@@ -220,7 +220,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setRegion($region): CustomerAddressInterface
+    public function setRegion($region)
     {
         $this->setData(self::REGION_KEY, $region);
         return $this;
@@ -231,7 +231,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setStreet($street): CustomerAddressInterface
+    public function setStreet($street)
     {
         $this->setData(self::STREET_KEY, $street);
         return $this;
@@ -242,7 +242,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setSuffix($suffix): CustomerAddressInterface
+    public function setSuffix($suffix)
     {
         $this->setData(self::SUFFIX_KEY, $suffix);
         return $this;
@@ -253,7 +253,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return $this
      */
-    public function setTelephone($telephone): CustomerAddressInterface
+    public function setTelephone($telephone)
     {
         $this->setData(self::TELEPHONE_KEY, $telephone);
         return $this;

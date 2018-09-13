@@ -2,7 +2,7 @@
 
 namespace Emartech\Emarsys\Api;
 
-use Magento\Framework\Api\SearchResultsInterface;
+use Magento\Framework\Api\SearchResultsInterfaceFactory;
 use Magento\Framework\Api\SearchCriteriaInterface;
 
 use Emartech\Emarsys\Api\Data\EventInterface;
@@ -18,14 +18,14 @@ interface EventRepositoryInterface
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function get($id): EventInterface;
+    public function get($id);
 
     /**
      * @param \Emartech\Emarsys\Api\Data\EventInterface $event
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function save(EventInterface $event): EventInterface;
+    public function save(EventInterface $event);
 
     /**
      * Retrieve all Events for entity type
@@ -33,7 +33,7 @@ interface EventRepositoryInterface
      * @param string                                         $eventType
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      *
-     * @return \Magento\Framework\Api\SearchResultsInterface
+     * @return \Magento\Framework\Api\SearchResultsInterfaceFactory
      */
-    public function getList($eventType, SearchCriteriaInterface $searchCriteria): SearchResultsInterface;
+    public function getList($eventType, SearchCriteriaInterface $searchCriteria);
 }

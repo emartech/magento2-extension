@@ -33,74 +33,74 @@ interface ConfigInterface
     /**
      * @return string
      */
-    public function getCollectCustomerEvents(): string;
+    public function getCollectCustomerEvents();
 
     /**
      * @param string $collectCustomerEvents
      *
      * @return $this
      */
-    public function setCollectCustomerEvents($collectCustomerEvents): ConfigInterface;
+    public function setCollectCustomerEvents($collectCustomerEvents);
 
     /**
      * @return string
      */
-    public function getCollectSalesEvents(): string;
+    public function getCollectSalesEvents();
 
     /**
      * @param string $collectSalesEvents
      *
      * @return $this
      */
-    public function setCollectSalesEvents($collectSalesEvents): ConfigInterface;
+    public function setCollectSalesEvents($collectSalesEvents);
 
     /**
      * @return string
      */
-    public function getCollectMarketingEvents(): string;
+    public function getCollectMarketingEvents();
 
     /**
      * @param string $collectMarketingEvents
      *
      * @return $this
      */
-    public function setCollectMarketingEvents($collectMarketingEvents): ConfigInterface;
+    public function setCollectMarketingEvents($collectMarketingEvents);
 
     /**
      * @return string
      */
-    public function getMerchantId(): string;
+    public function getMerchantId();
 
     /**
      * @param string $merchantId
      *
      * @return $this
      */
-    public function setMerchantId($merchantId): ConfigInterface;
+    public function setMerchantId($merchantId);
 
     /**
      * @return string
      */
-    public function getInjectSnippet(): string;
+    public function getInjectSnippet();
 
     /**
      * @param string $injectSnippet
      *
      * @return $this
      */
-    public function setInjectSnippet($injectSnippet): ConfigInterface;
+    public function setInjectSnippet($injectSnippet);
 
     /**
      * @return string
      */
-    public function getWebTrackingSnippetUrl(): string;
+    public function getWebTrackingSnippetUrl();
 
     /**
      * @param string $webTrackingSnippetUrl
      *
      * @return $this
      */
-    public function setWebTrackingSnippetUrl($webTrackingSnippetUrl): ConfigInterface;
+    public function setWebTrackingSnippetUrl($webTrackingSnippetUrl);
 
     /**
      * @param string $xmlPostPath
@@ -120,14 +120,14 @@ interface ConfigInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface[]
      */
-    public function getStoreSettings(): array;
+    public function getStoreSettings();
 
     /**
      * @param \Emartech\Emarsys\Api\Data\StoreConfigInterface[] $storeSettings
      *
      * @return $this
      */
-    public function setStoreSettings($storeSettings): ConfigInterface;
+    public function setStoreSettings($storeSettings);
 
     /**
      * @param string   $key
@@ -135,7 +135,7 @@ interface ConfigInterface
      *
      * @return string
      */
-    public function getConfigValue($key, $websiteId = null): ?string;
+    public function getConfigValue($key, $websiteId = null);
 
     /**
      * @param string   $key
@@ -143,7 +143,7 @@ interface ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForWebsite($key, $websiteId = null): bool;
+    public function isEnabledForWebsite($key, $websiteId = null);
 
     /**
      * @param string   $key
@@ -151,5 +151,5 @@ interface ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId = null): bool;
+    public function isEnabledForStore($key, $storeId = null);
 }

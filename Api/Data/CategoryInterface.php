@@ -12,48 +12,48 @@ interface CategoryInterface
     /**
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[]
      */
-    public function getStoreData(): array;
+    public function getStoreData();
 
     /**
      * @return int
      */
-    public function getEntityId(): int;
+    public function getEntityId();
 
     /**
      * @return string
      */
-    public function getPath(): string;
+    public function getPath();
 
     /**
      * @return int
      */
-    public function getChildrenCount(): int;
+    public function getChildrenCount();
 
     /**
      * @param int $entityId
      *
      * @return $this
      */
-    public function setEntityId($entityId): CategoryInterface;
+    public function setEntityId($entityId);
 
     /**
      * @param string $path
      *
      * @return $this
      */
-    public function setPath($path): CategoryInterface;
+    public function setPath($path);
 
     /**
      * @param int $childrenCount
      *
      * @return $this
      */
-    public function setChildrenCount($childrenCount): CategoryInterface;
+    public function setChildrenCount($childrenCount);
 
     /**
      * @param \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[] $storeData
      *
      * @return $this
      */
-    public function setStoreData($storeData): CategoryInterface;
+    public function setStoreData($storeData);
 }
