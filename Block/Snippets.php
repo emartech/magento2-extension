@@ -9,6 +9,7 @@ namespace Emartech\Emarsys\Block;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Model\CategoryFactory;
@@ -49,6 +50,11 @@ class Snippets extends Template
     private $currencyFactory;
 
     /**
+     * @var JsonSerializer
+     */
+    private $jsonSerializer;
+
+    /**
      * Snippets constructor.
      *
      * @param Context         $context
@@ -57,6 +63,7 @@ class Snippets extends Template
      * @param Registry        $registry
      * @param ConfigReader    $configReader
      * @param CurrencyFactory $currencyFactory
+     * @param JsonSerializer  $jsonSerializer
      * @param array           $data
      */
     public function __construct(
@@ -66,6 +73,7 @@ class Snippets extends Template
         Registry $registry,
         ConfigReader $configReader,
         CurrencyFactory $currencyFactory,
+        JsonSerializer $jsonSerializer,
         array $data = []
     )
     {
@@ -75,6 +83,7 @@ class Snippets extends Template
         $this->coreRegistry = $registry;
         $this->configReader = $configReader;
         $this->currencyFactory = $currencyFactory;
+        $this->jsonSerializer = $jsonSerializer;
         parent::__construct($context, $data);
     }
 
@@ -91,8 +100,25 @@ class Snippets extends Template
             'category' => $this->getCategory(),
             'store' => $this->getStoreData(),
             'search' => $this->getSearchData(),
-            'exchangeRate' => $this->getExchangeRate()
+            'exchangeRate' => $this->getExchangeRate(),
+            'slug' => $this->getStoreSlug()
         ];
+    }
+
+    /**
+     * @return string|null
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getStoreSlug()
+    {
+        $storeSettings = $this->jsonSerializer->unserialize($this->configReader->getConfigValue(ConfigInterface::STORE_SETTINGS));
+        $currentStoreId = $this->storeManager->getStore()->getId();
+        foreach ($storeSettings as $store) {
+            if($store['store_id'] === (int) $currentStoreId) {
+                return $store['slug'];
+            }
+        }
+        return null;
     }
 
     /**
