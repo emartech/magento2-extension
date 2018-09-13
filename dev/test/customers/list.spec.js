@@ -38,7 +38,7 @@ describe('Customers endpoint', function() {
     const page = 1;
     const limit = 2;
 
-    const { customers, lastPage } = await this.magentoApi.execute('customers', 'getAll', { page, limit });
+    const { customers, lastPage } = await this.magentoApi.execute('customers', 'getAll', { page, limit, websiteId: 1 });
     const customer = customers[0];
 
     expect(customers.length).to.equal(2);

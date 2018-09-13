@@ -89,17 +89,19 @@ describe('Subscriptions api', function() {
       customerEmail2 = this.customer.email;
       customerId2 = this.customer.entityId;
 
-      await this.db.insert([
-        { subscriber_email: noCustomerEmail, subscriber_status: 1, store_id: storeId },
-        { subscriber_email: noCustomerEmail2, subscriber_status: 3, store_id: storeId },
-        { subscriber_email: customerEmail, subscriber_status: 1, customer_id: customerId, store_id: storeId },
-        {
-          subscriber_email: customerEmail2,
-          subscriber_status: 3,
-          customer_id: customerId2,
-          store_id: storeId
-        }
-      ]).into('newsletter_subscriber');
+      await this.db
+        .insert([
+          { subscriber_email: noCustomerEmail, subscriber_status: 1, store_id: storeId },
+          { subscriber_email: noCustomerEmail2, subscriber_status: 3, store_id: storeId },
+          { subscriber_email: customerEmail, subscriber_status: 1, customer_id: customerId, store_id: storeId },
+          {
+            subscriber_email: customerEmail2,
+            subscriber_status: 3,
+            customer_id: customerId2,
+            store_id: storeId
+          }
+        ])
+        .into('newsletter_subscriber');
     });
 
     it('should list all subscriber without filters', async function() {
@@ -137,7 +139,7 @@ describe('Subscriptions api', function() {
         total_count: 4
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({});
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ websiteId });
 
       expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
@@ -167,7 +169,7 @@ describe('Subscriptions api', function() {
         page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: true });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: true, websiteId });
 
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
@@ -196,7 +198,11 @@ describe('Subscriptions api', function() {
         page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: false, onlyGuest: false });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({
+        subscribed: false,
+        onlyGuest: false,
+        websiteId
+      });
 
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
@@ -223,7 +229,7 @@ describe('Subscriptions api', function() {
         page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ onlyGuest: true });
+      const actualSubscriptions = await this.magentoApi.getSubscriptions({ onlyGuest: true, websiteId });
 
       expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
