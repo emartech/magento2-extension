@@ -29,7 +29,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getName()
     {
