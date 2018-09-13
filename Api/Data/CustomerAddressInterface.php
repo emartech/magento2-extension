@@ -23,7 +23,7 @@ interface CustomerAddressInterface
     const FAX_KEY        = 'fax';
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getPrefix();
 
@@ -35,7 +35,7 @@ interface CustomerAddressInterface
     public function setPrefix($prefix);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFirstname();
 
@@ -47,7 +47,7 @@ interface CustomerAddressInterface
     public function setFirstname($firstName);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getMiddlename();
 
@@ -59,7 +59,7 @@ interface CustomerAddressInterface
     public function setMiddlename($middleName);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getLastname();
 
@@ -71,7 +71,7 @@ interface CustomerAddressInterface
     public function setLastname($lastName);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getSuffix();
 
@@ -83,7 +83,7 @@ interface CustomerAddressInterface
     public function setSuffix($suffix);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getCompany();
 
@@ -95,7 +95,7 @@ interface CustomerAddressInterface
     public function setCompany($company);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getStreet();
 
@@ -107,7 +107,7 @@ interface CustomerAddressInterface
     public function setStreet($street);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getCity();
 
@@ -119,7 +119,7 @@ interface CustomerAddressInterface
     public function setCity($city);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getCountryId();
 
@@ -131,7 +131,7 @@ interface CustomerAddressInterface
     public function setCountryId($countryId);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getRegion();
 
@@ -143,7 +143,7 @@ interface CustomerAddressInterface
     public function setRegion($region);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getPostcode();
 
@@ -155,7 +155,7 @@ interface CustomerAddressInterface
     public function setPostcode($postCode);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getTelephone();
 
@@ -167,7 +167,7 @@ interface CustomerAddressInterface
     public function setTelephone($telephone);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFax();
 

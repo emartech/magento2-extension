@@ -13,7 +13,7 @@ use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
 class CustomerAddress extends DataObject implements CustomerAddressInterface
 {
     /**
-     * @return string|null
+     * @return string
      */
     public function getCity()
     {
@@ -21,7 +21,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getCompany()
     {
@@ -29,7 +29,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getCountryId()
     {
@@ -37,7 +37,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFax()
     {
@@ -45,7 +45,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFirstname()
     {
@@ -53,7 +53,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getLastname()
     {
@@ -61,7 +61,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getMiddlename()
     {
@@ -69,7 +69,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getPostcode()
     {
@@ -77,7 +77,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getPrefix()
     {
@@ -85,7 +85,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getRegion()
     {
@@ -93,7 +93,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getStreet()
     {
@@ -101,7 +101,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getSuffix()
     {
@@ -109,7 +109,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getTelephone()
     {

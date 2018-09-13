@@ -131,7 +131,6 @@ class CustomersApi implements CustomersApiInterface
         } catch (\Exception $e) { //@codingStandardsIgnoreLine
         }
 
-
         $this->customerCollection = $this->collectionFactory->create();
         $this->customerAddressEntityTable = $this->customerCollection->getResource()
             ->getTable('customer_address_entity');

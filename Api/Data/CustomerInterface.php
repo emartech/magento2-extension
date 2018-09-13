@@ -41,7 +41,7 @@ interface CustomerInterface
     public function setId($id);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getEmail();
 
@@ -53,7 +53,7 @@ interface CustomerInterface
     public function setEmail($email);
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getWebsiteId();
 
@@ -77,7 +77,7 @@ interface CustomerInterface
     public function setGroupId($groupId);
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getStoreId();
 
@@ -101,7 +101,7 @@ interface CustomerInterface
     public function setIsActive($isActive);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getPrefix();
 
@@ -113,7 +113,7 @@ interface CustomerInterface
     public function setPrefix($prefix);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFirstname();
 
@@ -125,7 +125,7 @@ interface CustomerInterface
     public function setFirstname($firstName);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getMiddlename();
 
@@ -137,7 +137,7 @@ interface CustomerInterface
     public function setMiddlename($middleName);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getLastname();
 
@@ -149,7 +149,7 @@ interface CustomerInterface
     public function setLastname($lastName);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getSuffix();
 
@@ -161,7 +161,7 @@ interface CustomerInterface
     public function setSuffix($suffix);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getDob();
 
@@ -173,7 +173,7 @@ interface CustomerInterface
     public function setDob($dob);
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getTaxvat();
 
@@ -185,7 +185,7 @@ interface CustomerInterface
     public function setTaxvat($taxVat);
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getGender();
 
@@ -221,12 +221,12 @@ interface CustomerInterface
     public function setShippingAddress($shippingAddress);
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getAcceptsMarketing();
 
     /**
-     * @param int|null $acceptsMarketing
+     * @param int $acceptsMarketing
      *
      * @return $this
      */

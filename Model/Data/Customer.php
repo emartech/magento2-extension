@@ -46,7 +46,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getDob()
     {
@@ -54,7 +54,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getEmail()
     {
@@ -62,7 +62,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getFirstname()
     {
@@ -70,7 +70,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getGender()
     {
@@ -94,7 +94,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getLastname()
     {
@@ -102,7 +102,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getMiddlename()
     {
@@ -110,7 +110,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getPrefix()
     {
@@ -126,7 +126,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getStoreId()
     {
@@ -134,7 +134,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getSuffix()
     {
@@ -142,7 +142,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getTaxvat()
     {
@@ -158,7 +158,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @return int|null
+     * @return int
      */
     public function getWebsiteId()
     {
@@ -177,7 +177,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @param int|null $acceptsMarketing
+     * @param int $acceptsMarketing
      *
      * @return $this
      */
