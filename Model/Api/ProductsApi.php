@@ -182,13 +182,18 @@ class ProductsApi implements ProductsApiInterface
             ->joinCategories()
             ->joinChildrenProductIds()
             ->setOrder()
-            ->setGroupBy()
             ->setPage($page, $pageSize);
 
+        $lastPageNumber = $this->productCollection->getLastPageNumber();
+        $pageSize = $this->productCollection->getPageSize();
+        $totalCount = $this->productCollection->getSize();
+
+        $this->setGroupBy();
+
         return $this->productsApiResponseFactory->create()->setCurrentPage($this->productCollection->getCurPage())
-            ->setLastPage($this->productCollection->getLastPageNumber())
-            ->setPageSize($this->productCollection->getPageSize())
-            ->setTotalCount($this->productCollection->getSize())
+            ->setLastPage($lastPageNumber)
+            ->setPageSize($pageSize)
+            ->setTotalCount($totalCount)
             ->setProducts($this->handleProducts());
     }
 
@@ -341,6 +346,14 @@ class ProductsApi implements ProductsApiInterface
      */
     private function joinChildrenProductIds()
     {
+        /*$superLinkTable = $this->productCollection->getResource()->getTable('catalog_product_super_link');
+
+        $subQuery = new \Zend_Db_Expr('SELECT product_id FROM ' . $superLinkTable . ' WHERE parent_id = entity_id');*/
+
+        /*$this->productCollection->getSelect()->group()
+            $subQuery
+        );*/
+
         $this->productCollection->joinTable(
             $this->productCollection->getResource()->getTable('catalog_product_super_link'),
             'parent_id = entity_id',
@@ -348,6 +361,9 @@ class ProductsApi implements ProductsApiInterface
             null,
             'left'
         );
+
+        /*print($this->productCollection->getSelect() . '');
+        die();*/
 
         return $this;
     }
@@ -382,7 +398,10 @@ class ProductsApi implements ProductsApiInterface
      */
     private function setPage($page, $pageSize)
     {
-        $this->productCollection->setPage($page, $pageSize);
+        $this->productCollection
+            ->setCurPage($page)
+            ->setPageSize($pageSize);
+        //$this->productCollection->getSelect()->limitPage($page, $pageSize);
 
         return $this;
     }
