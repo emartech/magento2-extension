@@ -139,14 +139,16 @@ class CustomerPlugin
         callable $proceed
     ) {
         $storeId = $subscriber->getStoreId();
-        $store = $this->storeManager->getStore($storeId);
+        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($subscriber);
         }
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
+        $eventModel->setWebsiteId($websiteId);
+        $eventModel->setStoreId($storeId);
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL);
 
         $data = $this->getDataFromSubscription($subscriber);
@@ -167,16 +169,17 @@ class CustomerPlugin
         callable $proceed
     ) {
         $storeId = $subscriber->getStoreId();
-        $store = $this->storeManager->getStore($storeId);
+        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($subscriber);
         }
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL);
-
+        $eventModel->setWebsiteId($websiteId);
+        $eventModel->setStoreId($storeId);
         $data = $this->getDataFromSubscription($subscriber);
         $eventModel->setEventData($this->json->serialize($data));
         $this->eventRepository->save($eventModel);
@@ -195,16 +198,17 @@ class CustomerPlugin
         callable $proceed
     ) {
         $storeId = $subscriber->getStoreId();
-        $store = $this->storeManager->getStore($storeId);
+        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($subscriber);
         }
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL);
-
+        $eventModel->setWebsiteId($websiteId);
+        $eventModel->setStoreId($storeId);
         $data = $this->getDataFromSubscription($subscriber);
         $eventModel->setEventData($this->json->serialize($data));
         $this->eventRepository->save($eventModel);
@@ -234,20 +238,21 @@ class CustomerPlugin
         if (!$storeId) {
             $storeId = $this->getWebsiteStoreId($customer, $sendemailStoreId);
         }
-        $store = $this->storeManager->getStore($storeId);
+        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $store->getWebsiteId())) {
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
         }
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_CUSTOMER_NEW_ACCOUNT . $type);
-
+        $eventModel->setWebsiteId($websiteId);
+        $eventModel->setStoreId($storeId);
         $data = [
             'customer' => $this->getFullCustomerObject($customer)->getData(),
             'back_url' => $backUrl,
-            'store' => $store->getData(),
+            'store' => $this->storeManager->getStore($storeId)->getData(),
         ];
 
         $eventModel->setEventData($this->json->serialize($data));
@@ -272,7 +277,10 @@ class CustomerPlugin
         $origCustomerEmail,
         $isPasswordChanged = false
     ) {
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $savedCustomer->getWebsiteId())) {
+        $websiteId = $savedCustomer->getWebsiteId();
+        $storeId = $savedCustomer->getStoreId();
+
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
         }
 
@@ -311,6 +319,8 @@ class CustomerPlugin
             /** @var \Emartech\Emarsys\Model\Event $eventModel */
             $eventModel = $this->eventFactory->create();
             $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET);
+            $eventModel->setWebsiteId($websiteId);
+            $eventModel->setStoreId($storeId);
             $data = [
                 'customer' => $this->getFullCustomerObject($savedCustomer)->getData(),
                 'store' => $store->getData(),
@@ -335,15 +345,18 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
+        $websiteId = $customer->getWebsiteId();
+        $storeId = $customer->getStoreId();
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($customer);
         }
 
-        $store = $this->storeManager->getStore($customer->getStoreId());
+        $store = $this->storeManager->getStore($storeId);
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_REMINDER);
-
+        $eventModel->setWebsiteId($websiteId);
+        $eventModel->setStoreId($storeId);
         $data = [
             'customer' => $this->getFullCustomerObject($customer)->getData(),
             $store->getData()
@@ -366,16 +379,19 @@ class CustomerPlugin
         callable $proceed,
         \Magento\Customer\Api\Data\CustomerInterface $customer
     ) {
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $customer->getWebsiteId())) {
+        $websiteId = $customer->getWebsiteId();
+        $storeId = $customer->getStoreId();
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($customer);
         }
 
-        $store = $this->storeManager->getStore($customer->getStoreId());
+        $store = $this->storeManager->getStore($storeId);
 
         /** @var \Emartech\Emarsys\Model\Event $eventModel */
         $eventModel = $this->eventFactory->create();
         $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION);
-
+        $eventModel->setWebsiteId($websiteId);
+        $eventModel->setStoreId($storeId);
         $data = [
             'customer' => $this->getFullCustomerObject($customer)->getData(),
             $store->getData()

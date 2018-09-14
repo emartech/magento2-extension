@@ -35,9 +35,7 @@ describe('Marketing events: customer', function() {
 
   after(async function() {
     await this.db.raw('DELETE FROM newsletter_subscriber');
-    await this.db.raw(
-      'DELETE FROM customer_entity where email = "yolo@yolo.net" OR email = "yolo@newsletter.net"'
-    );
+    await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net" OR email = "yolo@newsletter.net"');
   });
 
   context('if collectMarketingEvents turned off', function() {
@@ -407,6 +405,8 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.eql(customer.email);
+      expect(event.website_id).to.equal(1);
+      expect(event.store_id).to.equal(1);
     });
 
     it('should create customer_new_account_registered event', async function() {
@@ -421,6 +421,8 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.eql(customer.email);
+      expect(event.website_id).to.equal(1);
+      expect(event.store_id).to.equal(1);
     });
 
     it('should create customer_password_reset_confirmation event', async function() {
@@ -443,6 +445,8 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.equal(this.customer.email);
+      expect(event.website_id).to.equal(1);
+      expect(event.store_id).to.equal(1);
     });
 
     it('should create customer_password_reminder event', async function() {
@@ -465,6 +469,8 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.equal(this.customer.email);
+      expect(event.website_id).to.equal(1);
+      expect(event.store_id).to.equal(1);
     });
 
     context('and if newsletter/subscription/confirm', function() {
@@ -502,13 +508,15 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          const { event_type: createdEventType, event_data: data } = await this.db
+          const event = await this.db
             .select()
             .from('emarsys_events_data')
             .first();
-          const createdEventData = JSON.parse(data);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('newsletter_send_confirmation_success_email');
+          expect(event.event_type).to.equal('newsletter_send_confirmation_success_email');
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(1);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
@@ -554,13 +562,15 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          const { event_type: createdEventType, event_data: data } = await this.db
+          const event = await this.db
             .select()
             .from('emarsys_events_data')
             .first();
-          const createdEventData = JSON.parse(data);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('newsletter_send_unsubscription_email');
+          expect(event.event_type).to.equal('newsletter_send_unsubscription_email');
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(3);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
@@ -607,13 +617,15 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          const { event_type: createdEventType, event_data: data } = await this.db
+          const event = await this.db
             .select()
             .from('emarsys_events_data')
             .first();
-          const createdEventData = JSON.parse(data);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('newsletter_send_confirmation_request_email');
+          expect(event.event_type).to.equal('newsletter_send_confirmation_request_email');
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(2);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
@@ -660,13 +672,15 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          const { event_type: createdEventType, event_data: data } = await this.db
+          const event = await this.db
             .select()
             .from('emarsys_events_data')
             .first();
-          const createdEventData = JSON.parse(data);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('newsletter_send_unsubscription_email');
+          expect(event.event_type).to.equal('newsletter_send_unsubscription_email');
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
           expect(createdEventData.subscriber.subscriber_status).to.equal(3);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);

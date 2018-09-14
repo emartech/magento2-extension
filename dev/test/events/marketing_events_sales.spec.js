@@ -229,12 +229,14 @@ describe('Marketing events: sales', function() {
 
       describe('submits order', function() {
         it('should create sales_email_order_template event', async function() {
-          const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-          const createdEventData = JSON.parse(createdEventPayload);
+          const event = await getLastEvent(this.db);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('sales_email_order_template');
+          expect(event.event_type).to.equal('sales_email_order_template');
           expectCustomerAndOrderMatches(createdEventData, this.customer);
           expect(createdEventData).to.have.property('billing');
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
         });
       });
 
@@ -242,12 +244,14 @@ describe('Marketing events: sales', function() {
         it('should create sales_email_invoice_template event', async function() {
           await invoiceOrder(this.magentoApi, orderId);
 
-          const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-          const createdEventData = JSON.parse(createdEventPayload);
+          const event = await getLastEvent(this.db);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('sales_email_invoice_template');
+          expect(event.event_type).to.equal('sales_email_invoice_template');
           expectCustomerAndOrderMatches(createdEventData, this.customer);
           expect(createdEventData.invoice.order_id).to.equal(orderId);
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
         });
       });
 
@@ -255,12 +259,14 @@ describe('Marketing events: sales', function() {
         it('should create sales_email_shipment_template event', async function() {
           await shipOrder(this.magentoApi, orderId);
 
-          const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-          const createdEventData = JSON.parse(createdEventPayload);
+          const event = await getLastEvent(this.db);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('sales_email_shipment_template');
+          expect(event.event_type).to.equal('sales_email_shipment_template');
           expectCustomerAndOrderMatches(createdEventData, this.customer);
           expect(createdEventData.shipment.order_id).to.equal(orderId);
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
         });
       });
 
@@ -275,12 +281,14 @@ describe('Marketing events: sales', function() {
           it('should create sales_email_order_comment_template event', async function() {
             await commentOrder(this.magentoApi, orderId);
 
-            const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-            const createdEventData = JSON.parse(createdEventPayload);
+            const event = await getLastEvent(this.db);
+            const createdEventData = JSON.parse(event.event_data);
 
-            expect(createdEventType).to.equal('sales_email_order_comment_template');
+            expect(event.event_type).to.equal('sales_email_order_comment_template');
             expectCustomerAndOrderMatches(createdEventData, this.customer);
             expect(createdEventData.comment).to.equal('Comment on order');
+            expect(event.website_id).to.equal(1);
+            expect(event.store_id).to.equal(1);
           });
         });
         describe('refunded', function() {
@@ -288,12 +296,14 @@ describe('Marketing events: sales', function() {
             await invoiceOrder(this.magentoApi, orderId);
             await refundOrder(this.magentoApi, orderId);
 
-            const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-            const createdEventData = JSON.parse(createdEventPayload);
+            const event = await getLastEvent(this.db);
+            const createdEventData = JSON.parse(event.event_data);
 
-            expect(createdEventType).to.equal('sales_email_creditmemo_template');
+            expect(event.event_type).to.equal('sales_email_creditmemo_template');
             expectCustomerAndOrderMatches(createdEventData, this.customer);
             expect(createdEventData.creditmemo.order_id).to.equal(orderId);
+            expect(event.website_id).to.equal(1);
+            expect(event.store_id).to.equal(1);
           });
         });
       });
@@ -327,12 +337,14 @@ describe('Marketing events: sales', function() {
 
       describe('submits order', function() {
         it('should create sales_email_order_guest_template event', async function() {
-          const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-          const createdEventData = JSON.parse(createdEventPayload);
+          const event = await getLastEvent(this.db);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('sales_email_order_guest_template');
+          expect(event.event_type).to.equal('sales_email_order_guest_template');
           expectOrderMatches(createdEventData);
           expect(createdEventData.billing.email).to.equal(localAddresses.billing_address.email);
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
         });
       });
 
@@ -340,13 +352,15 @@ describe('Marketing events: sales', function() {
         it('should create sales_email_invoice_guest_template event', async function() {
           await invoiceOrder(this.magentoApi, orderId);
 
-          const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-          const createdEventData = JSON.parse(createdEventPayload);
+          const event = await getLastEvent(this.db);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('sales_email_invoice_guest_template');
+          expect(event.event_type).to.equal('sales_email_invoice_guest_template');
           expect(createdEventData.customerEmail).to.equal(localAddresses.billing_address.email);
           expectOrderMatches(createdEventData);
           expect(createdEventData.invoice.order_id).to.equal(orderId);
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
         });
       });
 
@@ -354,12 +368,14 @@ describe('Marketing events: sales', function() {
         it('should create sales_email_shipment_guest_template event', async function() {
           await shipOrder(this.magentoApi, orderId);
 
-          const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-          const createdEventData = JSON.parse(createdEventPayload);
+          const event = await getLastEvent(this.db);
+          const createdEventData = JSON.parse(event.event_data);
 
-          expect(createdEventType).to.equal('sales_email_shipment_guest_template');
+          expect(event.event_type).to.equal('sales_email_shipment_guest_template');
           expectOrderMatches(createdEventData, this.customer);
           expect(createdEventData.shipment.order_id).to.equal(orderId);
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
         });
       });
 
@@ -374,12 +390,14 @@ describe('Marketing events: sales', function() {
           it('should create sales_email_order_comment_guest_template event', async function() {
             await commentOrder(this.magentoApi, orderId);
 
-            const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-            const createdEventData = JSON.parse(createdEventPayload);
+            const event = await getLastEvent(this.db);
+            const createdEventData = JSON.parse(event.event_data);
 
-            expect(createdEventType).to.equal('sales_email_order_comment_guest_template');
+            expect(event.event_type).to.equal('sales_email_order_comment_guest_template');
             expectOrderMatches(createdEventData, this.customer);
             expect(createdEventData.comment).to.equal('Comment on order');
+            expect(event.website_id).to.equal(1);
+            expect(event.store_id).to.equal(1);
           });
         });
         describe('refunded', function() {
@@ -387,12 +405,14 @@ describe('Marketing events: sales', function() {
             await invoiceOrder(this.magentoApi, orderId);
             await refundOrder(this.magentoApi, orderId);
 
-            const { event_type: createdEventType, event_data: createdEventPayload } = await getLastEvent(this.db);
-            const createdEventData = JSON.parse(createdEventPayload);
+            const event = await getLastEvent(this.db);
+            const createdEventData = JSON.parse(event.event_data);
 
-            expect(createdEventType).to.equal('sales_email_creditmemo_guest_template');
+            expect(event.event_type).to.equal('sales_email_creditmemo_guest_template');
             expectOrderMatches(createdEventData, this.customer);
             expect(createdEventData.creditmemo.order_id).to.equal(orderId);
+            expect(event.website_id).to.equal(1);
+            expect(event.store_id).to.equal(1);
           });
         });
       });

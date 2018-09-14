@@ -29,6 +29,8 @@ describe('Customer events', function() {
 
     const eventData = JSON.parse(event.event_data);
     expect(eventData.email).to.eql(customer.email);
+    expect(event.website_id).to.equal(1);
+    expect(event.store_id).to.equal(1);
   });
 
   it('are not saved in DB if collectCustomerEvents is disabled', async function() {

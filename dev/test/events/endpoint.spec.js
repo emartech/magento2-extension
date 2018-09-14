@@ -60,7 +60,9 @@ describe('Events API endpoint', function() {
     expect(secondEventsResponse.last_page).to.equal(2);
 
     const eventsInDb = await this.db.select().from('emarsys_events_data');
-
     expect(eventsInDb.length).to.equal(4);
+    const firstEvent = eventsInDb[0];
+    expect(firstEvent.website_id).to.equal(1);
+    expect(firstEvent.store_id).to.equal(1);
   });
 });
