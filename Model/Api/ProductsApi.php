@@ -346,14 +346,6 @@ class ProductsApi implements ProductsApiInterface
      */
     private function joinChildrenProductIds()
     {
-        /*$superLinkTable = $this->productCollection->getResource()->getTable('catalog_product_super_link');
-
-        $subQuery = new \Zend_Db_Expr('SELECT product_id FROM ' . $superLinkTable . ' WHERE parent_id = entity_id');*/
-
-        /*$this->productCollection->getSelect()->group()
-            $subQuery
-        );*/
-
         $this->productCollection->joinTable(
             $this->productCollection->getResource()->getTable('catalog_product_super_link'),
             'parent_id = entity_id',
@@ -361,9 +353,6 @@ class ProductsApi implements ProductsApiInterface
             null,
             'left'
         );
-
-        /*print($this->productCollection->getSelect() . '');
-        die();*/
 
         return $this;
     }
@@ -401,7 +390,6 @@ class ProductsApi implements ProductsApiInterface
         $this->productCollection
             ->setCurPage($page)
             ->setPageSize($pageSize);
-        //$this->productCollection->getSelect()->limitPage($page, $pageSize);
 
         return $this;
     }
@@ -467,7 +455,7 @@ class ProductsApi implements ProductsApiInterface
     {
         $childrenIds = $product->getData('children_ids');
         if ($childrenIds) {
-            return explode(',', $childrenIds);
+            return array_unique(explode(',', $childrenIds));
         }
 
         return [];
