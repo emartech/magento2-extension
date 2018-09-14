@@ -68,9 +68,9 @@ class Success extends \Magento\Framework\View\Element\Template
                     $bundleBaseDiscount += $collPrice['base_discount_amount'];
                     $bundleDiscount += $collPrice['discount_amount'];
                 }
-                $price = ($item->getBaseRowTotal() + $item->getBaseTaxAmount()) - ($bundleBaseDiscount);
+                $price = $item->getBaseRowTotal() - $bundleBaseDiscount;
             } else {
-                $price = ($item->getBaseRowTotal()  + $item->getBaseTaxAmount()) - $item->getBaseDiscountAmount();
+                $price = $item->getBaseRowTotal() - $item->getBaseDiscountAmount();
             }
 
             $items[] = [
