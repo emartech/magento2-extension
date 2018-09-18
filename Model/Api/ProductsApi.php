@@ -182,7 +182,6 @@ class ProductsApi implements ProductsApiInterface
             ->joinStock()
             ->joinCategories()
             ->joinChildrenProductIds()
-            ->joinPrice()
             ->setOrder()
             ->setPage($page, $pageSize);
 
@@ -355,33 +354,6 @@ class ProductsApi implements ProductsApiInterface
             null,
             'left'
         );
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function joinPrice()
-    {
-        $priceTable = $this->productCollection->getResource()->getTable('catalog_product_index_price');
-
-        foreach ($this->storeIds as $storeId => $storeData) {
-            $tableAlias = 'price_' . $storeId;
-            $valueAlias = $this->getAttributeValueAlias('final_price', $storeId);
-
-            $this->productCollection->joinTable(
-                [$tableAlias => $priceTable],
-                'entity_id = entity_id',
-                [$valueAlias => 'final_price'],
-                [
-                    'website_id' => $storeData->getWebsiteId(),
-                    'customer_group_id' => CustomerGroupModel::NOT_LOGGED_IN_ID
-                ],
-                'left'
-            );
-        }
 
         return $this;
     }
