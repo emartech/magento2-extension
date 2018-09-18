@@ -14,6 +14,7 @@ interface ProductStoreDataInterface
     const DESCRIPTION_KEY = 'description';
     const STATUS_KEY      = 'status';
     const STORE_ID_KEY    = 'store_id';
+    const CURRENCY_KEY    = 'currency';
 
     const SPECIAL_PRICE_KEY     = 'special_price';
     const SPECIAL_FROM_DATE_KEY = 'special_from_date';
@@ -48,6 +49,11 @@ interface ProductStoreDataInterface
      * @return int
      */
     public function getStoreId();
+
+    /**
+     * @return string
+     */
+    public function getCurrencyCode();
 
     /**
      * @param string $name
@@ -90,4 +96,11 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setStoreId($storeId);
+
+    /**
+     * @param string $currencyCode
+     *
+     * @return $this
+     */
+    public function setCurrencyCode($currencyCode);
 }

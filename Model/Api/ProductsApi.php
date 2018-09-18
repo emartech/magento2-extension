@@ -19,6 +19,7 @@ use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
 use Magento\Store\Model\Store;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Customer\Model\Group as CustomerGroupModel;
 
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
@@ -181,6 +182,7 @@ class ProductsApi implements ProductsApiInterface
             ->joinStock()
             ->joinCategories()
             ->joinChildrenProductIds()
+            ->joinPrice()
             ->setOrder()
             ->setPage($page, $pageSize);
 
@@ -353,6 +355,33 @@ class ProductsApi implements ProductsApiInterface
             null,
             'left'
         );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function joinPrice()
+    {
+        $priceTable = $this->productCollection->getResource()->getTable('catalog_product_index_price');
+
+        foreach ($this->storeIds as $storeId => $storeData) {
+            $tableAlias = 'price_' . $storeId;
+            $valueAlias = $this->getAttributeValueAlias('final_price', $storeId);
+
+            $this->productCollection->joinTable(
+                [$tableAlias => $priceTable],
+                'entity_id = entity_id',
+                [$valueAlias => 'final_price'],
+                [
+                    'website_id' => $storeData->getWebsiteId(),
+                    'customer_group_id' => CustomerGroupModel::NOT_LOGGED_IN_ID
+                ],
+                'left'
+            );
+        }
 
         return $this;
     }
@@ -548,7 +577,8 @@ class ProductsApi implements ProductsApiInterface
                 ->setDescription($product->getData($this->getAttributeValueAlias('description', $storeId)))
                 ->setLink($this->handleLink($product, $storeObject))
                 ->setName($product->getData($this->getAttributeValueAlias('name', $storeId)))
-                ->setPrice($this->handlePrice($product, $storeObject));
+                ->setPrice($this->handlePrice($product, $storeObject))
+                ->setCurrencyCode($this->getCurrencyCode($storeObject));
         }
 
         return $returnArray;
@@ -572,19 +602,45 @@ class ProductsApi implements ProductsApiInterface
     }
 
     /**
+     * @param Store $store
+     *
+     * @return string
+     */
+    private function getCurrencyCode($store)
+    {
+        if ($store->getId() === '0') {
+            return $store->getBaseCurrencyCode();
+        }
+        return $store->getCurrentCurrencyCode();
+    }
+
+    /**
      * @param Product $product
      * @param Store   $store
      *
-     * @return int | float | null
+     * @return int | float
      */
     private function handlePrice($product, $store)
     {
         $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
+        if (empty($price)) {
+            $price = $product->getData($this->getAttributeValueAlias('price', 0));
+        }
+
         $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', $store->getId()));
+        if (empty($specialPrice)) {
+            $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', 0));
+        }
 
         if (!empty($specialPrice)) {
             $specialFromDate = $product->getData($this->getAttributeValueAlias('special_from_date', $store->getId()));
+            if (empty($specialFromDate)) {
+                $specialFromDate = $product->getData($this->getAttributeValueAlias('special_from_date', 0));
+            }
             $specialToDate = $product->getData($this->getAttributeValueAlias('special_to_date', $store->getId()));
+            if (empty($specialToDate)) {
+                $specialToDate = $product->getData($this->getAttributeValueAlias('special_to_date', 0));
+            }
 
             if ($specialFromDate) {
                 $specialFromDate = strtotime($specialFromDate);
@@ -601,7 +657,15 @@ class ProductsApi implements ProductsApiInterface
             if (($specialFromDate === false || $specialFromDate <= time()) &&
                 ($specialToDate === false || $specialToDate >= time())
             ) {
-                return $specialPrice;
+                $price = $specialPrice;
+            }
+        }
+
+        if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
+            try {
+                $tmp = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
+                $price = $tmp;
+            } catch (\Exception $e) {
             }
         }
 

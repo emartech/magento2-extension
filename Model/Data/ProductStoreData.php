@@ -61,6 +61,14 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCurrencyCode()
+    {
+        return $this->getData(self::CURRENCY_KEY);
+    }
+
+    /**
      * @param string $description
      *
      * @return $this
@@ -128,6 +136,18 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     public function setStoreId($storeId)
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
+
+        return $this;
+    }
+
+    /**
+     * @param string $currencyCode
+     *
+     * @return $this
+     */
+    public function setCurrencyCode($currencyCode)
+    {
+        $this->setData(self::CURRENCY_KEY, $currencyCode);
 
         return $this;
     }
