@@ -54,30 +54,18 @@ class Success extends \Magento\Framework\View\Element\Template
     {
         $items = [];
         $order = $this->getOrder();
-        foreach ($order->getAllVisibleItems() as $item) {
-            $qty = intval($item->getQtyOrdered());
-            $product = $this->getLoadProduct($item->getProductId());
-            $sku = $item->getSku();
-            if (($item->getProductType() == \Magento\Bundle\Model\Product\Type::TYPE_CODE) && (!$product->getPriceType())) {
-                $collection = $this->orderItemCollectionFactory->create()
-                    ->addAttributeToFilter('parent_item_id', ['eq' => $item['item_id']])
-                    ->load();
-                $bundleBaseDiscount = 0;
-                $bundleDiscount = 0;
-                foreach ($collection as $collPrice) {
-                    $bundleBaseDiscount += $collPrice['base_discount_amount'];
-                    $bundleDiscount += $collPrice['discount_amount'];
-                }
-                $price = $item->getBaseRowTotal() - $bundleBaseDiscount;
-            } else {
-                $price = $item->getBaseRowTotal() - $item->getBaseDiscountAmount();
-            }
+        foreach ($order->getAllItems() as $item) {
+            if ($this->notBundleProduct($item) && $this->notConfigurableChild($item)) {
+                $qty = intval($item->getQtyOrdered());
+                $sku = $item->getSku();
+                $price = $item->getBasePrice() - $item->getBaseDiscountAmount();
 
-            $items[] = [
-                'item' => $sku,
-                'price' => $price,
-                'quantity' => $qty
-            ];
+                $items[] = [
+                    'item' => $sku,
+                    'price' => $price,
+                    'quantity' => $qty
+                ];
+            }
         }
 
         return $items;
@@ -89,5 +77,25 @@ class Success extends \Magento\Framework\View\Element\Template
             'orderId' => $this->getOrderId(),
             'items' => $this->getLineItems()
         ];
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    private function notBundleProduct($item)
+    {
+        return $item->getProductType() !== \Magento\Bundle\Model\Product\Type::TYPE_CODE;
+    }
+
+    /**
+     * @param $item
+     * @return bool
+     */
+    private function notConfigurableChild($item)
+    {
+        return !($item->getProductType() === 'simple'
+            && $item->getParentItem() !== null
+            && $item->getParentItem()->getProductType() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE);
     }
 }
