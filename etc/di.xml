@@ -34,6 +34,7 @@
     <preference for="Emartech\Emarsys\Api\SystemApiInterface" type="Emartech\Emarsys\Model\Api\SystemApi" />
     <preference for="Emartech\Emarsys\Api\Data\SystemApiResponseInterface" type="Emartech\Emarsys\Model\Data\SystemApiResponse" />
 
+    <preference for="Emartech\Emarsys\Api\Data\Order" type="Emartech\Emarsys\Model\Api\Data\Order" />
     <preference for="Emartech\Emarsys\Api\OrdersApiInterface" type="Emartech\Emarsys\Model\Api\OrdersApi" />
     <preference for="Emartech\Emarsys\Api\Data\OrdersApiResponseInterface" type="Emartech\Emarsys\Model\Data\OrdersApiResponse" />
 

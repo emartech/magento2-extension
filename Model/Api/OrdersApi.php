@@ -48,15 +48,17 @@ class OrdersApi implements OrdersApiInterface
     /**
      * @param int         $page
      * @param int         $pageSize
+     * @param int         $sinceId
      * @param string|null $storeId
      *
      * @return OrdersApiResponseInterface
      */
-    public function get($page, $pageSize, $storeId = null)
+    public function get($page, $pageSize, $sinceId = 0, $storeId = null)
     {
         $this
             ->initCollection()
             ->filterStore($storeId)
+            ->filterSinceId($sinceId)
             ->setPage($page, $pageSize);
 
         return $this->responseFactory->create()
@@ -89,6 +91,21 @@ class OrdersApi implements OrdersApiInterface
                 $storeId = explode(',', $storeId);
             }
             $this->orderCollection->addFieldToFilter('store_id', ['in' => $storeId]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $sinceId
+     *
+     * @return $this
+     */
+    private function filterSinceId($sinceId = 0)
+    {
+        if ($sinceId) {
+            $this->orderCollection
+                ->addFieldToFilter('entity_id', ['gt' => $sinceId]);
         }
 
         return $this;

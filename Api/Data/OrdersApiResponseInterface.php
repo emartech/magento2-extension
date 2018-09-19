@@ -11,12 +11,12 @@ interface OrdersApiResponseInterface extends ListApiResponseBaseInterface
     const ITEMS_KEY = 'items';
 
     /**
-     * @return \Magento\Sales\Api\Data\OrderInterface[]
+     * @return \Emartech\Emarsys\Api\Data\OrderInterface[]
      */
     public function getItems();
 
     /**
-     * @param \Magento\Sales\Api\Data\OrderInterface[] $items
+     * @param \Emartech\Emarsys\Api\Data\OrderInterface[] $items
      *
      * @return $this
      */

@@ -3,6 +3,7 @@
 namespace Emartech\Emarsys\Model\Data;
 
 use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
+use Emartech\Emarsys\Api\Data\OrderInterface;
 
 /**
  * Class OrdersApiResponse
@@ -11,7 +12,7 @@ use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 class OrdersApiResponse extends ListApiResponseBase implements OrdersApiResponseInterface
 {
     /**
-     * @param array $items
+     * @param OrderInterface[] $items
      *
      * @return $this
      */
@@ -23,7 +24,7 @@ class OrdersApiResponse extends ListApiResponseBase implements OrdersApiResponse
     }
 
     /**
-     * @return \Magento\Sales\Api\Data\OrderInterface[]
+     * @return OrderInterface[]
      */
     public function getItems()
     {

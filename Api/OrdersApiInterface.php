@@ -11,11 +11,12 @@ use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 interface OrdersApiInterface
 {
     /**
-     * @param int     $page
-     * @param int     $pageSize
+     * @param int         $page
+     * @param int         $pageSize
+     * @param int         $sinceId
      * @param string|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\OrdersApiResponseInterface
      */
-    public function get($page, $pageSize, $storeId = null);
+    public function get($page, $pageSize, $sinceId = 0, $storeId = null);
 }
