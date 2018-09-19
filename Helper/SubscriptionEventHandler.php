@@ -1,85 +1,111 @@
 <?php
 
-
 namespace Emartech\Emarsys\Helper;
 
-
-use Emartech\Emarsys\Api\Data\ConfigInterface;
-use Emartech\Emarsys\Model\ResourceModel\Event;
-use Emartech\Emarsys\Model\EventFactory;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Newsletter\Model\Subscriber;
-use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\Helper\Context;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 
-class SubscriptionEventHandler extends AbstractHelper
+use Emartech\Emarsys\Model\EventFactory;
+use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
+use Emartech\Emarsys\Api\EventRepositoryInterface;
+
+/**
+ * Class SubscriptionEventHandler
+ * @package Emartech\Emarsys\Helper
+ */
+class SubscriptionEventHandler extends BaseEventHandler
 {
-  protected $logger;
-  private $customerFactory;
-  protected $eventFactory;
-  protected $eventResource;
-  /** @var ConfigReader */
-  protected $configReader;
-  /** @var StoreManagerInterface */
-  protected $storeManager;
+    const DEFAULT_TYPE = 'subscription/unknown';
 
-  public function __construct(
-    ConfigReader $configReader,
-    StoreManagerInterface $storeManager,
-    CustomerFactory $customerFactory,
-    EventFactory $eventFactory,
-    Event $eventResource,
-    LoggerInterface $logger
-  )
-  {
-    $this->customerFactory = $customerFactory;
-    $this->eventFactory = $eventFactory;
-    $this->eventResource = $eventResource;
-    $this->logger = $logger;
-    $this->configReader = $configReader;
-    $this->storeManager = $storeManager;
-  }
+    /**
+     * @var Subscriber
+     */
+    private $subscriber;
 
-  /**
-   * @param $subscription
-   * @param $eventName
-   * @throws \Exception
-   * @throws \Magento\Framework\Exception\AlreadyExistsException
-   */
-  public function store(Subscriber $subscription, $eventName)
-  {
-    $websiteId = $this->storeManager->getStore($subscription->getStoreId())->getWebsiteId();
+    /**
+     * SubscriptionEventHandler constructor.
+     *
+     * @param Subscriber               $subscriber
+     * @param ConfigReader             $configReader
+     * @param EventFactory             $eventFactory
+     * @param EventRepositoryInterface $eventRepository
+     * @param EventCollectionFactory   $eventCollectionFactory
+     * @param Context                  $context
+     * @param LoggerInterface          $logger
+     * @param StoreManagerInterface    $storeManager
+     * @param JsonSerializer           $jsonSerializer
+     */
+    public function __construct(
+        Subscriber $subscriber,
+        ConfigReader $configReader,
+        EventFactory $eventFactory,
+        EventRepositoryInterface $eventRepository,
+        EventCollectionFactory $eventCollectionFactory,
+        Context $context,
+        LoggerInterface $logger,
+        StoreManagerInterface $storeManager,
+        JsonSerializer $jsonSerializer
+    ) {
+        parent::__construct(
+            $logger,
+            $storeManager,
+            $configReader,
+            $eventFactory,
+            $eventRepository,
+            $eventCollectionFactory,
+            $jsonSerializer,
+            $context
+        );
 
-    if (!$this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) return;
-
-    $eventData = $subscription->getData();
-
-    $eventType = $this->getEventType($eventName);
-
-    /** @var \Emartech\Emarsys\Model\Event $eventModel */
-    $eventModel = $this->eventFactory->create();
-    $eventModel->setData('event_type', $eventType);
-    $eventModel->setData('event_data', json_encode($eventData));
-    $this->eventResource->save($eventModel);
-
-    $this->logger->info('event_type: '. $eventType . ', event_data: '.json_encode($eventData));
-  }
-
-  /**
-   * @param $eventName
-   * @return string
-   */
-  private function getEventType($eventName)
-  {
-    $eventType = 'subscription/unknown';
-
-    if ($eventName === 'newsletter_subscriber_save_after') {
-      $eventType = 'subscription/update';
-    } elseif ($eventName === 'newsletter_subscriber_delete_after') {
-      $eventType = 'subscription/delete';
+        $this->subscriber = $subscriber;
     }
 
-    return $eventType;
-  }
+    /**
+     * @param Subscriber  $subscription
+     * @param int         $websiteId
+     * @param int         $storeId
+     * @param null|string $type
+     *
+     * @return bool
+     */
+    public function store(Subscriber $subscription, $websiteId, $storeId, $type = null)
+    {
+        if (!$this->isEnabledForWebsite($websiteId)) {
+            return false;
+        }
+
+        if (!$type) {
+            $type = self::DEFAULT_TYPE;
+        }
+
+        $eventData = $subscription->getData();
+
+        $this->saveEvent($websiteId, $storeId, $type, $subscription->getId(), $eventData);
+
+        return true;
+    }
+
+    /**
+     * @param string $eventName
+     *
+     * @return string
+     */
+    public function getEventType($eventName)
+    {
+        switch ($eventName) {
+            case 'newsletter_subscriber_save_after':
+                $returnType = 'subscription/update';
+                break;
+            case 'newsletter_subscriber_delete_after':
+                $returnType = 'subscription/delete';
+                break;
+            default:
+                $returnType = self::DEFAULT_TYPE;
+        }
+
+        return $returnType;
+    }
 }

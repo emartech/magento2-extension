@@ -4,6 +4,7 @@
 namespace Emartech\Emarsys\Observers;
 
 use Emartech\Emarsys\Helper\CustomerEventHandler;
+use Magento\Customer\Model\Customer;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Psr\Log\LoggerInterface;
@@ -33,14 +34,18 @@ class CustomerAccountObserver implements ObserverInterface
      * @param Observer $observer
      *
      * @return void
-     * @throws \Exception
      */
     public function execute(Observer $observer)
     {
-        $customerId = $observer->getEvent()->getCustomer()->getId();
+        /** @var Customer $customer */
+        $customer = $observer->getEvent()->getCustomer();
 
         try {
-            $this->customerEventHandler->store('customers/update', $customerId);
+            $this->customerEventHandler->store(
+                $customer->getId(),
+                $customer->getWebsiteId(),
+                $customer->getStoreId()
+            );
         } catch (\Exception $e) {
             $this->logger->warning('Emartech\\Emarsys\\Observers\\CustomerAccountObserver: ' . $e->getMessage());
         }

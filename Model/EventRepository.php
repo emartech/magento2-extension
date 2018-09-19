@@ -3,89 +3,108 @@
 
 namespace Emartech\Emarsys\Model;
 
-
-use Emartech\Emarsys\Api\Data\EventInterface;
-use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
+use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\InputException;
 
+use Emartech\Emarsys\Api\Data\EventInterface;
+use Emartech\Emarsys\Model\EventFactory as EventFactory;
+use Emartech\Emarsys\Model\ResourceModel\Event as EventResourceModel;
+use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
+use Emartech\Emarsys\Model\ResourceModel\Event\Collection as EventCollection;
+use Emartech\Emarsys\Api\EventRepositoryInterface;
+
+/**
+ * Class EventRepository
+ * @package Emartech\Emarsys\Model
+ */
 class EventRepository implements EventRepositoryInterface
 {
+
     /**
-     * @var ResourceModel\Event
+     * @var EventFactory
      */
-    public $eventResource;
+    private $eventFactory;
+
+    /**
+     * @var EventResourceModel
+     */
+    private $eventResourceModel;
 
     /**
      * @var SearchResultsInterfaceFactory
      */
-    public $searchResultsFactory;
+    private $searchResultsFactory;
 
     /**
-     * @var ResourceModel\Event\CollectionFactory
+     * @var EventCollectionFactory
      */
-    public $collectionFactory;
+    private $eventCollectionFactory;
 
-    /**
-     * @var CollectionProcessorInterface
-     */
-    public $collectionProcessor;
+    private $collectionProcessor;
 
     /**
      * EventRepository constructor.
-     * @param ResourceModel\Event $eventResource
+     *
+     * @param EventFactory                  $eventFactory
+     * @param EventResourceModel            $eventResourceModel
      * @param SearchResultsInterfaceFactory $searchResultsFactory
-     * @param ResourceModel\Event\CollectionFactory $collectionFactory
-     * @param CollectionProcessorInterface|null $collectionProcessor
+     * @param EventCollectionFactory        $eventCollectionFactory
+     * @param CollectionProcessorInterface  $collectionProcessor
      */
     public function __construct(
-        ResourceModel\Event $eventResource,
+        EventFactory $eventFactory,
+        EventResourceModel $eventResourceModel,
         SearchResultsInterfaceFactory $searchResultsFactory,
-        ResourceModel\Event\CollectionFactory $collectionFactory,
-        CollectionProcessorInterface $collectionProcessor = null
-    )
-    {
-        $this->eventResource = $eventResource;
+        EventCollectionFactory $eventCollectionFactory,
+        CollectionProcessorInterface $collectionProcessor
+    ) {
+        $this->eventFactory = $eventFactory;
+        $this->eventResourceModel = $eventResourceModel;
         $this->searchResultsFactory = $searchResultsFactory;
-        $this->collectionFactory = $collectionFactory;
+        $this->eventCollectionFactory = $eventCollectionFactory;
         $this->collectionProcessor = $collectionProcessor;
     }
 
-
     /**
      * @param $id
-     * @return ResourceModel\Event
+     *
+     * @return EventInterface
      * @throws NoSuchEntityException
      */
     public function get($id)
     {
-        $event = $this->eventResource->load($id);
+        /** @var \Emartech\Emarsys\Model\Event $event */
+        $event = $this->eventFactory->create()->load($id);
         if (!$event->getId()) {
             throw new NoSuchEntityException(__('Requested Event doesn\'t exist'));
         }
         return $event;
     }
 
-  /**
-   * @param EventInterface $event
-   * @return EventInterface
-   * @throws \Exception
-   * @throws \Magento\Framework\Exception\AlreadyExistsException
-   */
+    /**
+     * @param EventInterface $event
+     *
+     * @return EventInterface
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
     public function save(EventInterface $event)
     {
-        $this->eventResource->save($event);
+        /** @var \Emartech\Emarsys\Model\Event $event */
+        $this->eventResourceModel->save($event);
+
         return $event;
     }
 
     /**
-     * Retrieve all Events for entity type
+     * @param string                  $eventType
+     * @param SearchCriteriaInterface $searchCriteria
      *
-     * @param string $eventType
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return SearchResultsInterfaceFactory
+     * @return SearchResultsInterface
+     * @throws InputException
      */
     public function getList($eventType, SearchCriteriaInterface $searchCriteria)
     {
@@ -93,13 +112,13 @@ class EventRepository implements EventRepositoryInterface
             throw InputException::requiredField('entity_type');
         }
 
-        /** @var \Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory $eventCollection */
-        $eventCollection = $this->collectionFactory->create();
+        /** @var EventCollection $eventCollection */
+        $eventCollection = $this->eventCollectionFactory->create();
         $eventCollection->addFieldToFilter('entity_type_code', ['eq' => $eventType]);
 
         $this->collectionProcessor->process($searchCriteria, $eventCollection);
 
-        /** @var SearchResultsInterfaceFactory $searchResults */
+        /** @var SearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($searchCriteria);
         $searchResults->setItems($eventCollection->getItems());

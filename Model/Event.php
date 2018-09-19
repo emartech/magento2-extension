@@ -61,6 +61,14 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * @return int
+     */
+    public function getEntityId()
+    {
+        return $this->_getData(self::ENTITY_ID_KEY);
+    }
+
+    /**
      * @param int $eventId
      *
      * @return $this
@@ -128,6 +136,18 @@ class Event extends AbstractModel implements EventInterface
     public function setStoreId($storeId)
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
+
+        return $this;
+    }
+
+    /**
+     * @param int $entityId
+     *
+     * @return $this
+     */
+    public function setEntityId($entityId)
+    {
+        $this->setData(self::ENTITY_ID_KEY, $entityId);
 
         return $this;
     }

@@ -1,73 +1,85 @@
 <?php
 
-
 namespace Emartech\Emarsys\Helper;
 
-
-use Emartech\Emarsys\Api\Data\ConfigInterface;
-use Emartech\Emarsys\Model\ResourceModel\Event;
-use Emartech\Emarsys\Model\SettingsFactory;
-use Emartech\Emarsys\Model\EventFactory;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\OrderFactory;
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Newsletter\Model\Subscriber;
-use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\Helper\Context;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Api\Data\OrderItemInterface;
 
-class SalesEventHandler extends AbstractHelper
+use Emartech\Emarsys\Model\EventFactory;
+use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
+use Emartech\Emarsys\Api\EventRepositoryInterface;
+
+/**
+ * Class SalesEventHandler
+ * @package Emartech\Emarsys\Helper
+ */
+class SalesEventHandler extends BaseEventHandler
 {
-    protected $logger;
-    protected $orderFactory;
-    protected $eventFactory;
-    protected $eventResource;
-    protected $subscriber;
-    /** @var ConfigReader */
-    protected $configReader;
-    /** @var StoreManagerInterface */
-    protected $storeManager;
 
+    /**
+     * SalesEventHandler constructor.
+     *
+     * @param ConfigReader             $configReader
+     * @param EventFactory             $eventFactory
+     * @param EventRepositoryInterface $eventRepository
+     * @param EventCollectionFactory   $eventCollectionFactory
+     * @param Context                  $context
+     * @param LoggerInterface          $logger
+     * @param StoreManagerInterface    $storeManager
+     * @param JsonSerializer           $jsonSerializer
+     */
     public function __construct(
         ConfigReader $configReader,
-        OrderFactory $orderFactory,
         EventFactory $eventFactory,
+        EventRepositoryInterface $eventRepository,
+        EventCollectionFactory $eventCollectionFactory,
+        Context $context,
+        LoggerInterface $logger,
         StoreManagerInterface $storeManager,
-        Event $eventResource,
-        Subscriber $subscriber,
-        LoggerInterface $logger
-    )
-    {
-        $this->orderFactory = $orderFactory;
-        $this->eventFactory = $eventFactory;
-        $this->eventResource = $eventResource;
-        $this->logger = $logger;
-        $this->subscriber = $subscriber;
-
-        $this->configReader = $configReader;
-        $this->storeManager = $storeManager;
+        JsonSerializer $jsonSerializer
+    ) {
+        parent::__construct(
+            $logger,
+            $storeManager,
+            $configReader,
+            $eventFactory,
+            $eventRepository,
+            $eventCollectionFactory,
+            $jsonSerializer,
+            $context
+        );
     }
 
     /**
      * @param Order $order
-     * @throws \Exception
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     *
+     * @return bool
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function store(Order $order)
     {
         $storeId = $order->getStoreId();
+
+        if (!$this->isEnabledForStore($storeId)) {
+            return false;
+        }
+
         $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-        
-        if (!$this->configReader->isEnabledForStore(ConfigInterface::SALES_EVENTS, $storeId)) return;
 
         $orderData = $order->getData();
         $orderItems = $order->getAllItems();
         $orderData['items'] = [];
         $orderData['addresses'] = [];
 
+        /** @var \Magento\Sales\Model\Order\Item $item */
         foreach ($orderItems as $item) {
             $arrayItem = $item->toArray();
             $parentItem = $item->getParentItem();
-            if (!is_null($parentItem)) {
+            if ($parentItem instanceof OrderItemInterface) {
                 $arrayItem['parent_item'] = $parentItem->toArray();
             }
             $orderData['items'][] = $arrayItem;
@@ -76,27 +88,27 @@ class SalesEventHandler extends AbstractHelper
         if (array_key_exists('shipping', $orderData['addresses'])) {
             $orderData['addresses']['shipping'] = $order->getShippingAddress()->toArray();
         }
+
         $orderData['addresses']['billing'] = $order->getBillingAddress()->toArray();
-
         $orderData['payments'] = $order->getAllPayments();
-
         $orderData['shipments'] = $order->getShipmentsCollection()->toArray();
         $orderData['tracks'] = $order->getTracksCollection()->toArray();
 
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $eventModel->setData('event_type', $this->getEventType($orderData['state']));
-        $eventModel->setData('event_data', json_encode($orderData));
-        $this->eventResource->save($eventModel);
+        $this->saveEvent(
+            $websiteId,
+            $storeId,
+            $this->getOrderEventType($order->getState()),
+            $order->getId(),
+            $orderData
+        );
     }
 
     /**
-     * @param $state
+     * @param string $state
+     *
      * @return string
      */
-    private function getEventType($state)
+    private function getOrderEventType($state)
     {
         if ($state === 'new') {
             return 'orders/create';

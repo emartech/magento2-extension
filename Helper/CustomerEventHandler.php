@@ -1,88 +1,98 @@
 <?php
 
-
 namespace Emartech\Emarsys\Helper;
 
-
-use Emartech\Emarsys\Model\ResourceModel\Event;
-use Emartech\Emarsys\Api\Data\ConfigInterface;
-use Emartech\Emarsys\Model\EventFactory;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\CustomerFactory;
-use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Newsletter\Model\Subscriber;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\Helper\Context;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 
-class CustomerEventHandler extends AbstractHelper
+use Emartech\Emarsys\Model\EventFactory;
+use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
+use Emartech\Emarsys\Api\EventRepositoryInterface;
+
+/**
+ * Class CustomerEventHandler
+ * @package Emartech\Emarsys\Helper
+ */
+class CustomerEventHandler extends BaseEventHandler
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    const DEFAULT_TYPE = 'customers/update';
+
     /**
      * @var CustomerFactory
      */
     private $customerFactory;
-    /**
-     * @var EventFactory
-     */
-    private $eventFactory;
-    /**
-     * @var Event
-     */
-    private $eventResource;
+
     /**
      * @var Subscriber
      */
     private $subscriber;
-    /**
-     * @var ConfigReader
-     */
-    private $configReader;
 
     /**
      * CustomerEventHandler constructor.
      *
-     * @param ConfigReader    $configReader
-     * @param CustomerFactory $customerFactory
-     * @param EventFactory    $eventFactory
-     * @param Event           $eventResource
-     * @param Subscriber      $subscriber
-     * @param LoggerInterface $logger
+     * @param CustomerFactory          $customerFactory
+     * @param Subscriber               $subscriber
+     * @param ConfigReader             $configReader
+     * @param EventFactory             $eventFactory
+     * @param EventRepositoryInterface $eventRepository
+     * @param EventCollectionFactory   $eventCollectionFactory
+     * @param Context                  $context
+     * @param LoggerInterface          $logger
+     * @param StoreManagerInterface    $storeManager
+     * @param JsonSerializer           $jsonSerializer
      */
     public function __construct(
-        ConfigReader $configReader,
         CustomerFactory $customerFactory,
-        EventFactory $eventFactory,
-        Event $eventResource,
         Subscriber $subscriber,
-        LoggerInterface $logger
+        ConfigReader $configReader,
+        EventFactory $eventFactory,
+        EventRepositoryInterface $eventRepository,
+        EventCollectionFactory $eventCollectionFactory,
+        Context $context,
+        LoggerInterface $logger,
+        StoreManagerInterface $storeManager,
+        JsonSerializer $jsonSerializer
     ) {
         $this->customerFactory = $customerFactory;
-        $this->eventFactory = $eventFactory;
-        $this->eventResource = $eventResource;
-        $this->logger = $logger;
         $this->subscriber = $subscriber;
-        $this->configReader = $configReader;
+
+        parent::__construct(
+            $logger,
+            $storeManager,
+            $configReader,
+            $eventFactory,
+            $eventRepository,
+            $eventCollectionFactory,
+            $jsonSerializer,
+            $context
+        );
     }
 
     /**
-     * @param string $type
-     * @param int    $customerId
+     * @param int         $customerId
+     * @param int         $websiteId
+     * @param int         $storeId
+     * @param null|string $type
      *
-     * @throws \Exception
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @return bool
      */
-    public function store($type, $customerId)
+    public function store($customerId, $websiteId, $storeId, $type = null)
     {
+        if (!$this->isEnabledForWebsite($websiteId)) {
+            return false;
+        }
+
+        if (!$type) {
+            $type = self::DEFAULT_TYPE;
+        }
+
         /** @var Customer $customer */
         $customer = $this->customerFactory->create()->load($customerId);
-        $storeId = $customer->getStoreId();
-        $websiteId = $customer->getWebsiteId();
-
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId)) {
-            return;
-        }
 
         $customerData = $customer->toArray();
         $customerData['id'] = $customerData['entity_id'];
@@ -97,14 +107,8 @@ class CustomerEventHandler extends AbstractHelper
         $subscription = $this->subscriber->loadByCustomerId($customerId);
         $customerData['accepts_marketing'] = $subscription->getStatus();
 
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setData('event_type', $type);
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $eventModel->setData('event_data', json_encode($customerData));
-        $this->eventResource->save($eventModel);
+        $this->saveEvent($websiteId, $storeId, $type, $customer->getId(), $customerData);
 
-        $this->logger->info('event_type: ' . $type . ', event_data: ' . json_encode($customerData));
+        return true;
     }
 }

@@ -37,6 +37,8 @@
     <preference for="Emartech\Emarsys\Api\OrdersApiInterface" type="Emartech\Emarsys\Model\Api\OrdersApi" />
     <preference for="Emartech\Emarsys\Api\Data\OrdersApiResponseInterface" type="Emartech\Emarsys\Model\Data\OrdersApiResponse" />
 
+    <preference for="Emartech\Emarsys\Api\EventRepositoryInterface" type="Emartech\Emarsys\Model\EventRepository" />
+
 
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />

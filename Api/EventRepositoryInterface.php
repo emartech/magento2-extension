@@ -2,7 +2,6 @@
 
 namespace Emartech\Emarsys\Api;
 
-use Magento\Framework\Api\SearchResultsInterfaceFactory;
 use Magento\Framework\Api\SearchCriteriaInterface;
 
 use Emartech\Emarsys\Api\Data\EventInterface;
@@ -33,7 +32,7 @@ interface EventRepositoryInterface
      * @param string                                         $eventType
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      *
-     * @return \Magento\Framework\Api\SearchResultsInterfaceFactory
+     * @return \Magento\Framework\Api\SearchResultsInterface
      */
     public function getList($eventType, SearchCriteriaInterface $searchCriteria);
 }
