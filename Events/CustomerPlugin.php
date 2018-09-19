@@ -14,22 +14,32 @@ use Magento\Customer\Helper\View as CustomerViewHelper;
 use \Psr\Log\LoggerInterface;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\CustomerFactory;
+use Magento\Newsletter\Model\Subscriber;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
+use Emartech\Emarsys\Model\Event as EventModel;
+use Magento\Customer\Model\EmailNotificationInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Model\Data\CustomerSecure;
+
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Customer Events
+ * Class CustomerPlugin
+ * @package Emartech\Emarsys\Events
  */
 class CustomerPlugin
 {
     const EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL = 'newsletter_send_confirmation_success_email';
     const EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL = 'newsletter_send_confirmation_request_email';
-    const EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL = 'newsletter_send_unsubscription_email';
-    const EVENT_CUSTOMER_NEW_ACCOUNT = 'customer_new_account_';
-    const EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED = 'customer_email_and_password_changed';
-    const EVENT_CUSTOMER_EMAIL_CHANGED = 'customer_email_changed';
-    const EVENT_CUSTOMER_PASSWORD_RESET = 'customer_password_reset';
-    const EVENT_CUSTOMER_PASSWORD_REMINDER = 'customer_password_reminder';
-    const EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION = 'customer_password_reset_confirmation';
+    const EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL       = 'newsletter_send_unsubscription_email';
+    const EVENT_CUSTOMER_NEW_ACCOUNT                       = 'customer_new_account_';
+    const EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED        = 'customer_email_and_password_changed';
+    const EVENT_CUSTOMER_EMAIL_CHANGED                     = 'customer_email_changed';
+    const EVENT_CUSTOMER_PASSWORD_RESET                    = 'customer_password_reset';
+    const EVENT_CUSTOMER_PASSWORD_REMINDER                 = 'customer_password_reminder';
+    const EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION       = 'customer_password_reset_confirmation';
 
     /**
      * @var ScopeConfigInterface
@@ -88,17 +98,18 @@ class CustomerPlugin
 
     /**
      * CustomerPlugin constructor.
-     * @param ScopeConfigInterface $scopeConfig
+     *
+     * @param ScopeConfigInterface  $scopeConfig
      * @param StoreManagerInterface $storeManager
-     * @param LoggerInterface $logger
-     * @param EventRepository $eventRepository
-     * @param CustomerRegistry $customerRegistry
-     * @param CustomerFactory $customerFactory
-     * @param EmarsysEventFactory $eventFactory
-     * @param DataObjectProcessor $dataProcessor
-     * @param CustomerViewHelper $customerViewHelper
-     * @param ConfigReader $configReader
-     * @param Json $json
+     * @param LoggerInterface       $logger
+     * @param EventRepository       $eventRepository
+     * @param CustomerRegistry      $customerRegistry
+     * @param CustomerFactory       $customerFactory
+     * @param EmarsysEventFactory   $eventFactory
+     * @param DataObjectProcessor   $dataProcessor
+     * @param CustomerViewHelper    $customerViewHelper
+     * @param ConfigReader          $configReader
+     * @param Json                  $json
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -127,153 +138,110 @@ class CustomerPlugin
     }
 
     /**
-     * @param \Magento\Newsletter\Model\Subscriber $subscriber
-     * @param callable $proceed
+     * @param Subscriber $subscriber
+     * @param callable   $proceed
      *
      * @return mixed
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function aroundSendConfirmationSuccessEmail(
-        \Magento\Newsletter\Model\Subscriber $subscriber,
+        Subscriber $subscriber,
         callable $proceed
     ) {
-        $storeId = $subscriber->getStoreId();
-        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
+        if (!$this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL)) {
             return $proceed($subscriber);
         }
-
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL);
-
-        $data = $this->getDataFromSubscription($subscriber);
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
     }
 
     /**
-     * @param \Magento\Newsletter\Model\Subscriber $subscriber
-     * @param callable $proceed
+     * @param Subscriber $subscriber
+     * @param callable   $proceed
      *
      * @return mixed
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function aroundSendConfirmationRequestEmail(
-        \Magento\Newsletter\Model\Subscriber $subscriber,
+        Subscriber $subscriber,
         callable $proceed
     ) {
-        $storeId = $subscriber->getStoreId();
-        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
+        if (!$this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL)) {
             return $proceed($subscriber);
         }
-
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL);
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $data = $this->getDataFromSubscription($subscriber);
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
     }
 
     /**
-     * @param \Magento\Newsletter\Model\Subscriber $subscriber
-     * @param callable $proceed
+     * @param Subscriber $subscriber
+     * @param callable   $proceed
      *
      * @return mixed
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function aroundSendUnsubscriptionEmail(
-        \Magento\Newsletter\Model\Subscriber $subscriber,
+        Subscriber $subscriber,
         callable $proceed
     ) {
-        $storeId = $subscriber->getStoreId();
-        $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
+        if (!$this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL)) {
             return $proceed($subscriber);
         }
-
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType(self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL);
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $data = $this->getDataFromSubscription($subscriber);
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
     }
 
     /**
-     * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
-     * @param callable $proceed
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param string $type
-     * @param string $backUrl
-     * @param string|int $storeId
-     * @param string|null $sendemailStoreId
+     * @param EmailNotificationInterface $emailNotification
+     * @param callable                   $proceed
+     * @param CustomerInterface          $customer
+     * @param string                     $type
+     * @param string                     $backUrl
+     * @param int                        $storeId
+     * @param null|int                   $senderMailStoreId
      *
      * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws AlreadyExistsException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function aroundNewAccount(
-        \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
+        EmailNotificationInterface $emailNotification,
         callable $proceed,
-        \Magento\Customer\Api\Data\CustomerInterface $customer,
-        $type = \Magento\Customer\Model\EmailNotificationInterface::NEW_ACCOUNT_EMAIL_REGISTERED,
+        CustomerInterface $customer,
+        $type = EmailNotificationInterface::NEW_ACCOUNT_EMAIL_REGISTERED,
         $backUrl = '',
         $storeId = 0,
-        $sendemailStoreId = null
+        $senderMailStoreId = null
     ) {
         if (!$storeId) {
-            $storeId = $this->getWebsiteStoreId($customer, $sendemailStoreId);
+            $storeId = $this->getWebsiteStoreId($customer, $senderMailStoreId);
         }
         $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
         if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
-            return $proceed($customer, $type, $backUrl, $storeId, $sendemailStoreId);
+            return $proceed($customer, $type, $backUrl, $storeId, $senderMailStoreId);
         }
 
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType(self::EVENT_CUSTOMER_NEW_ACCOUNT . $type);
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $data = [
-            'customer' => $this->getFullCustomerObject($customer)->getData(),
-            'back_url' => $backUrl,
-            'store' => $this->storeManager->getStore($storeId)->getData(),
-        ];
-
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
+        $this->saveEvent(
+            $websiteId,
+            $storeId,
+            self::EVENT_CUSTOMER_NEW_ACCOUNT . $type,
+            $customer->getId(),
+            [
+                'customer' => $this->getFullCustomerObject($customer)->getData(),
+                'back_url' => $backUrl,
+                'store'    => $this->storeManager->getStore($storeId)->getData(),
+            ]
+        );
     }
 
-
     /**
-     * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
-     * @param callable $proceed
-     * @param \Magento\Customer\Api\Data\CustomerInterface $savedCustomer
-     * @param $origCustomerEmail
-     * @param bool $isPasswordChanged
+     * @param EmailNotificationInterface $emailNotification
+     * @param callable                   $proceed
+     * @param CustomerInterface          $savedCustomer
+     * @param string                     $origCustomerEmail
+     * @param bool                       $isPasswordChanged
+     *
      * @return mixed
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws AlreadyExistsException
+     * @throws NoSuchEntityException
      */
     public function aroundCredentialsChanged(
-        \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
+        EmailNotificationInterface $emailNotification,
         callable $proceed,
-        \Magento\Customer\Api\Data\CustomerInterface $savedCustomer,
+        CustomerInterface $savedCustomer,
         $origCustomerEmail,
         $isPasswordChanged = false
     ) {
@@ -285,131 +253,121 @@ class CustomerPlugin
         }
 
         $store = $this->storeManager->getStore($savedCustomer->getStoreId());
-        if ($origCustomerEmail != $savedCustomer->getEmail()) {
+
+        $eventData = [
+            'customer'            => $this->getFullCustomerObject($savedCustomer)->getData(),
+            'store'               => $store->getData(),
+            'orig_customer_email' => $origCustomerEmail,
+            'new_customer_email'  => $savedCustomer->getEmail(),
+        ];
+
+        if ($origCustomerEmail !== $savedCustomer->getEmail()) {
             if ($isPasswordChanged) {
-                /** @var \Emartech\Emarsys\Model\Event $eventModel */
-                $eventModel = $this->eventFactory->create();
-                $eventModel->setEventType(self::EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED);
-                $data = [
-                    'customer' => $this->getFullCustomerObject($savedCustomer)->getData(),
-                    'store' => $store->getData(),
-                    'orig_customer_email' => $origCustomerEmail,
-                    'new_customer_email' => $savedCustomer->getEmail()
-                ];
-                $eventModel->setEventData($this->json->serialize($data));
-                $this->eventRepository->save($eventModel);
-                return;
+                $this->saveEvent(
+                    $websiteId,
+                    $storeId,
+                    self::EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED,
+                    $savedCustomer->getId(),
+                    $eventData
+                );
+            } else {
+                $this->saveEvent(
+                    $websiteId,
+                    $storeId,
+                    self::EVENT_CUSTOMER_EMAIL_CHANGED,
+                    $savedCustomer->getId(),
+                    $eventData
+                );
             }
-
-            /** @var \Emartech\Emarsys\Model\Event $eventModel */
-            $eventModel = $this->eventFactory->create();
-            $eventModel->setEventType(self::EVENT_CUSTOMER_EMAIL_CHANGED);
-            $data = [
-                'customer' => $this->getFullCustomerObject($savedCustomer)->getData(),
-                'store' => $store->getData(),
-                'orig_customer_email' => $origCustomerEmail,
-                'new_customer_email' => $savedCustomer->getEmail()
-            ];
-            $eventModel->setEventData($this->json->serialize($data));
-            $this->eventRepository->save($eventModel);
-            return;
-        }
-
-        if ($isPasswordChanged) {
-            /** @var \Emartech\Emarsys\Model\Event $eventModel */
-            $eventModel = $this->eventFactory->create();
-            $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET);
-            $eventModel->setWebsiteId($websiteId);
-            $eventModel->setStoreId($storeId);
-            $data = [
-                'customer' => $this->getFullCustomerObject($savedCustomer)->getData(),
-                'store' => $store->getData(),
-                'orig_customer_email' => $origCustomerEmail,
-                'new_customer_email' => $savedCustomer->getEmail()
-            ];
-            $eventModel->setEventData($this->json->serialize($data));
-            $this->eventRepository->save($eventModel);
+        } elseif ($isPasswordChanged) {
+            $this->saveEvent(
+                $websiteId,
+                $storeId,
+                self::EVENT_CUSTOMER_PASSWORD_RESET,
+                $savedCustomer->getId(),
+                $eventData
+            );
         }
     }
 
     /**
-     * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
-     * @param callable $proceed
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param EmailNotificationInterface $emailNotification
+     * @param callable                   $proceed
+     * @param CustomerInterface          $customer
      *
      * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws AlreadyExistsException
+     * @throws NoSuchEntityException
      */
     public function aroundPasswordReminder(
-        \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
+        EmailNotificationInterface $emailNotification,
         callable $proceed,
-        \Magento\Customer\Api\Data\CustomerInterface $customer
+        CustomerInterface $customer
     ) {
         $websiteId = $customer->getWebsiteId();
         $storeId = $customer->getStoreId();
+
         if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($customer);
         }
 
         $store = $this->storeManager->getStore($storeId);
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_REMINDER);
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $data = [
-            'customer' => $this->getFullCustomerObject($customer)->getData(),
-            $store->getData()
-        ];
 
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
+        $this->saveEvent(
+            $websiteId,
+            $storeId,
+            self::EVENT_CUSTOMER_PASSWORD_REMINDER,
+            $customer->getId(),
+            [
+                'customer' => $this->getFullCustomerObject($customer)->getData(),
+                $store->getData(),
+            ]
+        );
     }
 
     /**
-     * @param \Magento\Customer\Model\EmailNotificationInterface $emailNotification
-     * @param callable $proceed
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param EmailNotificationInterface $emailNotification
+     * @param callable                   $proceed
+     * @param CustomerInterface          $customer
      *
      * @return mixed
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws AlreadyExistsException
+     * @throws NoSuchEntityException
      */
     public function aroundPasswordResetConfirmation(
-        \Magento\Customer\Model\EmailNotificationInterface $emailNotification,
+        EmailNotificationInterface $emailNotification,
         callable $proceed,
-        \Magento\Customer\Api\Data\CustomerInterface $customer
+        CustomerInterface $customer
     ) {
         $websiteId = $customer->getWebsiteId();
         $storeId = $customer->getStoreId();
+
         if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
             return $proceed($customer);
         }
 
         $store = $this->storeManager->getStore($storeId);
 
-        /** @var \Emartech\Emarsys\Model\Event $eventModel */
-        $eventModel = $this->eventFactory->create();
-        $eventModel->setEventType(self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION);
-        $eventModel->setWebsiteId($websiteId);
-        $eventModel->setStoreId($storeId);
-        $data = [
-            'customer' => $this->getFullCustomerObject($customer)->getData(),
-            $store->getData()
-        ];
-
-        $eventModel->setEventData($this->json->serialize($data));
-        $this->eventRepository->save($eventModel);
+        $this->saveEvent(
+            $websiteId,
+            $storeId,
+            self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION,
+            $customer->getId(),
+            [
+                'customer' => $this->getFullCustomerObject($customer)->getData(),
+                $store->getData(),
+            ]
+        );
     }
 
     /**
-     * Get either first store ID from a set website or the provided as default
+     * @param CustomerInterface $customer
+     * @param null              $defaultStoreId
      *
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param int|string|null $defaultStoreId
      * @return int
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
-    protected function getWebsiteStoreId($customer, $defaultStoreId = null)
+    private function getWebsiteStoreId($customer, $defaultStoreId = null)
     {
         if ($customer->getWebsiteId() != 0 && empty($defaultStoreId)) {
             $storeIds = $this->storeManager->getWebsite($customer->getWebsiteId())->getStoreIds();
@@ -419,13 +377,12 @@ class CustomerPlugin
     }
 
     /**
-     * Create an object with data merged from Customer and CustomerSecure
-     *
      * @param CustomerInterface $customer
-     * @return \Magento\Customer\Model\Data\CustomerSecure
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     *
+     * @return CustomerSecure
+     * @throws NoSuchEntityException
      */
-    protected function getFullCustomerObject($customer)
+    private function getFullCustomerObject($customer)
     {
         // No need to flatten the custom attributes or nested objects since the only usage is for email templates and
         // object passed for events
@@ -433,27 +390,87 @@ class CustomerPlugin
         $customerData = $this->dataProcessor
             ->buildOutputDataArray($customer, \Magento\Customer\Api\Data\CustomerInterface::class);
         $mergedCustomerData->addData($customerData);
-        //$mergedCustomerData->setData('name', $this->customerViewHelper->getCustomerName($customer));
+
         return $mergedCustomerData;
     }
 
     /**
-     * @param \Magento\Newsletter\Model\Subscriber $subscriber
+     * @param Subscriber $subscriber
+     *
      * @return array
      */
-    protected function getDataFromSubscription(\Magento\Newsletter\Model\Subscriber $subscriber)
+    private function getDataFromSubscription(Subscriber $subscriber)
     {
-    $data = [
-        'subscriber' => $subscriber->getData(),
-    ];
+        $data = [
+            'subscriber' => $subscriber->getData(),
+        ];
 
-    if ($subscriber->getConfirmationLink()) {
-        $data['subscriber'] = $subscriber->getData();
+        if ($subscriber->getConfirmationLink()) {
+            $data['subscriber'] = $subscriber->getData();
+        }
+        if ($subscriber->getCustomerId()) {
+            $customer = $this->customerFactory->create()->load($subscriber->getCustomerId());
+            $data['customer'] = $customer->getData();
+        }
+        return $data;
     }
-    if ($subscriber->getCustomerId()) {
-        $customer = $this->customerFactory->create()->load($subscriber->getCustomerId());
-        $data['customer'] = $customer->getData();
+
+    /**
+     * @param Subscriber $subscriber
+     * @param string     $type
+     *
+     * @return bool
+     */
+    private function handleConfirmation($subscriber, $type)
+    {
+        $storeId = $subscriber->getStoreId();
+        try {
+            $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
+            return false;
+        }
+
+        try {
+            $this->saveEvent(
+                $websiteId,
+                $storeId,
+                $type,
+                $subscriber->getId(),
+                $this->getDataFromSubscription($subscriber)
+            );
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
-    return $data;
+
+    /**
+     * @param int    $websiteId
+     * @param int    $storeId
+     * @param string $type
+     * @param int    $entityId
+     * @param array  $data
+     *
+     * @return void
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
+    private function saveEvent($websiteId, $storeId, $type, $entityId, $data)
+    {
+        $data = $this->json->serialize($data);
+
+        /** @var EventModel $eventModel */
+        $eventModel = $this->eventFactory->create()
+            ->setEntityId($entityId)
+            ->setWebsiteId($websiteId)
+            ->setStoreId($storeId)
+            ->setEventType($type)
+            ->setEventData($data);
+
+        $this->eventRepository->save($eventModel);
     }
 }

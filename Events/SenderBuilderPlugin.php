@@ -2,6 +2,7 @@
 
 namespace Emartech\Emarsys\Events;
 
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\SenderBuilder;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
@@ -11,9 +12,17 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Helper\View as CustomerViewHelper;
 use Magento\Framework\Serialize\Serializer\Json;
 use \Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Sales\Model\Order\Invoice;
+use Magento\Sales\Model\Order\Creditmemo;
+use Emartech\Emarsys\Model\Event as EventModel;
 
 /**
- * Order Events
+ * Class SenderBuilderPlugin
+ * @package Emartech\Emarsys\Events
  */
 class SenderBuilderPlugin
 {
@@ -47,14 +56,21 @@ class SenderBuilderPlugin
     public $logger;
 
     /**
-     * NotifySenderPlugin constructor.
-     * @param ConfigReader $configReader
-     * @param EmarsysEventFactory $eventFactory
-     * @param EventRepository $eventRepository
+     * @var ContainerBuilder
+     */
+    private $containerBuilder;
+
+    /**
+     * SenderBuilderPlugin constructor.
+     *
+     * @param ConfigReader                $configReader
+     * @param EmarsysEventFactory         $eventFactory
+     * @param EventRepository             $eventRepository
      * @param CustomerRepositoryInterface $customerRepositoryInterface
-     * @param CustomerViewHelper $customerViewHelper
-     * @param Json $json
-     * @param LoggerInterface $logger
+     * @param CustomerViewHelper          $customerViewHelper
+     * @param Json                        $json
+     * @param LoggerInterface             $logger
+     * @param ContainerBuilder            $containerBuilder
      */
     public function __construct(
         ConfigReader $configReader,
@@ -63,7 +79,8 @@ class SenderBuilderPlugin
         CustomerRepositoryInterface $customerRepositoryInterface,
         CustomerViewHelper $customerViewHelper,
         Json $json,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ContainerBuilder $containerBuilder
     ) {
         $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
@@ -72,11 +89,13 @@ class SenderBuilderPlugin
         $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->logger = $logger;
+        $this->containerBuilder = $containerBuilder;
     }
 
     /**
      * @param SenderBuilder $senderBuilder
-     * @param callable $proceed
+     * @param callable      $proceed
+     *
      * @return mixed
      */
     public function aroundSend(
@@ -87,7 +106,8 @@ class SenderBuilderPlugin
         //sales_email/general/async_sending - should be disabled
         //----
         try {
-            $reflection = new \ReflectionClass($senderBuilder);
+            $reflection = $this->containerBuilder
+                ->getReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
 
             /** @var \Magento\Sales\Model\Order\Email\Container\OrderIdentity $identityContainer */
             $identityContainer = $reflection->getProperty('identityContainer');
@@ -100,106 +120,172 @@ class SenderBuilderPlugin
                 return $proceed();
             }
 
-            /** @var \Magento\Sales\Model\Order\Email\Container\Template $templateContainer */
+            /** @var TemplateContainer $templateContainer */
             $templateContainer = $reflection->getProperty('templateContainer');
             $templateContainer->setAccessible(true);
             $templateContainer = $templateContainer->getValue($senderBuilder);
 
+            $data = $this->parseTemplateVars($templateContainer);
+            $data['customerName'] = $identityContainer->getCustomerName();
+            $data['customerEmail'] = $identityContainer->getCustomerEmail();
+            $data['emailCopyTo'] = $identityContainer->getEmailCopyTo();
 
-            /** @var \Emartech\Emarsys\Model\Event $eventModel */
-            $eventModel = $this->eventFactory->create();
-
-            $eventModel->setEventType($templateContainer->getTemplateId());
-            $eventModel->setStoreId($storeId);
-            $eventModel->setWebsiteId($websiteId);
-
-            $data = [
-                'customerName' => $identityContainer->getCustomerName(),
-                'customerEmail' => $identityContainer->getCustomerEmail(),
-                'emailCopyTo' => $identityContainer->getEmailCopyTo(),
-            ];
-
-            foreach ($templateContainer->getTemplateVars() as $key => $value) {
-                if ($key == 'order') {
-                    /** @var \Magento\Sales\Model\Order $order */
-                    $order = $value;
-                    $value = $value->getData();
-                    $items = [];
-                    foreach ($order->getAllVisibleItems() as $item) {
-                        $items[] = $item->getData();
-                    }
-                    $value['items'] = $items;
-                    if ($order->getShippingAddress()) {
-                        $value['addresses']['shipping'] = $order->getShippingAddress()->getData();
-                    }
-                    $value['addresses']['billing'] = $order->getBillingAddress()->getData();
-                    $data['is_guest'] = $order->getCustomerIsGuest();
-                    $customer = [];
-                    if ($order->getCustomerId()) {
-                        /** @var \Magento\Customer\Model\Data\Customer $customer */
-                        $customer = $this->customerRepositoryInterface->getById($order->getCustomerId());
-                        $customer->setData('name', $this->customerViewHelper->getCustomerName($customer));
-                        $customer = $customer->__toArray();
-                    }
-                    $data['customer'] = $customer;
-                    $value['payment'] = $order->getPayment()->getData();
-
-                    $shipmentsCollection = $order->getShipmentsCollection();
-                    $shipments = [];
-                    foreach ($shipmentsCollection->getItems() as $shipment) {
-                        $tracksCollection = $shipment->getTracksCollection();
-                        $tracks = [];
-                        foreach ($tracksCollection->getItems() as $track) {
-                            $tracks[] = $track->getData();
-                        }
-                        $shipmentData = $shipment->getData();
-                        $shipmentData['tracks'] = $tracks;
-                        $shipments[] = $shipmentData;
-                    }
-                    $value['shipments'] = $shipments;
-                }
-
-                if ($key == 'invoice') {
-                    /** @var \Magento\Sales\Model\Order\Invoice $invoice */
-                    $invoice = $value;
-                    $value = $value->getData();
-                    $items = [];
-                    foreach ($invoice->getAllItems() as $item) {
-                        $items[] = $item->getData();
-                    }
-                    $value['items'] = $items;
-
-                    $comments = [];
-                    foreach ($invoice->getComments() as $comment) {
-                        $comments[] = $comment->getData();
-                    }
-                    $value['comments'] = $comments;
-                }
-
-                if ($key == 'creditmemo') {
-                    /** @var \Magento\Sales\Model\Order\Creditmemo $creditmemo */
-                    $creditmemo = $value;
-                    $value = $value->getData();
-                    $items = [];
-                    foreach ($creditmemo->getAllItems() as $item) {
-                        $items[] = $item->getData();
-                    }
-                    $value['items'] = $items;
-
-                    $comments = [];
-                    foreach ($creditmemo->getComments() as $comment) {
-                        $comments[] = $comment->getData();
-                    }
-                    $value['comments'] = $comments;
-                }
-
-                $data[$key] = is_object($value) ? $value->getData() : $value;
-            }
-
-            $eventModel->setEventData($this->json->serialize($data));
-            $this->eventRepository->save($eventModel);
+            $this->saveEvent(
+                $websiteId,
+                $storeId,
+                $templateContainer->getTemplateId(),
+                $templateContainer->getTemplateId(),
+                $data
+            );
         } catch (\Exception $e) {
             $this->logger->warning('Emartech\\Emarsys\\Events\\SenderBuilderPlugin: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * @param TemplateContainer $templateContainer
+     *
+     * @return array
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
+    private function parseTemplateVars($templateContainer)
+    {
+        $returnArray = [];
+
+        foreach ($templateContainer->getTemplateVars() as $key => $value) {
+            switch ($key) {
+                case 'order':
+                    $this->parseOrderVars($key, $value, $returnArray);
+                    break;
+                case 'invoice':
+                    $this->parseInvoiceVars($key, $value, $returnArray);
+                    break;
+                case 'creditmemo':
+                    $this->parseCreditmemoVars($key, $value, $returnArray);
+                    break;
+            }
+        }
+
+        return $returnArray;
+    }
+
+    /**
+     * @param string $key
+     * @param Order  $order
+     * @param array  $data
+     *
+     * @return void
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
+    private function parseOrderVars($key, $order, &$data)
+    {
+        $data[$key] = $order->getData();
+        $items = [];
+        foreach ($order->getAllVisibleItems() as $item) {
+            $items[] = $item->getData();
+        }
+        $data[$key]['items'] = $items;
+
+        if ($order->getShippingAddress()) {
+            $data[$key]['addresses']['shipping'] = $order->getShippingAddress()->getData();
+        }
+        $data[$key]['addresses']['billing'] = $order->getBillingAddress()->getData();
+        $data['is_guest'] = $order->getCustomerIsGuest();
+        $customer = [];
+        if ($order->getCustomerId()) {
+            /** @var \Magento\Customer\Model\Data\Customer $customer */
+            $customer = $this->customerRepositoryInterface->getById($order->getCustomerId());
+            $customer->setData('name', $this->customerViewHelper->getCustomerName($customer));
+            $customer = $customer->__toArray();
+        }
+        $data['customer'] = $customer;
+        $data[$key]['payment'] = $order->getPayment()->getData();
+
+        $shipmentsCollection = $order->getShipmentsCollection();
+        $shipments = [];
+        foreach ($shipmentsCollection->getItems() as $shipment) {
+            $tracksCollection = $shipment->getTracksCollection();
+            $tracks = [];
+            foreach ($tracksCollection->getItems() as $track) {
+                $tracks[] = $track->getData();
+            }
+            $shipmentData = $shipment->getData();
+            $shipmentData['tracks'] = $tracks;
+            $shipments[] = $shipmentData;
+        }
+        $data[$key]['shipments'] = $shipments;
+    }
+
+    /**
+     * @param string  $key
+     * @param Invoice $invoice
+     * @param array   $data
+     *
+     * @return void
+     */
+    private function parseInvoiceVars($key, $invoice, &$data)
+    {
+        $data[$key] = $invoice->getData();
+        $items = [];
+        foreach ($invoice->getAllItems() as $item) {
+            $items[] = $item->getData();
+        }
+        $data[$key]['items'] = $items;
+
+        $comments = [];
+        foreach ($invoice->getComments() as $comment) {
+            $comments[] = $comment->getData();
+        }
+        $data[$key]['comments'] = $comments;
+    }
+
+    /**
+     * @param string     $key
+     * @param Creditmemo $creditmemo
+     * @param array      $data
+     *
+     * @return void
+     */
+    private function parseCreditmemoVars($key, $creditmemo, &$data)
+    {
+        $data[$key] = $creditmemo->getData();
+        $items = [];
+        foreach ($creditmemo->getAllItems() as $item) {
+            $items[] = $item->getData();
+        }
+        $data[$key]['items'] = $items;
+
+        $comments = [];
+        foreach ($creditmemo->getComments() as $comment) {
+            $comments[] = $comment->getData();
+        }
+        $data[$key]['comments'] = $comments;
+    }
+
+    /**
+     * @param int    $websiteId
+     * @param int    $storeId
+     * @param string $type
+     * @param int    $entityId
+     * @param array  $data
+     *
+     * @return void
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     */
+    private function saveEvent($websiteId, $storeId, $type, $entityId, $data)
+    {
+        $data = $this->json->serialize($data);
+
+        /** @var EventModel $eventModel */
+        $eventModel = $this->eventFactory->create()
+            ->setEntityId($entityId)
+            ->setWebsiteId($websiteId)
+            ->setStoreId($storeId)
+            ->setEventType($type)
+            ->setEventData($data);
+
+        $this->eventRepository->save($eventModel);
     }
 }

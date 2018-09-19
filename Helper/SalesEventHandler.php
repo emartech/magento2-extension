@@ -101,6 +101,8 @@ class SalesEventHandler extends BaseEventHandler
             $order->getId(),
             $orderData
         );
+
+        return true;
     }
 
     /**
