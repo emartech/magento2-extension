@@ -8,13 +8,14 @@ namespace Emartech\Emarsys\Api\Data;
  */
 interface ProductStoreDataInterface
 {
-    const NAME_KEY        = 'name';
-    const PRICE_KEY       = 'price';
-    const LINK_KEY        = 'url_key';
-    const DESCRIPTION_KEY = 'description';
-    const STATUS_KEY      = 'status';
-    const STORE_ID_KEY    = 'store_id';
-    const CURRENCY_KEY    = 'currency';
+    const NAME_KEY          = 'name';
+    const PRICE_KEY         = 'price';
+    const LINK_KEY          = 'url_key';
+    const DESCRIPTION_KEY   = 'description';
+    const STATUS_KEY        = 'status';
+    const STORE_ID_KEY      = 'store_id';
+    const CURRENCY_KEY      = 'currency';
+    const DISPLAY_PRICE_KEY = 'display_price';
 
     const SPECIAL_PRICE_KEY     = 'special_price';
     const SPECIAL_FROM_DATE_KEY = 'special_from_date';
@@ -29,6 +30,11 @@ interface ProductStoreDataInterface
      * @return float
      */
     public function getPrice();
+
+    /**
+     * @return float
+     */
+    public function getDisplayPrice();
 
     /**
      * @return string
@@ -68,6 +74,13 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setPrice($price);
+
+    /**
+     * @param float $displayPrice
+     *
+     * @return $this
+     */
+    public function setDisplayPrice($displayPrice);
 
     /**
      * @param string $link

@@ -550,6 +550,7 @@ class ProductsApi implements ProductsApiInterface
                 ->setLink($this->handleLink($product, $storeObject))
                 ->setName($product->getData($this->getAttributeValueAlias('name', $storeId)))
                 ->setPrice($this->handlePrice($product, $storeObject))
+                ->setDisplayPrice($this->handleDisplayPrice($product, $storeObject))
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
         }
 
@@ -592,27 +593,41 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int | float
      */
-    private function handlePrice($product, $store)
+    private function handleDisplayPrice($product, $store)
     {
         $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
         if (empty($price)) {
             $price = $product->getData($this->getAttributeValueAlias('price', 0));
         }
 
-        $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', $store->getId()));
-        if (empty($specialPrice)) {
-            $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', 0));
+        $product->setPrice($price);
+        $price = $product->getFinalPrice();
+
+        if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
+            try {
+                $tmp = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
+                $price = $tmp;
+            } catch (\Exception $e) {
+            }
         }
+
+        return $price;
+    }
+
+    /**
+     * @param Product $product
+     * @param Store   $store
+     *
+     * @return int | float
+     */
+    private function handlePrice($product, $store)
+    {
+        $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
+        $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', $store->getId()));
 
         if (!empty($specialPrice)) {
             $specialFromDate = $product->getData($this->getAttributeValueAlias('special_from_date', $store->getId()));
-            if (empty($specialFromDate)) {
-                $specialFromDate = $product->getData($this->getAttributeValueAlias('special_from_date', 0));
-            }
             $specialToDate = $product->getData($this->getAttributeValueAlias('special_to_date', $store->getId()));
-            if (empty($specialToDate)) {
-                $specialToDate = $product->getData($this->getAttributeValueAlias('special_to_date', 0));
-            }
 
             if ($specialFromDate) {
                 $specialFromDate = strtotime($specialFromDate);
@@ -630,14 +645,6 @@ class ProductsApi implements ProductsApiInterface
                 ($specialToDate === false || $specialToDate >= time())
             ) {
                 $price = $specialPrice;
-            }
-        }
-
-        if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
-            try {
-                $tmp = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
-                $price = $tmp;
-            } catch (\Exception $e) {
             }
         }
 
