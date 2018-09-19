@@ -44,52 +44,52 @@ class CustomerPlugin
     /**
      * @var ScopeConfigInterface
      */
-    public $scopeConfig;
+    private $scopeConfig;
 
     /**
      * @var StoreManagerInterface
      */
-    public $storeManager;
+    private $storeManager;
 
     /**
      * @var LoggerInterface
      */
-    public $logger;
+    private $logger;
 
     /**
      * @var EventRepository
      */
-    public $eventRepository;
+    private $eventRepository;
 
     /**
      * @var CustomerRegistry
      */
-    public $customerRegistry;
+    private $customerRegistry;
 
     /**
      * @var EmarsysEventFactory
      */
-    public $eventFactory;
+    private $eventFactory;
 
     /**
      * @var DataObjectProcessor
      */
-    public $dataProcessor;
+    private $dataProcessor;
 
     /**
      * @var CustomerViewHelper
      */
-    public $customerViewHelper;
+    private $customerViewHelper;
 
     /**
      * @var Json
      */
-    public $json;
+    private $json;
 
     /**
      * @var ConfigReader
      */
-    public $configReader;
+    private $configReader;
 
     /**
      * @var CustomerFactory

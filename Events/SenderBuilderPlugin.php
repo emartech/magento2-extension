@@ -29,31 +29,31 @@ class SenderBuilderPlugin
     /**
      * @var ConfigReader
      */
-    public $configReader;
+    private $configReader;
     /**
      * @var EmarsysEventFactory
      */
-    public $eventFactory;
+    private $eventFactory;
     /**
      * @var EventRepository
      */
-    public $eventRepository;
+    private $eventRepository;
     /**
      * @var CustomerRepositoryInterface
      */
-    public $customerRepositoryInterface;
+    private $customerRepositoryInterface;
     /**
      * @var CustomerViewHelper
      */
-    public $customerViewHelper;
+    private $customerViewHelper;
     /**
      * @var Json
      */
-    public $json;
+    private $json;
     /**
      * @var LoggerInterface
      */
-    public $logger;
+    private $logger;
 
     /**
      * @var ContainerBuilder
@@ -193,14 +193,12 @@ class SenderBuilderPlugin
         }
         $data[$key]['addresses']['billing'] = $order->getBillingAddress()->getData();
         $data['is_guest'] = $order->getCustomerIsGuest();
-        $customer = [];
         if ($order->getCustomerId()) {
             /** @var \Magento\Customer\Model\Data\Customer $customer */
             $customer = $this->customerRepositoryInterface->getById($order->getCustomerId());
             $customer->setData('name', $this->customerViewHelper->getCustomerName($customer));
-            $customer = $customer->__toArray();
+            $data['customer'] = $customer->__toArray();
         }
-        $data['customer'] = $customer;
         $data[$key]['payment'] = $order->getPayment()->getData();
 
         $shipmentsCollection = $order->getShipmentsCollection();
