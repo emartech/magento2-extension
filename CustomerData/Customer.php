@@ -14,7 +14,7 @@ class Customer extends OriginalCustomerData
     /**
      * @var CurrentCustomer
      */
-    private $currentCustomer;
+    protected $currentCustomer;
 
     /**
      * Customer constructor.
