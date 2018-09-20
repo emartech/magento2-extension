@@ -183,7 +183,7 @@ class SenderBuilderPlugin
     {
         $data[$key] = $order->getData();
         $items = [];
-        foreach ($order->getAllVisibleItems() as $item) {
+        foreach ($order->getAllItems() as $item) {
             $items[] = $item->getData();
         }
         $data[$key]['items'] = $items;
