@@ -21,7 +21,9 @@
       "/dev",
       "/tasks",
       "/codeship*",
-      "/Makefile"
+      "/Makefile",
+      "Marketing_events.md",
+      "/docs"
     ]
   }
 }

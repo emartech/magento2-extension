@@ -58,7 +58,6 @@ class SalesEventHandler extends BaseEventHandler
      * @param Order $order
      *
      * @return bool
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function store(Order $order)
     {
@@ -71,6 +70,7 @@ class SalesEventHandler extends BaseEventHandler
         $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
         $orderData = $order->getData();
+        $orderData['id'] = $order->getId();
         $orderItems = $order->getAllItems();
         $orderData['items'] = [];
         $orderData['addresses'] = [];
