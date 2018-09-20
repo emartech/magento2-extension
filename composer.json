@@ -1,6 +1,6 @@
 {
   "name": "emartech/emarsys-magento2-extension",
-  "description": "Emarsys Marketing Platform",
+  "description": "Magento2 integration for the Emarsys Marketing Platform",
   "license": "proprietary",
   "require": {
     "php": ">7.0.1"
