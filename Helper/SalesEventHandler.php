@@ -85,7 +85,7 @@ class SalesEventHandler extends BaseEventHandler
             $orderData['items'][] = $arrayItem;
         }
 
-        if (array_key_exists('shipping', $orderData['addresses'])) {
+        if ($order->getShippingAddress()) {
             $orderData['addresses']['shipping'] = $order->getShippingAddress()->toArray();
         }
 
