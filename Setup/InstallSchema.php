@@ -63,7 +63,7 @@ class InstallSchema implements InstallSchemaInterface
                     'entity_id',
                     \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
                     null,
-                    ['default' => null, 'nullable' => false],
+                    ['nullable' => false],
                     'Entity ID'
                 )
                 ->addColumn(
