@@ -17,12 +17,12 @@
   },
   "archive": {
     "exclude": [
-      "/dev",
-      "/tasks",
-      "/codeship*",
-      "/Makefile",
+      "dev",
+      "tasks",
+      "codeship*",
+      "Makefile",
       "Marketing_events.md",
-      "/docs"
+      "docs"
     ]
   }
 }
