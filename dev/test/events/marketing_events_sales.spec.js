@@ -234,7 +234,8 @@ describe('Marketing events: sales', function() {
 
           expect(event.event_type).to.equal('sales_email_order_template');
           expectCustomerAndOrderMatches(createdEventData, this.customer);
-          expect(createdEventData).to.have.property('billing');
+          expect(createdEventData.order.addresses).to.have.property('billing');
+          expect(event.entity_id).to.equal(parseInt(orderId));
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
         });
@@ -246,7 +247,6 @@ describe('Marketing events: sales', function() {
 
           const event = await getLastEvent(this.db);
           const createdEventData = JSON.parse(event.event_data);
-
           expect(event.event_type).to.equal('sales_email_invoice_template');
           expectCustomerAndOrderMatches(createdEventData, this.customer);
           expect(createdEventData.invoice.order_id).to.equal(orderId);
@@ -264,7 +264,7 @@ describe('Marketing events: sales', function() {
 
           expect(event.event_type).to.equal('sales_email_shipment_template');
           expectCustomerAndOrderMatches(createdEventData, this.customer);
-          expect(createdEventData.shipment.order_id).to.equal(orderId);
+          expect(createdEventData.order.shipments[0].order_id).to.equal(orderId);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
         });
@@ -286,7 +286,7 @@ describe('Marketing events: sales', function() {
 
             expect(event.event_type).to.equal('sales_email_order_comment_template');
             expectCustomerAndOrderMatches(createdEventData, this.customer);
-            expect(createdEventData.comment).to.equal('Comment on order');
+            expect(createdEventData.order.comments[0].comment).to.equal('Comment on order');
             expect(event.website_id).to.equal(1);
             expect(event.store_id).to.equal(1);
           });
@@ -342,7 +342,7 @@ describe('Marketing events: sales', function() {
 
           expect(event.event_type).to.equal('sales_email_order_guest_template');
           expectOrderMatches(createdEventData);
-          expect(createdEventData.billing.email).to.equal(localAddresses.billing_address.email);
+          expect(createdEventData.order.addresses.billing.email).to.equal(localAddresses.billing_address.email);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
         });
@@ -373,7 +373,7 @@ describe('Marketing events: sales', function() {
 
           expect(event.event_type).to.equal('sales_email_shipment_guest_template');
           expectOrderMatches(createdEventData, this.customer);
-          expect(createdEventData.shipment.order_id).to.equal(orderId);
+          expect(createdEventData.order.shipments[0].order_id).to.equal(orderId);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
         });
@@ -395,7 +395,7 @@ describe('Marketing events: sales', function() {
 
             expect(event.event_type).to.equal('sales_email_order_comment_guest_template');
             expectOrderMatches(createdEventData, this.customer);
-            expect(createdEventData.comment).to.equal('Comment on order');
+            expect(createdEventData.order.comments[0].comment).to.equal('Comment on order');
             expect(event.website_id).to.equal(1);
             expect(event.store_id).to.equal(1);
           });

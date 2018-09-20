@@ -134,7 +134,7 @@ class SenderBuilderPlugin
                 $websiteId,
                 $storeId,
                 $templateContainer->getTemplateId(),
-                $templateContainer->getTemplateId(),
+                $data['order']['entity_id'],
                 $data
             );
         } catch (\Exception $e) {
@@ -188,10 +188,11 @@ class SenderBuilderPlugin
         }
         $data[$key]['items'] = $items;
 
+        $data[$key]['addresses'] = [];
         if ($order->getShippingAddress()) {
-            $data[$key]['addresses']['shipping'] = $order->getShippingAddress()->getData();
+            $data[$key]['addresses']['shipping'] = $order->getShippingAddress()->toArray();
         }
-        $data[$key]['addresses']['billing'] = $order->getBillingAddress()->getData();
+        $data[$key]['addresses']['billing'] = $order->getBillingAddress()->toArray();
         $data['is_guest'] = $order->getCustomerIsGuest();
         if ($order->getCustomerId()) {
             /** @var \Magento\Customer\Model\Data\Customer $customer */
@@ -214,6 +215,12 @@ class SenderBuilderPlugin
             $shipments[] = $shipmentData;
         }
         $data[$key]['shipments'] = $shipments;
+        foreach ($order->getStatusHistoryCollection() as $historyItem) {
+            $comment = [];
+            $comment['comment'] = $historyItem->getComment();
+            $comment['status'] = $historyItem->getStatus();
+            $data[$key]['comments'][] = $comment;
+        }
     }
 
     /**
