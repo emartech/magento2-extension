@@ -42,7 +42,7 @@ describe('Events API endpoint', function() {
   });
 
   it('returns number of events defined in page_size and deletes events before since_id', async function() {
-    const pageSize = 2;
+    const pageSize = 1;
     await this.magentoApi.setConfig({ websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
     for (const customer of customers) {
       await this.createCustomer(customer);
@@ -60,7 +60,7 @@ describe('Events API endpoint', function() {
     expect(secondEventsResponse.last_page).to.equal(2);
 
     const eventsInDb = await this.db.select().from('emarsys_events_data');
-    expect(eventsInDb.length).to.equal(4);
+    expect(eventsInDb.length).to.equal(2);
     const firstEvent = eventsInDb[0];
     expect(firstEvent.website_id).to.equal(1);
     expect(firstEvent.store_id).to.equal(1);
