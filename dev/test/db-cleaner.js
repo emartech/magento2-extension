@@ -73,7 +73,7 @@ module.exports = class DbCleaner {
     await this.clearOrders();
   }
 
-  async resetEmarsysData() {
+  async resetEmarsysEventsData() {
     await this._db.truncate('emarsys_events_data');
   }
 };

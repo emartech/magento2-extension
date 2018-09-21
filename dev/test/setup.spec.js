@@ -102,6 +102,8 @@ before(async function() {
     }
   });
 
+  this.dbCleaner = DbCleaner.create(this.db);
+
   const result = await this.db
     .select('value')
     .from('core_config_data')
@@ -206,5 +208,5 @@ beforeEach(async function() {
 
 afterEach(async function() {
   this.sandbox.restore();
-  await DbCleaner.create(this.db).resetEmarsysData();
+  await this.dbCleaner.resetEmarsysEventsData();
 });

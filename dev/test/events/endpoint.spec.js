@@ -51,13 +51,13 @@ describe('Events API endpoint', function() {
     const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize });
 
     expect(eventsResponse.events.length).to.equal(pageSize);
-    expect(eventsResponse.last_page).to.equal(3);
+    expect(eventsResponse.lastPage).to.equal(3);
 
     let sinceId = eventsResponse.events.pop().event_id;
 
     const secondEventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId, pageSize });
 
-    expect(secondEventsResponse.last_page).to.equal(2);
+    expect(secondEventsResponse.lastPage).to.equal(2);
 
     const eventsInDb = await this.db.select().from('emarsys_events_data');
     expect(eventsInDb.length).to.equal(2);

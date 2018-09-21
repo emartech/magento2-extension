@@ -30,7 +30,7 @@ describe('Marketing events: customer', function() {
   afterEach(async function() {
     await resetPasswordResetRequestEvent(this.db);
     await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
-    await this.db.raw('DELETE FROM emarsys_events_data');
+    await this.dbCleaner.resetEmarsysEventsData();
   });
 
   after(async function() {
