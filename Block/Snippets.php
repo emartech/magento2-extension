@@ -9,10 +9,14 @@ namespace Emartech\Emarsys\Block;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
+use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Model\CategoryFactory;
+use Magento\Catalog\Model\Category as CategoryModel;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Registry;
 use Emartech\Emarsys\Model\SettingsFactory;
@@ -27,17 +31,17 @@ class Snippets extends Template
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
-    protected $storeManager;
+    private $storeManager;
 
     /**
      * @var CategoryFactory
      */
-    protected $categoryFactory;
+    private $categoryFactory;
 
     /**
      * @var Registry
      */
-    protected $coreRegistry;
+    private $coreRegistry;
 
     /**
      * @var ConfigReader
@@ -55,16 +59,22 @@ class Snippets extends Template
     private $jsonSerializer;
 
     /**
+     * @var CategoryCollectionFactory
+     */
+    private $categoryCollectionFactory;
+
+    /**
      * Snippets constructor.
      *
-     * @param Context         $context
-     * @param CategoryFactory $categoryFactory
-     * @param Http            $request
-     * @param Registry        $registry
-     * @param ConfigReader    $configReader
-     * @param CurrencyFactory $currencyFactory
-     * @param JsonSerializer  $jsonSerializer
-     * @param array           $data
+     * @param Context                   $context
+     * @param CategoryFactory           $categoryFactory
+     * @param Http                      $request
+     * @param Registry                  $registry
+     * @param ConfigReader              $configReader
+     * @param CurrencyFactory           $currencyFactory
+     * @param JsonSerializer            $jsonSerializer
+     * @param CategoryCollectionFactory $categoryCollectionFactory
+     * @param array                     $data
      */
     public function __construct(
         Context $context,
@@ -74,9 +84,9 @@ class Snippets extends Template
         ConfigReader $configReader,
         CurrencyFactory $currencyFactory,
         JsonSerializer $jsonSerializer,
+        CategoryCollectionFactory $categoryCollectionFactory,
         array $data = []
-    )
-    {
+    ) {
         $this->storeManager = $context->getStoreManager();
         $this->categoryFactory = $categoryFactory;
         $this->_request = $request;
@@ -84,6 +94,7 @@ class Snippets extends Template
         $this->configReader = $configReader;
         $this->currencyFactory = $currencyFactory;
         $this->jsonSerializer = $jsonSerializer;
+        $this->categoryCollectionFactory = $categoryCollectionFactory;
         parent::__construct($context, $data);
     }
 
@@ -96,12 +107,12 @@ class Snippets extends Template
     public function getTrackingData()
     {
         return [
-            'product' => $this->getCurrentProduct(),
-            'category' => $this->getCategory(),
-            'store' => $this->getStoreData(),
-            'search' => $this->getSearchData(),
+            'product'      => $this->getCurrentProduct(),
+            'category'     => $this->getCategory(),
+            'store'        => $this->getStoreData(),
+            'search'       => $this->getSearchData(),
             'exchangeRate' => $this->getExchangeRate(),
-            'slug' => $this->getStoreSlug()
+            'slug'         => $this->getStoreSlug(),
         ];
     }
 
@@ -111,10 +122,11 @@ class Snippets extends Template
      */
     public function getStoreSlug()
     {
-        $storeSettings = $this->jsonSerializer->unserialize($this->configReader->getConfigValue(ConfigInterface::STORE_SETTINGS));
+        $storeSettings = $this->jsonSerializer
+            ->unserialize($this->configReader->getConfigValue(ConfigInterface::STORE_SETTINGS));
         $currentStoreId = $this->storeManager->getStore()->getId();
         foreach ($storeSettings as $store) {
-            if($store['store_id'] === (int) $currentStoreId) {
+            if ($store['store_id'] === (int)$currentStoreId) {
                 return $store['slug'];
             }
         }
@@ -124,7 +136,7 @@ class Snippets extends Template
     /**
      * Get Exchange Rate
      *
-     * @return bool|mixed
+     * @return bool|float
      * @throws \Exception
      */
     public function getExchangeRate()
@@ -136,8 +148,6 @@ class Snippets extends Template
         } catch (\Exception $e) {
             throw $e;
         }
-
-        return false;
     }
 
     /**
@@ -150,13 +160,11 @@ class Snippets extends Template
     {
         try {
             return [
-                'merchantId' => $this->getMerchantId()
+                'merchantId' => $this->getMerchantId(),
             ];
         } catch (\Exception $e) {
             throw $e;
         }
-
-        return false;
     }
 
     /**
@@ -169,10 +177,10 @@ class Snippets extends Template
     {
         try {
             $product = $this->coreRegistry->registry('current_product');
-            if (isset($product) && $product != '') {
+            if ($product instanceof Product) {
                 return [
                     'sku' => $product->getSku(),
-                    'id' => $product->getId()
+                    'id'  => $product->getId(),
                 ];
             }
         } catch (\Exception $e) {
@@ -194,7 +202,7 @@ class Snippets extends Template
             $q = $this->_request->getParam('q');
             if ($q != '') {
                 return [
-                    'term' => $q
+                    'term' => $q,
                 ];
             }
         } catch (\Exception $e) {
@@ -213,24 +221,53 @@ class Snippets extends Template
     {
         try {
             $category = $this->coreRegistry->registry('current_category');
-            if (isset($category) && $category != '') {
-                $categoryPath = $category->getPath();
-                $categoryIds = explode('/', $categoryPath);
+            if ($category instanceof CategoryModel) {
                 $categoryList = [];
-                for ($pathIndex = 2; $pathIndex < count($categoryIds); $pathIndex++) {
-                    $storeId = $this->storeManager->getDefaultStoreView()->getId();
-                    $childCat = $this->categoryFactory->create()->setStoreId($storeId)->load($categoryIds[$pathIndex]);
-                    $categoryList[] = $childCat->getName();
+
+                $categoryIds = $this->removeDefaultCategories($category->getPathIds());
+
+                /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
+                $categoryCollection = $this->categoryCollectionFactory->create()
+                    ->setStore($this->storeManager->getStore())
+                    ->addAttributeToSelect('name')
+                    ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
+
+                /** @var Category $category */
+                foreach ($categoryCollection as $categoryItem) {
+                    $categoryList[] = $categoryItem->getName();
                 }
+
                 return [
                     'names' => $categoryList,
-                    'ids' => array_splice($categoryIds, 2)
+                    'ids'   => $categoryIds,
                 ];
             }
         } catch (\Exception $e) {
             throw $e;
         }
         return false;
+    }
+
+    /**
+     * @param array $categoryIds
+     *
+     * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    private function removeDefaultCategories($categoryIds)
+    {
+        $returnArray = [];
+        $basicCategoryIds = [
+            1,
+            $this->storeManager->getStore()->getRootCategoryId(),
+        ];
+        foreach ($categoryIds as $categoryId) {
+            if (!in_array($categoryId, $basicCategoryIds)) {
+                $returnArray[] = $categoryId;
+            }
+        }
+
+        return $returnArray;
     }
 
     /**
