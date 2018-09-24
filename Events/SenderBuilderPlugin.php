@@ -12,13 +12,12 @@ use \Magento\Customer\Api\CustomerRepositoryInterface;
 use \Magento\Customer\Helper\View as CustomerViewHelper;
 use \Magento\Framework\Serialize\Serializer\Json;
 use \Psr\Log\LoggerInterface;
-use \Symfony\Component\DependencyInjection\ContainerBuilder;
-use \Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
-use \Magento\Framework\Exception\LocalizedException;
-use \Magento\Framework\Exception\NoSuchEntityException;
-use \Magento\Sales\Model\Order\Invoice;
-use \Magento\Sales\Model\Order\Creditmemo;
-use \Emartech\Emarsys\Model\Event as EventModel;
+use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Sales\Model\Order\Invoice;
+use Magento\Sales\Model\Order\Creditmemo;
+use Emartech\Emarsys\Model\Event as EventModel;
 
 /**
  * Class SenderBuilderPlugin
@@ -56,11 +55,6 @@ class SenderBuilderPlugin
     private $logger;
 
     /**
-     * @var ContainerBuilder
-     */
-    private $containerBuilder;
-
-    /**
      * SenderBuilderPlugin constructor.
      *
      * @param ConfigReader                $configReader
@@ -79,8 +73,7 @@ class SenderBuilderPlugin
         CustomerRepositoryInterface $customerRepositoryInterface,
         CustomerViewHelper $customerViewHelper,
         Json $json,
-        LoggerInterface $logger,
-        ContainerBuilder $containerBuilder
+        LoggerInterface $logger
     ) {
         $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
@@ -89,7 +82,6 @@ class SenderBuilderPlugin
         $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->logger = $logger;
-        $this->containerBuilder = $containerBuilder;
     }
 
     /**
@@ -106,8 +98,7 @@ class SenderBuilderPlugin
         //sales_email/general/async_sending - should be disabled
         //----
         try {
-            $reflection = $this->containerBuilder
-                ->getReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
+            $reflection = new \ReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
 
             /** @var \Magento\Sales\Model\Order\Email\Container\OrderIdentity $identityContainer */
             $identityContainer = $reflection->getProperty('identityContainer');
