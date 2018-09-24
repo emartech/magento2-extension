@@ -3,7 +3,8 @@
   "description": "Magento2 integration for the Emarsys Marketing Platform",
   "license": "proprietary",
   "require": {
-    "php": ">7.0.1"
+    "php": ">7.0.1",
+    "symfony/dependency-injection": "^2.3.0|^3|^4"
   },
   "type": "magento2-module",
   "version": "1.0.0",
