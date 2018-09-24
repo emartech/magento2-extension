@@ -25,7 +25,21 @@ class CustomersApi implements CustomersApiInterface
     /**
      * @var array
      */
-    private $addressFields = [];
+    private $addressFields = [
+        'prefix',
+        'firstname',
+        'middlename',
+        'lastname',
+        'suffix',
+        'company',
+        'street',
+        'city',
+        'country_id',
+        'region',
+        'postcode',
+        'telephone',
+        'fax',
+    ];
 
     /**
      * @var CollectionFactory
@@ -123,14 +137,6 @@ class CustomersApi implements CustomersApiInterface
      */
     private function initCollection()
     {
-        try {
-            $customerAddressInterfaceReflection = $this->containerBuilder->getReflectionClass(
-                '\Emartech\Emarsys\Api\Data\CustomerAddressInterface'
-            );
-            $this->addressFields = $customerAddressInterfaceReflection->getConstants();
-        } catch (\Exception $e) { //@codingStandardsIgnoreLine
-        }
-
         $this->customerCollection = $this->collectionFactory->create();
         $this->customerAddressEntityTable = $this->customerCollection->getResource()
             ->getTable('customer_address_entity');
@@ -178,7 +184,7 @@ class CustomersApi implements CustomersApiInterface
         foreach ($this->customerCollection as $customer) {
             $customerArray[] = $this->parseCustomer($customer);
         }
-        
+
         return $customerArray;
     }
 

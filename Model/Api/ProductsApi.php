@@ -19,7 +19,6 @@ use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
 use Magento\Store\Model\Store;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Customer\Model\Group as CustomerGroupModel;
 
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
@@ -110,6 +109,35 @@ class ProductsApi implements ProductsApiInterface
      * @var array
      */
     private $categories = [];
+
+    private $storeProductAttributeCodes = [
+        'name',
+        'price',
+        'url_key',
+        'description',
+        'status',
+        'store_id',
+        'currency',
+        'display_price',
+        'special_price',
+        'special_from_date',
+        'special_to_date',
+    ];
+
+    private $globalProductAttributeCodes = [
+        'entity_id',
+        'type',
+        'children_entity_ids',
+        'categories',
+        'sku',
+        'images',
+        'qty',
+        'is_in_stock',
+        'stores',
+        'image',
+        'small_image',
+        'thumbnail',
+    ];
 
     /**
      * ProductsApi constructor.
@@ -235,24 +263,13 @@ class ProductsApi implements ProductsApiInterface
      */
     private function joinData()
     {
-        $storeProductAttributeCodes = [];
-        $globalProductAttributeCodes = [];
-
-        try {
-            $storeProductAttributeCodes = $this->containerBuilder->getReflectionClass(
-                '\Emartech\Emarsys\Api\Data\ProductStoreDataInterface'
-            )->getConstants();
-
-            $globalProductAttributeCodes = $this->containerBuilder->getReflectionClass(
-                '\Emartech\Emarsys\Api\Data\ProductInterface'
-            )->getConstants();
-        } catch (\Exception $e) { //@codingStandardsIgnoreLine
-        }
-
         $this->productAttributeCollection = $this->productAttributeCollectionFactory->create();
         $this->productAttributeCollection
             ->addFieldToFilter('attribute_code', [
-                'in' => array_values(array_merge($storeProductAttributeCodes, $globalProductAttributeCodes)),
+                'in' => array_values(array_merge(
+                    $this->storeProductAttributeCodes,
+                    $this->globalProductAttributeCodes
+                )),
             ]);
 
         $mainTableName = $this->productCollection->getResource()->getTable('catalog_product_entity');
@@ -261,7 +278,7 @@ class ProductsApi implements ProductsApiInterface
         foreach ($this->productAttributeCollection as $productAttribute) {
             if ($productAttribute->getBackendTable() === $mainTableName) {
                 $this->productCollection->addAttributeToSelect($productAttribute->getAttributeCode());
-            } elseif (in_array($productAttribute->getAttributeCode(), $globalProductAttributeCodes)) {
+            } elseif (in_array($productAttribute->getAttributeCode(), $this->globalProductAttributeCodes)) {
                 $tableAlias = 'table_' . $productAttribute->getAttributeId();
                 $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode());
 
