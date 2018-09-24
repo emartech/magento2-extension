@@ -38,7 +38,8 @@ class InstallSchema implements InstallSchemaInterface
         $tableName = $setup->getTable('emarsys_events_data');
         if ($setup->getConnection()->isTableExists($tableName) != true) {
             $table = $setup->getConnection()->newTable(
-                $setup->getTable('emarsys_events_data'))
+                $setup->getTable('emarsys_events_data')
+            )
                 ->addColumn(
                     'event_id',
                     \Magento\Framework\DB\Ddl\Table::TYPE_BIGINT,

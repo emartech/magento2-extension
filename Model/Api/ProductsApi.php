@@ -140,7 +140,6 @@ class ProductsApi implements ProductsApiInterface
         ImagesInterfaceFactory $imagesFactory,
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
         ProductUrlFactory $productUrlFactory
-
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 

@@ -32,8 +32,8 @@ class SalesOrderObserver implements ObserverInterface
     public function __construct(
         SalesEventHandler $salesEventHandler,
         LoggerInterface $logger
-    )
-    {
+    ) {
+    
         $this->salesEventHandler = $salesEventHandler;
         $this->logger = $logger;
     }
