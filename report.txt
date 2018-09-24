@@ -1,0 +1,809 @@
+
+FILE: ...Users/iben/Work/magento/magento2-extension/Setup/InstallData.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 37 | WARNING | The method parameter $context is never used
+----------------------------------------------------------------------
+
+
+FILE: /Users/iben/Work/magento/magento2-extension/Setup/Uninstall.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 37 | WARNING | The method parameter $context is never used
+----------------------------------------------------------------------
+
+
+FILE: ...ers/iben/Work/magento/magento2-extension/Setup/InstallSchema.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 22 | WARNING | The method parameter $context is never used
+----------------------------------------------------------------------
+
+
+FILE: /Users/iben/Work/magento/magento2-extension/Model/Event.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 158 | WARNING | Use of protected class members is discouraged.
+----------------------------------------------------------------------
+
+
+FILE: ...n/Work/magento/magento2-extension/Model/Api/SubscriptionsApi.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 218 | WARNING | Data access method JOINLEFT detected outside of
+     |         | Resource Model
+----------------------------------------------------------------------
+
+
+FILE: ...en/Work/magento/magento2-extension/Model/ResourceModel/Event.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 12 | WARNING | Use of protected class members is discouraged.
+----------------------------------------------------------------------
+
+
+FILE: ...ento/magento2-extension/Model/ResourceModel/Event/Collection.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 2 LINES
+----------------------------------------------------------------------
+  8 | WARNING | Use of protected class members is discouraged.
+  8 | WARNING | Property name "$_idFieldName" should not be prefixed
+    |         | with an underscore to indicate visibility
+ 12 | WARNING | Use of protected class members is discouraged.
+----------------------------------------------------------------------
+
+
+FILE: ...o2-extension/view/frontend/templates/emarsys/order/success.phtml
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 1 | WARNING | This comment is 50% valid code; is this commented out
+   |         | code?
+ 2 | WARNING | Missing JS component initialization. Use
+   |         | "x-magento-init" or "x-magento-template".
+ 5 | WARNING | Unescaped output detected.
+----------------------------------------------------------------------
+
+
+FILE: ...agento2-extension/view/frontend/templates/emarsys/snippets.phtml
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 6 WARNINGS AFFECTING 4 LINES
+----------------------------------------------------------------------
+ 12 | WARNING | Missing JS component initialization. Use
+    |         | "x-magento-init" or "x-magento-template".
+ 17 | WARNING | Unescaped output detected.
+ 22 | WARNING | Missing JS component initialization. Use
+    |         | "x-magento-init" or "x-magento-template".
+ 22 | WARNING | Unescaped output detected.
+ 23 | WARNING | Missing JS component initialization. Use
+    |         | "x-magento-init" or "x-magento-template".
+ 23 | WARNING | Unescaped output detected.
+----------------------------------------------------------------------
+
+
+FILE: ...n/Work/magento/magento2-extension/Events/SenderBuilderPlugin.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 101 | WARNING | Direct object instantiation (object of
+     |         | \ReflectionClass) is discouraged in Magento 2.
+----------------------------------------------------------------------
+
+
+FILE: ...s/iben/Work/magento/magento2-extension/Events/CustomerPlugin.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 4 WARNINGS AFFECTING 4 LINES
+----------------------------------------------------------------------
+ 199 | WARNING | The method parameter $emailNotification is never
+     |         | used
+ 241 | WARNING | The method parameter $emailNotification is never
+     |         | used
+ 302 | WARNING | The method parameter $emailNotification is never
+     |         | used
+ 337 | WARNING | The method parameter $emailNotification is never
+     |         | used
+----------------------------------------------------------------------
+
+
+FILE: ...iben/Work/magento/magento2-extension/Helper/BaseEventHandler.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 8 WARNINGS AFFECTING 8 LINES
+----------------------------------------------------------------------
+  27 | WARNING | Use of protected class members is discouraged.
+  32 | WARNING | Use of protected class members is discouraged.
+  37 | WARNING | Use of protected class members is discouraged.
+  42 | WARNING | Use of protected class members is discouraged.
+  47 | WARNING | Use of protected class members is discouraged.
+  97 | WARNING | Use of protected class members is discouraged.
+ 107 | WARNING | Use of protected class members is discouraged.
+ 121 | WARNING | Use of protected class members is discouraged.
+----------------------------------------------------------------------
+
+
+FILE: ...sers/iben/Work/magento/magento2-extension/Helper/Integration.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 4 WARNINGS AFFECTING 4 LINES
+----------------------------------------------------------------------
+  33 | WARNING | Use of protected class members is discouraged.
+  35 | WARNING | Use of protected class members is discouraged.
+ 161 | WARNING | Direct throw of Exception is discouraged. Use
+     |         | \Magento\Framework\Exception\LocalizedException
+     |         | instead.
+ 164 | WARNING | Direct object instantiation (object of Uri) is
+     |         | discouraged in Magento 2.
+----------------------------------------------------------------------
+
+
+FILE: /Users/iben/Work/magento/magento2-extension/vendor/autoload.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 5 | WARNING | "require_once" statement detected. File manipulations
+   |         | are discouraged. Concatenating is forbidden.
+----------------------------------------------------------------------
+
+
+FILE: ...ento/magento2-extension/vendor/guzzlehttp/psr7/src/functions.php
+----------------------------------------------------------------------
+FOUND 1 ERROR AND 48 WARNINGS AFFECTING 43 LINES
+----------------------------------------------------------------------
+  18 | WARNING | [ ] Consider putting global function "str" in a
+     |         |     static class
+  54 | WARNING | [ ] Consider putting global function "uri_for" in a
+     |         |     static class
+  59 | WARNING | [ ] Direct object instantiation (object of Uri) is
+     |         |     discouraged in Magento 2.
+  78 | WARNING | [ ] Function's cyclomatic complexity (11) exceeds
+     |         |     10; consider refactoring the function
+  78 | WARNING | [ ] Consider putting global function "stream_for" in
+     |         |     a static class
+  81 | WARNING | [ ] The use of function fopen() is discouraged
+  83 | WARNING | [ ] The use of function fwrite() is discouraged
+  86 | WARNING | [ ] Direct object instantiation (object of Stream)
+     |         |     is discouraged in Magento 2.
+  89 | WARNING | [ ] The use of function gettype() is discouraged
+  91 | WARNING | [ ] Direct object instantiation (object of Stream)
+     |         |     is discouraged in Magento 2.
+  96 | WARNING | [ ] Direct object instantiation (object of
+     |         |     PumpStream) is discouraged in Magento 2.
+ 105 | WARNING | [ ] The use of function stream_for() is discouraged
+ 109 | WARNING | [ ] Direct object instantiation (object of Stream)
+     |         |     is discouraged in Magento 2.
+ 109 | WARNING | [ ] The use of function fopen() is discouraged
+ 113 | WARNING | [ ] Direct object instantiation (object of
+     |         |     PumpStream) is discouraged in Magento 2.
+ 116 | WARNING | [ ] The use of function gettype() is discouraged
+ 129 | WARNING | [ ] Consider putting global function "parse_header"
+     |         |     in a static class
+ 162 | WARNING | [ ] Consider putting global function
+     |         |     "normalize_header" in a static class
+ 201 | WARNING | [ ] Consider putting global function
+     |         |     "modify_request" in a static class
+ 241 | WARNING | [ ] Direct object instantiation (object of
+     |         |     ServerRequest) is discouraged in Magento 2.
+ 253 | WARNING | [ ] Direct object instantiation (object of Request)
+     |         |     is discouraged in Magento 2.
+ 274 | WARNING | [ ] Consider putting global function "rewind_body"
+     |         |     in a static class
+ 295 | WARNING | [ ] Consider putting global function "try_fopen" in
+     |         |     a static class
+ 299 | WARNING | [ ] Direct object instantiation (object of
+     |         |     \RuntimeException) is discouraged in Magento 2.
+ 307 | WARNING | [ ] The use of function fopen() is discouraged
+ 328 | WARNING | [ ] Consider putting global function
+     |         |     "copy_to_string" in a static class
+ 369 | WARNING | [ ] Consider putting global function
+     |         |     "copy_to_stream" in a static class
+ 406 | WARNING | [ ] Consider putting global function "hash" in a
+     |         |     static class
+ 436 | WARNING | [ ] Consider putting global function "readline" in a
+     |         |     static class
+ 463 | WARNING | [ ] Consider putting global function "parse_request"
+     |         |     in a static class
+ 473 | WARNING | [ ] Direct object instantiation (object of Request)
+     |         |     is discouraged in Magento 2.
+ 491 | WARNING | [ ] Consider putting global function
+     |         |     "parse_response" in a static class
+ 502 | WARNING | [ ] Direct object instantiation (object of Response)
+     |         |     is discouraged in Magento 2.
+ 524 | WARNING | [ ] Consider putting global function "parse_query"
+     |         |     in a static class
+ 534 | WARNING | [ ] The use of function rawurldecode() is
+     |         |     discouraged
+ 541 | WARNING | [x] Opening brace must be the last content on the
+     |         |     line
+ 541 | WARNING | [x] Closing brace must be on a line by itself
+ 541 | WARNING | [x] Each PHP statement must be on a line by itself
+ 574 | WARNING | [ ] Consider putting global function "build_query"
+     |         |     in a static class
+ 581 | WARNING | [x] Opening brace must be the last content on the
+     |         |     line
+ 581 | WARNING | [x] Closing brace must be on a line by itself
+ 581 | WARNING | [x] Each PHP statement must be on a line by itself
+ 620 | WARNING | [ ] Consider putting global function
+     |         |     "mimetype_from_filename" in a static class
+ 622 | WARNING | [ ] The use of function pathinfo() is discouraged
+ 633 | WARNING | [ ] Consider putting global function
+     |         |     "mimetype_from_extension" in a static class
+ 755 | WARNING | [ ] Consider putting global function
+     |         |     "_parse_message" in a static class
+ 775 | ERROR   | [ ] Identical operator === is not used for testing
+     |         |     the return value of strpos function
+ 795 | WARNING | [ ] Consider putting global function
+     |         |     "_parse_request_uri" in a static class
+ 813 | WARNING | [ ] Consider putting global function
+     |         |     "_caseless_remove" in a static class
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 6 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...gento/magento2-extension/vendor/guzzlehttp/psr7/src/FnStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 18 WARNINGS AFFECTING 18 LINES
+----------------------------------------------------------------------
+  25 | WARNING | Only dependency assignment operations are allowed in
+     |         | constructor. No other operations are allowed.
+  51 | WARNING | The use of function call_user_func() is discouraged
+  72 | WARNING | Direct object instantiation (object of self) is
+     |         | discouraged in Magento 2.
+  77 | WARNING | The use of function call_user_func() is discouraged
+  82 | WARNING | The use of function call_user_func() is discouraged
+  87 | WARNING | The use of function call_user_func() is discouraged
+  92 | WARNING | The use of function call_user_func() is discouraged
+  97 | WARNING | The use of function call_user_func() is discouraged
+ 102 | WARNING | The use of function call_user_func() is discouraged
+ 107 | WARNING | The use of function call_user_func() is discouraged
+ 112 | WARNING | The use of function call_user_func() is discouraged
+ 117 | WARNING | The use of function call_user_func() is discouraged
+ 122 | WARNING | The use of function call_user_func() is discouraged
+ 127 | WARNING | The use of function call_user_func() is discouraged
+ 132 | WARNING | The use of function call_user_func() is discouraged
+ 137 | WARNING | The use of function call_user_func() is discouraged
+ 142 | WARNING | The use of function call_user_func() is discouraged
+ 147 | WARNING | The use of function call_user_func() is discouraged
+----------------------------------------------------------------------
+
+
+FILE: .../magento2-extension/vendor/guzzlehttp/psr7/src/UriNormalizer.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 175 | WARNING | Line exceeds 120 characters; contains 130 characters
+ 201 | WARNING | The use of function rawurldecode() is discouraged
+ 212 | WARNING | Empty FUNCTION statement detected
+----------------------------------------------------------------------
+
+
+FILE: ...ento2-extension/vendor/guzzlehttp/psr7/src/functions_include.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 5 | WARNING | "require" statement detected. File manipulations are
+   |         | discouraged. Concatenating is forbidden.
+----------------------------------------------------------------------
+
+
+FILE: ...o/magento2-extension/vendor/guzzlehttp/psr7/src/MessageTrait.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 126 | WARNING | The use of function stream_for() is discouraged
+----------------------------------------------------------------------
+
+
+FILE: .../magento2-extension/vendor/guzzlehttp/psr7/src/CachingStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 4 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+  26 | WARNING | Only dependency assignment operations are allowed in
+     |         | constructor. No other operations are allowed.
+  31 | WARNING | Direct object instantiation (object of Stream) is
+     |         | discouraged in Magento 2.
+  31 | WARNING | The use of function fopen() is discouraged
+ 133 | WARNING | Direct object instantiation (object of FnStream) is
+     |         | discouraged in Magento 2.
+----------------------------------------------------------------------
+
+
+FILE: ...nto/magento2-extension/vendor/guzzlehttp/psr7/src/PumpStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+  43 | WARNING | Only dependency assignment operations are allowed in
+     |         | constructor. No other operations are allowed.
+  48 | WARNING | Direct object instantiation (object of BufferStream)
+     |         | is discouraged in Magento 2.
+ 155 | WARNING | The use of function call_user_func() is discouraged
+----------------------------------------------------------------------
+
+
+FILE: ...gento/magento2-extension/vendor/guzzlehttp/psr7/src/Response.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 87 | WARNING | Line exceeds 120 characters; contains 134 characters
+ 89 | WARNING | Only dependency assignment operations are allowed in
+    |         | constructor. No other operations are allowed.
+ 99 | WARNING | The use of function stream_for() is discouraged
+----------------------------------------------------------------------
+
+
+FILE: .../magento2-extension/vendor/guzzlehttp/psr7/src/InflateStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 5 WARNINGS AFFECTING 5 LINES
+----------------------------------------------------------------------
+ 21 | WARNING | Only dependency assignment operations are allowed in
+    |         | constructor. No other operations are allowed.
+ 27 | WARNING | Direct object instantiation (object of LimitStream)
+    |         | is discouraged in Magento 2.
+ 29 | WARNING | The use of function stream_filter_append() is
+    |         | discouraged
+ 30 | WARNING | Direct object instantiation (object of Stream) is
+    |         | discouraged in Magento 2.
+ 45 | WARNING | The use of function chr() is discouraged
+----------------------------------------------------------------------
+
+
+FILE: .../magento2-extension/vendor/guzzlehttp/psr7/src/StreamWrapper.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 14 WARNINGS AFFECTING 11 LINES
+----------------------------------------------------------------------
+ 41 | WARNING | The use of function fopen() is discouraged
+ 41 | WARNING | The use of function stream_context_create() is
+    |         | discouraged
+ 51 | WARNING | The use of function stream_get_wrappers() is
+    |         | discouraged
+ 52 | WARNING | The use of function stream_wrapper_register() is
+    |         | discouraged
+ 56 | WARNING | Method name "StreamWrapper::stream_open" is not in
+    |         | camel caps format
+ 56 | WARNING | The method parameter $path is never used
+ 56 | WARNING | The method parameter $opened_path is never used
+ 58 | WARNING | The use of function stream_context_get_options() is
+    |         | discouraged
+ 70 | WARNING | Method name "StreamWrapper::stream_read" is not in
+    |         | camel caps format
+ 75 | WARNING | Method name "StreamWrapper::stream_write" is not in
+    |         | camel caps format
+ 80 | WARNING | Method name "StreamWrapper::stream_tell" is not in
+    |         | camel caps format
+ 85 | WARNING | Method name "StreamWrapper::stream_eof" is not in
+    |         | camel caps format
+ 90 | WARNING | Method name "StreamWrapper::stream_seek" is not in
+    |         | camel caps format
+ 97 | WARNING | Method name "StreamWrapper::stream_stat" is not in
+    |         | camel caps format
+----------------------------------------------------------------------
+
+
+FILE: ...magento/magento2-extension/vendor/guzzlehttp/psr7/src/Stream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 9 WARNINGS AFFECTING 9 LINES
+----------------------------------------------------------------------
+  51 | WARNING | Only dependency assignment operations are allowed in
+     |         | constructor. No other operations are allowed.
+  66 | WARNING | The use of function stream_get_meta_data() is
+     |         | discouraged
+  94 | WARNING | The use of function stream_get_contents() is
+     |         | discouraged
+ 102 | WARNING | The use of function stream_get_contents() is
+     |         | discouraged
+ 115 | WARNING | The use of function fclose() is discouraged
+ 218 | WARNING | The use of function fread() is discouraged
+ 234 | WARNING | The use of function fwrite() is discouraged
+ 248 | WARNING | The use of function stream_get_meta_data() is
+     |         | discouraged
+ 253 | WARNING | The use of function stream_get_meta_data() is
+     |         | discouraged
+----------------------------------------------------------------------
+
+
+FILE: ...agento/magento2-extension/vendor/guzzlehttp/psr7/src/Request.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 32 | WARNING | Only dependency assignment operations are allowed in
+    |         | constructor. No other operations are allowed.
+ 40 | WARNING | Direct object instantiation (object of Uri) is
+    |         | discouraged in Magento 2.
+ 53 | WARNING | The use of function stream_for() is discouraged
+----------------------------------------------------------------------
+
+
+FILE: ...magento2-extension/vendor/guzzlehttp/psr7/src/LazyOpenStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
+----------------------------------------------------------------------
+ 35 | WARNING | Use of protected class members is discouraged.
+ 37 | WARNING | The use of function stream_for() is discouraged
+----------------------------------------------------------------------
+
+
+FILE: ...o/magento2-extension/vendor/guzzlehttp/psr7/src/BufferStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 121 | WARNING | Comment refers to a TODO task "What should happen
+     |         | here?"
+----------------------------------------------------------------------
+
+
+FILE: ...rk/magento/magento2-extension/vendor/guzzlehttp/psr7/src/Uri.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 19 WARNINGS AFFECTING 17 LINES
+----------------------------------------------------------------------
+  65 | WARNING | [ ] Only dependency assignment operations are
+     |         |     allowed in constructor. No other operations are
+     |         |     allowed.
+  69 | WARNING | [ ] The use of function parse_url() is discouraged
+ 123 | WARNING | [x] Expected 1 space before logical operator; 0
+     |         |     found
+ 153 | WARNING | [ ] Line exceeds 120 characters; contains 125
+     |         |     characters
+ 253 | WARNING | [ ] Line exceeds 120 characters; contains 124
+     |         |     characters
+ 285 | WARNING | [ ] Direct object instantiation (object of self) is
+     |         |     discouraged in Magento 2.
+ 309 | WARNING | [ ] The use of function rawurldecode() is
+     |         |     discouraged
+ 311 | WARNING | [ ] The use of function rawurldecode() is
+     |         |     discouraged
+ 339 | WARNING | [ ] The use of function rawurldecode() is
+     |         |     discouraged
+ 341 | WARNING | [ ] The use of function rawurldecode() is
+     |         |     discouraged
+ 371 | WARNING | [ ] Direct object instantiation (object of self) is
+     |         |     discouraged in Magento 2.
+ 687 | WARNING | [ ] Line exceeds 120 characters; contains 131
+     |         |     characters
+ 690 | WARNING | [ ] Line exceeds 120 characters; contains 135
+     |         |     characters
+ 693 | WARNING | [ ] Silencing errors is discouraged
+ 693 | WARNING | [ ] The use of function trigger_error() is
+     |         |     discouraged
+ 694 | WARNING | [ ] Line exceeds 120 characters; contains 126
+     |         |     characters
+ 695 | WARNING | [ ] Line exceeds 120 characters; contains 125
+     |         |     characters
+ 699 | WARNING | [ ] Line exceeds 120 characters; contains 129
+     |         |     characters
+ 699 | WARNING | [ ] This comment is 70% valid code; is this
+     |         |     commented out code?
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...o2-extension/vendor/guzzlehttp/psr7/src/StreamDecoratorTrait.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+  47 | WARNING | The use of function trigger_error() is discouraged
+  68 | WARNING | The use of function call_user_func_array() is
+     |         | discouraged
+ 145 | WARNING | Use of protected class members is discouraged.
+----------------------------------------------------------------------
+
+
+FILE: ...o/magento2-extension/vendor/guzzlehttp/psr7/src/UploadedFile.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 7 WARNINGS AFFECTING 7 LINES
+----------------------------------------------------------------------
+  67 | WARNING | Only dependency assignment operations are allowed in
+     |         | constructor. No other operations are allowed.
+  95 | WARNING | Direct object instantiation (object of Stream) is
+     |         | discouraged in Magento 2.
+ 147 | WARNING | The use of function gettype() is discouraged
+ 233 | WARNING | Direct object instantiation (object of
+     |         | LazyOpenStream) is discouraged in Magento 2.
+ 259 | WARNING | The use of function rename() is discouraged
+ 260 | WARNING | The use of function move_uploaded_file() is
+     |         | discouraged
+ 264 | WARNING | Direct object instantiation (object of
+     |         | LazyOpenStream) is discouraged in Magento 2.
+----------------------------------------------------------------------
+
+
+FILE: ...o/magento2-extension/vendor/guzzlehttp/psr7/src/AppendStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
+----------------------------------------------------------------------
+  25 | WARNING | [ ] Only dependency assignment operations are
+     |         |     allowed in constructor. No other operations are
+     |         |     allowed.
+ 181 | WARNING | [x] Blank line found at start of control structure
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...to/magento2-extension/vendor/guzzlehttp/psr7/src/UriResolver.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 3 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 102 | WARNING | Direct object instantiation (object of Uri) is
+     |         | discouraged in Magento 2.
+ 140 | WARNING | Line exceeds 120 characters; contains 123 characters
+ 215 | WARNING | Empty FUNCTION statement detected
+----------------------------------------------------------------------
+
+
+FILE: ...to/magento2-extension/vendor/guzzlehttp/psr7/src/LimitStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 2 WARNINGS AFFECTING 2 LINES
+----------------------------------------------------------------------
+  4 | WARNING | [x] There must be one blank line after the last USE
+    |         |     statement; 2 found;
+ 27 | WARNING | [ ] Only dependency assignment operations are allowed
+    |         |     in constructor. No other operations are allowed.
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: .../magento2-extension/vendor/guzzlehttp/psr7/src/ServerRequest.php
+----------------------------------------------------------------------
+FOUND 3 ERRORS AND 27 WARNINGS AFFECTING 26 LINES
+----------------------------------------------------------------------
+ 120 | WARNING | [ ] Direct object instantiation (object of
+     |         |     UploadedFile) is discouraged in Magento 2.
+ 168 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 168 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 169 | WARNING | [ ] The use of function getallheaders() is
+     |         |     discouraged
+ 171 | WARNING | [ ] Direct object instantiation (object of
+     |         |     LazyOpenStream) is discouraged in Magento 2.
+ 172 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 172 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 174 | WARNING | [ ] Direct object instantiation (object of
+     |         |     ServerRequest) is discouraged in Magento 2.
+ 174 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 177 | WARNING | [ ] Direct use of $_COOKIE Superglobal detected.
+ 178 | ERROR   | [ ] Direct use of $_GET Superglobal detected.
+ 179 | ERROR   | [ ] Direct use of $_POST Superglobal detected.
+ 180 | ERROR   | [ ] Direct use of $_FILES Superglobal detected.
+ 188 | WARNING | [x] Opening brace should be on a new line
+ 189 | WARNING | [ ] Direct object instantiation (object of Uri) is
+     |         |     discouraged in Magento 2.
+ 191 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 191 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 194 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 195 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 201 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 202 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 203 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 204 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 207 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 208 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 212 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 213 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 221 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 222 | WARNING | [ ] Direct use of $_SERVER Superglobal detected.
+ 227 | WARNING | [ ] Code must not contain multiple empty lines in a
+     |         |     row; found 2 empty lines.
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...agento2-extension/vendor/guzzlehttp/psr7/src/MultipartStream.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 11 WARNINGS AFFECTING 9 LINES
+----------------------------------------------------------------------
+  28 | WARNING | [ ] Only dependency assignment operations are
+     |         |     allowed in constructor. No other operations are
+     |         |     allowed.
+  65 | WARNING | [ ] Use of protected class members is discouraged.
+  67 | WARNING | [ ] Direct object instantiation (object of
+     |         |     AppendStream) is discouraged in Magento 2.
+  74 | WARNING | [ ] The use of function stream_for() is discouraged
+  87 | WARNING | [ ] The use of function stream_for() is discouraged
+ 103 | WARNING | [ ] The use of function stream_for() is discouraged
+ 105 | WARNING | [ ] The use of function stream_for() is discouraged
+ 117 | WARNING | [x] Opening parenthesis of a multi-line function
+     |         |     call must be the last content on the line
+ 119 | WARNING | [x] Multi-line function call not indented correctly;
+     |         |     expected 16 spaces but found 20
+ 119 | WARNING | [ ] The use of function basename() is discouraged
+ 119 | WARNING | [x] Closing parenthesis of a multi-line function
+     |         |     call must be on a line by itself
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 3 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...gento/magento2-extension/vendor/composer/autoload_namespaces.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 4 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 5 | WARNING | [ ] The use of function dirname() is discouraged
+ 5 | WARNING | [ ] The use of function dirname() is discouraged
+ 6 | WARNING | [ ] The use of function dirname() is discouraged
+ 8 | WARNING | [x] Short array syntax must be used to define arrays
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: .../Work/magento/magento2-extension/vendor/composer/ClassLoader.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 19 WARNINGS AFFECTING 19 LINES
+----------------------------------------------------------------------
+  46 | WARNING | [x] Short array syntax must be used to define arrays
+  47 | WARNING | [x] Short array syntax must be used to define arrays
+  48 | WARNING | [x] Short array syntax must be used to define arrays
+  51 | WARNING | [x] Short array syntax must be used to define arrays
+  52 | WARNING | [x] Short array syntax must be used to define arrays
+  55 | WARNING | [x] Short array syntax must be used to define arrays
+  57 | WARNING | [x] Short array syntax must be used to define arrays
+  63 | WARNING | [ ] The use of function call_user_func_array() is
+     |         |     discouraged
+  66 | WARNING | [x] Short array syntax must be used to define arrays
+ 302 | WARNING | [x] Short array syntax must be used to define arrays
+ 310 | WARNING | [x] Short array syntax must be used to define arrays
+ 370 | WARNING | [ ] Function's cyclomatic complexity (17) exceeds
+     |         |     10; consider refactoring the function
+ 384 | WARNING | [ ] The use of function file_exists() is discouraged
+ 394 | WARNING | [ ] The use of function file_exists() is discouraged
+ 413 | WARNING | [ ] The use of function file_exists() is discouraged
+ 423 | WARNING | [ ] The use of function file_exists() is discouraged
+ 429 | WARNING | [ ] The use of function
+     |         |     stream_resolve_include_path() is discouraged
+ 442 | WARNING | [ ] Consider putting global function "includeFile"
+     |         |     in a static class
+ 444 | WARNING | [ ] "include" statement detected. File manipulations
+     |         |     are discouraged. Variables inside are insecure.
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 10 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...ork/magento/magento2-extension/vendor/composer/autoload_psr4.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 7 WARNINGS AFFECTING 6 LINES
+----------------------------------------------------------------------
+  5 | WARNING | [ ] The use of function dirname() is discouraged
+  5 | WARNING | [ ] The use of function dirname() is discouraged
+  6 | WARNING | [ ] The use of function dirname() is discouraged
+  8 | WARNING | [x] Short array syntax must be used to define arrays
+  9 | WARNING | [x] Short array syntax must be used to define arrays
+ 10 | WARNING | [x] Short array syntax must be used to define arrays
+ 11 | WARNING | [x] Short array syntax must be used to define arrays
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 4 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...magento/magento2-extension/vendor/composer/autoload_classmap.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 4 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 5 | WARNING | [ ] The use of function dirname() is discouraged
+ 5 | WARNING | [ ] The use of function dirname() is discouraged
+ 6 | WARNING | [ ] The use of function dirname() is discouraged
+ 8 | WARNING | [x] Short array syntax must be used to define arrays
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...k/magento/magento2-extension/vendor/composer/autoload_static.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 16 WARNINGS AFFECTING 16 LINES
+----------------------------------------------------------------------
+  9 | WARNING | [x] Short array syntax must be used to define arrays
+ 14 | WARNING | [x] Short array syntax must be used to define arrays
+ 15 | WARNING | [x] Whitespace found at end of line
+ 16 | WARNING | [x] Short array syntax must be used to define arrays
+ 19 | WARNING | [x] Whitespace found at end of line
+ 20 | WARNING | [x] Short array syntax must be used to define arrays
+ 23 | WARNING | [x] Whitespace found at end of line
+ 24 | WARNING | [x] Short array syntax must be used to define arrays
+ 29 | WARNING | [x] Short array syntax must be used to define arrays
+ 30 | WARNING | [x] Whitespace found at end of line
+ 31 | WARNING | [x] Short array syntax must be used to define arrays
+ 34 | WARNING | [x] Whitespace found at end of line
+ 35 | WARNING | [x] Short array syntax must be used to define arrays
+ 38 | WARNING | [x] Whitespace found at end of line
+ 39 | WARNING | [x] Short array syntax must be used to define arrays
+ 50 | WARNING | [x] Function closing brace must go on the next line
+    |         |     following the body; found 1 blank lines before
+    |         |     brace
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 16 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...ork/magento/magento2-extension/vendor/composer/autoload_real.php
+----------------------------------------------------------------------
+FOUND 3 ERRORS AND 15 WARNINGS AFFECTING 16 LINES
+----------------------------------------------------------------------
+  5 | ERROR   | [ ] Each class must be in a namespace of at least one
+    |         |     level (a top-level vendor name)
+ 12 | WARNING | [ ] "require" statement detected. File manipulations
+    |         |     are discouraged. Concatenating is forbidden.
+ 22 | WARNING | [x] Short array syntax must be used to define arrays
+ 22 | WARNING | [ ] Line exceeds 120 characters; contains 126
+    |         |     characters
+ 23 | WARNING | [ ] Direct object instantiation (object of
+    |         |     \Composer\Autoload\ClassLoader) is discouraged in
+    |         |     Magento 2.
+ 24 | WARNING | [x] Short array syntax must be used to define arrays
+ 26 | WARNING | [ ] Line exceeds 120 characters; contains 160
+    |         |     characters
+ 28 | WARNING | [ ] "require_once" statement detected. File
+    |         |     manipulations are discouraged. Concatenating is
+    |         |     forbidden.
+ 30 | WARNING | [ ] The use of function call_user_func() is
+    |         |     discouraged
+ 30 | WARNING | [ ] Line exceeds 120 characters; contains 123
+    |         |     characters
+ 32 | WARNING | [ ] "require" statement detected. File manipulations
+    |         |     are discouraged. Concatenating is forbidden.
+ 37 | WARNING | [ ] "require" statement detected. File manipulations
+    |         |     are discouraged. Concatenating is forbidden.
+ 42 | WARNING | [ ] "require" statement detected. File manipulations
+    |         |     are discouraged. Concatenating is forbidden.
+ 53 | WARNING | [ ] "require" statement detected. File manipulations
+    |         |     are discouraged. Concatenating is forbidden.
+ 63 | WARNING | [ ] Consider putting global function
+    |         |     "composerRequire2377be198e44bbe0287c0aa51c8a9633"
+    |         |     in a static class
+ 65 | ERROR   | [ ] Direct use of $GLOBALS Superglobal detected.
+ 66 | WARNING | [ ] "require" statement detected. File manipulations
+    |         |     are discouraged. Variables inside are insecure.
+ 68 | ERROR   | [ ] Direct use of $GLOBALS Superglobal detected.
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 2 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...rk/magento/magento2-extension/vendor/composer/autoload_files.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 4 WARNINGS AFFECTING 3 LINES
+----------------------------------------------------------------------
+ 5 | WARNING | [ ] The use of function dirname() is discouraged
+ 5 | WARNING | [ ] The use of function dirname() is discouraged
+ 6 | WARNING | [ ] The use of function dirname() is discouraged
+ 8 | WARNING | [x] Short array syntax must be used to define arrays
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
+
+
+FILE: ...o/magento2-extension/Block/System/Config/Form/Field/Disabled.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 1 WARNING AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 13 | WARNING | Use of protected class members is discouraged.
+----------------------------------------------------------------------
+
+
+FILE: /Users/iben/Work/magento/magento2-extension/Block/Success.php
+----------------------------------------------------------------------
+FOUND 0 ERRORS AND 9 WARNINGS AFFECTING 6 LINES
+----------------------------------------------------------------------
+ 17 | WARNING | Use of protected class members is discouraged.
+ 17 | WARNING | Property name "$_checkoutSession" should not be
+    |         | prefixed with an underscore to indicate visibility
+ 18 | WARNING | Use of protected class members is discouraged.
+ 18 | WARNING | Property name "$_orderFactory" should not be prefixed
+    |         | with an underscore to indicate visibility
+ 19 | WARNING | Use of protected class members is discouraged.
+ 19 | WARNING | Property name "$_scopeConfig" should not be prefixed
+    |         | with an underscore to indicate visibility
+ 24 | WARNING | Use of protected class members is discouraged.
+ 27 | WARNING | Session object MUST NOT be requested in constructor.
+    |         | It can only be passed as a method argument.
+ 99 | WARNING | Line exceeds 120 characters; contains 133 characters
+----------------------------------------------------------------------
+
+Time: 12.9 secs; Memory: 22Mb
+

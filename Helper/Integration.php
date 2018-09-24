@@ -10,8 +10,10 @@ use Magento\Integration\Model\AuthorizationService;
 use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
-use Magento\Integration\Model\OauthService;
+use Magento\Setup\Exception;
+use Magento\Framework\Serialize\Serializer\Json;
 use Psr\Log\LoggerInterface;
+use Zend\Uri\Http;
 
 class Integration extends AbstractHelper
 {
@@ -21,10 +23,10 @@ class Integration extends AbstractHelper
     private $authorizationService;
     /**  @var LoggerInterface */
     private $logger;
+    /** @var Json */
+    private $json;
     /** @var Token */
     private $token;
-    /** @var OauthService */
-    private $oauthService;
     /** @var Provider */
     private $tokenProvider;
     /** @var WriterInterface */
@@ -37,17 +39,21 @@ class Integration extends AbstractHelper
         'email'      => 'emarsys@emarsys.com',
         'status'     => '1',
         'endpoint'   => 'http://localhost:9300',
-        'setup_type' => '0',
+        'setup_type' => '0'
     ];
-
+    /**
+     * @var \Zend\Uri\Http
+     */
+    private $http;
 
     /**
      * Integration constructor.
      * @param Context $context
      * @param IntegrationService $integrationService
-     * @param OauthService $oauthService
      * @param AuthorizationService $authorizationService
      * @param LoggerInterface $logger
+     * @param Http $http
+     * @param Json $json
      * @param Token $token
      * @param Provider $tokenProvider
      * @param WriterInterface $configWriter
@@ -56,9 +62,10 @@ class Integration extends AbstractHelper
     public function __construct(
         Context $context,
         IntegrationService $integrationService,
-        OauthService $oauthService,
         AuthorizationService $authorizationService,
         LoggerInterface $logger,
+        Http $http,
+        Json $json,
         Token $token,
         Provider $tokenProvider,
         WriterInterface $configWriter,
@@ -68,11 +75,12 @@ class Integration extends AbstractHelper
         $this->integrationService = $integrationService;
         $this->token = $token;
         $this->authorizationService = $authorizationService;
-        $this->oauthService = $oauthService;
         $this->tokenProvider = $tokenProvider;
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
         $this->logger = $logger;
+        $this->json = $json;
+        $this->http = $http;
     }
 
     /**
@@ -92,17 +100,20 @@ class Integration extends AbstractHelper
     }
 
     /**
+     * @return string
+     * @throws Exception
      * @throws \Magento\Framework\Oauth\Exception
      */
     public function saveConnectTokenToConfig()
     {
         $token = $this->getToken()['token'];
-        $parsedUrl = parse_url($this->getBaseUrl());
-        $hostname = $parsedUrl['host'];
-        if (isset($parsedUrl['port'])) {
-            $hostname .= ':' . $parsedUrl['port'];
+        $parsedUrl = $this->getBaseUrl();
+        $hostname = $parsedUrl->getHost();
+        $port = $parsedUrl->getPort();
+        if ($port && $port !== 80) {
+            $hostname .= ':' . $port;
         }
-        $connectJson = json_encode(['hostname' => $hostname, 'token' => $token]);
+        $connectJson = $this->json->serialize(compact('hostname', 'token'));
 
         $connectToken = base64_encode($connectJson);
 
@@ -111,6 +122,11 @@ class Integration extends AbstractHelper
         return $connectToken;
     }
 
+    /**
+     * @return mixed|string
+     * @throws Exception
+     * @throws \Magento\Framework\Oauth\Exception
+     */
     public function getConnectToken()
     {
         $connectToken = $this->scopeConfig->getValue('emartech/emarsys/connecttoken');
@@ -142,13 +158,20 @@ class Integration extends AbstractHelper
     }
 
     /**
-     * @return mixed
+     * @return Http
+     * @throws Exception
      */
     private function getBaseUrl()
     {
         $baseUrl = $this->scopeConfig->getValue('web/unsecure/base_url');
 
-        return $baseUrl;
+        if (!$baseUrl) {
+            throw new Exception('Missing base_url setting. Set web/unsecure/base_url.');
+        }
+
+        $parsedUrl = $this->http->parse($baseUrl);
+
+        return $parsedUrl;
     }
 
     /**
