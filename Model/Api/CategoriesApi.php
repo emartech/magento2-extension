@@ -85,6 +85,16 @@ class CategoriesApi implements CategoriesApiInterface
     private $storeIds = [];
 
     /**
+     * @var array
+     */
+    private $storeCategoryAttributeCodes = ['name', 'image', 'description', 'is_active', 'store_id'];
+
+    /**
+     * @var array
+     */
+    private $globalCategoryAttributeCodes = ['entity_id', 'path', 'children_count', 'stores'];
+
+    /**
      * CategoriesApi constructor.
      *
      * @param StoreManagerInterface                 $storeManager
@@ -187,23 +197,13 @@ class CategoriesApi implements CategoriesApiInterface
      */
     private function joinData()
     {
-        $storeCategoryAttributeCodes = [];
-        $globalCategoryAttributeCodes = [];
-        try {
-            $storeCategoryAttributeCodes = $this->containerBuilder->getReflectionClass(
-                '\Emartech\Emarsys\Api\Data\CategoryStoreDataInterface'
-            )->getConstants();
-
-            $globalCategoryAttributeCodes = $this->containerBuilder->getReflectionClass(
-                '\Emartech\Emarsys\Api\Data\CategoryInterface'
-            )->getConstants();
-        } catch (\Exception $e) { //@codingStandardsIgnoreLine
-        }
-
         $this->categoryAttributeCollection = $this->categoryAttributeCollectionFactory->create();
         $this->categoryAttributeCollection
             ->addFieldToFilter('attribute_code', [
-                'in' => array_values(array_merge($storeCategoryAttributeCodes, $globalCategoryAttributeCodes)),
+                'in' => array_values(array_merge(
+                    $this->storeCategoryAttributeCodes,
+                    $this->globalCategoryAttributeCodes
+                )),
             ]);
 
         $mainTableName = $this->categoryCollection->getResource()->getTable('catalog_category_entity');
@@ -212,7 +212,7 @@ class CategoriesApi implements CategoriesApiInterface
         foreach ($this->categoryAttributeCollection as $categoryAttribute) {
             if ($categoryAttribute->getBackendTable() === $mainTableName) {
                 $this->categoryCollection->addAttributeToSelect($categoryAttribute->getAttributeCode());
-            } elseif (in_array($categoryAttribute->getAttributeCode(), $globalCategoryAttributeCodes)) {
+            } elseif (in_array($categoryAttribute->getAttributeCode(), $this->globalCategoryAttributeCodes)) {
                 $tableAlias = 'table_' . $categoryAttribute->getAttributeId();
                 $valueAlias = $this->getAttributeValueAlias($categoryAttribute->getAttributeCode());
 

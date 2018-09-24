@@ -5,12 +5,12 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class Collection extends AbstractCollection
 {
-  protected $_idFieldName = 'event_id';
+    protected $_idFieldName = 'event_id';
   /**
    * {@inheritdoc}
    */
-  protected function _construct()
-  {
-    $this->_init('Emartech\Emarsys\Model\Event', 'Emartech\Emarsys\Model\ResourceModel\Event');
-  }
+    protected function _construct()
+    {
+        $this->_init('Emartech\Emarsys\Model\Event', 'Emartech\Emarsys\Model\ResourceModel\Event');
+    }
 }

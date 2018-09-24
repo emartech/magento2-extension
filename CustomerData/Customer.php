@@ -2,7 +2,6 @@
 
 namespace Emartech\Emarsys\CustomerData;
 
-use Magento\Customer\Helper\Session\CurrentCustomer;
 use Magento\Customer\CustomerData\Customer as OriginalCustomerData;
 
 /**
@@ -12,22 +11,6 @@ use Magento\Customer\CustomerData\Customer as OriginalCustomerData;
 class Customer extends OriginalCustomerData
 {
     /**
-     * @var CurrentCustomer
-     */
-    protected $currentCustomer;
-
-    /**
-     * Customer constructor.
-     *
-     * @param CurrentCustomer $currentCustomer
-     */
-    public function __construct(
-        CurrentCustomer $currentCustomer
-    ) {
-        $this->currentCustomer = $currentCustomer;
-    }
-
-    /**
      * @param OriginalCustomerData $subject
      * @param                      $result
      *
@@ -35,9 +18,9 @@ class Customer extends OriginalCustomerData
      */
     public function afterGetSectionData(\Magento\Customer\CustomerData\Customer $subject, $result)
     {
-        $customerId = $this->currentCustomer->getCustomerId();
+        $customerId = $subject->currentCustomer->getCustomerId();
         if ($customerId) {
-            $customer = $this->currentCustomer->getCustomer();
+            $customer = $subject->currentCustomer->getCustomer();
             $result['id'] = $customerId;
             $result['email'] = $customer->getEmail();
         }
