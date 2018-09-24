@@ -3,7 +3,8 @@
   "description": "Magento2 integration for the Emarsys Marketing Platform",
   "license": "proprietary",
   "require": {
-    "php": ">7.0.1"
+    "php": ">7.0.1",
+    "magento/product-community-edition": "2.2.6"
   },
   "type": "magento2-module",
   "version": "1.0.0",
@@ -24,5 +25,8 @@
       "Marketing_events.md",
       "docs"
     ]
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
   }
 }
