@@ -12,12 +12,12 @@ use \Magento\Customer\Api\CustomerRepositoryInterface;
 use \Magento\Customer\Helper\View as CustomerViewHelper;
 use \Magento\Framework\Serialize\Serializer\Json;
 use \Psr\Log\LoggerInterface;
-use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Creditmemo;
-use Emartech\Emarsys\Model\Event as EventModel;
+use \Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
+use \Magento\Framework\Exception\LocalizedException;
+use \Magento\Framework\Exception\NoSuchEntityException;
+use \Magento\Sales\Model\Order\Invoice;
+use \Magento\Sales\Model\Order\Creditmemo;
+use \Emartech\Emarsys\Model\Event as EventModel;
 
 /**
  * Class SenderBuilderPlugin
@@ -64,7 +64,6 @@ class SenderBuilderPlugin
      * @param CustomerViewHelper          $customerViewHelper
      * @param Json                        $json
      * @param LoggerInterface             $logger
-     * @param ContainerBuilder            $containerBuilder
      */
     public function __construct(
         ConfigReader $configReader,
@@ -99,7 +98,6 @@ class SenderBuilderPlugin
         //----
         try {
             $reflection = new \ReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
-
             /** @var \Magento\Sales\Model\Order\Email\Container\OrderIdentity $identityContainer */
             $identityContainer = $reflection->getProperty('identityContainer');
             $identityContainer->setAccessible(true);
