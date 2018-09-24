@@ -2,18 +2,18 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
-use Magento\Customer\Model\ResourceModel\Customer\Collection;
-use Magento\Customer\Model\Customer;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
+use \Magento\Customer\Model\ResourceModel\Customer\Collection;
+use \Magento\Customer\Model\Customer;
+use \Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use Emartech\Emarsys\Api\CustomersApiInterface;
-use Emartech\Emarsys\Api\Data\CustomerInterfaceFactory;
-use Emartech\Emarsys\Api\Data\CustomerInterface;
-use Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory;
-use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
-use Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory;
-use Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
+use \Emartech\Emarsys\Api\CustomersApiInterface;
+use \Emartech\Emarsys\Api\Data\CustomerInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\CustomerInterface;
+use \Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\CustomerAddressInterface;
+use \Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
 
 /**
  * Class CustomersApi
@@ -178,7 +178,7 @@ class CustomersApi implements CustomersApiInterface
         foreach ($this->customerCollection as $customer) {
             $customerArray[] = $this->parseCustomer($customer);
         }
-        
+
         return $customerArray;
     }
 

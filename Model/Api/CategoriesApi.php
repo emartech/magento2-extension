@@ -2,25 +2,25 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Magento\Catalog\Model\ResourceModel\Category\Attribute\CollectionFactory as CategoryAttributeCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Category\Attribute\Collection as CategoryAttributeCollection;
-use Magento\Framework\Data\Collection as DataCollection;
-use Magento\Catalog\Model\Category;
-use Magento\Store\Model\Store;
-use Magento\Framework\UrlInterface;
-use Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Webapi\Exception as WebApiException;
+use \Magento\Store\Model\StoreManagerInterface;
+use \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
+use \Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
+use \Symfony\Component\DependencyInjection\ContainerBuilder;
+use \Magento\Catalog\Model\ResourceModel\Category\Attribute\CollectionFactory as CategoryAttributeCollectionFactory;
+use \Magento\Catalog\Model\ResourceModel\Category\Attribute\Collection as CategoryAttributeCollection;
+use \Magento\Framework\Data\Collection as DataCollection;
+use \Magento\Catalog\Model\Category;
+use \Magento\Store\Model\Store;
+use \Magento\Framework\UrlInterface;
+use \Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
+use \Magento\Framework\App\Config\ScopeConfigInterface;
+use \Magento\Framework\Webapi\Exception as WebApiException;
 
-use Emartech\Emarsys\Api\CategoriesApiInterface;
-use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterfaceFactory;
-use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface;
-use Emartech\Emarsys\Api\Data\CategoryInterfaceFactory;
-use Emartech\Emarsys\Api\Data\CategoryStoreDataInterfaceFactory;
+use \Emartech\Emarsys\Api\CategoriesApiInterface;
+use \Emartech\Emarsys\Api\Data\CategoriesApiResponseInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface;
+use \Emartech\Emarsys\Api\Data\CategoryInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\CategoryStoreDataInterfaceFactory;
 
 class CategoriesApi implements CategoriesApiInterface
 {

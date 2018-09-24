@@ -2,32 +2,32 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
-use Magento\Framework\Data\Collection as DataCollection;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
-use Magento\Catalog\Model\Product;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\Product\UrlFactory as ProductUrlFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
-use Magento\Store\Model\Store;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Customer\Model\Group as CustomerGroupModel;
+use \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
+use \Magento\Catalog\Model\Category;
+use \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use \Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use \Magento\Framework\Data\Collection as DataCollection;
+use \Symfony\Component\DependencyInjection\ContainerBuilder;
+use \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
+use \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
+use \Magento\Catalog\Model\Product;
+use \Magento\Store\Model\StoreManagerInterface;
+use \Magento\Catalog\Model\Product\UrlFactory as ProductUrlFactory;
+use \Magento\Framework\App\Config\ScopeConfigInterface;
+use \Magento\Store\Model\ScopeInterface;
+use \Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
+use \Magento\Store\Model\Store;
+use \Magento\Framework\UrlInterface;
+use \Magento\Framework\Webapi\Exception as WebApiException;
+use \Magento\Customer\Model\Group as CustomerGroupModel;
 
-use Emartech\Emarsys\Api\ProductsApiInterface;
-use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
-use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ImagesInterface;
-use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
+use \Emartech\Emarsys\Api\ProductsApiInterface;
+use \Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
+use \Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
+use \Emartech\Emarsys\Api\Data\ImagesInterface;
+use \Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
 
 class ProductsApi implements ProductsApiInterface
 {
