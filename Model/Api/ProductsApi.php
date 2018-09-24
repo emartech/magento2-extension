@@ -7,7 +7,6 @@ use \Magento\Catalog\Model\Category;
 use \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use \Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use \Magento\Framework\Data\Collection as DataCollection;
-use \Symfony\Component\DependencyInjection\ContainerBuilder;
 use \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
 use \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
 use \Magento\Catalog\Model\Product;
@@ -49,11 +48,6 @@ class ProductsApi implements ProductsApiInterface
      * @var ProductCollection
      */
     private $productCollection;
-
-    /**
-     * @var ContainerBuilder
-     */
-    private $containerBuilder;
 
     /**
      * @var ProductAttributeCollectionFactory
@@ -150,7 +144,6 @@ class ProductsApi implements ProductsApiInterface
      *
      * @param CategoryCollectionFactory           $categoryCollectionFactory
      * @param StoreManagerInterface               $storeManager
-     * @param ContainerBuilder                    $containerBuilder
      * @param ScopeConfigInterface                $scopeConfig
      * @param ProductCollectionFactory            $productCollectionFactory
      * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
@@ -164,7 +157,6 @@ class ProductsApi implements ProductsApiInterface
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
         StoreManagerInterface $storeManager,
-        ContainerBuilder $containerBuilder,
         ScopeConfigInterface $scopeConfig,
         ProductCollectionFactory $productCollectionFactory,
         ProductsApiResponseInterfaceFactory $productsApiResponseFactory,
@@ -178,7 +170,6 @@ class ProductsApi implements ProductsApiInterface
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
         $this->scopeConfig = $scopeConfig;
-        $this->containerBuilder = $containerBuilder;
         $this->storeManager = $storeManager;
         $this->productUrlFactory = $productUrlFactory;
 
