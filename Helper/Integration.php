@@ -11,6 +11,7 @@ use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Integration\Model\OauthService;
+use Psr\Log\LoggerInterface;
 
 class Integration extends AbstractHelper
 {
@@ -18,6 +19,8 @@ class Integration extends AbstractHelper
     private $integrationService;
     /** @var AuthorizationService */
     private $authorizationService;
+    /**  @var LoggerInterface */
+    private $logger;
     /** @var Token */
     private $token;
     /** @var OauthService */
@@ -37,14 +40,17 @@ class Integration extends AbstractHelper
         'setup_type' => '0',
     ];
 
+
     /**
-     * @param Context              $context
-     * @param IntegrationService   $integrationService
-     * @param OauthService         $oauthService
+     * Integration constructor.
+     * @param Context $context
+     * @param IntegrationService $integrationService
+     * @param OauthService $oauthService
      * @param AuthorizationService $authorizationService
-     * @param Token                $token
-     * @param Provider             $tokenProvider
-     * @param WriterInterface      $configWriter
+     * @param LoggerInterface $logger
+     * @param Token $token
+     * @param Provider $tokenProvider
+     * @param WriterInterface $configWriter
      * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
@@ -52,6 +58,7 @@ class Integration extends AbstractHelper
         IntegrationService $integrationService,
         OauthService $oauthService,
         AuthorizationService $authorizationService,
+        LoggerInterface $logger,
         Token $token,
         Provider $tokenProvider,
         WriterInterface $configWriter,
@@ -65,6 +72,7 @@ class Integration extends AbstractHelper
         $this->tokenProvider = $tokenProvider;
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
+        $this->logger = $logger;
     }
 
     /**
@@ -78,7 +86,7 @@ class Integration extends AbstractHelper
                 $this->authorizationService->grantAllPermissions($integration->getId());
                 $this->token->createVerifierToken($integration->getConsumerId());
             } catch (\Exception $e) {
-                echo 'Error : ' . $e->getMessage();
+                $this->logger->error($e);
             }
         }
     }
