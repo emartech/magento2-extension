@@ -56,7 +56,7 @@ class Success extends \Magento\Framework\View\Element\Template
         $order = $this->getOrder();
         foreach ($order->getAllItems() as $item) {
             if ($this->notBundleProduct($item) && $this->notConfigurableChild($item)) {
-                $qty = intval($item->getQtyOrdered());
+                $qty = (int) $item->getQtyOrdered();
                 $sku = $item->getSku();
                 $price = $item->getBasePrice() - $item->getBaseDiscountAmount();
 
