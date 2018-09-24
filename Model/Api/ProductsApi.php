@@ -110,6 +110,9 @@ class ProductsApi implements ProductsApiInterface
      */
     private $categories = [];
 
+    /**
+     * @var array
+     */
     private $storeProductAttributeCodes = [
         'name',
         'price',
@@ -124,6 +127,9 @@ class ProductsApi implements ProductsApiInterface
         'special_to_date',
     ];
 
+    /**
+     * @var array
+     */
     private $globalProductAttributeCodes = [
         'entity_id',
         'type',
