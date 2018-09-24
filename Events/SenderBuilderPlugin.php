@@ -11,8 +11,8 @@ use Emartech\Emarsys\Model\EventRepository;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Helper\View as CustomerViewHelper;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Sales\Model\Order\Email\Container\IdentityInterface;
 use \Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -56,9 +56,14 @@ class SenderBuilderPlugin
     private $logger;
 
     /**
-     * @var ContainerBuilder
+     * @var IdentityInterface
      */
-    private $containerBuilder;
+    private $identityContainer;
+
+    /**
+     * @var TemplateContainer
+     */
+    private $templateContainer;
 
     /**
      * SenderBuilderPlugin constructor.
@@ -70,7 +75,8 @@ class SenderBuilderPlugin
      * @param CustomerViewHelper          $customerViewHelper
      * @param Json                        $json
      * @param LoggerInterface             $logger
-     * @param ContainerBuilder            $containerBuilder
+     * @param IdentityInterface           $identityContainer
+     * @param TemplateContainer           $templateContainer
      */
     public function __construct(
         ConfigReader $configReader,
@@ -80,7 +86,8 @@ class SenderBuilderPlugin
         CustomerViewHelper $customerViewHelper,
         Json $json,
         LoggerInterface $logger,
-        ContainerBuilder $containerBuilder
+        IdentityInterface $identityContainer,
+        TemplateContainer $templateContainer
     ) {
         $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
@@ -89,7 +96,9 @@ class SenderBuilderPlugin
         $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->logger = $logger;
-        $this->containerBuilder = $containerBuilder;
+
+        $this->identityContainer = $identityContainer;
+        $this->templateContainer = $templateContainer;
     }
 
     /**
@@ -106,34 +115,27 @@ class SenderBuilderPlugin
         //sales_email/general/async_sending - should be disabled
         //----
         try {
-            $reflection = $this->containerBuilder
-                ->getReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
-
-            /** @var \Magento\Sales\Model\Order\Email\Container\OrderIdentity $identityContainer */
-            $identityContainer = $reflection->getProperty('identityContainer');
-            $identityContainer->setAccessible(true);
-            $identityContainer = $identityContainer->getValue($senderBuilder);
-            $storeId = $identityContainer->getStore()->getStoreId();
-            $websiteId = $identityContainer->getStore()->getWebsiteId();
+            $this->identityContainer->setAccessible(true);
+            $this->identityContainer = $this->identityContainer->getValue($senderBuilder);
+            $storeId = $this->identityContainer->getStore()->getStoreId();
+            $websiteId = $this->identityContainer->getStore()->getWebsiteId();
 
             if (!$this->configReader->isEnabledForStore(ConfigInterface::MARKETING_EVENTS, $storeId)) {
                 return $proceed();
             }
 
-            /** @var TemplateContainer $templateContainer */
-            $templateContainer = $reflection->getProperty('templateContainer');
-            $templateContainer->setAccessible(true);
-            $templateContainer = $templateContainer->getValue($senderBuilder);
+            $this->templateContainer->setAccessible(true);
+            $this->templateContainer = $this->templateContainer->getValue($senderBuilder);
 
-            $data = $this->parseTemplateVars($templateContainer);
-            $data['customerName'] = $identityContainer->getCustomerName();
-            $data['customerEmail'] = $identityContainer->getCustomerEmail();
-            $data['emailCopyTo'] = $identityContainer->getEmailCopyTo();
+            $data = $this->parseTemplateVars($this->templateContainer);
+            $data['customerName'] = $this->identityContainer->getCustomerName();
+            $data['customerEmail'] = $this->identityContainer->getCustomerEmail();
+            $data['emailCopyTo'] = $this->identityContainer->getEmailCopyTo();
 
             $this->saveEvent(
                 $websiteId,
                 $storeId,
-                $templateContainer->getTemplateId(),
+                $this->templateContainer->getTemplateId(),
                 $data['order']['entity_id'],
                 $data
             );
