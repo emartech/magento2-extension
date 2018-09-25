@@ -7,6 +7,7 @@ use \Magento\Catalog\Model\Category;
 use \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use \Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use \Magento\Framework\Data\Collection as DataCollection;
+use \Psr\Log\LoggerInterface;
 use \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
 use \Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
 use \Magento\Catalog\Model\Product;
@@ -105,6 +106,11 @@ class ProductsApi implements ProductsApiInterface
     private $categories = [];
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var array
      */
     private $storeProductAttributeCodes = [
@@ -147,12 +153,13 @@ class ProductsApi implements ProductsApiInterface
      * @param ScopeConfigInterface                $scopeConfig
      * @param ProductCollectionFactory            $productCollectionFactory
      * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
-     * @param ProductAttributeCollectionFactory   $productAttributeCollectionFactory
-     * @param ProductAttributeCollection          $productAttributeCollection
-     * @param ProductInterfaceFactory             $productFactory
-     * @param ImagesInterfaceFactory              $imagesFactory
-     * @param ProductStoreDataInterfaceFactory    $productStoreDataFactory
-     * @param ProductUrlFactory                   $productUrlFactory
+     * @param ProductAttributeCollectionFactory $productAttributeCollectionFactory
+     * @param ProductAttributeCollection $productAttributeCollection
+     * @param ProductInterfaceFactory $productFactory
+     * @param ImagesInterfaceFactory $imagesFactory
+     * @param ProductStoreDataInterfaceFactory $productStoreDataFactory
+     * @param ProductUrlFactory $productUrlFactory
+     * @param LoggerInterface $logger
      */
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
@@ -165,7 +172,8 @@ class ProductsApi implements ProductsApiInterface
         ProductInterfaceFactory $productFactory,
         ImagesInterfaceFactory $imagesFactory,
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
-        ProductUrlFactory $productUrlFactory
+        ProductUrlFactory $productUrlFactory,
+        LoggerInterface $logger
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
@@ -181,6 +189,7 @@ class ProductsApi implements ProductsApiInterface
         $this->productFactory = $productFactory;
         $this->imagesFactory = $imagesFactory;
         $this->productStoreDataFactory = $productStoreDataFactory;
+        $this->logger = $logger;
     }
 
     /**
@@ -621,6 +630,7 @@ class ProductsApi implements ProductsApiInterface
                 $tmp = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
                 $price = $tmp;
             } catch (\Exception $e) {
+                $this->logger->error($e);
             }
         }
 

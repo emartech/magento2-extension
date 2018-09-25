@@ -33,6 +33,9 @@ ssh: ## Enters the web container
 ssh-root: ## Enters the web container
 	@$(COMPOSE) exec magento-dev bash
 
+ssh-test: ## Enters the web container
+	@$(COMPOSE) exec magento-test bash
+
 ssh-node: ## Enters the web container
 	@$(COMPOSE) run --rm node /bin/sh
 
