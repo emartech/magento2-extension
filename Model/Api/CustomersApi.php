@@ -5,7 +5,6 @@ namespace Emartech\Emarsys\Model\Api;
 use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
 use Magento\Customer\Model\ResourceModel\Customer\Collection;
 use Magento\Customer\Model\Customer;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 use Emartech\Emarsys\Api\CustomersApiInterface;
 use Emartech\Emarsys\Api\Data\CustomerInterfaceFactory;
@@ -77,31 +76,23 @@ class CustomersApi implements CustomersApiInterface
     private $subscriptionTable;
 
     /**
-     * @var ContainerBuilder
-     */
-    private $containerBuilder;
-
-    /**
      * CustomersApi constructor.
      *
      * @param CollectionFactory                    $collectionFactory
      * @param CustomerInterfaceFactory             $customerFactory
      * @param CustomerAddressInterfaceFactory      $customerAddressFactory
      * @param CustomersApiResponseInterfaceFactory $customersResponseFactory
-     * @param ContainerBuilder                     $containerBuilder
      */
     public function __construct(
         CollectionFactory $collectionFactory,
         CustomerInterfaceFactory $customerFactory,
         CustomerAddressInterfaceFactory $customerAddressFactory,
-        CustomersApiResponseInterfaceFactory $customersResponseFactory,
-        ContainerBuilder $containerBuilder
+        CustomersApiResponseInterfaceFactory $customersResponseFactory
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->customerFactory = $customerFactory;
         $this->customerAddressFactory = $customerAddressFactory;
         $this->customersResponseFactory = $customersResponseFactory;
-        $this->containerBuilder = $containerBuilder;
     }
 
     /**
