@@ -2,22 +2,22 @@
 
 namespace Emartech\Emarsys\Events;
 
-use \Magento\Sales\Model\Order;
-use \Magento\Sales\Model\Order\Email\SenderBuilder;
-use \Emartech\Emarsys\Api\Data\ConfigInterface;
-use \Emartech\Emarsys\Helper\ConfigReader;
-use \Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
-use \Emartech\Emarsys\Model\EventRepository;
-use \Magento\Customer\Api\CustomerRepositoryInterface;
-use \Magento\Customer\Helper\View as CustomerViewHelper;
-use \Magento\Framework\Serialize\Serializer\Json;
-use \Psr\Log\LoggerInterface;
-use \Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
-use \Magento\Framework\Exception\LocalizedException;
-use \Magento\Framework\Exception\NoSuchEntityException;
-use \Magento\Sales\Model\Order\Invoice;
-use \Magento\Sales\Model\Order\Creditmemo;
-use \Emartech\Emarsys\Model\Event as EventModel;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Email\SenderBuilder;
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Helper\ConfigReader;
+use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
+use Emartech\Emarsys\Model\EventRepository;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Helper\View as CustomerViewHelper;
+use Magento\Framework\Serialize\Serializer\Json;
+use Psr\Log\LoggerInterface;
+use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Sales\Model\Order\Invoice;
+use Magento\Sales\Model\Order\Creditmemo;
+use Emartech\Emarsys\Model\Event as EventModel;
 
 /**
  * Class SenderBuilderPlugin

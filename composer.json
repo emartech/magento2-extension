@@ -4,7 +4,6 @@
   "license": "proprietary",
   "require": {
     "php": ">7.0.1",
-    "magento/product-community-edition": "2.2.6",
     "zendframework/zend-uri": "^2.5.1"
   },
   "type": "magento2-module",
