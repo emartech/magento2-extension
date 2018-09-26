@@ -196,6 +196,7 @@ class CustomerPlugin
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
+    // @codingStandardsIgnoreLine
     public function aroundNewAccount(
         EmailNotificationInterface $emailNotification,
         callable $proceed,
@@ -238,6 +239,7 @@ class CustomerPlugin
      * @throws AlreadyExistsException
      * @throws NoSuchEntityException
      */
+    // @codingStandardsIgnoreLine
     public function aroundCredentialsChanged(
         EmailNotificationInterface $emailNotification,
         callable $proceed,
@@ -299,6 +301,7 @@ class CustomerPlugin
      * @throws AlreadyExistsException
      * @throws NoSuchEntityException
      */
+    // @codingStandardsIgnoreLine
     public function aroundPasswordReminder(
         EmailNotificationInterface $emailNotification,
         callable $proceed,
@@ -334,6 +337,7 @@ class CustomerPlugin
      * @throws AlreadyExistsException
      * @throws NoSuchEntityException
      */
+    // @codingStandardsIgnoreLine
     public function aroundPasswordResetConfirmation(
         EmailNotificationInterface $emailNotification,
         callable $proceed,

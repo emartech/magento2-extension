@@ -34,6 +34,7 @@ class Uninstall implements UninstallInterface
      *
      * @return void
      */
+    // @codingStandardsIgnoreLine
     public function uninstall(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();

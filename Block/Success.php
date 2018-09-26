@@ -14,15 +14,20 @@ use Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory as OrderItemC
  */
 class Success extends \Magento\Framework\View\Element\Template
 {
+    // @codingStandardsIgnoreLine
     protected $_checkoutSession;
+    // @codingStandardsIgnoreLine
     protected $_orderFactory;
+    // @codingStandardsIgnoreLine
     protected $_scopeConfig;
 
     /**
      * @var OrderItemCollectionFactory
      */
+    // @codingStandardsIgnoreLine
     protected $orderItemCollectionFactory;
 
+    // @codingStandardsIgnoreStart
     public function __construct(
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Sales\Model\OrderFactory $orderFactory,
@@ -35,6 +40,7 @@ class Success extends \Magento\Framework\View\Element\Template
         $this->_scopeConfig = $context->getScopeConfig();
         parent::__construct($context);
     }
+    // @codingStandardsIgnoreEnd
 
     private function getOrderId()
     {

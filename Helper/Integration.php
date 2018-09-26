@@ -30,8 +30,10 @@ class Integration extends AbstractHelper
     /** @var Provider */
     private $tokenProvider;
     /** @var WriterInterface */
+    // @codingStandardsIgnoreLine
     protected $configWriter;
     /** @var ScopeConfigInterface */
+    // @codingStandardsIgnoreLine
     protected $scopeConfig;
 
     private $integrationData = [

@@ -98,6 +98,7 @@ class SenderBuilderPlugin
         //sales_email/general/async_sending - should be disabled
         //----
         try {
+            // @codingStandardsIgnoreLine
             $reflection = new \ReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
 
             /** @var \Magento\Sales\Model\Order\Email\Container\OrderIdentity $identityContainer */

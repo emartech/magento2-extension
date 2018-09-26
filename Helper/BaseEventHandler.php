@@ -24,26 +24,31 @@ class BaseEventHandler extends AbstractHelper
     /**
      * @var LoggerInterface
      */
+    // @codingStandardsIgnoreLine
     protected $logger;
 
     /**
      * @var ConfigReader
      */
+    // @codingStandardsIgnoreLine
     protected $configReader;
 
     /**
      * @var EventFactory
      */
+    // @codingStandardsIgnoreLine
     protected $eventFactory;
 
     /**
      * @var EventRepositoryInterface
      */
+    // @codingStandardsIgnoreLine
     protected $eventRepository;
 
     /**
      * @var StoreManagerInterface
      */
+    // @codingStandardsIgnoreLine
     protected $storeManager;
 
     /**
@@ -94,6 +99,7 @@ class BaseEventHandler extends AbstractHelper
      *
      * @return bool
      */
+    // @codingStandardsIgnoreLine
     protected function isEnabledForWebsite($websiteId)
     {
         return $this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId);
@@ -104,6 +110,7 @@ class BaseEventHandler extends AbstractHelper
      *
      * @return bool
      */
+    // @codingStandardsIgnoreLine
     protected function isEnabledForStore($storeId)
     {
         return $this->configReader->isEnabledForStore(ConfigInterface::SALES_EVENTS, $storeId);
@@ -118,6 +125,7 @@ class BaseEventHandler extends AbstractHelper
      *
      * @return void
      */
+    // @codingStandardsIgnoreLine
     protected function saveEvent($websiteId, $storeId, $type, $entityId, $data)
     {
         $this->removeOldEvents($type, $entityId, $storeId);
