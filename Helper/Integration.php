@@ -10,7 +10,7 @@ use Magento\Integration\Model\AuthorizationService;
 use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
-use Magento\Setup\Exception;
+use Magento\Setup\Exception as SetupException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Psr\Log\LoggerInterface;
 use Zend\Uri\Http;
@@ -161,14 +161,14 @@ class Integration extends AbstractHelper
 
     /**
      * @return Http
-     * @throws Exception
+     * @throws SetupException
      */
     private function getBaseUrl()
     {
         $baseUrl = $this->scopeConfig->getValue('web/unsecure/base_url');
 
         if (!$baseUrl) {
-            throw new Exception('Missing base_url setting. Set web/unsecure/base_url.');
+            throw new SetupException('Missing base_url setting. Set web/unsecure/base_url.');
         }
 
         $parsedUrl = $this->http->parse($baseUrl);
