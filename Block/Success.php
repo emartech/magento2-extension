@@ -7,6 +7,8 @@
 namespace Emartech\Emarsys\Block;
 
 use Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory as OrderItemCollectionFactory;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableProduct;
+use Magento\Bundle\Model\Product\Type as BundleProduct;
 
 /**
  * Class Success
@@ -91,7 +93,7 @@ class Success extends \Magento\Framework\View\Element\Template
      */
     private function notBundleProduct($item)
     {
-        return $item->getProductType() !== \Magento\Bundle\Model\Product\Type::TYPE_CODE;
+        return $item->getProductType() !== BundleProduct::TYPE_CODE;
     }
 
     /**
@@ -102,6 +104,6 @@ class Success extends \Magento\Framework\View\Element\Template
     {
         return !($item->getProductType() === 'simple'
             && $item->getParentItem() !== null
-            && $item->getParentItem()->getProductType() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE);
+            && $item->getParentItem()->getProductType() === ConfigurableProduct::TYPE_CODE);
     }
 }
