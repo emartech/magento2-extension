@@ -5,7 +5,6 @@ namespace Emartech\Emarsys\Model\Api;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Magento\Catalog\Model\ResourceModel\Category\Attribute\CollectionFactory as CategoryAttributeCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Category\Attribute\Collection as CategoryAttributeCollection;
 use Magento\Framework\Data\Collection as DataCollection;
@@ -38,11 +37,6 @@ class CategoriesApi implements CategoriesApiInterface
      * @var CategoryCollection
      */
     private $categoryCollection;
-
-    /**
-     * @var ContainerBuilder
-     */
-    private $containerBuilder;
 
     /**
      * @var CategoryAttributeCollectionFactory
@@ -99,7 +93,6 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @param StoreManagerInterface                 $storeManager
      * @param CategoryCollectionFactory             $categoryCollectionFactory
-     * @param ContainerBuilder                      $containerBuilder
      * @param ScopeConfigInterface                  $scopeConfig
      * @param CategoryAttributeCollectionFactory    $categoryAttributeCollectionFactory
      * @param CategoriesApiResponseInterfaceFactory $categoriesApiResponseFactory
@@ -110,7 +103,6 @@ class CategoriesApi implements CategoriesApiInterface
     public function __construct(
         StoreManagerInterface $storeManager,
         CategoryCollectionFactory $categoryCollectionFactory,
-        ContainerBuilder $containerBuilder,
         ScopeConfigInterface $scopeConfig,
         CategoryAttributeCollectionFactory $categoryAttributeCollectionFactory,
         CategoriesApiResponseInterfaceFactory $categoriesApiResponseFactory,
@@ -120,7 +112,6 @@ class CategoriesApi implements CategoriesApiInterface
     ) {
         $this->storeManager = $storeManager;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
-        $this->containerBuilder = $containerBuilder;
         $this->scopeConfig = $scopeConfig;
         $this->categoryAttributeCollectionFactory = $categoryAttributeCollectionFactory;
         $this->categoriesApiResponseFactory = $categoriesApiResponseFactory;
