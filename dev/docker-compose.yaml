@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   magento-test:
-    image: eu.gcr.io/ems-plugins/magento2.2.5:1.0
+    image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
     ports:
       - "8889:80"
     links:
@@ -12,13 +12,12 @@ services:
       - MYSQL_DATABASE=magento_test
       - MAGENTO_URL=http://magento-test.local
     volumes:
-      - ./Magento/composer.json:/app/composer.json
       - ./..:/app/vendor/emartech/emarsys-magento2-extension
       - ./setup:/opt/emartech/setup
       - ./php.ini:/opt/docker/etc/php/php.ini
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   magento-dev:
-    image: eu.gcr.io/ems-plugins/magento2.2.5:1.0
+    image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
     ports:
       - "8888:80"
     links:
@@ -29,7 +28,6 @@ services:
       - MYSQL_DATABASE=magento_dev
       - MAGENTO_URL=http://magento-dev.local:8888
     volumes:
-      - ./Magento/composer.json:/app/composer.json
       - ./..:/app/vendor/emartech/emarsys-magento2-extension
       - ./setup:/opt/emartech/setup
       - ./php.ini:/opt/docker/etc/php/php.ini

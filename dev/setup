@@ -11,8 +11,9 @@ echo "-|| Install plugin..."
 if [[ ! $(bin/magento module:status | grep Emartech_Emarsys) ]]
 then
   echo "   >> Installing plugin"
+  php /opt/emartech/composer-config.php ./composer.json add_local_plugin
   composer dump-autoload
-  bin/magento setup:upgrade
+  bin/magento setup:upgrade | grep -A 1 "Emartech"
 else
   echo "   >> Skipping installation."
 fi
