@@ -3,12 +3,25 @@ db:
   cached: true
   encrypted_env_file: codeship.env.encrypted
 magento-test.local:
-  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.3
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
   container_name: magento-test.local
   depends_on:
     - db
   volumes:
     - ./dev/Magento/composer.json:/app/composer.json
+    - ./dev/setup:/opt/emartech/setup
+    - .:/app/vendor/emartech/emarsys-magento2-extension
+  cached: true
+  encrypted_env_file: codeship.env.encrypted
+  dockercfg_service: dockercfg-generator
+dockercfg-generator:
+  image: codeship/gcr-dockercfg-generator
+  add_docker: true
+  encrypted_env_file: codeship.env.encrypted
+magento-static:
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
+  container_name: magento-static
+  volumes:
     - ./dev/setup:/opt/emartech/setup
     - .:/app/vendor/emartech/emarsys-magento2-extension
   cached: true
