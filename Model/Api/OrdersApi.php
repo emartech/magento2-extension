@@ -4,7 +4,7 @@ namespace Emartech\Emarsys\Model\Api;
 
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Sales\Model\ResourceModel\Order\Collection as OrderCollection;
-
+use Magento\Framework\Webapi\Exception as WebApiException;
 
 use Emartech\Emarsys\Api\OrdersApiInterface;
 use Emartech\Emarsys\Api\Data\OrdersApiResponseInterfaceFactory;
@@ -52,9 +52,14 @@ class OrdersApi implements OrdersApiInterface
      * @param string|null $storeId
      *
      * @return OrdersApiResponseInterface
+     * @throws WebApiException
      */
     public function get($page, $pageSize, $sinceId = 0, $storeId = null)
     {
+        if (empty($storeId)) {
+            throw new WebApiException(__('Store ID is required'));
+        }
+
         $this
             ->initCollection()
             ->filterStore($storeId)
