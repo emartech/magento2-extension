@@ -87,11 +87,8 @@ const orderCount = 8;
 describe('Orders endpoint', function() {
   before(async function() {
     await this.dbCleaner.clearOrders();
-    console.log('before');
     for (let orderNumber = 0; orderCount > orderNumber; orderNumber++) {
-      console.log(orderNumber);
       await createNewCustomerOrder(this.magentoApi, this.customer);
-      console.log('order created');
     }
   });
 
