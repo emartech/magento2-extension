@@ -1,20 +1,21 @@
 {
   "customer": {
-    "password_hash": "0173c37a888c29faf940cbce76693b85ebe711b6404c91045c64e7e7f0ad0512:3gzPqP2awmlaEKe3RWK6ZEft0PlwbNob:1",
+    "password_hash": "254fa3b17945d571dc5f82ccfa1b91ca25d407a2ad1e7799c93dea9f73c75e6e:sjgkDcgSywZpX6odylbN09YWpIc7jXKf:1",
     "rp_token": null,
     "rp_token_created_at": null,
     "deleteable": true,
-    "failures_num": "4",
-    "first_failure": "2018-09-03 08:39:43",
+    "failures_num": "0",
+    "first_failure": null,
     "lock_expires": null,
-    "id": 3,
-    "group_id": 1,
-    "created_at": "2018-09-03 08:36:44",
-    "updated_at": "2018-09-03 08:40:27",
+    "id": 2,
+    "group_id": 0,
+    "created_at": "2018-10-04 15:19:52",
+    "updated_at": "2018-10-04 15:20:10",
     "created_in": "Default Store View",
-    "email": "yolo@test-test.net",
-    "firstname": "Yolo",
-    "lastname": "Test",
+    "dob": "1977-11-12",
+    "email": "cypress3@default.com",
+    "firstname": "Cypress",
+    "lastname": "Default",
     "store_id": 1,
     "website_id": 1,
     "addresses": [],
@@ -29,6 +30,6 @@
     "sort_order": "0",
     "is_active": "1"
   },
-  "orig_customer_email": "yolo@test.net",
-  "new_customer_email": "yolo@test-test.net"
+  "orig_customer_email": "cypress@default.com",
+  "new_customer_email": "cypress3@default.com"
 }
