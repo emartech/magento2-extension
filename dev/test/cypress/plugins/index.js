@@ -69,6 +69,11 @@ const clearEvents = async () => {
   return await db.truncate('emarsys_events_data');
 };
 
+const flushMagentoCache = async () => {
+  const magentoApi = await getMagentoApi();
+  return await magentoApi.get({ path: '/cache-flush.php' });
+};
+
 module.exports = (on, config) => { // eslint-disable-line no-unused-vars
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
@@ -160,6 +165,9 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
           .where({ path: 'newsletter/subscription/confirm' })
           .delete();
       }
+    },
+    flushMagentoCache: async () => {
+      return await flushMagentoCache();
     }
   });
 };
