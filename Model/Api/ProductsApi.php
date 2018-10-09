@@ -300,8 +300,6 @@ class ProductsApi implements ProductsApiInterface
                           limit " . $pageSize . " OFFSET " . $page . ")
                       as tmp");
 
-        // @codingStandardsIgnoreEnd
-
         $row = $resource->getConnection()->query($idQuery)->fetch();
         if (array_key_exists('minId', $row)) {
             $this->minId = $row['minId'];
@@ -309,6 +307,7 @@ class ProductsApi implements ProductsApiInterface
         if (array_key_exists('maxId', $row)) {
             $this->maxId = $row['maxId'];
         }
+        // @codingStandardsIgnoreEnd
 
         return $this;
     }
