@@ -146,6 +146,21 @@ class ProductsApi implements ProductsApiInterface
     ];
 
     /**
+     * @var int
+     */
+    private $minId = 0;
+
+    /**
+     * @var int
+     */
+    private $maxId = 0;
+
+    /**
+     * @var int
+     */
+    private $numberOfItems = 0;
+
+    /**
      * ProductsApi constructor.
      *
      * @param CategoryCollectionFactory           $categoryCollectionFactory
@@ -153,13 +168,13 @@ class ProductsApi implements ProductsApiInterface
      * @param ScopeConfigInterface                $scopeConfig
      * @param ProductCollectionFactory            $productCollectionFactory
      * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
-     * @param ProductAttributeCollectionFactory $productAttributeCollectionFactory
-     * @param ProductAttributeCollection $productAttributeCollection
-     * @param ProductInterfaceFactory $productFactory
-     * @param ImagesInterfaceFactory $imagesFactory
-     * @param ProductStoreDataInterfaceFactory $productStoreDataFactory
-     * @param ProductUrlFactory $productUrlFactory
-     * @param LoggerInterface $logger
+     * @param ProductAttributeCollectionFactory   $productAttributeCollectionFactory
+     * @param ProductAttributeCollection          $productAttributeCollection
+     * @param ProductInterfaceFactory             $productFactory
+     * @param ImagesInterfaceFactory              $imagesFactory
+     * @param ProductStoreDataInterfaceFactory    $productStoreDataFactory
+     * @param ProductUrlFactory                   $productUrlFactory
+     * @param LoggerInterface                     $logger
      */
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
@@ -211,23 +226,22 @@ class ProductsApi implements ProductsApiInterface
 
         $this
             ->initCollection()
+            ->handleIds($page, $pageSize)
             ->joinData()
             ->joinStock()
             ->joinCategories()
             ->joinChildrenProductIds()
-            ->setOrder()
-            ->setPage($page, $pageSize);
+            ->setWhere()
+            ->setOrder();
 
-        $lastPageNumber = $this->productCollection->getLastPageNumber();
-        $pageSize = $this->productCollection->getPageSize();
-        $totalCount = $this->productCollection->getSize();
+        $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
         $this->setGroupBy();
 
-        return $this->productsApiResponseFactory->create()->setCurrentPage($this->productCollection->getCurPage())
+        return $this->productsApiResponseFactory->create()->setCurrentPage($page)
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
-            ->setTotalCount($totalCount)
+            ->setTotalCount($this->numberOfItems)
             ->setProducts($this->handleProducts());
     }
 
@@ -259,6 +273,42 @@ class ProductsApi implements ProductsApiInterface
     private function initCollection()
     {
         $this->productCollection = $this->productCollectionFactory->create();
+
+        return $this;
+    }
+
+    private function handleIds($page, $pageSize)
+    {
+        /** @var \Magento\Catalog\Model\ResourceModel\Product $resource */
+        $resource = $this->productCollection->getResource();
+        $page--;
+        $page *= $pageSize;
+
+        // @codingStandardsIgnoreStart
+        $itemsCountQuery = new \Magento\Framework\DB\Sql\Expression("select count(entity_id) as count
+                    FROM catalog_product_entity");
+
+        $row = $resource->getConnection()->query($itemsCountQuery)->fetch();
+        if (array_key_exists('count', $row)) {
+            $this->maxId = $this->numberOfItems = $row['count'];
+        }
+
+        $idQuery = new \Magento\Framework\DB\Sql\Expression("select min(tmp.eid) as minId, max(tmp.eid) as maxId 
+                    from 
+                      (SELECT entity_id as eid 
+                          FROM catalog_product_entity order by entity_id 
+                          limit " . $pageSize . " OFFSET " . $page . ")
+                      as tmp");
+
+        // @codingStandardsIgnoreEnd
+
+        $row = $resource->getConnection()->query($idQuery)->fetch();
+        if (array_key_exists('minId', $row)) {
+            $this->minId = $row['minId'];
+        }
+        if (array_key_exists('maxId', $row)) {
+            $this->maxId = $row['maxId'];
+        }
 
         return $this;
     }
@@ -376,6 +426,15 @@ class ProductsApi implements ProductsApiInterface
             null,
             'left'
         );
+
+        return $this;
+    }
+
+    private function setWhere()
+    {
+        $this->productCollection
+            ->addFieldToFilter('entity_id', ['from' => $this->minId])
+            ->addFieldToFilter('entity_id', ['to' => $this->maxId]);
 
         return $this;
     }
