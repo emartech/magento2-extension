@@ -422,7 +422,7 @@ class ProductsApi implements ProductsApiInterface
         $this->productCollection->joinTable(
             $this->productCollection->getResource()->getTable('catalog_product_super_link'),
             'parent_id = entity_id',
-            ['children_ids' => 'GROUP_CONCAT(catalog_product_super_link.product_id)'],
+            ['children_ids' => 'GROUP_CONCAT(DISTINCT catalog_product_super_link.product_id)'],
             null,
             'left'
         );
