@@ -1,10 +1,14 @@
 - type: serial
-  service: node
   steps:
-  - name: running api tests and code style
-    command: /bin/sh -c "npm ci && npm t"
-  - name: running e2e tests
-    command: /bin/sh -c "npm ci && npm run e2e"
-- name: deploy to staging on Google Kubernetes Engine
-  service: deployment
-  command: /bin/bash -c "codeship_google authenticate && gcloud container clusters get-credentials cluster-1 --region=europe-west2 && sh /deploy/restart.sh web-staging"
+    - name: running api tests and code style
+      service: node
+      command: /bin/sh -c "npm ci && npm t"
+    - name: running e2e tests
+      service: node
+      command: /bin/sh -c "npm ci && npm run e2e"
+    - name: Code style check
+      service: magento-static
+      command: sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh
+    - name: deploy to staging on Google Kubernetes Engine
+      service: deployment
+      command: /bin/bash -c "codeship_google authenticate && gcloud container clusters get-credentials cluster-1 --region=europe-west2 && sh /deploy/restart.sh web-staging"

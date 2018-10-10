@@ -47,3 +47,6 @@ set-local-baseurl:
 
 set-docker-baseurl:
 	@$(COMPOSE) exec --user application magento-test bash -c "bin/magento config:set web/unsecure/base_url http://magento-test.local/"
+
+codesniffer:
+	@$(COMPOSE) exec --user application magento-dev bash -c "sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh"

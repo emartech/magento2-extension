@@ -19,6 +19,7 @@ class InstallSchema implements InstallSchemaInterface
      * @return void
      * @throws \Zend_Db_Exception
      */
+    // @codingStandardsIgnoreLine
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();

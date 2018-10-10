@@ -4,5 +4,9 @@
   "trashAssetsBeforeRuns": false,
   "requestTimeout": 30000,
   "defaultCommandTimeout": 30000,
-  "pageLoadTimeout": 30000
+  "pageLoadTimeout": 30000,
+  "blacklistHosts": ["*snippet.url.com", "*scarabresearch.com"],
+  "env": {
+    "snippetUrl": "http://snippet.url.com/main.js"
+  }
 }

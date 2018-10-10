@@ -34,6 +34,7 @@ class InstallData implements InstallDataInterface
      *
      * @throws \Magento\Framework\Oauth\Exception
      */
+    // @codingStandardsIgnoreLine
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
         $setup->startSetup();

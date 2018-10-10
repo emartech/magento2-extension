@@ -1,0 +1,9 @@
+.gitattributes export-ignore
+dev export-ignore
+tasks export-ignore
+Makefile export-ignore
+codeship* export-ignore
+Marketing_events.md export-ignore
+docs export-ignore
+
+

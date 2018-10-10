@@ -2,6 +2,7 @@
   "globals": {
     "chai": true,
     "cy": true,
-    "Cypress": true
+    "Cypress": true,
+    "localStorage": true
   }
 }
