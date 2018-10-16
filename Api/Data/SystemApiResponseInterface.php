@@ -11,6 +11,7 @@ interface SystemApiResponseInterface
     const MAGENTO_VERSION_KEY = 'magento_version';
     const PHP_VERSION_KEY     = 'php_version';
     const MODULE_VERSION_KEY  = 'module_version';
+    const MAGENTO_EDITION_KEY  = 'magento_edition';
 
     /**
      * @return string
@@ -26,6 +27,11 @@ interface SystemApiResponseInterface
      * @return string
      */
     public function getModuleVersion();
+
+    /**
+     * @return string
+     */
+    public function getMagentoEdition();
     
     /**
      * @param string $magentoVersion
@@ -47,4 +53,11 @@ interface SystemApiResponseInterface
      * @return $this
      */
     public function setModuleVersion($moduleVersion);
+
+    /**
+     * @param string $magentoEdition
+     *
+     * @return $this
+     */
+    public function setMagentoEdition($magentoEdition);
 }

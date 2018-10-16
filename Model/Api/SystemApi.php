@@ -63,6 +63,7 @@ class SystemApi implements SystemApiInterface
     {
         return $this->systemApiResponseFactory->create()
             ->setMagentoVersion($this->getMagentoVersion())
+            ->setMagentoEdition($this->getMagentoEdition())
             ->setPhpVersion($this->getPhpVersion())
             ->setModuleVersion($this->getModuleVersion());
     }
@@ -73,6 +74,14 @@ class SystemApi implements SystemApiInterface
     private function getMagentoVersion()
     {
         return $this->productMetadata->getVersion();
+    }
+
+    /**
+     * @return string
+     */
+    private function getMagentoEdition()
+    {
+        return $this->productMetadata->getEdition();
     }
 
     /**
