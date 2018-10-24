@@ -346,8 +346,10 @@ class ProductsApi implements ProductsApiInterface
         $resource = $this->productCollection->getResource();
         $categoryTable = $resource->getTable('catalog_category_product');
 
+        // @codingStandardsIgnoreStart
         $categoryQuery = new \Magento\Framework\DB\Sql\Expression("select category_id, product_id
                     FROM " . $categoryTable . " WHERE product_id BETWEEN " . $this->minId . " AND " . $this->maxId);
+        // @codingStandardsIgnoreEnd
 
         $this->iterator->walk(
             (string)$categoryQuery,
@@ -384,8 +386,10 @@ class ProductsApi implements ProductsApiInterface
         $resource = $this->productCollection->getResource();
         $superLinkTable = $resource->getTable('catalog_product_super_link');
 
+        // @codingStandardsIgnoreStart
         $childrenProductQuery = new \Magento\Framework\DB\Sql\Expression("select product_id, parent_id
                     FROM " . $superLinkTable . " WHERE parent_id BETWEEN " . $this->minId . " AND " . $this->maxId);
+        // @codingStandardsIgnoreEnd
 
         $this->iterator->walk(
             (string)$childrenProductQuery,
@@ -422,8 +426,11 @@ class ProductsApi implements ProductsApiInterface
         $resource = $this->productCollection->getResource();
         $stockDataTable = $resource->getTable('cataloginventory_stock_item');
 
+        // @codingStandardsIgnoreStart
         $stockQuery = new \Magento\Framework\DB\Sql\Expression("select is_in_stock, qty, product_id
-                    FROM " . $stockDataTable . " WHERE product_id BETWEEN " . $this->minId . " AND " . $this->maxId . " AND stock_id = 1");
+                    FROM " . $stockDataTable . " WHERE product_id BETWEEN " . $this->minId . " 
+                    AND " . $this->maxId . " AND stock_id = 1");
+        // @codingStandardsIgnoreEnd
 
         $this->iterator->walk(
             (string)$stockQuery,
