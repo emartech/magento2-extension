@@ -323,7 +323,7 @@ class CustomerPlugin
             $customer->getId(),
             [
                 'customer' => $this->getFullCustomerObject($customer)->getData(),
-                $store->getData(),
+                'store'    => $store->getData(),
             ]
         );
     }
@@ -359,7 +359,7 @@ class CustomerPlugin
             $customer->getId(),
             [
                 'customer' => $this->getFullCustomerObject($customer)->getData(),
-                $store->getData(),
+                'store'    => $store->getData(),
             ]
         );
     }
