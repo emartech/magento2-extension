@@ -228,15 +228,18 @@ class CustomersApi implements CustomersApiInterface
      */
     private function joinSubscriptionStatus()
     {
-        $tableAlias = 'newsletter';
 
-        $this->customerCollection->joinTable(
-            [$tableAlias => $this->subscriptionTable],
-            'customer_id = entity_id',
-            ['accepts_marketing' => 'subscriber_status'],
-            null,
-            'left'
-        );
+        // @codingStandardsIgnoreStart
+        $this->customerCollection->getSelect()->columns([
+            'accepts_marketing' => new \Zend_Db_Expr(
+                '(
+                SELECT subscriber_status 
+                FROM ' . $this->subscriptionTable . " 
+                WHERE customer_id = e.entity_id ORDER BY subscriber_id DESC LIMIT 0,1
+                )"
+            )
+        ]);
+        // @codingStandardsIgnoreEnd
 
         return $this;
     }
