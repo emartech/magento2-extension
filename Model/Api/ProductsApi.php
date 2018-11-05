@@ -20,6 +20,8 @@ use Magento\Store\Model\Store;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Framework\Model\ResourceModel\Iterator;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\ProductInterface;
 
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
@@ -182,6 +184,16 @@ class ProductsApi implements ProductsApiInterface
     private $stockData = [];
 
     /**
+     * @var string
+     */
+    private $linkField = '';
+
+    /**
+     * @var MetadataPool
+     */
+    private $metadataPool;
+
+    /**
      * ProductsApi constructor.
      *
      * @param CategoryCollectionFactory           $categoryCollectionFactory
@@ -211,7 +223,8 @@ class ProductsApi implements ProductsApiInterface
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
         ProductUrlFactory $productUrlFactory,
         LoggerInterface $logger,
-        Iterator $iterator
+        Iterator $iterator,
+        MetadataPool $metadataPool
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
@@ -229,6 +242,8 @@ class ProductsApi implements ProductsApiInterface
         $this->productStoreDataFactory = $productStoreDataFactory;
         $this->logger = $logger;
         $this->iterator = $iterator;
+
+        $this->metadataPool = $metadataPool;
     }
 
     /**
@@ -259,8 +274,6 @@ class ProductsApi implements ProductsApiInterface
             ->setOrder();
 
         $lastPageNumber = ceil($this->numberOfItems / $pageSize);
-
-        $this->setGroupBy();
 
         return $this->productsApiResponseFactory->create()->setCurrentPage($page)
             ->setLastPage($lastPageNumber)
@@ -298,6 +311,8 @@ class ProductsApi implements ProductsApiInterface
     {
         $this->productCollection = $this->productCollectionFactory->create();
 
+        $this->linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
+
         return $this;
     }
 
@@ -309,7 +324,7 @@ class ProductsApi implements ProductsApiInterface
         $page *= $pageSize;
 
         // @codingStandardsIgnoreStart
-        $itemsCountQuery = new \Magento\Framework\DB\Sql\Expression("select count(entity_id) as count
+        $itemsCountQuery = new \Magento\Framework\DB\Sql\Expression("select count(" . $this->linkField . ") as count
                     FROM catalog_product_entity");
 
         $row = $resource->getConnection()->query($itemsCountQuery)->fetch();
@@ -319,8 +334,8 @@ class ProductsApi implements ProductsApiInterface
 
         $idQuery = new \Magento\Framework\DB\Sql\Expression("select min(tmp.eid) as minId, max(tmp.eid) as maxId 
                     from 
-                      (SELECT entity_id as eid 
-                          FROM catalog_product_entity order by entity_id 
+                      (SELECT " . $this->linkField . " as eid 
+                          FROM catalog_product_entity order by " . $this->linkField . " 
                           limit " . $pageSize . " OFFSET " . $page . ")
                       as tmp");
 
@@ -454,8 +469,8 @@ class ProductsApi implements ProductsApiInterface
         $qty = $args['row']['qty'];
 
         $this->stockData[$productId] = [
-            'is_in_stock'   => $isInStock,
-            'qty'           => $qty,
+            'is_in_stock' => $isInStock,
+            'qty'         => $qty,
         ];
     }
 
@@ -484,25 +499,42 @@ class ProductsApi implements ProductsApiInterface
                 $tableAlias = 'table_' . $productAttribute->getAttributeId();
                 $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode());
 
-                $this->productCollection->joinTable(
+                $this->productCollection->joinAttribute(
+                    $valueAlias,
+                    'catalog_product/' . $productAttribute->getAttributeCode(),
+                    $this->linkField,
+                    null,
+                    'left'
+                );
+
+                /*$this->productCollection->joinTable(
                     [$tableAlias => $productAttribute->getBackendTable()],
-                    'entity_id = entity_id',
+                    $linkField . " = " . $linkField,
                     [$valueAlias => 'value'],
                     ['attribute_id' => $productAttribute->getAttributeId()],
                     'left'
-                );
+                );*/
             } else {
                 foreach (array_keys($this->storeIds) as $storeId) {
                     $tableAlias = 'table_' . $productAttribute->getAttributeId() . '_' . $storeId;
                     $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode(), $storeId);
 
-                    $this->productCollection->joinTable(
+                    $this->productCollection->joinAttribute(
+                        $valueAlias,
+                        'catalog_product/' . $productAttribute->getAttributeCode(),
+                        $this->linkField,
+                        null,
+                        'left',
+                        $storeId
+                    );
+
+                    /*$this->productCollection->joinTable(
                         [$tableAlias => $productAttribute->getBackendTable()],
-                        'entity_id = entity_id',
+                        $linkField . " = " . $linkField,
                         [$valueAlias => 'value'],
                         ['store_id' => $storeId, 'attribute_id' => $productAttribute->getAttributeId()],
                         'left'
-                    );
+                    );*/
                 }
             }
         }
@@ -525,28 +557,11 @@ class ProductsApi implements ProductsApiInterface
         return $returnValue;
     }
 
-    /**
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function joinStock()
-    {
-        $this->productCollection->joinTable(
-            $this->productCollection->getResource()->getTable('cataloginventory_stock_item'),
-            'product_id = entity_id',
-            ['qty', 'is_in_stock'],
-            '{{table}}.stock_id=1',
-            'left'
-        );
-
-        return $this;
-    }
-
     private function setWhere()
     {
         $this->productCollection
-            ->addFieldToFilter('entity_id', ['from' => $this->minId])
-            ->addFieldToFilter('entity_id', ['to' => $this->maxId]);
+            ->addFieldToFilter($this->linkField, ['from' => $this->minId])
+            ->addFieldToFilter($this->linkField, ['to' => $this->maxId]);
 
         return $this;
     }
@@ -557,33 +572,7 @@ class ProductsApi implements ProductsApiInterface
     private function setOrder()
     {
         $this->productCollection
-            ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    private function setGroupBy()
-    {
-        $this->productCollection
-            ->groupByAttribute('entity_id');
-
-        return $this;
-    }
-
-    /**
-     * @param int $page
-     * @param int $pageSize
-     *
-     * @return $this
-     */
-    private function setPage($page, $pageSize)
-    {
-        $this->productCollection
-            ->setCurPage($page)
-            ->setPageSize($pageSize);
+            ->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }
