@@ -496,7 +496,6 @@ class ProductsApi implements ProductsApiInterface
             if ($productAttribute->getBackendTable() === $mainTableName) {
                 $this->productCollection->addAttributeToSelect($productAttribute->getAttributeCode());
             } elseif (in_array($productAttribute->getAttributeCode(), $this->globalProductAttributeCodes)) {
-                $tableAlias = 'table_' . $productAttribute->getAttributeId();
                 $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode());
 
                 $this->productCollection->joinAttribute(
@@ -506,17 +505,8 @@ class ProductsApi implements ProductsApiInterface
                     null,
                     'left'
                 );
-
-                /*$this->productCollection->joinTable(
-                    [$tableAlias => $productAttribute->getBackendTable()],
-                    $linkField . " = " . $linkField,
-                    [$valueAlias => 'value'],
-                    ['attribute_id' => $productAttribute->getAttributeId()],
-                    'left'
-                );*/
             } else {
                 foreach (array_keys($this->storeIds) as $storeId) {
-                    $tableAlias = 'table_' . $productAttribute->getAttributeId() . '_' . $storeId;
                     $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode(), $storeId);
 
                     $this->productCollection->joinAttribute(
@@ -527,14 +517,6 @@ class ProductsApi implements ProductsApiInterface
                         'left',
                         $storeId
                     );
-
-                    /*$this->productCollection->joinTable(
-                        [$tableAlias => $productAttribute->getBackendTable()],
-                        $linkField . " = " . $linkField,
-                        [$valueAlias => 'value'],
-                        ['store_id' => $storeId, 'attribute_id' => $productAttribute->getAttributeId()],
-                        'left'
-                    );*/
                 }
             }
         }
