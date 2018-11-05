@@ -329,21 +329,23 @@ class ProductsApi implements ProductsApiInterface
 
         $row = $resource->getConnection()->query($itemsCountQuery)->fetch();
         if (array_key_exists('count', $row)) {
-            $this->maxId = $this->numberOfItems = $row['count'];
+            $this->numberOfItems = $row['count'];
         }
 
-        $idQuery = new \Magento\Framework\DB\Sql\Expression("select min(tmp.eid) as minId, max(tmp.eid) as maxId 
-                    from 
+        $idQuery = new \Zend_Db_Expr("
+            SELECT min(tmp.eid) as minId, max(tmp.eid) as maxId FROM 
                       (SELECT " . $this->linkField . " as eid 
                           FROM catalog_product_entity order by " . $this->linkField . " 
-                          limit " . $pageSize . " OFFSET " . $page . ")
-                      as tmp");
+                          LIMIT " . $pageSize . " OFFSET " . $page . ")
+                      as tmp
+        ");
 
         $row = $resource->getConnection()->query($idQuery)->fetch();
-        if (array_key_exists('minId', $row)) {
+
+        if (array_key_exists('minId', $row) && $row['minId']) {
             $this->minId = $row['minId'];
         }
-        if (array_key_exists('maxId', $row)) {
+        if (array_key_exists('maxId', $row) && $row['maxId']) {
             $this->maxId = $row['maxId'];
         }
         // @codingStandardsIgnoreEnd
