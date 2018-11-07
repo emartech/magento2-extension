@@ -13,6 +13,7 @@ use Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
 use Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
+use Emartech\Emarsys\Model\ResourceModel\Api\Customer as CustomerResource;
 
 /**
  * Class CustomersApi
@@ -71,9 +72,9 @@ class CustomersApi implements CustomersApiInterface
     private $customerAddressEntityTable;
 
     /**
-     * @var string
+     * @var CustomerResource
      */
-    private $subscriptionTable;
+    private $customerResource;
 
     /**
      * CustomersApi constructor.
@@ -87,12 +88,14 @@ class CustomersApi implements CustomersApiInterface
         CollectionFactory $collectionFactory,
         CustomerInterfaceFactory $customerFactory,
         CustomerAddressInterfaceFactory $customerAddressFactory,
-        CustomersApiResponseInterfaceFactory $customersResponseFactory
+        CustomersApiResponseInterfaceFactory $customersResponseFactory,
+        CustomerResource $customerResource
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->customerFactory = $customerFactory;
         $this->customerAddressFactory = $customerAddressFactory;
         $this->customersResponseFactory = $customersResponseFactory;
+        $this->customerResource = $customerResource;
     }
 
     /**
@@ -131,7 +134,6 @@ class CustomersApi implements CustomersApiInterface
         $this->customerCollection = $this->collectionFactory->create();
         $this->customerAddressEntityTable = $this->customerCollection->getResource()
             ->getTable('customer_address_entity');
-        $this->subscriptionTable = $this->customerCollection->getResource()->getTable('newsletter_subscriber');
 
         return $this;
     }
@@ -224,22 +226,10 @@ class CustomersApi implements CustomersApiInterface
 
     /**
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     private function joinSubscriptionStatus()
     {
-
-        // @codingStandardsIgnoreStart
-        $this->customerCollection->getSelect()->columns([
-            'accepts_marketing' => new \Zend_Db_Expr(
-                '(
-                SELECT subscriber_status 
-                FROM ' . $this->subscriptionTable . " 
-                WHERE customer_id = e.entity_id ORDER BY subscriber_id DESC LIMIT 0,1
-                )"
-            )
-        ]);
-        // @codingStandardsIgnoreEnd
+        $this->customerResource->joinSubscriptionStatus($this->customerCollection);
 
         return $this;
     }
