@@ -106,7 +106,7 @@ class Product extends ProductResourceModel
         $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery);
 
         $subSelect = $this->_resource->getConnection()->select()
-            ->from($productsTable, ['eId' => $linkField])
+            ->from($productsTable, ['eid' => $linkField])
             ->order($linkField)
             ->limit($pageSize, $page);
 
