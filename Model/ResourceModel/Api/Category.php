@@ -17,7 +17,6 @@ use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Catalog\Model\Category as CategoryModel;
 
-
 /**
  * Class Category
  * @package Emartech\Emarsys\Model\ResourceModel\Api
