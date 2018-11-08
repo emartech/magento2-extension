@@ -21,6 +21,7 @@ use Magento\Framework\Model\ResourceModel\Iterator;
 
 /**
  * Class Product
+ *
  * @package Emartech\Emarsys\Model\ResourceModel\Api
  */
 class Product extends ProductResourceModel
@@ -43,18 +44,18 @@ class Product extends ProductResourceModel
     /**
      * Product constructor.
      *
-     * @param Context               $context
+     * @param Context $context
      * @param StoreManagerInterface $storeManager
-     * @param Factory               $modelFactory
-     * @param CollectionFactory     $categoryCollectionFactory
-     * @param Category              $catalogCategory
-     * @param ManagerInterface      $eventManager
-     * @param SetFactory            $setFactory
-     * @param TypeFactory           $typeFactory
-     * @param DefaultAttributes     $defaultAttributes
-     * @param Iterator              $iterator
-     * @param array                 $data
-     * @param TableMaintainer|null  $tableMaintainer
+     * @param Factory $modelFactory
+     * @param CollectionFactory $categoryCollectionFactory
+     * @param Category $catalogCategory
+     * @param ManagerInterface $eventManager
+     * @param SetFactory $setFactory
+     * @param TypeFactory $typeFactory
+     * @param DefaultAttributes $defaultAttributes
+     * @param Iterator $iterator
+     * @param array $data
+     * @param TableMaintainer|null $tableMaintainer
      */
     public function __construct(
         Context $context,
@@ -68,7 +69,7 @@ class Product extends ProductResourceModel
         DefaultAttributes $defaultAttributes,
         Iterator $iterator,
         array $data = [],
-        ?TableMaintainer $tableMaintainer = null
+        TableMaintainer $tableMaintainer = null
     ) {
         $this->iterator = $iterator;
 
@@ -97,41 +98,27 @@ class Product extends ProductResourceModel
      */
     public function handleIds($page, $pageSize, $linkField)
     {
-        $numberOfItems = 0;
-        $minId = 0;
-        $maxId = 0;
-
         $productsTable = $this->getTable('catalog_product_entity');
 
         $itemsCountQuery = $this->_resource->getConnection()->select()
-            ->from($productsTable, ['count(' . $linkField . ') as count']);
+            ->from($productsTable, ['count' => 'count(' . $linkField . ')']);
 
-        $row = $this->_resource->getConnection()->query($itemsCountQuery)->fetch();
-        if (array_key_exists('count', $row)) {
-            $numberOfItems = $row['count'];
-        }
+        $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery);
 
         $subSelect = $this->_resource->getConnection()->select()
-            ->from($productsTable, [$linkField . ' as eId'])
+            ->from($productsTable, ['eid' => $linkField])
             ->order($linkField)
             ->limit($pageSize, $page);
 
         $idQuery = $this->_resource->getConnection()->select()
-            ->from(['tmp' => $subSelect], ['min(tmp.eid) as minId', 'max(tmp.eid) as maxId']);
+            ->from(['tmp' => $subSelect], ['minId' => 'min(tmp.eid)', 'maxId' => 'max(tmp.eid)']);
 
-        $row = $this->_resource->getConnection()->query($idQuery)->fetch();
-
-        if (array_key_exists('minId', $row) && $row['minId']) {
-            $minId = $row['minId'];
-        }
-        if (array_key_exists('maxId', $row) && $row['maxId']) {
-            $maxId = $row['maxId'];
-        }
+        $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery);
 
         return [
-            'numberOfItems' => $numberOfItems,
-            'minId'         => $minId,
-            'maxId'         => $maxId,
+            'numberOfItems' => (int)$numberOfItems,
+            'minId' => (int)$minMaxValues['minId'],
+            'maxId' => (int)$minMaxValues['maxId'],
         ];
     }
 
@@ -215,7 +202,7 @@ class Product extends ProductResourceModel
 
         $this->stockData[$productId] = [
             'is_in_stock' => $isInStock,
-            'qty'         => $qty,
+            'qty' => $qty,
         ];
     }
 }

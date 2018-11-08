@@ -19,6 +19,7 @@ use Magento\Catalog\Model\Category as CategoryModel;
 
 /**
  * Class Category
+ *
  * @package Emartech\Emarsys\Model\ResourceModel\Api
  */
 class Category extends CategoryResourceModel
@@ -41,15 +42,15 @@ class Category extends CategoryResourceModel
     /**
      * Category constructor.
      *
-     * @param Context               $context
+     * @param Context $context
      * @param StoreManagerInterface $storeManager
-     * @param Factory               $modelFactory
-     * @param ManagerInterface      $eventManager
-     * @param TreeFactory           $categoryTreeFactory
-     * @param CollectionFactory     $categoryCollectionFactory
-     * @param Iterator              $iterator
-     * @param array                 $data
-     * @param Json|null             $serializer
+     * @param Factory $modelFactory
+     * @param ManagerInterface $eventManager
+     * @param TreeFactory $categoryTreeFactory
+     * @param CollectionFactory $categoryCollectionFactory
+     * @param Iterator $iterator
+     * @param array $data
+     * @param Json|null $serializer
      */
     public function __construct(
         Context $context,
@@ -60,7 +61,7 @@ class Category extends CategoryResourceModel
         CollectionFactory $categoryCollectionFactory,
         Iterator $iterator,
         array $data = [],
-        ?Json $serializer = null
+        Json $serializer = null
     ) {
         $this->iterator = $iterator;
 
