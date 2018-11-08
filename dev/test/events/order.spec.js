@@ -108,7 +108,7 @@ const cancelOrder = async (magentoApi, orderId) => {
 describe('Order events', function() {
   context('setting enabled', function() {
     before(async function() {
-      await this.magentoApi.setConfig({
+      await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: { collectSalesEvents: 'enabled' }
       });
@@ -152,7 +152,7 @@ describe('Order events', function() {
       });
 
       it('should not create event', async function() {
-        await this.magentoApi.setDefaultConfig(1);
+        await this.magentoApi.execute('config', 'setDefault', 1);
 
         await createNewOrder(this.magentoApi, this.customer, this.product);
         const createEvent = await getLastEvent(this.db);
@@ -164,7 +164,7 @@ describe('Order events', function() {
 
   context('setting disabled', function() {
     it('should not create event', async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
 
       await createNewOrder(this.magentoApi, this.customer, this.product);
       const createEvent = await getLastEvent(this.db);

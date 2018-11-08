@@ -39,14 +39,15 @@ const deleteProduct = magentoApi => async product => {
 
 const createCategory = magentoApi => async category => {
   try {
-    return await magentoApi.createCategory(category);
+    const response = await magentoApi.post({ path: '/index.php/rest/V1/categories', payload: { category } });
+    return response.data;
   } catch (error) {
     throw error;
   }
 };
 
 const deleteCategory = magentoApi => async categoryId => {
-  return await magentoApi.deleteCategory(categoryId);
+  return await magentoApi.delete({ path: `/index.php/rest/V1/categories/${categoryId}` });
 };
 
 const setCurrencyConfig = async db => {
@@ -64,7 +65,7 @@ const setCurrencyConfig = async db => {
 };
 
 const setDefaultStoreSettings = magentoApi => async () => {
-  return await magentoApi.setConfig({
+  return await magentoApi.execute('config', 'set', {
     websiteId: 1,
     config: {
       storeSettings: [
@@ -82,7 +83,7 @@ const setDefaultStoreSettings = magentoApi => async () => {
 };
 
 const clearStoreSettings = magentoApi => async () => {
-  return await magentoApi.setConfig({
+  return await magentoApi.execute('config', 'set', {
     websiteId: 1,
     config: {
       storeSettings: []
@@ -118,12 +119,13 @@ before(async function() {
 
   this.magentoApi = new Magento2ApiClient({
     baseUrl: `http://${this.hostname}`,
-    token: this.token
+    token: this.token,
+    platform: 'magento2'
   });
   this.setDefaultStoreSettings = setDefaultStoreSettings(this.magentoApi);
   this.clearStoreSettings = clearStoreSettings(this.magentoApi);
 
-  await this.magentoApi.setDefaultConfig(1);
+  await this.magentoApi.execute('config', 'setDefault', 1);
   await this.setDefaultStoreSettings();
 
   await setCurrencyConfig(this.db);

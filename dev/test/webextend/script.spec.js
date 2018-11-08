@@ -14,7 +14,7 @@ const getEmarsysSnippetContents = async path => {
 describe('Webextend scripts', function() {
   describe('enabled', function() {
     beforeEach(async function() {
-      await this.magentoApi.setConfig({
+      await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: {
           injectSnippet: 'enabled',
@@ -84,7 +84,7 @@ describe('Webextend scripts', function() {
       });
 
       it('should not be in the HTML', async function() {
-        await this.magentoApi.setDefaultConfig(1);
+        await this.magentoApi.execute('config', 'setDefault', 1);
         const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
         expect(emarsysSnippets).to.eql('');
       });
@@ -93,7 +93,7 @@ describe('Webextend scripts', function() {
 
   describe('disabled', function() {
     it('should not be in the HTML if injectsnippet setting is disabled', async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
       const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
       expect(emarsysSnippets).to.eql('');
     });

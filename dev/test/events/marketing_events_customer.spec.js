@@ -40,11 +40,11 @@ describe('Marketing events: customer', function() {
 
   context('if collectMarketingEvents turned off', function() {
     before(async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
     });
 
     it('should NOT create customer_new_account_registered_no_password event', async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
 
       await this.createCustomer(customer);
 
@@ -58,7 +58,7 @@ describe('Marketing events: customer', function() {
     });
 
     it('should NOT create customer_new_account_registered event', async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
 
       await this.createCustomer(customer, 'Password1234');
 
@@ -72,7 +72,7 @@ describe('Marketing events: customer', function() {
     });
 
     it('should NOT create customer_password_reset_confirmation event', async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
 
       await this.magentoApi.put({
         path: '/index.php/rest/V1/customers/password',
@@ -93,7 +93,7 @@ describe('Marketing events: customer', function() {
     });
 
     it('should NOT create customer_password_reminder event', async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
 
       await this.magentoApi.put({
         path: '/index.php/rest/V1/customers/password',
@@ -257,7 +257,7 @@ describe('Marketing events: customer', function() {
             .into('core_config_data');
 
           // this is for invalidating config cache
-          await this.magentoApi.setConfig({
+          await this.magentoApi.execute('config', 'set', {
             websiteId: 1,
             config: {
               collectMarketingEvents: 'disabled'
@@ -390,7 +390,7 @@ describe('Marketing events: customer', function() {
 
   context('if collectMarketingEvents turned on', function() {
     before(async function() {
-      await this.magentoApi.setConfig({ websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
+      await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
     });
 
     it('should create customer_new_account_registered_no_password event', async function() {
@@ -587,7 +587,7 @@ describe('Marketing events: customer', function() {
             .into('core_config_data');
 
           // this is for invalidating config cache
-          await this.magentoApi.setConfig({
+          await this.magentoApi.execute('config', 'set', {
             websiteId: 1,
             config: {
               collectMarketingEvents: 'enabled'
