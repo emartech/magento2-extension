@@ -29,7 +29,7 @@ class Customer extends CustomerResourceModel
             ->limit(1, 0);
 
         $collection->getSelect()->columns([
-            'accepts_marketing' => $subSelect
+            'accepts_marketing' => $subSelect,
         ]);
     }
 }

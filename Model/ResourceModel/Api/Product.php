@@ -44,18 +44,18 @@ class Product extends ProductResourceModel
     /**
      * Product constructor.
      *
-     * @param Context $context
+     * @param Context               $context
      * @param StoreManagerInterface $storeManager
-     * @param Factory $modelFactory
-     * @param CollectionFactory $categoryCollectionFactory
-     * @param Category $catalogCategory
-     * @param ManagerInterface $eventManager
-     * @param SetFactory $setFactory
-     * @param TypeFactory $typeFactory
-     * @param DefaultAttributes $defaultAttributes
-     * @param Iterator $iterator
-     * @param array $data
-     * @param TableMaintainer|null $tableMaintainer
+     * @param Factory               $modelFactory
+     * @param CollectionFactory     $categoryCollectionFactory
+     * @param Category              $catalogCategory
+     * @param ManagerInterface      $eventManager
+     * @param SetFactory            $setFactory
+     * @param TypeFactory           $typeFactory
+     * @param DefaultAttributes     $defaultAttributes
+     * @param Iterator              $iterator
+     * @param array                 $data
+     * @param TableMaintainer|null  $tableMaintainer
      */
     public function __construct(
         Context $context,
@@ -117,8 +117,8 @@ class Product extends ProductResourceModel
 
         return [
             'numberOfItems' => (int)$numberOfItems,
-            'minId' => (int)$minMaxValues['minId'],
-            'maxId' => (int)$minMaxValues['maxId'],
+            'minId'         => (int)$minMaxValues['minId'],
+            'maxId'         => (int)$minMaxValues['maxId'],
         ];
     }
 
@@ -202,7 +202,7 @@ class Product extends ProductResourceModel
 
         $this->stockData[$productId] = [
             'is_in_stock' => $isInStock,
-            'qty' => $qty,
+            'qty'         => $qty,
         ];
     }
 }
