@@ -3,7 +3,7 @@ db:
   cached: true
   encrypted_env_file: codeship.env.encrypted
 magento-test.local:
-  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.6
   container_name: magento-test.local
   depends_on:
     - db
