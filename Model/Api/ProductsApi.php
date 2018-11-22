@@ -293,6 +293,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return $this
      */
+    // @codingStandardsIgnoreLine
     protected function initStores($storeIds)
     {
         if (!is_array($storeIds)) {
@@ -314,6 +315,7 @@ class ProductsApi implements ProductsApiInterface
      * @return $this
      * @throws \Exception
      */
+    // @codingStandardsIgnoreLine
     protected function initCollection()
     {
         $this->productCollection = $this->productCollectionFactory->create();
@@ -330,6 +332,7 @@ class ProductsApi implements ProductsApiInterface
      * @return $this
      * @throws \Zend_Db_Statement_Exception
      */
+    // @codingStandardsIgnoreLine
     protected function handleIds($page, $pageSize)
     {
         $page--;
@@ -347,6 +350,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
+    // @codingStandardsIgnoreLine
     protected function handleCategoryIds()
     {
         $this->categoryIds = $this->categoryResource->getCategoryIds($this->minId, $this->maxId);
@@ -357,6 +361,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
+    // @codingStandardsIgnoreLine
     protected function handleChildrenProductIds()
     {
         $this->childrenProductIds = $this->productResource->getChildrenProductIds($this->minId, $this->maxId);
@@ -367,6 +372,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
+    // @codingStandardsIgnoreLine
     protected function handleStockData()
     {
         $this->stockData = $this->productResource->getStockData($this->minId, $this->maxId);
@@ -378,6 +384,7 @@ class ProductsApi implements ProductsApiInterface
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
+    // @codingStandardsIgnoreLine
     protected function joinData()
     {
         $this->productAttributeCollection = $this->productAttributeCollectionFactory->create();
@@ -430,6 +437,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
+    // @codingStandardsIgnoreLine
     protected function getAttributeValueAlias($attributeCode, $storeId = null)
     {
         $returnValue = $attributeCode;
@@ -439,7 +447,8 @@ class ProductsApi implements ProductsApiInterface
         return $returnValue;
     }
 
-    protected function setWhere()
+    // @codingStandardsIgnoreLine
+    rotected function setWhere()
     {
         $this->productCollection
             ->addFieldToFilter($this->linkField, ['from' => $this->minId])
@@ -451,6 +460,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
+    // @codingStandardsIgnoreLine
     protected function setOrder()
     {
         $this->productCollection
@@ -462,6 +472,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return array
      */
+    // @codingStandardsIgnoreLine
     protected function handleProducts()
     {
         $returnArray = [];
@@ -486,6 +497,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int
      */
+    // @codingStandardsIgnoreLine
     protected function handleStock($product)
     {
         if (array_key_exists($product->getId(), $this->stockData)) {
@@ -500,6 +512,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int
      */
+    // @codingStandardsIgnoreLine
     protected function handleQty($product)
     {
         if (array_key_exists($product->getId(), $this->stockData)) {
@@ -514,6 +527,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return ImagesInterface
      */
+    // @codingStandardsIgnoreLine
     protected function handleImages($product)
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
@@ -544,6 +558,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
+    // @codingStandardsIgnoreLine
     protected function handleChildrenEntityIds($product)
     {
         if (array_key_exists($product->getId(), $this->childrenProductIds)) {
@@ -558,6 +573,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
+    // @codingStandardsIgnoreLine
     protected function handleCategories($product)
     {
         if (array_key_exists($product->getId(), $this->categoryIds)) {
@@ -572,6 +588,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
+    // @codingStandardsIgnoreLine
     protected function getProductUrlSuffix($storeId)
     {
         if (!isset($this->productUrlSuffix[$storeId])) {
@@ -589,6 +606,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
+    // @codingStandardsIgnoreLine
     protected function handleProductStoreData($product)
     {
         $returnArray = [];
@@ -614,6 +632,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
+    // @codingStandardsIgnoreLine
     protected function handleLink($product, $store)
     {
         $link = $product->getData($this->getAttributeValueAlias('url_key', $store->getId()));
@@ -630,6 +649,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
+    // @codingStandardsIgnoreLine
     protected function getCurrencyCode($store)
     {
         if ($store->getId() === '0') {
@@ -644,6 +664,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int | float
      */
+    // @codingStandardsIgnoreLine
     protected function handleDisplayPrice($product, $store)
     {
         $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
@@ -672,6 +693,7 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int | float
      */
+    // @codingStandardsIgnoreLine
     protected function handlePrice($product, $store)
     {
         $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
