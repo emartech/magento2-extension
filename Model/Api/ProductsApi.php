@@ -448,7 +448,7 @@ class ProductsApi implements ProductsApiInterface
     }
 
     // @codingStandardsIgnoreLine
-    rotected function setWhere()
+    protected function setWhere()
     {
         $this->productCollection
             ->addFieldToFilter($this->linkField, ['from' => $this->minId])
