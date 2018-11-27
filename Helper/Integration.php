@@ -48,6 +48,8 @@ class Integration extends AbstractHelper
      */
     private $http;
 
+    const MAGENTO_VERSION=2;
+
     /**
      * Integration constructor.
      * @param Context $context
@@ -115,7 +117,9 @@ class Integration extends AbstractHelper
         if ($port && $port !== 80) {
             $hostname .= ':' . $port;
         }
-        $connectJson = $this->json->serialize(compact('hostname', 'token'));
+        $magento_version = self::MAGENTO_VERSION;
+
+        $connectJson = $this->json->serialize(compact('hostname', 'token', 'magento_version'));
 
         $connectToken = base64_encode($connectJson);
 

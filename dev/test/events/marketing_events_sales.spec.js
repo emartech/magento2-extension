@@ -184,7 +184,7 @@ const expectCustomerAndOrderMatches = function(createdEventData, customer) {
 
 describe('Marketing events: sales', function() {
   after(async function() {
-    await this.magentoApi.setConfig({
+    await this.magentoApi.execute('config', 'set', {
       websiteId: 1,
       config: { collectMarketingEvents: 'disabled' }
     });
@@ -193,7 +193,7 @@ describe('Marketing events: sales', function() {
 
   describe('If config collectMarketingEvents is disabled', function() {
     before(async function() {
-      await this.magentoApi.setConfig({
+      await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: {
           collectCustomerEvents: 'disabled',
@@ -214,7 +214,7 @@ describe('Marketing events: sales', function() {
 
   describe('If config collectMarketingEvents is enabled', function() {
     before(async function() {
-      await this.magentoApi.setConfig({
+      await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: { collectMarketingEvents: 'enabled' }
       });

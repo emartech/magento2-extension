@@ -21,7 +21,7 @@ const dbKeys = {
 const scopeId = 1;
 describe('Config endpoint', function() {
   afterEach(async function() {
-    await this.magentoApi.setDefaultConfig(1);
+    await this.magentoApi.execute('config', 'setDefault', 1);
   });
 
   after(async function() {
@@ -35,7 +35,7 @@ describe('Config endpoint', function() {
         .from('core_config_data')
         .where('path', 'like', 'emartech/emarsys/config/%');
 
-      await this.magentoApi.setDefaultConfig(scopeId);
+      await this.magentoApi.execute('config', 'setDefault', scopeId);
 
       const config = await this.db
         .select()

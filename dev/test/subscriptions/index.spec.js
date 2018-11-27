@@ -39,7 +39,7 @@ describe('Subscriptions api', function() {
       it('should set subscription without customer', async function() {
         expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.false;
 
-        await this.magentoApi.updateSubscriptions({
+        await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [{ subscriber_email: noCustomerEmail, subscriber_status: true }]
         });
 
@@ -49,7 +49,7 @@ describe('Subscriptions api', function() {
       it('should set subscription with customer', async function() {
         expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
 
-        await this.magentoApi.updateSubscriptions({
+        await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [{ subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId }]
         });
 
@@ -59,10 +59,10 @@ describe('Subscriptions api', function() {
 
     describe('unsubscribe', function() {
       it('should unsubscribe without customer', async function() {
-        await this.magentoApi.updateSubscriptions({
+        await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [{ subscriber_email: noCustomerEmail, subscriber_status: true }]
         });
-        await this.magentoApi.updateSubscriptions({
+        await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [{ subscriber_email: noCustomerEmail, subscriber_status: false }]
         });
 
@@ -70,10 +70,10 @@ describe('Subscriptions api', function() {
       });
 
       it('should unsubscribe with customer', async function() {
-        await this.magentoApi.updateSubscriptions({
+        await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [{ subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId }]
         });
-        await this.magentoApi.updateSubscriptions({
+        await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [{ subscriber_email: customerEmail, subscriber_status: false, customer_id: customerId }]
         });
 
@@ -139,7 +139,7 @@ describe('Subscriptions api', function() {
         total_count: 4
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ websiteId });
+      const actualSubscriptions = await this.magentoApi.execute('subscriptions', 'list', { websiteId });
 
       expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
@@ -169,7 +169,10 @@ describe('Subscriptions api', function() {
         page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ subscribed: true, websiteId });
+      const actualSubscriptions = await this.magentoApi.execute('subscriptions', 'list', {
+        subscribed: true,
+        websiteId
+      });
 
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
@@ -198,7 +201,7 @@ describe('Subscriptions api', function() {
         page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({
+      const actualSubscriptions = await this.magentoApi.execute('subscriptions', 'list', {
         subscribed: false,
         onlyGuest: false,
         websiteId
@@ -229,7 +232,10 @@ describe('Subscriptions api', function() {
         page_size: 1000
       };
 
-      const actualSubscriptions = await this.magentoApi.getSubscriptions({ onlyGuest: true, websiteId });
+      const actualSubscriptions = await this.magentoApi.execute('subscriptions', 'list', {
+        onlyGuest: true,
+        websiteId
+      });
 
       expect(actualSubscriptions.total_count).to.be.eql(expectedSubscriptions.total_count);
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);

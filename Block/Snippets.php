@@ -21,6 +21,8 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Registry;
 use Emartech\Emarsys\Model\SettingsFactory;
 use Magento\Directory\Model\CurrencyFactory;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\CategoryInterface;
 
 /**
  * Class Snippets
@@ -64,6 +66,11 @@ class Snippets extends Template
     private $categoryCollectionFactory;
 
     /**
+     * @var MetadataPool
+     */
+    private $metadataPool;
+
+    /**
      * Snippets constructor.
      *
      * @param Context                   $context
@@ -74,6 +81,7 @@ class Snippets extends Template
      * @param CurrencyFactory           $currencyFactory
      * @param JsonSerializer            $jsonSerializer
      * @param CategoryCollectionFactory $categoryCollectionFactory
+     * @param MetadataPool              $metadataPool
      * @param array                     $data
      */
     public function __construct(
@@ -85,6 +93,7 @@ class Snippets extends Template
         CurrencyFactory $currencyFactory,
         JsonSerializer $jsonSerializer,
         CategoryCollectionFactory $categoryCollectionFactory,
+        MetadataPool $metadataPool,
         array $data = []
     ) {
         $this->storeManager = $context->getStoreManager();
@@ -95,6 +104,7 @@ class Snippets extends Template
         $this->currencyFactory = $currencyFactory;
         $this->jsonSerializer = $jsonSerializer;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->metadataPool = $metadataPool;
         parent::__construct($context, $data);
     }
 
@@ -226,11 +236,13 @@ class Snippets extends Template
 
                 $categoryIds = $this->removeDefaultCategories($category->getPathIds());
 
+                $linkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
+
                 /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
                 $categoryCollection = $this->categoryCollectionFactory->create()
                     ->setStore($this->storeManager->getStore())
                     ->addAttributeToSelect('name')
-                    ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
+                    ->addFieldToFilter($linkField, ['in' => $categoryIds]);
 
                 /** @var Category $category */
                 foreach ($categoryCollection as $categoryItem) {

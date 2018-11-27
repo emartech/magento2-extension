@@ -14,7 +14,7 @@ const getEmarsysSnippetContents = async path => {
 describe('Webextend scripts', function() {
   describe('enabled', function() {
     beforeEach(async function() {
-      await this.magentoApi.setConfig({
+      await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: {
           injectSnippet: 'enabled',
@@ -32,7 +32,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          `<script type="text/javascript">    var ScarabQueue = ScarabQueue || [];    (function(id) {      if (document.getElementById(id)) return;      var js = document.createElement('script'); js.id = id;      js.src = '//cdn.scarabresearch.com/js/123/scarab-v2.js';      var fs = document.getElementsByTagName('script')[0];      fs.parentNode.insertBefore(js, fs);    })('scarab-js-api');  </script>`
+          `<script type="text/javascript">    var ScarabQueue = ScarabQueue || [];    (function(id) {      if (document.getElementById(id)) return;      var js = document.createElement('script'); js.id = id;      js.src = '\\/' + '\\/' + 'cdn.scarabresearch.com/js/123/scarab-v2.js';      var fs = document.getElementsByTagName('script')[0];      fs.parentNode.insertBefore(js, fs);    })('scarab-js-api');  </script>`
         )
       ).to.be.true;
 
@@ -84,7 +84,7 @@ describe('Webextend scripts', function() {
       });
 
       it('should not be in the HTML', async function() {
-        await this.magentoApi.setDefaultConfig(1);
+        await this.magentoApi.execute('config', 'setDefault', 1);
         const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
         expect(emarsysSnippets).to.eql('');
       });
@@ -93,7 +93,7 @@ describe('Webextend scripts', function() {
 
   describe('disabled', function() {
     it('should not be in the HTML if injectsnippet setting is disabled', async function() {
-      await this.magentoApi.setDefaultConfig(1);
+      await this.magentoApi.execute('config', 'setDefault', 1);
       const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
       expect(emarsysSnippets).to.eql('');
     });

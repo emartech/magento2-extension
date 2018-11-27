@@ -14,6 +14,8 @@ use Magento\Framework\UrlInterface;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\CategoryInterface;
 
 use Emartech\Emarsys\Api\CategoriesApiInterface;
 use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterfaceFactory;
@@ -89,6 +91,16 @@ class CategoriesApi implements CategoriesApiInterface
     private $globalCategoryAttributeCodes = ['entity_id', 'path', 'children_count', 'stores'];
 
     /**
+     * @var string
+     */
+    private $linkField = '';
+
+    /**
+     * @var MetadataPool
+     */
+    private $metadataPool;
+
+    /**
      * CategoriesApi constructor.
      *
      * @param StoreManagerInterface                 $storeManager
@@ -99,6 +111,7 @@ class CategoriesApi implements CategoriesApiInterface
      * @param CategoryInterfaceFactory              $categoryFactory
      * @param CategoryStoreDataInterfaceFactory     $categoryStoreDataFactory
      * @param CategoryUrlPathGenerator              $categoryUrlPathGenerator
+     * @param MetadataPool                          $metadataPool
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -108,7 +121,8 @@ class CategoriesApi implements CategoriesApiInterface
         CategoriesApiResponseInterfaceFactory $categoriesApiResponseFactory,
         CategoryInterfaceFactory $categoryFactory,
         CategoryStoreDataInterfaceFactory $categoryStoreDataFactory,
-        CategoryUrlPathGenerator $categoryUrlPathGenerator
+        CategoryUrlPathGenerator $categoryUrlPathGenerator,
+        MetadataPool $metadataPool
     ) {
         $this->storeManager = $storeManager;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
@@ -118,6 +132,7 @@ class CategoriesApi implements CategoriesApiInterface
         $this->categoryFactory = $categoryFactory;
         $this->categoryStoreDataFactory = $categoryStoreDataFactory;
         $this->categoryUrlPathGenerator = $categoryUrlPathGenerator;
+        $this->metadataPool = $metadataPool;
     }
 
     /**
@@ -174,10 +189,13 @@ class CategoriesApi implements CategoriesApiInterface
 
     /**
      * @return $this
+     * @throws \Exception
      */
     private function initCollection()
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
+
+        $this->linkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
 
         return $this;
     }
@@ -204,27 +222,26 @@ class CategoriesApi implements CategoriesApiInterface
             if ($categoryAttribute->getBackendTable() === $mainTableName) {
                 $this->categoryCollection->addAttributeToSelect($categoryAttribute->getAttributeCode());
             } elseif (in_array($categoryAttribute->getAttributeCode(), $this->globalCategoryAttributeCodes)) {
-                $tableAlias = 'table_' . $categoryAttribute->getAttributeId();
                 $valueAlias = $this->getAttributeValueAlias($categoryAttribute->getAttributeCode());
 
-                $this->categoryCollection->joinTable(
-                    [$tableAlias => $categoryAttribute->getBackendTable()],
-                    'entity_id = entity_id',
-                    [$valueAlias => 'value'],
-                    ['attribute_id' => $categoryAttribute->getAttributeId()],
+                $this->categoryCollection->joinAttribute(
+                    $valueAlias,
+                    'catalog_category/' . $categoryAttribute->getAttributeCode(),
+                    $this->linkField,
+                    null,
                     'left'
                 );
             } else {
                 foreach (array_keys($this->storeIds) as $storeId) {
-                    $tableAlias = 'table_' . $categoryAttribute->getAttributeId() . '_' . $storeId;
                     $valueAlias = $this->getAttributeValueAlias($categoryAttribute->getAttributeCode(), $storeId);
 
-                    $this->categoryCollection->joinTable(
-                        [$tableAlias => $categoryAttribute->getBackendTable()],
-                        'entity_id = entity_id',
-                        [$valueAlias => 'value'],
-                        ['store_id' => $storeId, 'attribute_id' => $categoryAttribute->getAttributeId()],
-                        'left'
+                    $this->categoryCollection->joinAttribute(
+                        $valueAlias,
+                        'catalog_category/' . $categoryAttribute->getAttributeCode(),
+                        $this->linkField,
+                        null,
+                        'left',
+                        $storeId
                     );
                 }
             }
@@ -254,7 +271,7 @@ class CategoriesApi implements CategoriesApiInterface
     private function setOrder()
     {
         $this->categoryCollection
-            ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
+            ->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }

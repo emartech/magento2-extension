@@ -3,7 +3,6 @@
 namespace Emartech\Emarsys\Model\Api;
 
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Framework\Data\Collection as DataCollection;
@@ -19,7 +18,8 @@ use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
 use Magento\Store\Model\Store;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Framework\Model\ResourceModel\Iterator;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\ProductInterface;
 
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
@@ -28,6 +28,8 @@ use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ImagesInterface;
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
+use Emartech\Emarsys\Model\ResourceModel\Api\Category as CategoryResource;
+use Emartech\Emarsys\Model\ResourceModel\Api\Product as ProductResource;
 
 class ProductsApi implements ProductsApiInterface
 {
@@ -102,19 +104,9 @@ class ProductsApi implements ProductsApiInterface
     private $storeIds = [];
 
     /**
-     * @var array
-     */
-    private $categories = [];
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
-
-    /**
-     * @var Iterator
-     */
-    private $iterator;
 
     /**
      * @var array
@@ -182,6 +174,26 @@ class ProductsApi implements ProductsApiInterface
     private $stockData = [];
 
     /**
+     * @var string
+     */
+    private $linkField = '';
+
+    /**
+     * @var MetadataPool
+     */
+    private $metadataPool;
+
+    /**
+     * @var CategoryResource
+     */
+    private $categoryResource;
+
+    /**
+     * @var ProductResource
+     */
+    private $productResource;
+
+    /**
      * ProductsApi constructor.
      *
      * @param CategoryCollectionFactory           $categoryCollectionFactory
@@ -196,7 +208,9 @@ class ProductsApi implements ProductsApiInterface
      * @param ProductStoreDataInterfaceFactory    $productStoreDataFactory
      * @param ProductUrlFactory                   $productUrlFactory
      * @param LoggerInterface                     $logger
-     * @param Iterator                            $iterator
+     * @param MetadataPool                        $metadataPool
+     * @param CategoryResource                    $categoryResource
+     * @param ProductResource                     $productResource
      */
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
@@ -211,7 +225,9 @@ class ProductsApi implements ProductsApiInterface
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
         ProductUrlFactory $productUrlFactory,
         LoggerInterface $logger,
-        Iterator $iterator
+        MetadataPool $metadataPool,
+        CategoryResource $categoryResource,
+        ProductResource $productResource
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
@@ -228,7 +244,10 @@ class ProductsApi implements ProductsApiInterface
         $this->imagesFactory = $imagesFactory;
         $this->productStoreDataFactory = $productStoreDataFactory;
         $this->logger = $logger;
-        $this->iterator = $iterator;
+
+        $this->metadataPool = $metadataPool;
+        $this->categoryResource = $categoryResource;
+        $this->productResource = $productResource;
     }
 
     /**
@@ -237,7 +256,9 @@ class ProductsApi implements ProductsApiInterface
      * @param string $storeId
      *
      * @return ProductsApiResponseInterface
+     * @throws WebApiException
      * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Zend_Db_Statement_Exception
      */
     public function get($page, $pageSize, $storeId)
     {
@@ -260,8 +281,6 @@ class ProductsApi implements ProductsApiInterface
 
         $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
-        $this->setGroupBy();
-
         return $this->productsApiResponseFactory->create()->setCurrentPage($page)
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
@@ -274,7 +293,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return $this
      */
-    private function initStores($storeIds)
+    // @codingStandardsIgnoreLine
+    protected function initStores($storeIds)
     {
         if (!is_array($storeIds)) {
             $storeIds = explode(',', $storeIds);
@@ -293,45 +313,36 @@ class ProductsApi implements ProductsApiInterface
 
     /**
      * @return $this
+     * @throws \Exception
      */
-    private function initCollection()
+    // @codingStandardsIgnoreLine
+    protected function initCollection()
     {
         $this->productCollection = $this->productCollectionFactory->create();
 
+        $this->linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
+
         return $this;
     }
 
-    private function handleIds($page, $pageSize)
+    /**
+     * @param int $page
+     * @param int $pageSize
+     *
+     * @return $this
+     * @throws \Zend_Db_Statement_Exception
+     */
+    // @codingStandardsIgnoreLine
+    protected function handleIds($page, $pageSize)
     {
-        /** @var \Magento\Catalog\Model\ResourceModel\Product $resource */
-        $resource = $this->productCollection->getResource();
         $page--;
         $page *= $pageSize;
 
-        // @codingStandardsIgnoreStart
-        $itemsCountQuery = new \Magento\Framework\DB\Sql\Expression("select count(entity_id) as count
-                    FROM catalog_product_entity");
+        $data = $this->productResource->handleIds($page, $pageSize, $this->linkField);
 
-        $row = $resource->getConnection()->query($itemsCountQuery)->fetch();
-        if (array_key_exists('count', $row)) {
-            $this->maxId = $this->numberOfItems = $row['count'];
-        }
-
-        $idQuery = new \Magento\Framework\DB\Sql\Expression("select min(tmp.eid) as minId, max(tmp.eid) as maxId 
-                    from 
-                      (SELECT entity_id as eid 
-                          FROM catalog_product_entity order by entity_id 
-                          limit " . $pageSize . " OFFSET " . $page . ")
-                      as tmp");
-
-        $row = $resource->getConnection()->query($idQuery)->fetch();
-        if (array_key_exists('minId', $row)) {
-            $this->minId = $row['minId'];
-        }
-        if (array_key_exists('maxId', $row)) {
-            $this->maxId = $row['maxId'];
-        }
-        // @codingStandardsIgnoreEnd
+        $this->numberOfItems = $data['numberOfItems'];
+        $this->minId = $data['minId'];
+        $this->maxId = $data['maxId'];
 
         return $this;
     }
@@ -339,131 +350,42 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
-    private function handleCategoryIds()
+    // @codingStandardsIgnoreLine
+    protected function handleCategoryIds()
     {
-        $this->categoryIds = [];
-
-        $resource = $this->productCollection->getResource();
-        $categoryTable = $resource->getTable('catalog_category_product');
-
-        // @codingStandardsIgnoreStart
-        $categoryQuery = new \Magento\Framework\DB\Sql\Expression("select category_id, product_id
-                    FROM " . $categoryTable . " WHERE product_id BETWEEN " . $this->minId . " AND " . $this->maxId);
-        // @codingStandardsIgnoreEnd
-
-        $this->iterator->walk(
-            (string)$categoryQuery,
-            [[$this, 'handleCategoryId']],
-            [],
-            $resource->getConnection()
-        );
+        $this->categoryIds = $this->categoryResource->getCategoryIds($this->minId, $this->maxId);
 
         return $this;
-    }
-
-    /**
-     * @param array $args
-     *
-     * @return void
-     */
-    public function handleCategoryId($args)
-    {
-        $productId = $args['row']['product_id'];
-        $categoryId = $args['row']['category_id'];
-        if (!array_key_exists($productId, $this->categoryIds)) {
-            $this->categoryIds[$productId] = [];
-        }
-        $this->categoryIds[$productId][] = $this->handleCategory($categoryId);
     }
 
     /**
      * @return $this
      */
-    private function handleChildrenProductIds()
+    // @codingStandardsIgnoreLine
+    protected function handleChildrenProductIds()
     {
-        $this->childrenProductIds = [];
-
-        $resource = $this->productCollection->getResource();
-        $superLinkTable = $resource->getTable('catalog_product_super_link');
-
-        // @codingStandardsIgnoreStart
-        $childrenProductQuery = new \Magento\Framework\DB\Sql\Expression("select product_id, parent_id
-                    FROM " . $superLinkTable . " WHERE parent_id BETWEEN " . $this->minId . " AND " . $this->maxId);
-        // @codingStandardsIgnoreEnd
-
-        $this->iterator->walk(
-            (string)$childrenProductQuery,
-            [[$this, 'handleChildrenProductId']],
-            [],
-            $resource->getConnection()
-        );
+        $this->childrenProductIds = $this->productResource->getChildrenProductIds($this->minId, $this->maxId);
 
         return $this;
-    }
-
-    /**
-     * @param array $args
-     *
-     * @return void
-     */
-    public function handleChildrenProductId($args)
-    {
-        $productId = $args['row']['product_id'];
-        $parentId = $args['row']['parent_id'];
-        if (!array_key_exists($parentId, $this->categoryIds)) {
-            $this->childrenProductIds[$parentId] = [];
-        }
-        $this->childrenProductIds[$parentId][] = $productId;
     }
 
     /**
      * @return $this
      */
-    private function handleStockData()
+    // @codingStandardsIgnoreLine
+    protected function handleStockData()
     {
-        $this->stockData = [];
-
-        $resource = $this->productCollection->getResource();
-        $stockDataTable = $resource->getTable('cataloginventory_stock_item');
-
-        // @codingStandardsIgnoreStart
-        $stockQuery = new \Magento\Framework\DB\Sql\Expression("select is_in_stock, qty, product_id
-                    FROM " . $stockDataTable . " WHERE product_id BETWEEN " . $this->minId . " 
-                    AND " . $this->maxId . " AND stock_id = 1");
-        // @codingStandardsIgnoreEnd
-
-        $this->iterator->walk(
-            (string)$stockQuery,
-            [[$this, 'handleStockItem']],
-            [],
-            $resource->getConnection()
-        );
+        $this->stockData = $this->productResource->getStockData($this->minId, $this->maxId);
 
         return $this;
-    }
-
-    /**
-     * @param array $args
-     *
-     * @return void
-     */
-    public function handleStockItem($args)
-    {
-        $productId = $args['row']['product_id'];
-        $isInStock = $args['row']['is_in_stock'];
-        $qty = $args['row']['qty'];
-
-        $this->stockData[$productId] = [
-            'is_in_stock'   => $isInStock,
-            'qty'           => $qty,
-        ];
     }
 
     /**
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinData()
+    // @codingStandardsIgnoreLine
+    protected function joinData()
     {
         $this->productAttributeCollection = $this->productAttributeCollectionFactory->create();
         $this->productAttributeCollection
@@ -474,34 +396,33 @@ class ProductsApi implements ProductsApiInterface
                 )),
             ]);
 
-        $mainTableName = $this->productCollection->getResource()->getTable('catalog_product_entity');
+        $mainTableName = $this->productCollection->getMainTable();
 
         /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $productAttribute */
         foreach ($this->productAttributeCollection as $productAttribute) {
             if ($productAttribute->getBackendTable() === $mainTableName) {
                 $this->productCollection->addAttributeToSelect($productAttribute->getAttributeCode());
             } elseif (in_array($productAttribute->getAttributeCode(), $this->globalProductAttributeCodes)) {
-                $tableAlias = 'table_' . $productAttribute->getAttributeId();
                 $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode());
 
-                $this->productCollection->joinTable(
-                    [$tableAlias => $productAttribute->getBackendTable()],
-                    'entity_id = entity_id',
-                    [$valueAlias => 'value'],
-                    ['attribute_id' => $productAttribute->getAttributeId()],
+                $this->productCollection->joinAttribute(
+                    $valueAlias,
+                    'catalog_product/' . $productAttribute->getAttributeCode(),
+                    $this->linkField,
+                    null,
                     'left'
                 );
             } else {
                 foreach (array_keys($this->storeIds) as $storeId) {
-                    $tableAlias = 'table_' . $productAttribute->getAttributeId() . '_' . $storeId;
                     $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode(), $storeId);
 
-                    $this->productCollection->joinTable(
-                        [$tableAlias => $productAttribute->getBackendTable()],
-                        'entity_id = entity_id',
-                        [$valueAlias => 'value'],
-                        ['store_id' => $storeId, 'attribute_id' => $productAttribute->getAttributeId()],
-                        'left'
+                    $this->productCollection->joinAttribute(
+                        $valueAlias,
+                        'catalog_product/' . $productAttribute->getAttributeCode(),
+                        $this->linkField,
+                        null,
+                        'left',
+                        $storeId
                     );
                 }
             }
@@ -516,7 +437,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
-    private function getAttributeValueAlias($attributeCode, $storeId = null)
+    // @codingStandardsIgnoreLine
+    protected function getAttributeValueAlias($attributeCode, $storeId = null)
     {
         $returnValue = $attributeCode;
         if ($storeId !== null) {
@@ -525,28 +447,12 @@ class ProductsApi implements ProductsApiInterface
         return $returnValue;
     }
 
-    /**
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
-    private function joinStock()
-    {
-        $this->productCollection->joinTable(
-            $this->productCollection->getResource()->getTable('cataloginventory_stock_item'),
-            'product_id = entity_id',
-            ['qty', 'is_in_stock'],
-            '{{table}}.stock_id=1',
-            'left'
-        );
-
-        return $this;
-    }
-
-    private function setWhere()
+    // @codingStandardsIgnoreLine
+    protected function setWhere()
     {
         $this->productCollection
-            ->addFieldToFilter('entity_id', ['from' => $this->minId])
-            ->addFieldToFilter('entity_id', ['to' => $this->maxId]);
+            ->addFieldToFilter($this->linkField, ['from' => $this->minId])
+            ->addFieldToFilter($this->linkField, ['to' => $this->maxId]);
 
         return $this;
     }
@@ -554,36 +460,11 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return $this
      */
-    private function setOrder()
+    // @codingStandardsIgnoreLine
+    protected function setOrder()
     {
         $this->productCollection
-            ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    private function setGroupBy()
-    {
-        $this->productCollection
-            ->groupByAttribute('entity_id');
-
-        return $this;
-    }
-
-    /**
-     * @param int $page
-     * @param int $pageSize
-     *
-     * @return $this
-     */
-    private function setPage($page, $pageSize)
-    {
-        $this->productCollection
-            ->setCurPage($page)
-            ->setPageSize($pageSize);
+            ->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }
@@ -591,7 +472,8 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @return array
      */
-    private function handleProducts()
+    // @codingStandardsIgnoreLine
+    protected function handleProducts()
     {
         $returnArray = [];
 
@@ -615,7 +497,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int
      */
-    private function handleStock($product)
+    // @codingStandardsIgnoreLine
+    protected function handleStock($product)
     {
         if (array_key_exists($product->getId(), $this->stockData)) {
             return $this->stockData[$product->getId()]['is_in_stock'];
@@ -629,7 +512,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int
      */
-    private function handleQty($product)
+    // @codingStandardsIgnoreLine
+    protected function handleQty($product)
     {
         if (array_key_exists($product->getId(), $this->stockData)) {
             return $this->stockData[$product->getId()]['qty'];
@@ -643,7 +527,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return ImagesInterface
      */
-    private function handleImages($product)
+    // @codingStandardsIgnoreLine
+    protected function handleImages($product)
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
@@ -673,7 +558,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
-    private function handleChildrenEntityIds($product)
+    // @codingStandardsIgnoreLine
+    protected function handleChildrenEntityIds($product)
     {
         if (array_key_exists($product->getId(), $this->childrenProductIds)) {
             return $this->childrenProductIds[$product->getId()];
@@ -687,7 +573,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
-    private function handleCategories($product)
+    // @codingStandardsIgnoreLine
+    protected function handleCategories($product)
     {
         if (array_key_exists($product->getId(), $this->categoryIds)) {
             return $this->categoryIds[$product->getId()];
@@ -697,44 +584,12 @@ class ProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @param int $categoryId
-     *
-     * @return string
-     */
-    private function handleCategory($categoryId)
-    {
-        $categoryData = $this->getCategory($categoryId);
-
-        if ($categoryData instanceof Category) {
-            return $categoryData->getPath();
-        }
-
-        return '';
-    }
-
-    /**
-     * @param int $categoryId
-     *
-     * @return Category | null
-     */
-    private function getCategory($categoryId)
-    {
-        if (!array_key_exists($categoryId, $this->categories)) {
-            $categoryCollection = $this->categoryCollectionFactory->create();
-            foreach ($categoryCollection as $category) {
-                $this->categories[$category->getId()] = $category;
-            }
-        }
-
-        return $this->categories[$categoryId];
-    }
-
-    /**
      * @param int $storeId
      *
      * @return string
      */
-    private function getProductUrlSuffix($storeId)
+    // @codingStandardsIgnoreLine
+    protected function getProductUrlSuffix($storeId)
     {
         if (!isset($this->productUrlSuffix[$storeId])) {
             $this->productUrlSuffix[$storeId] = $this->scopeConfig->getValue(
@@ -751,7 +606,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return array
      */
-    private function handleProductStoreData($product)
+    // @codingStandardsIgnoreLine
+    protected function handleProductStoreData($product)
     {
         $returnArray = [];
 
@@ -776,7 +632,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
-    private function handleLink($product, $store)
+    // @codingStandardsIgnoreLine
+    protected function handleLink($product, $store)
     {
         $link = $product->getData($this->getAttributeValueAlias('url_key', $store->getId()));
 
@@ -792,7 +649,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return string
      */
-    private function getCurrencyCode($store)
+    // @codingStandardsIgnoreLine
+    protected function getCurrencyCode($store)
     {
         if ($store->getId() === '0') {
             return $store->getBaseCurrencyCode();
@@ -806,7 +664,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int | float
      */
-    private function handleDisplayPrice($product, $store)
+    // @codingStandardsIgnoreLine
+    protected function handleDisplayPrice($product, $store)
     {
         $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
         if (empty($price)) {
@@ -834,7 +693,8 @@ class ProductsApi implements ProductsApiInterface
      *
      * @return int | float
      */
-    private function handlePrice($product, $store)
+    // @codingStandardsIgnoreLine
+    protected function handlePrice($product, $store)
     {
         $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
         $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', $store->getId()));
