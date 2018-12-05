@@ -58,10 +58,17 @@ class ConfigApi implements ConfigApiInterface
      */
     public function set($websiteId, ConfigInterface $config)
     {
+        $foundDifference = false;
+
         foreach ($config->getData() as $key => $value) {
-            $config->setConfigValue($key, $value, $websiteId);
+            if ($config->setConfigValue($key, $value, $websiteId)) {
+                $foundDifference = true;
+            }
         }
-        $config->cleanScope();
+
+        if ($foundDifference) {
+            $config->cleanScope();
+        }
 
         return $this->statusResponseFactory->create()
             ->setStatus('ok');
@@ -77,10 +84,17 @@ class ConfigApi implements ConfigApiInterface
         /** @var ConfigInterface $config */
         $config = $this->configFactory->create();
 
+        $foundDifference = false;
+
         foreach ($this->defaultConfig as $key => $value) {
-            $config->setConfigValue($key, $value, $websiteId);
+            if ($config->setConfigValue($key, $value, $websiteId)) {
+                $foundDifference = true;
+            }
         }
-        $config->cleanScope();
+
+        if ($foundDifference) {
+            $config->cleanScope();
+        }
 
         return $this->statusResponseFactory->create()
             ->setStatus('ok');

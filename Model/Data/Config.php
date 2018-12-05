@@ -187,7 +187,7 @@ class Config extends DataObject implements ConfigInterface
      * @param int    $scopeId
      * @param string $scope
      *
-     * @return void
+     * @return bool
      */
     public function setConfigValue($xmlPostPath, $value, $scopeId, $scope = ConfigInterface::SCOPE_TYPE_DEFAULT)
     {
@@ -206,7 +206,15 @@ class Config extends DataObject implements ConfigInterface
             $value = $this->jsonSerializer->serialize($value);
         }
 
+        $oldConfigValue = $this->scopeConfig->getValue($xmlPath, $scope, $scopeId);
+
+        if ($value == $oldConfigValue) {
+            return false;
+        }
+
         $this->configWriter->save($xmlPath, $value, $scope, $scopeId);
+
+        return true;
     }
 
     /**

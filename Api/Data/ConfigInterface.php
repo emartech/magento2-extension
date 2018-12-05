@@ -108,7 +108,7 @@ interface ConfigInterface
      * @param int    $scopeId
      * @param string $scope
      *
-     * @return void
+     * @return bool
      */
     public function setConfigValue($xmlPostPath, $value, $scopeId, $scope = self::SCOPE_TYPE_DEFAULT);
 
