@@ -9,6 +9,15 @@ const defaults = {
   webTrackingSnippetUrl: null
 };
 
+const fullConfig = {
+  collectCustomerEvents: 'enabled',
+  collectSalesEvents: 'enabled',
+  collectMarketingEvents: 'enabled',
+  injectSnippet: 'enabled',
+  merchantId: '1234567',
+  webTrackingSnippetUrl: 'https://path/to/snippet'
+};
+
 const dbKeys = {
   collectCustomerEvents: 'collect_customer_events',
   collectSalesEvents: 'collect_sales_events',
@@ -18,7 +27,7 @@ const dbKeys = {
   webTrackingSnippetUrl: 'web_tracking_snippet_url'
 };
 
-const scopeId = 1;
+const websiteId = 1;
 describe('Config endpoint', function() {
   afterEach(async function() {
     await this.magentoApi.execute('config', 'setDefault', 1);
@@ -30,17 +39,22 @@ describe('Config endpoint', function() {
 
   describe('setDefaultConfig', function() {
     it('should create default config for website', async function() {
+      await this.magentoApi.execute('config', 'set', {
+        websiteId,
+        config: fullConfig
+      });
+
       await this.db
         .delete()
         .from('core_config_data')
         .where('path', 'like', 'emartech/emarsys/config/%');
 
-      await this.magentoApi.execute('config', 'setDefault', scopeId);
+      await this.magentoApi.execute('config', 'setDefault', websiteId);
 
       const config = await this.db
         .select()
         .from('core_config_data')
-        .where('scope_id', scopeId)
+        .where('scope_id', websiteId)
         .andWhere('path', 'like', 'emartech/emarsys/config/%');
 
       for (const key in defaults) {
@@ -54,29 +68,20 @@ describe('Config endpoint', function() {
 
   describe('set', function() {
     it('should modify config values for website', async function() {
-      const testConfig = {
-        collectCustomerEvents: 'enabled',
-        collectSalesEvents: 'enabled',
-        collectMarketingEvents: 'enabled',
-        injectSnippet: 'enabled',
-        merchantId: '1234567',
-        webTrackingSnippetUrl: 'https://path/to/snippet'
-      };
-
       await this.magentoApi.execute('config', 'set', {
-        websiteId: scopeId,
-        config: testConfig
+        websiteId,
+        config: fullConfig
       });
 
       const config = await this.db
         .select()
         .from('core_config_data')
-        .where('scope_id', scopeId)
+        .where('scope_id', websiteId)
         .andWhere('path', 'like', 'emartech/emarsys/config/%');
 
-      for (const key in testConfig) {
+      for (const key in fullConfig) {
         const configItem = config.find(item => item.path === `emartech/emarsys/config/${dbKeys[key]}`);
-        expect(configItem.value).to.be.equal(testConfig[key]);
+        expect(configItem.value).to.be.equal(fullConfig[key]);
       }
     });
   });
