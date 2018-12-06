@@ -1,5 +1,7 @@
 'use strict';
 
+const getUid = () => Math.round(Math.random() * 100000);
+
 describe('Marketing Events', function() {
   const unsubscribe = email => {
     cy.task('getSubscription', email).then(subscription => {
@@ -44,7 +46,7 @@ describe('Marketing Events', function() {
           websiteId: 1,
           config: {
             collectMarketingEvents: 'disabled',
-            merchantId: 'itsaflush-marketingevents1'
+            merchantId: `itsaflush-subs-${getUid()}`
           }
         });
       });
@@ -102,7 +104,7 @@ describe('Marketing Events', function() {
         cy.task('setDoubleOptin', true);
         cy.task('setConfig', {
           websiteId: 1,
-          config: { collectMarketingEvents: 'enabled', merchantId: 'itsaflush-marketingevents2' }
+          config: { collectMarketingEvents: 'enabled', merchantId: `itsaflush-subs-${getUid()}` }
         });
       });
 

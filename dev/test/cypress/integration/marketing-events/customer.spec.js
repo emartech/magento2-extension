@@ -1,9 +1,11 @@
 'use strict';
 
+const getUid = () => Math.round(Math.random() * 100000);
+
 describe('Marketing Events', function() {
   const changeCredentials = (customer, { password, email }) => {
     cy.visit('/index.php/customer/account/edit/');
-
+    cy.wait(2000);
     if (password) {
       cy.get('.page-wrapper #change-password').check();
       cy.get('.page-wrapper #password').type(password);
@@ -11,7 +13,9 @@ describe('Marketing Events', function() {
     }
     if (email) {
       cy.get('.page-wrapper #change-email').check();
-      cy.get('.page-wrapper #email').clear().type(email);
+      cy.get('.page-wrapper #email')
+        .clear()
+        .type(email);
     }
     cy.get('.page-wrapper input[name="current_password"]').type(customer.password);
 
@@ -24,7 +28,10 @@ describe('Marketing Events', function() {
 
   context('with collectMarketingEvents disabled', function() {
     before(() => {
-      cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'disabled' } });
+      cy.task('setConfig', {
+        websiteId: 1,
+        config: { collectMarketingEvents: 'disabled', merchantId: `itsaflush-customer-${getUid()}` }
+      });
       cy.wait(1000);
     });
 
