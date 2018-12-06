@@ -21,7 +21,7 @@ before(()=> {
 });
 
 afterEach(() => {
-  cy.wait(2000);
+  cy.wait(4000);
   cy.task('clearEvents');
 });
 
