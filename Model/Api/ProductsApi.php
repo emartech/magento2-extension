@@ -2,6 +2,7 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use http\Exception\BadQueryStringException;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
@@ -152,6 +153,16 @@ class ProductsApi implements ProductsApiInterface
      * @var int
      */
     private $maxId = 0;
+
+    /**
+     * @var int
+     */
+    private $minEId = 0;
+
+    /**
+     * @var int
+     */
+    private $maxEId = 0;
 
     /**
      * @var int
@@ -320,7 +331,7 @@ class ProductsApi implements ProductsApiInterface
     {
         $this->productCollection = $this->productCollectionFactory->create();
 
-        $this->linkField = 'entity_id';
+        $this->linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
 
         return $this;
     }
@@ -344,6 +355,14 @@ class ProductsApi implements ProductsApiInterface
         $this->minId = $data['minId'];
         $this->maxId = $data['maxId'];
 
+        if (array_key_exists('minEId', $data) && array_key_exists('maxEId', $data)) {
+            $this->minEId = $data['minEId'];
+            $this->maxEId = $data['maxEId'];
+        } else {
+            $this->minEId = $this->minId;
+            $this->maxEId = $this->maxId;
+        }
+
         return $this;
     }
 
@@ -364,7 +383,8 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleChildrenProductIds()
     {
-        $this->childrenProductIds = $this->productResource->getChildrenProductIds($this->minId, $this->maxId);
+        $this->childrenProductIds = $this->productResource
+            ->getChildrenProductIds($this->minEId, $this->maxEId);
 
         return $this;
     }
@@ -403,26 +423,28 @@ class ProductsApi implements ProductsApiInterface
             if ($productAttribute->getBackendTable() === $mainTableName) {
                 $this->productCollection->addAttributeToSelect($productAttribute->getAttributeCode());
             } elseif (in_array($productAttribute->getAttributeCode(), $this->globalProductAttributeCodes)) {
+                $tableAlias = 'table_' . $productAttribute->getAttributeId();
                 $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode());
 
-                $this->productCollection->joinAttribute(
-                    $valueAlias,
-                    'catalog_product/' . $productAttribute->getAttributeCode(),
-                    $this->linkField,
-                    null,
+                $this->productCollection->joinTable(
+                    [$tableAlias => $productAttribute->getBackendTable()],
+                    'entity_id = ' . $this->linkField,
+                    [$valueAlias => 'value'],
+                    ['attribute_id' => $productAttribute->getAttributeId()],
                     'left'
                 );
+
             } else {
                 foreach (array_keys($this->storeIds) as $storeId) {
+                    $tableAlias = 'table_' . $productAttribute->getAttributeId() . '_' . $storeId;
                     $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode(), $storeId);
 
-                    $this->productCollection->joinAttribute(
-                        $valueAlias,
-                        'catalog_product/' . $productAttribute->getAttributeCode(),
-                        $this->linkField,
-                        null,
-                        'left',
-                        $storeId
+                    $this->productCollection->joinTable(
+                        [$tableAlias => $productAttribute->getBackendTable()],
+                        'entity_id = ' . $this->linkField,
+                        [$valueAlias => 'value'],
+                        ['store_id' => $storeId, 'attribute_id' => $productAttribute->getAttributeId()],
+                        'left'
                     );
                 }
             }
@@ -451,8 +473,8 @@ class ProductsApi implements ProductsApiInterface
     protected function setWhere()
     {
         $this->productCollection
-            ->addFieldToFilter($this->linkField, ['from' => $this->minId])
-            ->addFieldToFilter($this->linkField, ['to' => $this->maxId]);
+            ->addFieldToFilter('entity_id', ['from' => $this->minId])
+            ->addFieldToFilter('entity_id', ['to' => $this->maxId]);
 
         return $this;
     }
@@ -464,7 +486,8 @@ class ProductsApi implements ProductsApiInterface
     protected function setOrder()
     {
         $this->productCollection
-            ->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
+            ->groupByAttribute($this->linkField)
+            ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }
@@ -500,8 +523,8 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleStock($product)
     {
-        if (array_key_exists($product->getId(), $this->stockData)) {
-            return $this->stockData[$product->getId()]['is_in_stock'];
+        if (array_key_exists($product->getEntityId(), $this->stockData)) {
+            return $this->stockData[$product->getEntityId()]['is_in_stock'];
         }
 
         return 0;
@@ -532,17 +555,33 @@ class ProductsApi implements ProductsApiInterface
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
-        $image = $product->getImage();
+
+        try {
+            $image = $product->getImage();
+        } catch (\Exception $e) {
+            $image = null;
+        }
+
         if ($image) {
             $image = $imagePreUrl . $image;
         }
 
-        $smallImage = $product->getSmallImage();
+        try {
+            $smallImage = $product->getSmallImage();
+        } catch (\Exception $e) {
+            $smallImage = null;
+        }
+
         if ($smallImage) {
             $smallImage = $imagePreUrl . $smallImage;
         }
 
-        $thumbnail = $product->getThumbnail();
+        try {
+            $thumbnail = $product->getThumbnail();
+        } catch (\Exception $e) {
+            $thumbnail = null;
+        }
+
         if ($thumbnail) {
             $thumbnail = $imagePreUrl . $thumbnail;
         }
@@ -561,8 +600,8 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleChildrenEntityIds($product)
     {
-        if (array_key_exists($product->getId(), $this->childrenProductIds)) {
-            return $this->childrenProductIds[$product->getId()];
+        if (array_key_exists($product->getData($this->linkField), $this->childrenProductIds)) {
+            return $this->childrenProductIds[$product->getData($this->linkField)];
         }
 
         return [];
@@ -576,8 +615,8 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleCategories($product)
     {
-        if (array_key_exists($product->getId(), $this->categoryIds)) {
-            return $this->categoryIds[$product->getId()];
+        if (array_key_exists($product->getEntityId(), $this->categoryIds)) {
+            return $this->categoryIds[$product->getEntityId()];
         }
 
         return [];
@@ -673,7 +712,9 @@ class ProductsApi implements ProductsApiInterface
         }
 
         $product->setPrice($price);
-        $price = $product->getFinalPrice();
+        try {
+            $product->getFinalPrice();
+        } catch (\Exception $e) {}
 
         if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
             try {

@@ -18,6 +18,7 @@ use Magento\Eav\Model\Entity\Attribute\SetFactory;
 use Magento\Eav\Model\Entity\TypeFactory;
 use Magento\Catalog\Model\Product\Attribute\DefaultAttributes;
 use Magento\Framework\Model\ResourceModel\Iterator;
+use phpDocumentor\Reflection\Element;
 
 /**
  * Class Product
@@ -105,26 +106,45 @@ class Product extends ProductResourceModel
 
         $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery);
 
+        $subFields = ['eid' => 'entity_id'];
+        if($linkField !== 'entity_id') {
+            $subFields['eeid'] = $linkField;
+        }
+
         $subSelect = $this->_resource->getConnection()->select()
-            ->from($productsTable, ['eid' => $linkField])
-            ->order($linkField)
+            ->from($productsTable, $subFields)
+            ->order('entity_id')
             ->limit($pageSize, $page);
 
+        $fields = ['minId' => 'min(tmp.eid)', 'maxId' => 'max(tmp.eid)'];
+        if ($linkField !== 'entity_id') {
+            $fields['minEId'] = 'min(tmp.eeid)';
+            $fields['maxEId'] = 'max(tmp.eeid)';
+        }
+
         $idQuery = $this->_resource->getConnection()->select()
-            ->from(['tmp' => $subSelect], ['minId' => 'min(tmp.eid)', 'maxId' => 'max(tmp.eid)']);
+            ->from(['tmp' => $subSelect], $fields);
 
         $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery);
 
-        return [
+        $returnArray = [
             'numberOfItems' => (int)$numberOfItems,
             'minId'         => (int)$minMaxValues['minId'],
             'maxId'         => (int)$minMaxValues['maxId'],
         ];
+
+        if (array_key_exists('minEId', $minMaxValues) && array_key_exists('maxEId', $minMaxValues)) {
+            $returnArray['minEId'] = $minMaxValues['minEId'];
+            $returnArray['maxEId'] = $minMaxValues['maxEId'];
+        }
+
+        return $returnArray;
     }
 
     /**
-     * @param int $minProductId
-     * @param int $maxProductId
+     * @param int    $minProductId
+     * @param int    $maxProductId
+     * @param string $linkField
      *
      * @return array
      */
@@ -145,6 +165,9 @@ class Product extends ProductResourceModel
             [],
             $this->_resource->getConnection()
         );
+
+        /*print($superLinkQuery);
+        var_dump($this->childrenProductIds);die();*/
 
         return $this->childrenProductIds;
     }
