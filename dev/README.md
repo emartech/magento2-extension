@@ -135,8 +135,6 @@ $ make test
 ---
 ## Release
 
-Merge `master` to `production` branch, use message like `Prepare release 1.1.1`. Do not merge deleted files (`dev/*`, `codeship*`, etc).
-
 Update the version in `composer.json` on **production branch**
 ```json
 {
@@ -147,7 +145,7 @@ Update the version in `composer.json` on **production branch**
     "magento/framework": "*"
   },
   "type": "magento2-module",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "autoload": {
      "files": [ "registration.php" ],
      "psr-4": {
@@ -157,11 +155,32 @@ Update the version in `composer.json` on **production branch**
 }
 ```
 
-Commit with message that will be the release title. Use `--skip-ci` in description.
+Update the version in `etc/module.xml`:
+```xml
+<?xml version="1.0"?>
 
-Tag with the same version as in `composer.json`.
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+  <module name="Emartech_Emarsys" setup_version="1.1.3">
+    <sequence>
+      <module name="Magento_Sales" />
+    </sequence>
+  </module>
+</config>
+```
 
-Push `production` branch with tags.
+Commit with message that will be the release title. Tag the commit:
+```
+$ git tag v1.1.3
+```
+
+Push with tags:
+```
+$ git push --tags
+```
+
+Go to repository on GitHub, click releases and issue new release.
+
+Got to [packagist.org](https://packagist.org/packages/emartech/emarsys-magento2-extension) (sign in credentials on secret.emarsys.net) and click the green **Update** button. You should see the new release appear on the right side of the page.
 
 ## Codeship env
 * [Install](https://documentation.codeship.com/pro/jet-cli/installation/) `jet`
