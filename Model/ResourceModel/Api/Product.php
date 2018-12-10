@@ -107,7 +107,7 @@ class Product extends ProductResourceModel
         $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery);
 
         $subFields = ['eid' => 'entity_id'];
-        if($linkField !== 'entity_id') {
+        if ($linkField !== 'entity_id') {
             $subFields['eeid'] = $linkField;
         }
 
@@ -165,9 +165,6 @@ class Product extends ProductResourceModel
             [],
             $this->_resource->getConnection()
         );
-
-        /*print($superLinkQuery);
-        var_dump($this->childrenProductIds);die();*/
 
         return $this->childrenProductIds;
     }

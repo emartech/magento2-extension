@@ -433,7 +433,6 @@ class ProductsApi implements ProductsApiInterface
                     ['attribute_id' => $productAttribute->getAttributeId()],
                     'left'
                 );
-
             } else {
                 foreach (array_keys($this->storeIds) as $storeId) {
                     $tableAlias = 'table_' . $productAttribute->getAttributeId() . '_' . $storeId;
@@ -554,7 +553,6 @@ class ProductsApi implements ProductsApiInterface
     protected function handleImages($product)
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
-
 
         try {
             $image = $product->getImage();
@@ -712,9 +710,11 @@ class ProductsApi implements ProductsApiInterface
         }
 
         $product->setPrice($price);
+        // @codingStandardsIgnoreStart
         try {
             $product->getFinalPrice();
         } catch (\Exception $e) {}
+        // @codingStandardsIgnoreEnd
 
         if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
             try {
