@@ -320,7 +320,7 @@ class ProductsApi implements ProductsApiInterface
     {
         $this->productCollection = $this->productCollectionFactory->create();
 
-        $this->linkField = 'entity_id';//$this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
+        $this->linkField = 'entity_id';
 
         return $this;
     }
