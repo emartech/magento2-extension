@@ -428,7 +428,7 @@ class ProductsApi implements ProductsApiInterface
 
                 $this->productCollection->joinTable(
                     [$tableAlias => $productAttribute->getBackendTable()],
-                    'entity_id = ' . $this->linkField,
+                    $this->linkField . ' = ' . $this->linkField,
                     [$valueAlias => 'value'],
                     ['attribute_id' => $productAttribute->getAttributeId()],
                     'left'
@@ -440,7 +440,7 @@ class ProductsApi implements ProductsApiInterface
 
                     $this->productCollection->joinTable(
                         [$tableAlias => $productAttribute->getBackendTable()],
-                        'entity_id = ' . $this->linkField,
+                        $this->linkField . ' = ' . $this->linkField,
                         [$valueAlias => 'value'],
                         ['store_id' => $storeId, 'attribute_id' => $productAttribute->getAttributeId()],
                         'left'
