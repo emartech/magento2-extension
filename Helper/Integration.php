@@ -40,7 +40,7 @@ class Integration extends AbstractHelper
         'name'       => 'Emarsys Integration',
         'email'      => 'emarsys@emarsys.com',
         'status'     => '1',
-        'endpoint'   => 'http://localhost:9300',
+        'endpoint'   => 'https://localhost',
         'setup_type' => '0'
     ];
     /**
