@@ -21,6 +21,7 @@ before(()=> {
 });
 
 afterEach(() => {
+  cy.wait(4000);
   cy.task('clearEvents');
 });
 
@@ -47,6 +48,7 @@ const invalidFail = (err, test) => {
 
 Cypress.on('fail', (err, runnable) => {
   if (invalidFail(err, runnable)) {
+    console.log('Errored because of failed XHR abort. Please check this fail.');
     return true;
   }
   throw err;
