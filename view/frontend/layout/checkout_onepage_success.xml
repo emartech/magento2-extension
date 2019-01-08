@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
-<body>
-    <referenceContainer name="head.additional">
-        <block class="Emartech\Emarsys\Block\Success"
-              name="emarsys.success"
-              template="Emartech_Emarsys::emarsys/order/success.phtml"
-              before="-"
-              cacheable="false">
-        </block>
-    </referenceContainer>
-</body>
+<!--
+/**
+* @category   Emarsys
+* @package    Emartech_Emarsys
+* @copyright  Copyright (c) 2019 Emarsys. (http://www.emarsys.net/)
+*/
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="order.success.additional.info">
+            <block class="Emartech\Emarsys\Block\Success" name="emarsys.success" template="Emartech_Emarsys::emarsys/order/success.phtml" before="-" cacheable="false" />
+        </referenceContainer>
+    </body>
+</page>
