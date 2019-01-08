@@ -1,10 +1,13 @@
 <?php
+/**
+ * @category   Emarsys
+ * @package    Emartech_Emarsys
+ * @copyright  Copyright (c) 2019 Emarsys. (http://www.emarsys.net/)
+ */
 /** @var Emartech\Emarsys\Block\Success $block */
 ?>
-<script type="text/x-magento-init">
-    {
-        "*": {
-            "Emartech_Emarsys/js/success": { "orderData": <?php echo json_encode($block->getOrderData()); ?> }
-        }
-    }
+<script type="text/javascript">
+    window.Emarsys = window.Emarsys || {};
+    window.Emarsys.Magento2 = window.Emarsys.Magento2 || {};
+    window.Emarsys.Magento2.orderData = <?php echo json_encode($block->getOrderData()); ?>;
 </script>
