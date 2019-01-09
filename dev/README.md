@@ -135,7 +135,7 @@ $ make test
 ---
 ## Release
 
-Update the version in `composer.json` on **production branch**
+Update the version in `composer.json` on **master branch**
 ```json
 {
   "name": "emartech/emarsys-magento2-extension",
@@ -168,6 +168,12 @@ Update the version in `etc/module.xml`:
 </config>
 ```
 
+Delete all local tags and fetch the valid tags
+```
+git tag -l | xargs git tag -d
+git fetch --tags
+```
+
 Commit with message that will be the release title. Tag the commit:
 ```
 $ git tag v1.1.3
@@ -178,7 +184,7 @@ Push with tags:
 $ git push --tags
 ```
 
-Go to repository on GitHub, click releases and issue new release.
+Go to repository on GitHub, click releases and then on Draft new release button.
 
 Got to [packagist.org](https://packagist.org/packages/emartech/emarsys-magento2-extension) (sign in credentials on secret.emarsys.net) and click the green **Update** button. You should see the new release appear on the right side of the page.
 
