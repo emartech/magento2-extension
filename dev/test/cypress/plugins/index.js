@@ -29,12 +29,14 @@ const db = knex({
 let magentoToken = null;
 const getMagentoToken = async () => {
   if (!magentoToken) {
-    const { token: magentoToken } = await db
+    const { token } = await db
       .select('token')
       .from('integration')
       .where({ name: 'Emarsys Integration' })
       .leftJoin('oauth_token', 'integration.consumer_id', 'oauth_token.consumer_id')
       .first();
+
+    magentoToken = token;
 
     console.log('MAGENTO-TOKEN', magentoToken);
   }
@@ -73,7 +75,8 @@ const flushMagentoCache = async () => {
   return await magentoApi.get({ path: '/cache-flush.php' });
 };
 
-module.exports = (on) => {
+// eslint-disable-next-line no-unused-vars
+module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
 

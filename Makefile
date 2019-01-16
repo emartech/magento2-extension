@@ -8,7 +8,7 @@ COMPOSE=docker-compose -f $(COMPOSE_FILE) -p mage
 default: help
 
 up: ## Creates containers and starts app
-	cd ./dev/test && nvm use && npm i
+	cd ./dev/test && npm i
 	@$(COMPOSE) up -d --build
 
 dup: ## Creates containers and starts app
