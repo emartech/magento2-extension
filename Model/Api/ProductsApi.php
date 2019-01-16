@@ -2,14 +2,11 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use http\Exception\BadQueryStringException;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Framework\Data\Collection as DataCollection;
 use Psr\Log\LoggerInterface;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
 use Magento\Catalog\Model\Product;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\Product\UrlFactory as ProductUrlFactory;
@@ -53,16 +50,6 @@ class ProductsApi implements ProductsApiInterface
      * @var ProductCollection
      */
     private $productCollection;
-
-    /**
-     * @var ProductAttributeCollectionFactory
-     */
-    private $productAttributeCollectionFactory;
-
-    /**
-     * @var ProductAttributeCollection
-     */
-    private $productAttributeCollection;
 
     /**
      * @var ProductInterfaceFactory
@@ -110,41 +97,6 @@ class ProductsApi implements ProductsApiInterface
     private $logger;
 
     /**
-     * @var array
-     */
-    private $storeProductAttributeCodes = [
-        'name',
-        'price',
-        'url_key',
-        'description',
-        'status',
-        'store_id',
-        'currency',
-        'display_price',
-        'special_price',
-        'special_from_date',
-        'special_to_date',
-    ];
-
-    /**
-     * @var array
-     */
-    private $globalProductAttributeCodes = [
-        'entity_id',
-        'type',
-        'children_entity_ids',
-        'categories',
-        'sku',
-        'images',
-        'qty',
-        'is_in_stock',
-        'stores',
-        'image',
-        'small_image',
-        'thumbnail',
-    ];
-
-    /**
      * @var int
      */
     private $minId = 0;
@@ -185,6 +137,11 @@ class ProductsApi implements ProductsApiInterface
     private $stockData = [];
 
     /**
+     * @var array
+     */
+    private $attributeData = [];
+
+    /**
      * @var string
      */
     private $linkField = '';
@@ -212,8 +169,6 @@ class ProductsApi implements ProductsApiInterface
      * @param ScopeConfigInterface                $scopeConfig
      * @param ProductCollectionFactory            $productCollectionFactory
      * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
-     * @param ProductAttributeCollectionFactory   $productAttributeCollectionFactory
-     * @param ProductAttributeCollection          $productAttributeCollection
      * @param ProductInterfaceFactory             $productFactory
      * @param ImagesInterfaceFactory              $imagesFactory
      * @param ProductStoreDataInterfaceFactory    $productStoreDataFactory
@@ -229,8 +184,6 @@ class ProductsApi implements ProductsApiInterface
         ScopeConfigInterface $scopeConfig,
         ProductCollectionFactory $productCollectionFactory,
         ProductsApiResponseInterfaceFactory $productsApiResponseFactory,
-        ProductAttributeCollectionFactory $productAttributeCollectionFactory,
-        ProductAttributeCollection $productAttributeCollection,
         ProductInterfaceFactory $productFactory,
         ImagesInterfaceFactory $imagesFactory,
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
@@ -248,8 +201,6 @@ class ProductsApi implements ProductsApiInterface
 
         $this->productCollectionFactory = $productCollectionFactory;
         $this->productsApiResponseFactory = $productsApiResponseFactory;
-        $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
-        $this->productAttributeCollection = $productAttributeCollection;
 
         $this->productFactory = $productFactory;
         $this->imagesFactory = $imagesFactory;
@@ -286,7 +237,7 @@ class ProductsApi implements ProductsApiInterface
             ->handleCategoryIds()
             ->handleChildrenProductIds()
             ->handleStockData()
-            ->joinData()
+            ->handleAttributes()
             ->setWhere()
             ->setOrder();
 
@@ -402,70 +353,13 @@ class ProductsApi implements ProductsApiInterface
 
     /**
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    // @codingStandardsIgnoreLine
-    protected function joinData()
+    private function handleAttributes()
     {
-        $this->productAttributeCollection = $this->productAttributeCollectionFactory->create();
-        $this->productAttributeCollection
-            ->addFieldToFilter('attribute_code', [
-                'in' => array_values(array_merge(
-                    $this->storeProductAttributeCodes,
-                    $this->globalProductAttributeCodes
-                )),
-            ]);
-
-        $mainTableName = $this->productCollection->getMainTable();
-
-        /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $productAttribute */
-        foreach ($this->productAttributeCollection as $productAttribute) {
-            if ($productAttribute->getBackendTable() === $mainTableName) {
-                $this->productCollection->addAttributeToSelect($productAttribute->getAttributeCode());
-            } elseif (in_array($productAttribute->getAttributeCode(), $this->globalProductAttributeCodes)) {
-                $tableAlias = 'table_' . $productAttribute->getAttributeId();
-                $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode());
-
-                $this->productCollection->joinTable(
-                    [$tableAlias => $productAttribute->getBackendTable()],
-                    $this->linkField . ' = ' . $this->linkField,
-                    [$valueAlias => 'value'],
-                    ['attribute_id' => $productAttribute->getAttributeId()],
-                    'left'
-                );
-            } else {
-                foreach (array_keys($this->storeIds) as $storeId) {
-                    $tableAlias = 'table_' . $productAttribute->getAttributeId() . '_' . $storeId;
-                    $valueAlias = $this->getAttributeValueAlias($productAttribute->getAttributeCode(), $storeId);
-
-                    $this->productCollection->joinTable(
-                        [$tableAlias => $productAttribute->getBackendTable()],
-                        $this->linkField . ' = ' . $this->linkField,
-                        [$valueAlias => 'value'],
-                        ['store_id' => $storeId, 'attribute_id' => $productAttribute->getAttributeId()],
-                        'left'
-                    );
-                }
-            }
-        }
+        $this->attributeData = $this->productResource
+            ->getAttributeData($this->minId, $this->maxId, array_keys($this->storeIds));
 
         return $this;
-    }
-
-    /**
-     * @param string   $attributeCode
-     * @param int|null $storeId
-     *
-     * @return string
-     */
-    // @codingStandardsIgnoreLine
-    protected function getAttributeValueAlias($attributeCode, $storeId = null)
-    {
-        $returnValue = $attributeCode;
-        if ($storeId !== null) {
-            $returnValue .= '_' . $storeId;
-        }
-        return $returnValue;
     }
 
     // @codingStandardsIgnoreLine
@@ -555,7 +449,7 @@ class ProductsApi implements ProductsApiInterface
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         try {
-            $image = $product->getImage();
+            $image = $this->getStoreData($product->getId(), 0, 'image');
         } catch (\Exception $e) {
             $image = null;
         }
@@ -565,7 +459,7 @@ class ProductsApi implements ProductsApiInterface
         }
 
         try {
-            $smallImage = $product->getSmallImage();
+            $smallImage = $this->getStoreData($product->getId(), 0, 'small_image');
         } catch (\Exception $e) {
             $smallImage = null;
         }
@@ -575,7 +469,7 @@ class ProductsApi implements ProductsApiInterface
         }
 
         try {
-            $thumbnail = $product->getThumbnail();
+            $thumbnail = $this->getStoreData($product->getId(), 0, 'thumbnail');
         } catch (\Exception $e) {
             $thumbnail = null;
         }
@@ -651,16 +545,35 @@ class ProductsApi implements ProductsApiInterface
         foreach ($this->storeIds as $storeId => $storeObject) {
             $returnArray[] = $this->productStoreDataFactory->create()
                 ->setStoreId($storeId)
-                ->setStatus($product->getData($this->getAttributeValueAlias('status', $storeId)))
-                ->setDescription($product->getData($this->getAttributeValueAlias('description', $storeId)))
+                ->setStatus($this->getStoreData($product->getId(), $storeId, 'status'))
+                ->setDescription($this->getStoreData($product->getId(), $storeId, 'description'))
                 ->setLink($this->handleLink($product, $storeObject))
-                ->setName($product->getData($this->getAttributeValueAlias('name', $storeId)))
+                ->setName($this->getStoreData($product->getId(), $storeId, 'name'))
                 ->setPrice($this->handlePrice($product, $storeObject))
                 ->setDisplayPrice($this->handleDisplayPrice($product, $storeObject))
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
         }
 
         return $returnArray;
+    }
+
+    /**
+     * @param int    $productId
+     * @param int    $storeId
+     * @param string $attributeCode
+     *
+     * @return string|null
+     */
+    private function getStoreData($productId, $storeId, $attributeCode)
+    {
+        if (array_key_exists($productId, $this->attributeData)
+            && array_key_exists($storeId, $this->attributeData[$productId])
+            && array_key_exists($attributeCode, $this->attributeData[$productId][$storeId])
+        ) {
+            return $this->attributeData[$productId][$storeId][$attributeCode];
+        }
+
+        return null;
     }
 
     /**
@@ -672,7 +585,7 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleLink($product, $store)
     {
-        $link = $product->getData($this->getAttributeValueAlias('url_key', $store->getId()));
+        $link = $this->getStoreData($product->getId(), $store->getId(), 'url_key');
 
         if ($link) {
             return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
@@ -704,16 +617,17 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleDisplayPrice($product, $store)
     {
-        $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
+        $price = $this->getStoreData($product->getId(), $store->getId(), 'price');
         if (empty($price)) {
-            $price = $product->getData($this->getAttributeValueAlias('price', 0));
+            $price = $this->getStoreData($product->getId(), 0, 'price');
         }
 
         $product->setPrice($price);
         // @codingStandardsIgnoreStart
         try {
             $product->getFinalPrice();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
         // @codingStandardsIgnoreEnd
 
         if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
@@ -737,12 +651,12 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handlePrice($product, $store)
     {
-        $price = $product->getData($this->getAttributeValueAlias('price', $store->getId()));
-        $specialPrice = $product->getData($this->getAttributeValueAlias('special_price', $store->getId()));
+        $price = $this->getStoreData($product->getId(), $store->getId(), 'price');
+        $specialPrice = $this->getStoreData($product->getId(), $store->getId(), 'special_price');
 
         if (!empty($specialPrice)) {
-            $specialFromDate = $product->getData($this->getAttributeValueAlias('special_from_date', $store->getId()));
-            $specialToDate = $product->getData($this->getAttributeValueAlias('special_to_date', $store->getId()));
+            $specialFromDate = $this->getStoreData($product->getId(), $store->getId(), 'special_from_date');
+            $specialToDate = $this->getStoreData($product->getId(), $store->getId(), 'special_end_date');
 
             if ($specialFromDate) {
                 $specialFromDate = strtotime($specialFromDate);
