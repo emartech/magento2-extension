@@ -6,7 +6,7 @@ use Magento\Newsletter\Model\Subscriber;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Helper\Context;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use Emartech\Emarsys\Helper\Json as JsonSerializer;
 
 use Emartech\Emarsys\Model\EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;

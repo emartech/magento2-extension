@@ -48,7 +48,7 @@ class Integration extends AbstractHelper
      */
     private $http;
 
-    private const MAGENTO_VERSION=2;
+    const MAGENTO_VERSION=2;
 
     /**
      * Integration constructor.

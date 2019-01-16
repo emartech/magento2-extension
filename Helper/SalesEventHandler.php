@@ -5,7 +5,7 @@ namespace Emartech\Emarsys\Helper;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Helper\Context;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use Emartech\Emarsys\Helper\Json as JsonSerializer;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Api\Data\OrderItemInterface;
 

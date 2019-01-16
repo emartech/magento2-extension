@@ -14,7 +14,7 @@ use Magento\Eav\Model\Entity\Context;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\Factory;
 use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Serialize\Serializer\Json;
+use Emartech\Emarsys\Helper\Json as JsonSerializer;
 use Magento\Catalog\Model\Category as CategoryModel;
 
 /**
@@ -61,7 +61,7 @@ class Category extends CategoryResourceModel
         CollectionFactory $categoryCollectionFactory,
         Iterator $iterator,
         array $data = [],
-        Json $serializer = null
+        JsonSerializer $serializer = null
     ) {
         $this->iterator = $iterator;
 
