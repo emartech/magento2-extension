@@ -29,14 +29,13 @@ const db = knex({
 let magentoToken = null;
 const getMagentoToken = async () => {
   if (!magentoToken) {
-    const result = await db
-      .select('value')
-      .from('core_config_data')
-      .where({ path: 'emartech/emarsys/connecttoken' })
+    const { token: magentoToken } = await db
+      .select('token')
+      .from('integration')
+      .where({ name: 'Emarsys Integration' })
+      .leftJoin('oauth_token', 'integration.consumer_id', 'oauth_token.consumer_id')
       .first();
 
-    const { token } = JSON.parse(Buffer.from(result.value, 'base64'));
-    magentoToken = token;
     console.log('MAGENTO-TOKEN', magentoToken);
   }
   return magentoToken;
@@ -74,7 +73,8 @@ const flushMagentoCache = async () => {
   return await magentoApi.get({ path: '/cache-flush.php' });
 };
 
-module.exports = (on, config) => { // eslint-disable-line no-unused-vars
+module.exports = (on, config) => {
+  // eslint-disable-line no-unused-vars
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
 
@@ -96,7 +96,7 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
       }
       return response.data;
     },
-    getEventTypeFromDb: async (eventType) => {
+    getEventTypeFromDb: async eventType => {
       const event = await db
         .select()
         .from('emarsys_events_data')
@@ -135,22 +135,22 @@ module.exports = (on, config) => { // eslint-disable-line no-unused-vars
       }
       return defaultCustomer;
     },
-    log: (logObject) => {
+    log: logObject => {
       console.log('LOG', logObject);
       return true;
     },
-    setDefaultCustomerProperty: (customerData) => {
+    setDefaultCustomerProperty: customerData => {
       defaultCustomer = Object.assign({}, defaultCustomer, customerData);
       return defaultCustomer;
     },
-    getSubscription: async (email) => {
+    getSubscription: async email => {
       return await db
         .select()
         .from('newsletter_subscriber')
         .where({ subscriber_email: email })
         .first();
     },
-    setDoubleOptin: async (stateOn) => {
+    setDoubleOptin: async stateOn => {
       if (stateOn) {
         return await db
           .insert({

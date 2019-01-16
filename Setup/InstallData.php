@@ -40,7 +40,6 @@ class InstallData implements InstallDataInterface
         $setup->startSetup();
 
         $this->integration->create();
-        $this->integration->saveConnectTokenToConfig();
 
         $setup->endSetup();
     }

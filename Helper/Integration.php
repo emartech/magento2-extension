@@ -48,7 +48,7 @@ class Integration extends AbstractHelper
      */
     private $http;
 
-    const MAGENTO_VERSION=2;
+    private const MAGENTO_VERSION=2;
 
     /**
      * Integration constructor.
@@ -103,12 +103,12 @@ class Integration extends AbstractHelper
         }
     }
 
-    /**
-     * @return string
-     * @throws Exception
-     * @throws \Magento\Framework\Oauth\Exception
-     */
-    public function saveConnectTokenToConfig()
+  /**
+   * @return string
+   * @throws SetupException
+   * @throws \Magento\Framework\Oauth\Exception
+   */
+    public function generateConnectToken()
     {
         $token = $this->getToken()['token'];
         $parsedUrl = $this->getBaseUrl();
@@ -121,34 +121,13 @@ class Integration extends AbstractHelper
 
         $connectJson = $this->json->serialize(compact('hostname', 'token', 'magento_version'));
 
-        $connectToken = base64_encode($connectJson);
-
-        $this->configWriter->save('emartech/emarsys/connecttoken', $connectToken);
-
-        return $connectToken;
+      return base64_encode($connectJson);
     }
 
-    /**
-     * @return mixed|string
-     * @throws Exception
-     * @throws \Magento\Framework\Oauth\Exception
-     */
-    public function getConnectToken()
-    {
-        $connectToken = $this->scopeConfig->getValue('emartech/emarsys/connecttoken');
-
-        if (!$connectToken) {
-            $this->create();
-            $this->saveConnectTokenToConfig();
-            $connectToken = $this->saveConnectTokenToConfig();
-        }
-
-        return $connectToken;
-    }
-
-    /**
-     * @return void
-     */
+  /**
+   * @return void
+   * @throws \Magento\Framework\Exception\IntegrationException
+   */
     public function delete()
     {
         $this->configWriter->delete('emartech/emarsys/connecttoken');
