@@ -5,6 +5,7 @@ export PATH=/bin:/usr/local/bin:$PATH
 cd /app
 
 echo "-|| Setting base URL"
+echo $MAGENTO_URL
 bin/magento config:set web/unsecure/base_url ${MAGENTO_URL}/
 
 echo "-|| Install plugin..."

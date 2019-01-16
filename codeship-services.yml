@@ -14,13 +14,48 @@ magento-test.local:
     - ./dev/cache-flush.php:/app/cache-flush.php
   cached: true
   encrypted_env_file: codeship.env.encrypted
+  environment:
+    - MYSQL_DATABASE=magento
+    - MAGENTO_URL=http://magento-test.local
+  dockercfg_service: dockercfg-generator
+magento-test-218.local:
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.1.8
+  container_name: magento-test-218.local
+  depends_on:
+    - db
+  volumes:
+    - ./dev/Magento/composer.json:/app/composer.json
+    - ./dev/setup:/opt/emartech/setup
+    - .:/app/vendor/emartech/emarsys-magento2-extension
+    - ./dev/cache-flush.php:/app/cache-flush.php
+  cached: true
+  encrypted_env_file: codeship.env.encrypted
+  environment:
+    - MAGENTO_URL=http://magento-test-218.local
+    - MYSQL_DATABASE=magento218
+  dockercfg_service: dockercfg-generator
+magento-test-223.local:
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.3
+  container_name: magento-test-223.local
+  depends_on:
+    - db
+  volumes:
+    - ./dev/Magento/composer.json:/app/composer.json
+    - ./dev/setup:/opt/emartech/setup
+    - .:/app/vendor/emartech/emarsys-magento2-extension
+    - ./dev/cache-flush.php:/app/cache-flush.php
+  cached: true
+  encrypted_env_file: codeship.env.encrypted
+  environment:
+    - MAGENTO_URL=http://magento-test-223.local
+    - MYSQL_DATABASE=magento223
   dockercfg_service: dockercfg-generator
 dockercfg-generator:
   image: codeship/gcr-dockercfg-generator
   add_docker: true
   encrypted_env_file: codeship.env.encrypted
 magento-static:
-  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.6
   container_name: magento-static
   volumes:
     - ./dev/setup:/opt/emartech/setup
@@ -36,13 +71,26 @@ node:
   container_name: mage_node
   build:
     context: ./dev
-    dockerfile: ./Docker/Dockerfile-node
+    dockerfile: ./Docker/Dockerfile-node-CI
     encrypted_args_file: codeship.env.encrypted
-  volumes:
-    - ./dev/test:/test
   depends_on:
     - db
     - magento-test.local
+  cached: true
+  encrypted_env_file: codeship.env.encrypted
+  environment:
+    - MYSQL_DATABASE=magento
+node-223:
+  container_name: mage_node_223
+  build:
+    context: ./dev
+    dockerfile: ./Docker/Dockerfile-node-CI
+    encrypted_args_file: codeship.env.encrypted
+  depends_on:
+    - db
+    - magento-test-223.local
+  environment:
+    - MYSQL_DATABASE=magento223
   cached: true
   encrypted_env_file: codeship.env.encrypted
 deployment:

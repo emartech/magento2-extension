@@ -18,7 +18,6 @@ services:
       - ./cache-flush.php:/app/cache-flush.php
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   magento-dev:
-    image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.6
     ports:
       - "8888:80"
     links:
