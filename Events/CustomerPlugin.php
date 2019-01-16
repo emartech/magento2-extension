@@ -7,7 +7,7 @@ use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Model\EventRepository;
 use Emartech\Emarsys\Model\SettingsFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Serialize\Serializer\Json;
+use Emartech\Emarsys\Helper\Json;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Customer\Helper\View as CustomerViewHelper;

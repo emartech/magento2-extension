@@ -11,7 +11,7 @@ use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Setup\Exception as SetupException;
-use Magento\Framework\Serialize\Serializer\Json;
+use Emartech\Emarsys\Helper\Json;
 use Psr\Log\LoggerInterface;
 use Zend\Uri\Http;
 

@@ -6,7 +6,7 @@ use Emartech\Emarsys\Api\Data\StoreConfigInterface;
 use Magento\Framework\DataObject;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Config as ScopeConfig;
-use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use Emartech\Emarsys\Helper\Json as JsonSerializer;
 use Magento\Store\Model\StoreManagerInterface;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
