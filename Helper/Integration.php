@@ -103,11 +103,11 @@ class Integration extends AbstractHelper
         }
     }
 
-  /**
-   * @return string
-   * @throws SetupException
-   * @throws \Magento\Framework\Oauth\Exception
-   */
+    /**
+     * @return string
+     * @throws SetupException
+     * @throws \Magento\Framework\Oauth\Exception
+     */
     public function generateConnectToken()
     {
         $token = $this->getToken()['token'];
@@ -121,13 +121,13 @@ class Integration extends AbstractHelper
 
         $connectJson = $this->json->serialize(compact('hostname', 'token', 'magento_version'));
 
-      return base64_encode($connectJson);
+        return base64_encode($connectJson);
     }
 
-  /**
-   * @return void
-   * @throws \Magento\Framework\Exception\IntegrationException
-   */
+    /**
+     * @return void
+     * @throws \Magento\Framework\Exception\IntegrationException
+     */
     public function delete()
     {
         $this->configWriter->delete('emartech/emarsys/connecttoken');

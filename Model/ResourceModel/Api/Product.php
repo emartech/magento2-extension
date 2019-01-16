@@ -386,7 +386,7 @@ class Product extends ProductResourceModel
 
         try {
             $unionQuery = $this->_resource->getConnection()->select()
-                ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL);
+                ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
             $this->iterator->walk(
                 (string)$unionQuery,
                 [[$this, 'handleAttributeDataTable']],
@@ -395,7 +395,7 @@ class Product extends ProductResourceModel
                 ],
                 $this->_resource->getConnection()
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $e) { // @codingStandardsIgnoreLine
         }
 
         return $this;
