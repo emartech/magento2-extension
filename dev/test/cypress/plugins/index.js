@@ -73,8 +73,7 @@ const flushMagentoCache = async () => {
   return await magentoApi.get({ path: '/cache-flush.php' });
 };
 
-module.exports = (on, config) => {
-  // eslint-disable-line no-unused-vars
+module.exports = (on) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
 
