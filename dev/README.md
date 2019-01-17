@@ -123,10 +123,6 @@ to enter the MYSQL CLI directly.
 ### Testing
 Tests are run in NodeJS environment in a separate container. The node container does not run constantly, it boots up for one-off test runs.
 
-Before the first run `npm` packages must be installed by
-```
-$ make npm-install
-```
 To run the tests use
 ```
 $ make test
