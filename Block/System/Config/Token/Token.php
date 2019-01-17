@@ -4,6 +4,7 @@
 namespace Emartech\Emarsys\Block\System\Config\Token;
 
 use Emartech\Emarsys\Helper\Integration;
+use Magento\Framework\Data\Form\Element\AbstractElement;
 
 class Token extends \Magento\Config\Block\System\Config\Form\Field
 {
@@ -19,7 +20,7 @@ class Token extends \Magento\Config\Block\System\Config\Form\Field
     }
 
     // @codingStandardsIgnoreLine
-    protected function _getElementHtml()
+    protected function _getElementHtml(AbstractElement $element)
     {
         $connectToken = $this->integrationHelper->generateConnectToken();
 
