@@ -11,7 +11,7 @@ use Emartech\Emarsys\Api\Data\EventsApiResponseInterface;
 interface EventsApiInterface
 {
     /**
-     * @param int $sinceId
+     * @param string $sinceId
      * @param int $pageSize
      *
      * @return \Emartech\Emarsys\Api\Data\EventsApiResponseInterface

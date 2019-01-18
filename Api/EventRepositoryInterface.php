@@ -35,4 +35,10 @@ interface EventRepositoryInterface
      * @return \Magento\Framework\Api\SearchResultsInterface
      */
     public function getList($eventType, SearchCriteriaInterface $searchCriteria);
+
+    /**
+     * @param string sinceId
+     * @return bool
+     */
+    public function isSinceIdIsHigherThanAutoIncrement($sinceId);
 }

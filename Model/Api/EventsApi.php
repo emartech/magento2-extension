@@ -2,6 +2,7 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Emartech\Emarsys\Model\EventRepository;
 use Magento\Framework\Data\Collection as DataCollection;
 
 use Emartech\Emarsys\Api\Data\EventsApiResponseInterfaceFactory;
@@ -33,27 +34,37 @@ class EventsApi implements EventsApiInterface
     private $eventCollection;
 
     /**
+     * @var EventRepository
+     */
+    private $eventRepository;
+
+    /**
      * EventsApi constructor.
      *
      * @param CollectionFactory                 $eventCollectionFactory
      * @param EventsApiResponseInterfaceFactory $eventsApiResponseFactory
      */
     public function __construct(
+        EventRepository $eventRepository,
         CollectionFactory $eventCollectionFactory,
         EventsApiResponseInterfaceFactory $eventsApiResponseFactory
     ) {
         $this->eventCollectionFactory = $eventCollectionFactory;
         $this->eventsApiResponseFactory = $eventsApiResponseFactory;
+        $this->eventRepository = $eventRepository;
     }
 
     /**
-     * @param int $sinceId
+     * @param string $sinceId
      * @param int $pageSize
      *
      * @return EventsApiResponseInterface
+     * @throws \Magento\Framework\Webapi\Exception
      */
     public function get($sinceId, $pageSize)
     {
+        $this->validateSinceId($sinceId);
+
         $this
             ->initCollection()
             ->removeOldEvents($sinceId)
@@ -145,5 +156,20 @@ class EventsApi implements EventsApiInterface
         $oldEvents->walk('delete');
 
         return $this;
+    }
+
+    /**
+     * @param $sinceId
+     * @throws \Magento\Framework\Webapi\Exception
+     */
+    private function validateSinceId($sinceId): void
+    {
+        if ($this->eventRepository->isSinceIdIsHigherThanAutoIncrement($sinceId)) {
+            throw new \Magento\Framework\Webapi\Exception(
+                __('sinceId is higher than auto-increment'),
+                \Magento\Framework\Webapi\Exception::HTTP_NOT_ACCEPTABLE,
+                \Magento\Framework\Webapi\Exception::HTTP_NOT_ACCEPTABLE
+            );
+        }
     }
 }

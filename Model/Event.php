@@ -13,7 +13,7 @@ use Emartech\Emarsys\Api\Data\EventInterface;
 class Event extends AbstractModel implements EventInterface
 {
     /**
-     * @return int
+     * @return string
      */
     public function getEventId()
     {

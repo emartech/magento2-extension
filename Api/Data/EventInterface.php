@@ -17,7 +17,7 @@ interface EventInterface
     const ENTITY_ID_KEY  = 'entity_id';
 
     /**
-     * @return int
+     * @return string
      */
     public function getEventId();
 
