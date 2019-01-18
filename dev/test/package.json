@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "npm run mocha && npm run code-style",
-    "e2e": "./node_modules/.bin/cypress run --browser chrome",
+    "e2e": "cypress run --browser chrome",
     "e2e:debug": "DEBUG=cypress:* cypress run --browser chrome",
     "quick-test": "npm run mocha",
     "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./setup.spec.js './!(node_modules|cypress)/**/*.spec.js'",
