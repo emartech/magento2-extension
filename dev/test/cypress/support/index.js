@@ -20,6 +20,12 @@ before(() => {
   });
 });
 
+beforeEach(() => {
+  Cypress.cy.onUncaughtException = function() {
+    console.log('FRONTEND_ERROR');
+  };
+});
+
 afterEach(() => {
   cy.wait(4000);
   cy.task('clearEvents');
