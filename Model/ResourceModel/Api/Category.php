@@ -14,7 +14,6 @@ use Magento\Eav\Model\Entity\Context;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\Factory;
 use Magento\Framework\Event\ManagerInterface;
-use Emartech\Emarsys\Helper\Json as JsonSerializer;
 use Magento\Catalog\Model\Category as CategoryModel;
 
 /**
@@ -50,7 +49,6 @@ class Category extends CategoryResourceModel
      * @param CollectionFactory     $categoryCollectionFactory
      * @param Iterator              $iterator
      * @param array                 $data
-     * @param Json|null             $serializer
      */
     public function __construct(
         Context $context,
@@ -60,8 +58,7 @@ class Category extends CategoryResourceModel
         TreeFactory $categoryTreeFactory,
         CollectionFactory $categoryCollectionFactory,
         Iterator $iterator,
-        array $data = [],
-        JsonSerializer $serializer = null
+        array $data = []
     ) {
         $this->iterator = $iterator;
 
@@ -72,8 +69,7 @@ class Category extends CategoryResourceModel
             $eventManager,
             $categoryTreeFactory,
             $categoryCollectionFactory,
-            $data,
-            $serializer
+            $data
         );
     }
 

@@ -6,7 +6,6 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
-use Magento\Catalog\Model\Indexer\Category\Product\TableMaintainer;
 use Magento\Catalog\Model\ResourceModel\Category;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
 use Magento\Eav\Model\Entity\Context;
@@ -21,7 +20,6 @@ use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
-use phpDocumentor\Reflection\Element;
 
 /**
  * Class Product
@@ -109,7 +107,6 @@ class Product extends ProductResourceModel
      * @param ProductAttributeCollectionFactory $productAttributeCollectionFactory
      * @param Iterator                          $iterator
      * @param array                             $data
-     * @param TableMaintainer|null              $tableMaintainer
      */
     public function __construct(
         Context $context,
@@ -123,8 +120,7 @@ class Product extends ProductResourceModel
         DefaultAttributes $defaultAttributes,
         ProductAttributeCollectionFactory $productAttributeCollectionFactory,
         Iterator $iterator,
-        array $data = [],
-        TableMaintainer $tableMaintainer = null
+        array $data = []
     ) {
         $this->iterator = $iterator;
         $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
@@ -139,8 +135,7 @@ class Product extends ProductResourceModel
             $setFactory,
             $typeFactory,
             $defaultAttributes,
-            $data,
-            $tableMaintainer
+            $data
         );
     }
 

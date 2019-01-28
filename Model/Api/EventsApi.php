@@ -162,7 +162,7 @@ class EventsApi implements EventsApiInterface
      * @param $sinceId
      * @throws \Magento\Framework\Webapi\Exception
      */
-    private function validateSinceId($sinceId): void
+    private function validateSinceId($sinceId)
     {
         if ($this->eventRepository->isSinceIdIsHigherThanAutoIncrement($sinceId)) {
             throw new \Magento\Framework\Webapi\Exception(
