@@ -7,6 +7,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const knex = require('knex');
 const DbCleaner = require('./db-cleaner');
+const url = require('url');
 const Magento2ApiClient = require('@emartech/magento2-api');
 const { productFactory } = require('./factories/products');
 
@@ -105,13 +106,20 @@ before(async function() {
 
   this.dbCleaner = DbCleaner.create(this.db);
 
-  const result = await this.db
-    .select('value')
-    .from('core_config_data')
-    .where({ path: 'emartech/emarsys/connecttoken' })
+  const { token } = await this.db
+    .select('token')
+    .from('integration')
+    .where({ name: 'Emarsys Integration' })
+    .leftJoin('oauth_token', 'integration.consumer_id', 'oauth_token.consumer_id')
     .first();
 
-  const { hostname, token } = JSON.parse(Buffer.from(result.value, 'base64'));
+  const { value: baseUrl } = await this.db
+    .select('value')
+    .from('core_config_data')
+    .where({ path: 'web/unsecure/base_url' })
+    .first();
+
+  const hostname = url.parse(baseUrl).host;
   this.hostname = hostname;
   this.token = token;
   console.log('host', hostname);

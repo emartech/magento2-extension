@@ -10,7 +10,7 @@ use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Helper\View as CustomerViewHelper;
-use Magento\Framework\Serialize\Serializer\Json;
+use Emartech\Emarsys\Helper\Json;
 use Psr\Log\LoggerInterface;
 use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
 use Magento\Framework\Exception\LocalizedException;

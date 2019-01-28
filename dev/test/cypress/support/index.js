@@ -2,7 +2,7 @@
 
 require('./commands');
 
-before(()=> {
+before(() => {
   cy.task('setConfig', {
     websiteId: 1,
     config: {
@@ -20,8 +20,14 @@ before(()=> {
   });
 });
 
+beforeEach(() => {
+  Cypress.cy.onUncaughtException = function() {
+    console.log('FRONTEND_ERROR');
+  };
+});
+
 afterEach(() => {
-  cy.wait(2000);
+  cy.wait(4000);
   cy.task('clearEvents');
 });
 

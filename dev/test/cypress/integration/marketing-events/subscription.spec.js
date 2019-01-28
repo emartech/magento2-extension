@@ -1,15 +1,17 @@
 'use strict';
 
+const getUid = () => Math.round(Math.random() * 100000);
+
 describe('Marketing Events', function() {
-  const unsubscribe = (email) => {
-    cy.task('getSubscription', email).then((subscription) => {
+  const unsubscribe = email => {
+    cy.task('getSubscription', email).then(subscription => {
       cy.visit(`/newsletter/subscriber/unsubscribe?id=${subscription.subscriber_id}\
         &code=${subscription.subscriber_confirm_code}`);
       cy.wait(1000);
     });
   };
 
-  const subscribe = (email) => {
+  const subscribe = email => {
     cy.visit('/');
     cy.get('#newsletter').type(email);
     cy.get('.action.subscribe.primary[type="submit"]').click();
@@ -40,7 +42,13 @@ describe('Marketing Events', function() {
     context('guest with double optin on', function() {
       before(() => {
         cy.task('setDoubleOptin', true);
-        cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'disabled' } });
+        cy.task('setConfig', {
+          websiteId: 1,
+          config: {
+            collectMarketingEvents: 'disabled',
+            merchantId: `itsaflush-subs-${getUid()}`
+          }
+        });
       });
 
       after(() => {
@@ -94,7 +102,10 @@ describe('Marketing Events', function() {
     context('guest with double optin on', function() {
       before(() => {
         cy.task('setDoubleOptin', true);
-        cy.task('setConfig', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
+        cy.task('setConfig', {
+          websiteId: 1,
+          config: { collectMarketingEvents: 'enabled', merchantId: `itsaflush-subs-${getUid()}` }
+        });
       });
 
       after(() => {

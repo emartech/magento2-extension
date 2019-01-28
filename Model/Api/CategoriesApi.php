@@ -195,7 +195,7 @@ class CategoriesApi implements CategoriesApiInterface
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
 
-        $this->linkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
+        $this->linkField = 'entity_id';
 
         return $this;
     }

@@ -112,7 +112,8 @@ const viewAndAddFirstItemToCart = () => {
 };
 
 const buyItem = () => {
-  cy.visit('/checkout/');
+  cy.get('.action.showcart').click();
+  cy.get('#top-cart-btn-checkout').click();
   cy.wait(8000);
 
   cy.get('#checkout-step-shipping input.input-text[name="username"]').type('guest@cypress.net');

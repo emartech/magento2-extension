@@ -125,4 +125,30 @@ class EventRepository implements EventRepositoryInterface
         $searchResults->setTotalCount($eventCollection->getSize());
         return $searchResults;
     }
+
+    /**
+     * @param string sinceId
+     * @return bool
+     */
+    public function isSinceIdIsHigherThanAutoIncrement($sinceId)
+    {
+        return (bool) $this->eventResourceModel->getConnection()->fetchOne("
+            SELECT
+                (
+                    SELECT
+                        `AUTO_INCREMENT`
+                    FROM
+                        INFORMATION_SCHEMA.TABLES
+                    WHERE
+                        TABLE_SCHEMA = (
+                            SELECT
+                                database()
+                        )
+                        AND TABLE_NAME = 'emarsys_events_data'
+                ) <= (
+                    SELECT
+                        CAST(? AS UNSIGNED)
+                );
+        ", [$sinceId]);
+    }
 }

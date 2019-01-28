@@ -6,7 +6,7 @@ For development environment information refer to [dev README](dev/README.md).
 
 1. ### Composer install the package
     ```
-    $ composer require ematech/emarsys-magento2-extension
+    $ composer require emartech/emarsys-magento2-extension
     ```
 1.  ### Run Magento setup to install the module
     ```

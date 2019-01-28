@@ -11,7 +11,7 @@ use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Setup\Exception as SetupException;
-use Magento\Framework\Serialize\Serializer\Json;
+use Emartech\Emarsys\Helper\Json;
 use Psr\Log\LoggerInterface;
 use Zend\Uri\Http;
 
@@ -40,7 +40,7 @@ class Integration extends AbstractHelper
         'name'       => 'Emarsys Integration',
         'email'      => 'emarsys@emarsys.com',
         'status'     => '1',
-        'endpoint'   => 'http://localhost:9300',
+        'endpoint'   => 'https://localhost',
         'setup_type' => '0'
     ];
     /**
@@ -105,10 +105,10 @@ class Integration extends AbstractHelper
 
     /**
      * @return string
-     * @throws Exception
+     * @throws SetupException
      * @throws \Magento\Framework\Oauth\Exception
      */
-    public function saveConnectTokenToConfig()
+    public function generateConnectToken()
     {
         $token = $this->getToken()['token'];
         $parsedUrl = $this->getBaseUrl();
@@ -121,33 +121,12 @@ class Integration extends AbstractHelper
 
         $connectJson = $this->json->serialize(compact('hostname', 'token', 'magento_version'));
 
-        $connectToken = base64_encode($connectJson);
-
-        $this->configWriter->save('emartech/emarsys/connecttoken', $connectToken);
-
-        return $connectToken;
-    }
-
-    /**
-     * @return mixed|string
-     * @throws Exception
-     * @throws \Magento\Framework\Oauth\Exception
-     */
-    public function getConnectToken()
-    {
-        $connectToken = $this->scopeConfig->getValue('emartech/emarsys/connecttoken');
-
-        if (!$connectToken) {
-            $this->create();
-            $this->saveConnectTokenToConfig();
-            $connectToken = $this->saveConnectTokenToConfig();
-        }
-
-        return $connectToken;
+        return base64_encode($connectJson);
     }
 
     /**
      * @return void
+     * @throws \Magento\Framework\Exception\IntegrationException
      */
     public function delete()
     {

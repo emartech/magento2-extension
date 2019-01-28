@@ -590,7 +590,7 @@ describe('Marketing events: customer', function() {
           await this.magentoApi.execute('config', 'set', {
             websiteId: 1,
             config: {
-              collectMarketingEvents: 'enabled'
+              merchantId: 'itsaflush'
             }
           });
         });

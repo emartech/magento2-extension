@@ -34,26 +34,35 @@ const customers = [
 ];
 
 describe('Events API endpoint', function() {
+  before(async function() {
+    await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
+  });
+
+  beforeEach(async function() {
+    for (const customer of customers) {
+      await this.createCustomer(customer);
+    }
+  });
+
   afterEach(async function() {
     await this.db.raw(
       'DELETE FROM customer_entity where email in ("yolo@yolo.net", "doggo@yolo.net", "pupper@yolo.net")'
     );
+  });
+
+  after(async function() {
     await this.magentoApi.execute('config', 'setDefault', 1);
   });
 
   it('returns number of events defined in page_size and deletes events before since_id', async function() {
     const pageSize = 1;
-    await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
-    for (const customer of customers) {
-      await this.createCustomer(customer);
-    }
 
     const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize });
 
     expect(eventsResponse.events.length).to.equal(pageSize);
     expect(eventsResponse.lastPage).to.equal(3);
 
-    let sinceId = eventsResponse.events.pop().event_id;
+    const sinceId = eventsResponse.events.pop().event_id;
 
     const secondEventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId, pageSize });
 
@@ -64,5 +73,21 @@ describe('Events API endpoint', function() {
     const firstEvent = eventsInDb[0];
     expect(firstEvent.website_id).to.equal(1);
     expect(firstEvent.store_id).to.equal(1);
+  });
+
+  it('returns 406 status if sinceId is higher than events table auto-increment id', async function() {
+    let status;
+
+    try {
+      await this.magentoApi.execute('events', 'getSinceId', { sinceId: 99999999, pageSize: 10 });
+    } catch (error) {
+      status = error.response.status;
+    }
+
+    expect(status).to.equal(406);
+
+    const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize: 10 });
+
+    expect(eventsResponse.events.length).to.equal(3);
   });
 });
