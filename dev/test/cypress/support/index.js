@@ -23,6 +23,7 @@ before(() => {
 beforeEach(() => {
   Cypress.cy.onUncaughtException = function() {
     console.log('FRONTEND_ERROR');
+    return false;
   };
 });
 
