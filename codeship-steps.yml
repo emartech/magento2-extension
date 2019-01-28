@@ -5,7 +5,7 @@
       command: /bin/sh -c "npm ci && npm t"
     - name: running e2e tests
       service: node
-      command: /bin/sh -c "npm ci && npm run e2e"
+      command: /bin/sh -c "npm ci && npm run e2e:ci"
     - name: Code style check
       service: magento-static
       command: sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh
