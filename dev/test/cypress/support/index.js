@@ -36,3 +36,10 @@ Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-
   cy.task('log', err.toString());
   return false;
 });
+
+Cypress.on('fail', (error, runnable) => {
+  debugger;
+  console.log('FAILING TEST', error, runnable);
+
+  throw error;
+});
