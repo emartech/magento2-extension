@@ -189,3 +189,7 @@ Got to [packagist.org](https://packagist.org/packages/emartech/emarsys-magento2-
 * Download the `aes` key from [Codeship](https://app.codeship.com/projects/290273/configure) into the project directory.
 * Run `$ jet encrypt codeship.env codeship.env.encrypted`
 * Commit `codeship.env.encrypted` into the repo.
+
+## Update Cypress
+* Update the vesrion in `package.json`
+* Run `make build-cypress VERSION=new-version` from project root

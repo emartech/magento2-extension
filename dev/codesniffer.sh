@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 sniff() {
   /app/vendor/bin/phpcs --colors \
@@ -8,15 +8,16 @@ sniff() {
     --extensions=php
 }
 
-echo -e "\nRunning sniffer..."
+echo "\nRunning sniffer..."
+
 REPORT=$(sniff)
 
-if [[ "$REPORT" ]]
+if [ "$REPORT" ]
 then
   echo "$REPORT"
-  echo -e "\n\e[31mFAILED\e[39m\n"
+  echo "\n\e[31mFAILED\e[39m\n"
   exit 1
 else
-  echo -e "\n\e[32mSUCCESS"
-  echo -e "No style errors found.\e[39m\n"
+  echo "\n\e[32mSUCCESS"
+  echo "No style errors found.\e[39m\n"
 fi
