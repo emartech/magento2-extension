@@ -22,7 +22,7 @@ before(() => {
 
 beforeEach(() => {
   Cypress.cy.onUncaughtException = function() {
-    console.log('FRONTEND_ERROR');
+    console.log('UNCAUGHT_EXCEPTION', arguments);
     return false;
   };
 });
@@ -32,27 +32,7 @@ afterEach(() => {
   cy.task('clearEvents');
 });
 
-Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars
-  cy.task('log', err.toString());
-  return false;
-});
-
 Cypress.on('fail', (error, runnable) => {
-  if (cy) {
-    cy.log('FAILING_TEST', error, runnable);
-  } else if (Cypress) {
-    Cypress.log({
-      message: 'FAILING_TEST',
-      consoleProps: () => ({
-        error: error,
-        runnable: runnable
-      })
-    });
-  } else {
-    console.log('FAILING_TEST', error, runnable);
-  }
-
-  debugger;
-
+  console.log('FAILING_TEST', error, runnable);
   throw error;
 });
