@@ -1,0 +1,10 @@
+{
+  "name": "cypress-image",
+  "version": "3.1.4",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "3.1.4"
+  }
+}

@@ -19,6 +19,7 @@ magento-test.local:
     - ./dev/setup:/opt/emartech/setup
     - .:/app/vendor/emartech/emarsys-magento2-extension
     - ./dev/cache-flush.php:/app/cache-flush.php
+    - ./dev/Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
   cached: true
   encrypted_env_file: codeship.env.encrypted
   environment:

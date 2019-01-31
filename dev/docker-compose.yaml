@@ -16,6 +16,7 @@ services:
       - ./setup:/opt/emartech/setup
       - ./php.ini:/opt/docker/etc/php/php.ini
       - ./cache-flush.php:/app/cache-flush.php
+      - ./Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   magento-dev:
     image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.6
