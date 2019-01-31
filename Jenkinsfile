@@ -7,6 +7,12 @@ pipeline {
     http_proxy   = 'http://webproxy.emarsys.at:3128'
     https_proxy  = 'http://webproxy.emarsys.at:3128'
     NPM_TOKEN = credentials('npm_token')
+    MAGENTO_REPO_KEY = credentials('magento_repo_key')
+    MAGENTO_REPO_SECRET = credentials('magento_repo_secret')
+    MYSQL_USER=magento
+    MYSQL_PASSWORD=magento
+    MYSQL_DATABASE=magento
+    MAGENTO_URL='http://magento-test.local'
   }
 
   triggers {
@@ -22,14 +28,14 @@ pipeline {
   stages {
     stage('Build and run tests') {
       steps {
-        withCredentials([file(credentialsId: 'magento2_env', variable: 'MAGENTO2_ENV')]) {
-          sh 'cp "$MAGENTO2_ENV" dev/.env'
-          sh 'docker-compose -f dev/docker-compose.yaml build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy node magento-test magento-dev'
-          sh 'docker-compose -f dev/docker-compose.yaml up -d'
-          sh 'make create-test-db'
-          sh 'make mocha'
-          sh 'make run-e2e'
-        }
+        sh 'docker-compose -f dev/docker-compose.yaml build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy node magento-test magento-dev'
+        sh 'docker-compose -f dev/docker-compose.yaml up -d'
+
+        sh 'docker-compose -f dev/docker-compose.yaml exec --user root magento-test /bin/sh -c "sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh"'
+        sh 'docker-compose -f dev/docker-compose.yaml exec --user root magento-test /bin/sh -c "sh vendor/emartech/emarsys-magento2-extension/dev/Magento/compile.sh"'
+        sh 'docker-compose -f dev/docker-compose.yaml exec --user root node /bin/sh -c "npm i && npm t"'
+        sh 'docker-compose -f dev/docker-compose.yaml exec --user root node /bin/sh -c "npm i && npm run e2e:ci"'
+
       }
     }
   }
