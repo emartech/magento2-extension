@@ -32,8 +32,8 @@ pipeline {
         sh 'docker-compose -f dev/docker-compose.yaml -p mage up -d'
         sh 'docker-compose -f dev/docker-compose.yaml -p mage exec -T --user root magento-test /bin/sh -c \'sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh\''
         sh 'docker-compose -f dev/docker-compose.yaml -p mage exec -T --user root magento-test /bin/sh -c \'sh vendor/emartech/emarsys-magento2-extension/dev/Magento/compile.sh\''
-        sh 'docker-compose -f dev/docker-compose.yaml exec -T --user root mage_node /bin/sh -c \'npm i && npm t\''
-        sh 'docker-compose -f dev/docker-compose.yaml exec -T --user root mage_node /bin/sh -c \'npm i && npm run e2e:ci\''
+        sh 'docker-compose -f dev/docker-compose.yaml -p mage exec -T npm t'
+        sh 'docker-compose -f dev/docker-compose.yaml -p mage exec -T npm run e2e:ci'
       }
     }
   }
