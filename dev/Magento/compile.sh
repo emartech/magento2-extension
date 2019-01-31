@@ -35,6 +35,6 @@ su application /opt/emartech/setup
 touch /setup-ready
 
 echo "-|| Setup ready!"
-echo "-|| Starting up compilation..."
+echo "-|| Starting Magento DI compiler..."
 
 /app/bin/magento setup:di:compile
