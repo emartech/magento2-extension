@@ -20,19 +20,12 @@ before(() => {
   });
 });
 
-beforeEach(() => {
-  Cypress.cy.onUncaughtException = function() {
-    console.log('UNCAUGHT_EXCEPTION', arguments);
-    return false;
-  };
-});
-
 afterEach(() => {
   cy.wait(4000);
   cy.task('clearEvents');
 });
 
-Cypress.on('fail', (error, runnable) => {
-  console.log('FAILING_TEST', error, runnable);
-  throw error;
+Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars
+  console.log('uncaught:exception', err.toString());
+  return false;
 });
