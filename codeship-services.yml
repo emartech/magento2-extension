@@ -50,7 +50,6 @@ node:
   encrypted_env_file: codeship.env.encrypted
   environment:
     - MYSQL_DATABASE=magento
-  dockercfg_service: dockercfg-generator
 
 deployment:
   image: codeship/google-cloud-deployment
