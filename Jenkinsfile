@@ -6,6 +6,7 @@ pipeline {
   environment {
     http_proxy   = 'http://webproxy.emarsys.at:3128'
     https_proxy  = 'http://webproxy.emarsys.at:3128'
+    NPM_TOKEN = credentials('npm_token')
   }
 
   triggers {
@@ -21,11 +22,15 @@ pipeline {
   stages {
     stage('Build and run tests') {
       steps {
-        sh 'docker-compose -f dev/docker-compose.yaml build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy'
-        sh 'docker-compose -f dev/docker-compose.yaml up -d'
-        sh 'make create-test-db'
-        sh 'make mocha'
-        sh 'make run-e2e'
+        withCredentials([file(credentialsId: 'magento2_env', variable: 'MAGENTO2_ENV')]) {
+          sh 'echo $MAGENTO2_ENV'
+          sh 'cp $MAGENTO2_ENV dev/.env'
+          sh 'docker-compose -f dev/docker-compose.yaml build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy'
+          sh 'docker-compose -f dev/docker-compose.yaml up -d'
+          sh 'make create-test-db'
+          sh 'make mocha'
+          sh 'make run-e2e'
+        }
       }
     }
   }
