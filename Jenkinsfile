@@ -9,9 +9,9 @@ pipeline {
     NPM_TOKEN           = credentials('npm_token')
     MAGENTO_REPO_KEY    = credentials('magento_repo_key')
     MAGENTO_REPO_SECRET = credentials('magento_repo_secret')
+    MYSQL_HOST          = 'db'
     MYSQL_USER          = 'magento'
     MYSQL_PASSWORD      = 'magento'
-    MYSQL_DATABASE      = 'magento'
     MAGENTO_URL         = 'http://magento-test.local'
   }
 
