@@ -4,15 +4,15 @@ pipeline {
   }
 
   environment {
-    http_proxy   = 'http://webproxy.emarsys.at:3128'
-    https_proxy  = 'http://webproxy.emarsys.at:3128'
-    NPM_TOKEN = credentials('npm_token')
-    MAGENTO_REPO_KEY = credentials('magento_repo_key')
+    http_proxy          = 'http://webproxy.emarsys.at:3128'
+    https_proxy         = 'http://webproxy.emarsys.at:3128'
+    NPM_TOKEN           = credentials('npm_token')
+    MAGENTO_REPO_KEY    = credentials('magento_repo_key')
     MAGENTO_REPO_SECRET = credentials('magento_repo_secret')
-    MYSQL_USER=magento
-    MYSQL_PASSWORD=magento
-    MYSQL_DATABASE=magento
-    MAGENTO_URL='http://magento-test.local'
+    MYSQL_USER          = 'magento'
+    MYSQL_PASSWORD      = 'magento'
+    MYSQL_DATABASE      = 'magento'
+    MAGENTO_URL         = 'http://magento-test.local'
   }
 
   triggers {
