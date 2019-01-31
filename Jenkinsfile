@@ -28,6 +28,8 @@ pipeline {
   stages {
     stage('Build and run tests') {
       steps {
+        sh 'docker volume rm mage_magento-db'
+        sh 'docker-compose -f dev/docker-compose.yaml down'
         sh 'docker-compose -f dev/docker-compose.yaml build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy node magento-test magento-dev'
         sh 'docker-compose -f dev/docker-compose.yaml -p mage up -d'
         sh 'docker-compose -f dev/docker-compose.yaml -p mage exec --user root magento-test /bin/sh -c "sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh"'
@@ -41,7 +43,8 @@ pipeline {
 
   post {
     always {
-        sh 'make down'
+        sh 'docker volume rm mage_magento-db'
+        sh 'docker-compose -f dev/docker-compose.yaml down'
     }
   }
 }
