@@ -26,23 +26,6 @@ magento-test.local:
     - MAGENTO_URL=http://magento-test.local
   dockercfg_service: dockercfg-generator
 
-magento-test-223.local:
-  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
-  container_name: magento-test-223.local
-  depends_on:
-    - db
-  volumes:
-    - ./dev/Magento/composer.json:/app/composer.json
-    - ./dev/setup:/opt/emartech/setup
-    - .:/app/vendor/emartech/emarsys-magento2-extension
-    - ./dev/cache-flush.php:/app/cache-flush.php
-  cached: true
-  encrypted_env_file: codeship.env.encrypted
-  environment:
-    - MAGENTO_URL=http://magento-test-223.local
-    - MYSQL_DATABASE=magento223
-  dockercfg_service: dockercfg-generator
-
 magento-static:
   image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.6
   container_name: magento-static
@@ -66,20 +49,7 @@ node:
   encrypted_env_file: codeship.env.encrypted
   environment:
     - MYSQL_DATABASE=magento
-
-node-223:
-  container_name: mage_node_223
-  build:
-    context: ./dev
-    dockerfile: ./Docker/Dockerfile-node-CI
-    encrypted_args_file: codeship.env.encrypted
-  depends_on:
-    - db
-    - magento-test-223.local
-  environment:
-    - MYSQL_DATABASE=magento223
-  cached: true
-  encrypted_env_file: codeship.env.encrypted
+  dockercfg_service: dockercfg-generator
 
 deployment:
   image: codeship/google-cloud-deployment
