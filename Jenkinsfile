@@ -30,7 +30,6 @@ pipeline {
       steps {
         sh 'docker-compose -f dev/docker-compose.yaml build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy node magento-test magento-dev'
         sh 'docker-compose -f dev/docker-compose.yaml -p mage up -d'
-        sh 'docker-compose -f dev/docker-compose.yaml -p mage exec -T --user root --user root db bash -c \'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento_test > /opt/magento_test.sql\''
         sh 'docker-compose -f dev/docker-compose.yaml -p mage exec -T --user root magento-test /bin/sh -c \'sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh\''
         sh 'docker-compose -f dev/docker-compose.yaml -p mage exec -T --user root magento-test /bin/sh -c \'sh vendor/emartech/emarsys-magento2-extension/dev/Magento/compile.sh\''
         sh 'docker-compose -f dev/docker-compose.yaml exec -T --user root mage_node /bin/sh -c \'npm i && npm t\''
