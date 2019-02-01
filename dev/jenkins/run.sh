@@ -25,14 +25,14 @@ compose up -d
 echo "\n|--- Waiting for Magento init"
 sh ./wait.sh
 echo "\n|--- Running backend tests"
-compose run --rm node sh -c "npm i && npm t"
+compose run --rm node sh -c "echo $NPM_TOKEN && npm t"
 echo "\n\n|--- Restarting containers"
 compose down
 compose up -d
 echo "\n|--- Waiting for containers to initialize"
 sh ./wait.sh
 echo "\n|--- Running frontend tests"
-compose run --rm node sh -c "npm i && npm run e2e"
+compose run --rm node sh -c "npm run e2e"
 
 echo "\n\n|--- All tests passed"
 
