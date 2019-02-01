@@ -26,16 +26,23 @@ pipeline {
   }
 
   stages {
-    stage('Build and run tests') {
-      steps {
-        sh 'sh dev/jenkins/run.sh'
+    stage('Run versions in parallel') {
+      parallel {
+        stage('Build and run tests on Magento 2.2.6') {
+          steps {
+            sh 'VERSION=2.2.6 sh dev/jenkins/run.sh'
+          }
+        }
+        stage('Build and run tests on Magento 2.2.3') {
+          steps {
+            sh 'VERSION=2.2.3 sh dev/jenkins/run.sh'
+          }
+        }
       }
     }
   }
 
   post {
-    always {
-        sh 'docker-compose -f dev/jenkins/docker-compose.yml down'
-    }
+    always {}
   }
 }

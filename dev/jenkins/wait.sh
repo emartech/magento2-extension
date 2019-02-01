@@ -4,7 +4,8 @@ wait_it()
 {
   while :
   do
-    result=$(docker-compose ps | grep magento)
+    result=$(docker-compose -p "mage_$VERSION" ps | grep magento)
+
     if [[ ! -z "$result" ]]; then
       healthy=$(echo $result | grep "Up (healthy)")
       if [[ ! -z "$healthy" ]]; then
