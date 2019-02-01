@@ -21,13 +21,13 @@ docker-compose up -d
 echo "\n|--- Waiting for Magento init"
 sh ./wait.sh
 echo "\n|--- Running backend tests"
-docker-compose run --rm node sh -c "npm i && npm t"
+docker-compose run --rm node sh -c "npm t"
 echo "\n\n|--- Restarting containers"
 docker-compose down
 docker-compose up -d
 echo "\n|--- Waiting for containers to initialize"
 sh ./wait.sh
 echo "\n|--- Running frontend tests"
-docker-compose run --rm node sh -c "npm i && npm run e2e"
+docker-compose run --rm node sh -c "npm run e2e"
 
 echo "\n\n|--- All tests passed"

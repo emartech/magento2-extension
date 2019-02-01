@@ -25,13 +25,16 @@ services:
     container_name: mage_node
     build:
       context: ../
-      dockerfile: ./Docker/Dockerfile-node
+      dockerfile: ./Docker/Dockerfile-node-CI
       args:
         - NPM_TOKEN=$NPM_TOKEN
     volumes:
       - ../test:/test
     ipc: host
+    env_file:
+      - .env
     environment:
+      - NPM_TOKEN=$NPM_TOKEN
       - MYSQL_DATABASE=magento
       - MAGENTO_URL=magento-test.local
     links:
