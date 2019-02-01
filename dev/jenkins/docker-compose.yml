@@ -23,8 +23,6 @@ services:
       - db
   node:
     image: mage_node
-    volumes:
-      - ../test:/test
     ipc: host
     env_file:
       - .env
