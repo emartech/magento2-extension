@@ -28,7 +28,7 @@ pipeline {
   stages {
     stage('Build node image') {
       steps {
-        sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN -t mage_node  ./dev'
+        sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node  ./dev'
       }
     }
     stage('Run versions in parallel') {
