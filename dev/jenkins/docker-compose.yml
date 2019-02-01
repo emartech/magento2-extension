@@ -1,0 +1,39 @@
+version: "3.4"
+
+services:
+  db:
+    image: healthcheck/percona
+    restart: always
+    env_file:
+      - .env
+  magento-test:
+    image: emarsys/ems-integration-magento-sampledata:2.2.6
+    volumes:
+      - ../..:/app/vendor/emartech/emarsys-magento2-extension
+      - ../setup:/opt/emartech/setup
+      - ../php.ini:/opt/docker/etc/php/php.ini
+      - ../cache-flush.php:/app/cache-flush.php
+      - ../Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
+    environment:
+      - MAGENTO_URL=http://magento-test.local
+    env_file:
+      - .env
+    command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
+    links:
+      - db
+  node:
+    container_name: mage_node
+    build:
+      context: ../
+      dockerfile: ./Docker/Dockerfile-node
+      args:
+        - NPM_TOKEN=$NPM_TOKEN
+    volumes:
+      - ../test:/test
+    ipc: host
+    environment:
+      - MYSQL_DATABASE=magento
+      - MAGENTO_URL=magento-test.local
+    links:
+      - magento-test:magento-test.local
+      - db
