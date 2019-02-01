@@ -26,6 +26,11 @@ pipeline {
   }
 
   stages {
+    stage('Build node image') {
+      steps {
+        sh 'DOCKER_BUILDKIT=1 docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node"  ./dev'
+      }
+    }
     stage('Run versions in parallel') {
       parallel {
         stage('Build and run tests on Magento 2.2.6') {
