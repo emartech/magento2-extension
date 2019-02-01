@@ -28,14 +28,14 @@ pipeline {
   stages {
     stage('Build and run tests') {
       steps {
-        sh 'dev/jenkins/run.sh'
+        sh 'sh dev/jenkins/run.sh'
       }
     }
   }
 
   post {
     always {
-        sh 'docker-compose -f dev/jenkins/docker-compose.yaml down'
+        sh 'docker-compose -f dev/jenkins/docker-compose.yml down'
     }
   }
 }
