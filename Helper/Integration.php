@@ -11,8 +11,6 @@ use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Setup\Exception as SetupException;
-use Emartech\Emarsys\Helper\Json;
-use Psr\Log\LoggerInterface;
 use Zend\Uri\Http;
 
 class Integration extends AbstractHelper
@@ -21,8 +19,6 @@ class Integration extends AbstractHelper
     private $integrationService;
     /** @var AuthorizationService */
     private $authorizationService;
-    /**  @var LoggerInterface */
-    private $logger;
     /** @var Json */
     private $json;
     /** @var Token */
@@ -55,7 +51,6 @@ class Integration extends AbstractHelper
      * @param Context $context
      * @param IntegrationService $integrationService
      * @param AuthorizationService $authorizationService
-     * @param LoggerInterface $logger
      * @param Http $http
      * @param Json $json
      * @param Token $token
@@ -67,7 +62,6 @@ class Integration extends AbstractHelper
         Context $context,
         IntegrationService $integrationService,
         AuthorizationService $authorizationService,
-        LoggerInterface $logger,
         Http $http,
         Json $json,
         Token $token,
@@ -82,7 +76,6 @@ class Integration extends AbstractHelper
         $this->tokenProvider = $tokenProvider;
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
-        $this->logger = $logger;
         $this->json = $json;
         $this->http = $http;
     }
@@ -98,7 +91,7 @@ class Integration extends AbstractHelper
                 $this->authorizationService->grantAllPermissions($integration->getId());
                 $this->token->createVerifierToken($integration->getConsumerId());
             } catch (\Exception $e) {
-                $this->logger->error($e);
+                $this->_logger->error($e);
             }
         }
     }

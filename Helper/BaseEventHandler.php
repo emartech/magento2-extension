@@ -4,7 +4,6 @@ namespace Emartech\Emarsys\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use Psr\Log\LoggerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Emartech\Emarsys\Helper\Json as JsonSerializer;
 
@@ -21,12 +20,7 @@ use Emartech\Emarsys\Api\Data\ConfigInterface;
  */
 class BaseEventHandler extends AbstractHelper
 {
-    /**
-     * @var LoggerInterface
-     */
     // @codingStandardsIgnoreLine
-    protected $logger;
-
     /**
      * @var ConfigReader
      */
@@ -64,7 +58,6 @@ class BaseEventHandler extends AbstractHelper
     /**
      * BaseEventHandler constructor.
      *
-     * @param LoggerInterface          $logger
      * @param StoreManagerInterface    $storeManager
      * @param ConfigReader             $configReader
      * @param EventFactory             $eventFactory
@@ -74,7 +67,6 @@ class BaseEventHandler extends AbstractHelper
      * @param Context                  $context
      */
     public function __construct(
-        LoggerInterface $logger,
         StoreManagerInterface $storeManager,
         ConfigReader $configReader,
         EventFactory $eventFactory,
@@ -83,7 +75,6 @@ class BaseEventHandler extends AbstractHelper
         JsonSerializer $jsonSerializer,
         Context $context
     ) {
-        $this->logger = $logger;
         $this->storeManager = $storeManager;
         $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
@@ -142,7 +133,7 @@ class BaseEventHandler extends AbstractHelper
 
         $this->eventRepository->save($eventModel);
 
-        $this->logger->info('event_type: ' . $type . ', event_data: ' . $data);
+        $this->_logger->info('event_type: ' . $type . ', event_data: ' . $data);
     }
 
     /**

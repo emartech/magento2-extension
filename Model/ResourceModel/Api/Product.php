@@ -6,7 +6,7 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
-use Magento\Catalog\Model\ResourceModel\Category;
+use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
 use Magento\Eav\Model\Entity\Context;
 use Magento\Store\Model\StoreManagerInterface;
@@ -99,7 +99,7 @@ class Product extends ProductResourceModel
      * @param StoreManagerInterface             $storeManager
      * @param Factory                           $modelFactory
      * @param CollectionFactory                 $categoryCollectionFactory
-     * @param Category                          $catalogCategory
+     * @param CategoryResourceModel             $catalogCategory
      * @param ManagerInterface                  $eventManager
      * @param SetFactory                        $setFactory
      * @param TypeFactory                       $typeFactory
@@ -113,7 +113,7 @@ class Product extends ProductResourceModel
         StoreManagerInterface $storeManager,
         Factory $modelFactory,
         CollectionFactory $categoryCollectionFactory,
-        Category $catalogCategory,
+        CategoryResourceModel $catalogCategory,
         ManagerInterface $eventManager,
         SetFactory $setFactory,
         TypeFactory $typeFactory,
