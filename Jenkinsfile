@@ -39,7 +39,7 @@ pipeline {
             sh 'VERSION=2.2.6 sh dev/jenkins/run.sh'
           }
         }
-        stage('Build and run tests on Magento 2.2.3') {
+        stage('Build and run tests on Magento 2.1.8') {
           steps {
             sh 'VERSION=2.2.3 sh dev/jenkins/run.sh'
           }
