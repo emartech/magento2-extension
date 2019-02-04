@@ -27,6 +27,11 @@ pipeline {
   }
 
   stages {
+    stage('Build node image') {
+      steps {
+        sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node ./dev'
+      }
+    }
     stage('Run versions in parallel') {
       parallel {
         stage('Build and run tests on Magento 2.2.6') {
@@ -44,9 +49,10 @@ pipeline {
   }
   post {
     always {
+      sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers…\''
+      sh 'docker rmi mage_node'
       sh 'VERSION=2.2.6 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
       sh 'VERSION=2.1.8 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
-      sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers…\''
     }
   }
 }
