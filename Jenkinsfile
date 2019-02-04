@@ -49,6 +49,7 @@ pipeline {
   }
   post {
     always {
+      sh 'docker-compose down -v --rmi all'
       sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers…\''
     }
   }

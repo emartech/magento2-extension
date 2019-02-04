@@ -36,4 +36,4 @@ compose run --rm node sh -c "npm run e2e"
 
 echo "\n\n|--- All tests passed"
 
-compose down -v --rmi all
+compose down
