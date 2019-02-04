@@ -9,6 +9,8 @@ alias compose="docker-compose -p mage_$VERSION"
 
 compose down
 
+compose build node --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy
+
 echo "\n|--- Running tests on Magento $VERSION"
 echo "\n|--- Starting containers"
 compose up -d

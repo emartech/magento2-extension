@@ -22,7 +22,10 @@ services:
     links:
       - db
   node:
-    image: mage_node
+    build:
+      dockerfile: ../Docker/Dockerfile-node-CI
+      args:
+        NPM_TOKEN: $NPM_TOKEN
     ipc: host
     env_file:
       - .env
