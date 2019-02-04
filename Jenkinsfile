@@ -41,7 +41,7 @@ pipeline {
         }
         stage('Build and run tests on Magento 2.1.8') {
           steps {
-            sh 'VERSION=2.2.3 sh dev/jenkins/run.sh'
+            sh 'VERSION=2.1.8 sh dev/jenkins/run.sh'
           }
         }
       }
@@ -49,7 +49,8 @@ pipeline {
   }
   post {
     always {
-      sh 'docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
+      sh 'VERSION=2.2.6 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
+      sh 'VERSION=2.1.8 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
       sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers…\''
     }
   }
