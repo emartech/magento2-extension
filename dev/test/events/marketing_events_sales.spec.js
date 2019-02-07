@@ -174,7 +174,7 @@ const expectCustomerMatches = function(createdEventData, customer) {
 
 const expectOrderMatches = function(createdEventData) {
   const orderItem = createdEventData.order.items[0];
-  expect(orderItem.sku).to.contain(localCartItem.sku);
+  expect(orderItem.sku).to.contain(localCartItem().sku);
   expect(createdEventData.order.addresses).to.have.property('shipping');
   expect(createdEventData.order.addresses).to.have.property('billing');
 };
