@@ -7,24 +7,26 @@ const getLastEvent = async db =>
     .orderBy('event_id', 'desc')
     .first();
 
-const localCartItem = {
-  sku: 'WS03',
-  qty: 1,
-  product_type: 'configurable',
-  product_option: {
-    extension_attributes: {
-      configurable_item_options: [
-        {
-          option_id: 93,
-          option_value: 50
-        },
-        {
-          option_id: 145,
-          option_value: 167
-        }
-      ]
+const localCartItem = magentoVersion => {
+  return {
+    sku: 'WS03',
+    qty: 1,
+    product_type: 'configurable',
+    product_option: {
+      extension_attributes: {
+        configurable_item_options: [
+          {
+            option_id: 93,
+            option_value: 50
+          },
+          {
+            option_id: magentoVersion === '2.1.8' ? 142 : 145,
+            option_value: 167
+          }
+        ]
+      }
     }
-  }
+  };
 };
 
 const localAddresses = {
@@ -58,7 +60,7 @@ const localAddresses = {
   shipping_method_code: 'flatrate'
 };
 
-const createNewCustomerOrder = async (magentoApi, customer) => {
+const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
   const { data: cartId } = await magentoApi.post({
     path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
   });
@@ -66,7 +68,7 @@ const createNewCustomerOrder = async (magentoApi, customer) => {
   await magentoApi.post({
     path: `/index.php/rest/V1/carts/${cartId}/items`,
     payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
+      cartItem: Object.assign(localCartItem(magentoVersion), { quote_id: cartId })
     }
   });
 
@@ -89,7 +91,7 @@ const createNewCustomerOrder = async (magentoApi, customer) => {
   return { cartId, orderId };
 };
 
-const createNewGuestOrder = async magentoApi => {
+const createNewGuestOrder = async (magentoApi, magentoVersion) => {
   const { data: cartId } = await magentoApi.post({
     path: '/index.php/rest/V1/guest-carts'
   });
@@ -97,7 +99,7 @@ const createNewGuestOrder = async magentoApi => {
   const { data: item } = await magentoApi.post({
     path: `/index.php/rest/V1/guest-carts/${cartId}/items`,
     payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
+      cartItem: Object.assign(localCartItem(magentoVersion), { quote_id: cartId })
     }
   });
   const quoteId = item.quote_id;
@@ -204,7 +206,7 @@ describe('Marketing events: sales', function() {
     });
 
     it('should not create event', async function() {
-      await createNewCustomerOrder(this.magentoApi, this.customer);
+      await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
 
       const createdEvent = await getLastEvent(this.db);
 
@@ -223,7 +225,7 @@ describe('Marketing events: sales', function() {
     describe('when customer', function() {
       let orderId;
       before(async function() {
-        const order = await createNewCustomerOrder(this.magentoApi, this.customer);
+        const order = await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
         orderId = order.orderId;
       });
 
@@ -274,7 +276,7 @@ describe('Marketing events: sales', function() {
         let orderId;
 
         before(async function() {
-          const order = await createNewCustomerOrder(this.magentoApi, this.customer);
+          const order = await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
           orderId = order.orderId;
         });
         describe('commented', function() {
@@ -319,7 +321,7 @@ describe('Marketing events: sales', function() {
         });
 
         it('should not create event', async function() {
-          await createNewCustomerOrder(this.magentoApi, this.customer);
+          await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
 
           const createdEvent = await getLastEvent(this.db);
 
@@ -331,7 +333,7 @@ describe('Marketing events: sales', function() {
     describe('when guest', function() {
       let orderId;
       before(async function() {
-        const order = await createNewGuestOrder(this.magentoApi, this.customer);
+        const order = await createNewGuestOrder(this.magentoApi, this.magentoVersion);
         orderId = order.orderId;
       });
 
@@ -382,7 +384,7 @@ describe('Marketing events: sales', function() {
       describe('order is', function() {
         let orderId;
         before(async function() {
-          const order = await createNewGuestOrder(this.magentoApi, this.customer);
+          const order = await createNewGuestOrder(this.magentoApi, this.magentoVersion);
           orderId = order.orderId;
         });
 

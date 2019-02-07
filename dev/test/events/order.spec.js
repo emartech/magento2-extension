@@ -154,7 +154,7 @@ describe('Order events', function() {
       it('should not create event', async function() {
         await this.magentoApi.execute('config', 'setDefault', 1);
 
-        await createNewOrder(this.magentoApi, this.customer, this.product, this.magentoVersion);
+        await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
         const createEvent = await getLastEvent(this.db);
 
         expect(createEvent).to.be.undefined;
@@ -165,8 +165,8 @@ describe('Order events', function() {
   context('setting disabled', function() {
     it('should not create event', async function() {
       await this.magentoApi.execute('config', 'setDefault', 1);
+      await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
 
-      await createNewOrder(this.magentoApi, this.customer, this.product, this.magentoVersion);
       const createEvent = await getLastEvent(this.db);
 
       expect(createEvent).to.be.undefined;
