@@ -626,15 +626,15 @@ describe('Marketing events: customer', function() {
           if (this.magentoVersion === '2.1.8') {
             // possible bug, even with "Need to Confirm set to Yes" this version sends a success email 💩
             expect(event.event_type).to.equal('newsletter_send_confirmation_success_email');
+            expect(createdEventData.subscriber.subscriber_status).to.equal(1);
           } else {
             expect(event.event_type).to.equal('newsletter_send_confirmation_request_email');
+            expect(createdEventData.subscriber.subscriber_status).to.equal(2);
           }
+
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.subscriber.subscriber_status).to.equal(2);
-          expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.subscriber.subscriber_status).to.equal(2);
           expect(createdEventData.customer.firstname).to.equal(subscriber.firstname);
           expect(createdEventData.customer.lastname).to.equal(subscriber.lastname);
         });
