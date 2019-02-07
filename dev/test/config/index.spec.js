@@ -61,7 +61,10 @@ describe('Config endpoint', function() {
         const configItem = config.find(item => {
           return item.path === `emartech/emarsys/config/${dbKeys[key]}`;
         });
-        expect(configItem.value).to.be.equal(defaults[key]);
+
+        if (configItem || defaults[key] !== null) {
+          expect(configItem.value).to.be.equal(defaults[key]);
+        }
       }
     });
   });

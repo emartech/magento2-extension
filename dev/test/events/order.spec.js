@@ -7,7 +7,7 @@ const getLastEvent = async db =>
     .orderBy('event_id', 'desc')
     .first();
 
-const createNewOrder = async (magentoApi, customer) => {
+const createNewOrder = async (magentoApi, customer, magentoVersion) => {
   const { data: cartId } = await magentoApi.post({
     path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
   });
@@ -28,7 +28,7 @@ const createNewOrder = async (magentoApi, customer) => {
                 option_value: 50
               },
               {
-                option_id: 145,
+                option_id: magentoVersion === '2.1.8' ? 142 : 145,
                 option_value: 167
               }
             ]
@@ -115,7 +115,7 @@ describe('Order events', function() {
     });
 
     it('should create orders/new event and an orders/fulfilled', async function() {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer);
+      const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
 
       const { event_type: createEventType, event_data: createEventPayload } = await getLastEvent(this.db);
       const createdEventData = JSON.parse(createEventPayload);
@@ -134,7 +134,7 @@ describe('Order events', function() {
     });
 
     it('should create orders/cancelled event', async function() {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer);
+      const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
       await cancelOrder(this.magentoApi, orderId);
 
       const { event_type: cancelEventType } = await getLastEvent(this.db);
@@ -154,7 +154,7 @@ describe('Order events', function() {
       it('should not create event', async function() {
         await this.magentoApi.execute('config', 'setDefault', 1);
 
-        await createNewOrder(this.magentoApi, this.customer, this.product);
+        await createNewOrder(this.magentoApi, this.customer, this.product, this.magentoVersion);
         const createEvent = await getLastEvent(this.db);
 
         expect(createEvent).to.be.undefined;
@@ -166,7 +166,7 @@ describe('Order events', function() {
     it('should not create event', async function() {
       await this.magentoApi.execute('config', 'setDefault', 1);
 
-      await createNewOrder(this.magentoApi, this.customer, this.product);
+      await createNewOrder(this.magentoApi, this.customer, this.product, this.magentoVersion);
       const createEvent = await getLastEvent(this.db);
 
       expect(createEvent).to.be.undefined;

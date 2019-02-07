@@ -92,6 +92,11 @@ const clearStoreSettings = magentoApi => async () => {
   });
 };
 
+const getMagentoVersion = async (magentoApi) => {
+  const result = await magentoApi.execute('systeminfo', 'get');
+  return result.magento_version;
+};
+
 before(async function() {
   this.timeout(30000);
   this.db = knex({
@@ -132,6 +137,11 @@ before(async function() {
   });
   this.setDefaultStoreSettings = setDefaultStoreSettings(this.magentoApi);
   this.clearStoreSettings = clearStoreSettings(this.magentoApi);
+  this.magentoVersion = await getMagentoVersion(this.magentoApi);
+
+  console.log('----------------------');
+  console.log(`MAGENTO VERSION IN MOCHA: ${this.magentoVersion}`);
+  console.log('----------------------');
 
   await this.magentoApi.execute('config', 'setDefault', 1);
   await this.setDefaultStoreSettings();

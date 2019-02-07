@@ -1,23 +1,25 @@
 'use strict';
 
-const localCartItem = {
-  sku: 'WS03',
-  qty: 1,
-  product_type: 'configurable',
-  product_option: {
-    extension_attributes: {
-      configurable_item_options: [
-        {
-          option_id: 93,
-          option_value: 50
-        },
-        {
-          option_id: 145,
-          option_value: 167
-        }
-      ]
+const localCartItem = magentoVersion => {
+  return {
+    sku: 'WS03',
+    qty: 1,
+    product_type: 'configurable',
+    product_option: {
+      extension_attributes: {
+        configurable_item_options: [
+          {
+            option_id: 93,
+            option_value: 50
+          },
+          {
+            option_id: magentoVersion === '2.1.8' ? 142 : 145,
+            option_value: 167
+          }
+        ]
+      }
     }
-  }
+  };
 };
 
 const localAddresses = {
@@ -51,7 +53,7 @@ const localAddresses = {
   shipping_method_code: 'flatrate'
 };
 
-const createNewCustomerOrder = async (magentoApi, customer) => {
+const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
   const { data: cartId } = await magentoApi.post({
     path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
   });
@@ -59,7 +61,7 @@ const createNewCustomerOrder = async (magentoApi, customer) => {
   await magentoApi.post({
     path: `/index.php/rest/V1/carts/${cartId}/items`,
     payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
+      cartItem: Object.assign(localCartItem(magentoVersion), { quote_id: cartId })
     }
   });
 
@@ -88,7 +90,7 @@ describe('Orders endpoint', function() {
   before(async function() {
     await this.dbCleaner.clearOrders();
     for (let orderNumber = 0; orderCount > orderNumber; orderNumber++) {
-      await createNewCustomerOrder(this.magentoApi, this.customer);
+      await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
     }
   });
 
