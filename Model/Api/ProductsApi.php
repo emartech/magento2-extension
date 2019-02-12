@@ -2,32 +2,36 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
-use Magento\Framework\Data\Collection as DataCollection;
 use Psr\Log\LoggerInterface;
-use Magento\Catalog\Model\Product;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\Product\UrlFactory as ProductUrlFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
-use Magento\Store\Model\Store;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\{
+    Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory,
+    Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory,
+    Catalog\Model\ResourceModel\Product\Collection as ProductCollection,
+    Framework\Data\Collection as DataCollection,
+    Catalog\Model\Product,
+    Store\Model\StoreManagerInterface,
+    Catalog\Model\Product\UrlFactory as ProductUrlFactory,
+    Framework\App\Config\ScopeConfigInterface,
+    Store\Model\ScopeInterface,
+    CatalogUrlRewrite\Model\ProductUrlPathGenerator,
+    Store\Model\Store,
+    Framework\UrlInterface,
+    Framework\Webapi\Exception as WebApiException,
+    Framework\EntityManager\MetadataPool,
+    Catalog\Api\Data\ProductInterface
+};
 
-use Emartech\Emarsys\Api\ProductsApiInterface;
-use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
-use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ImagesInterface;
-use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
-use Emartech\Emarsys\Model\ResourceModel\Api\Category as CategoryResource;
-use Emartech\Emarsys\Model\ResourceModel\Api\Product as ProductResource;
+use Emartech\Emarsys\{
+    Api\ProductsApiInterface,
+    Api\Data\ProductsApiResponseInterfaceFactory,
+    Api\Data\ProductsApiResponseInterface,
+    Api\Data\ProductInterfaceFactory,
+    Api\Data\ImagesInterfaceFactory,
+    Api\Data\ImagesInterface,
+    Api\Data\ProductStoreDataInterfaceFactory,
+    Model\ResourceModel\Api\Category as CategoryResource,
+    Model\ResourceModel\Api\Product as ProductResource
+};
 
 class ProductsApi implements ProductsApiInterface
 {
@@ -105,16 +109,6 @@ class ProductsApi implements ProductsApiInterface
      * @var int
      */
     private $maxId = 0;
-
-    /**
-     * @var int
-     */
-    private $minEId = 0;
-
-    /**
-     * @var int
-     */
-    private $maxEId = 0;
 
     /**
      * @var int
@@ -284,6 +278,8 @@ class ProductsApi implements ProductsApiInterface
 
         $this->linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
 
+        $this->productResource->setLinkedField($this->linkField);
+
         return $this;
     }
 
@@ -300,19 +296,11 @@ class ProductsApi implements ProductsApiInterface
         $page--;
         $page *= $pageSize;
 
-        $data = $this->productResource->handleIds($page, $pageSize, $this->linkField);
+        $data = $this->productResource->handleIds($page, $pageSize);
 
         $this->numberOfItems = $data['numberOfItems'];
         $this->minId = $data['minId'];
         $this->maxId = $data['maxId'];
-
-        if (array_key_exists('minEId', $data) && array_key_exists('maxEId', $data)) {
-            $this->minEId = $data['minEId'];
-            $this->maxEId = $data['maxEId'];
-        } else {
-            $this->minEId = $this->minId;
-            $this->maxEId = $this->maxId;
-        }
 
         return $this;
     }
@@ -335,7 +323,7 @@ class ProductsApi implements ProductsApiInterface
     protected function handleChildrenProductIds()
     {
         $this->childrenProductIds = $this->productResource
-            ->getChildrenProductIds($this->minEId, $this->maxEId);
+            ->getChildrenProductIds($this->minId, $this->maxId);
 
         return $this;
     }
@@ -366,8 +354,8 @@ class ProductsApi implements ProductsApiInterface
     protected function setWhere()
     {
         $this->productCollection
-            ->addFieldToFilter('entity_id', ['from' => $this->minId])
-            ->addFieldToFilter('entity_id', ['to' => $this->maxId]);
+            ->addFieldToFilter($this->linkField, ['from' => $this->minId])
+            ->addFieldToFilter($this->linkField, ['to' => $this->maxId]);
 
         return $this;
     }
@@ -380,7 +368,7 @@ class ProductsApi implements ProductsApiInterface
     {
         $this->productCollection
             ->groupByAttribute($this->linkField)
-            ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
+            ->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }
@@ -622,18 +610,9 @@ class ProductsApi implements ProductsApiInterface
             $price = $this->getStoreData($product->getId(), 0, 'price');
         }
 
-        $product->setPrice($price);
-        // @codingStandardsIgnoreStart
-        try {
-            $product->getFinalPrice();
-        } catch (\Exception $e) {
-        }
-        // @codingStandardsIgnoreEnd
-
         if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
             try {
-                $tmp = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
-                $price = $tmp;
+                $price = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
             } catch (\Exception $e) {
                 $this->logger->error($e);
             }
@@ -651,32 +630,6 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handlePrice($product, $store)
     {
-        $price = $this->getStoreData($product->getId(), $store->getId(), 'price');
-        $specialPrice = $this->getStoreData($product->getId(), $store->getId(), 'special_price');
-
-        if (!empty($specialPrice)) {
-            $specialFromDate = $this->getStoreData($product->getId(), $store->getId(), 'special_from_date');
-            $specialToDate = $this->getStoreData($product->getId(), $store->getId(), 'special_end_date');
-
-            if ($specialFromDate) {
-                $specialFromDate = strtotime($specialFromDate);
-            } else {
-                $specialFromDate = false;
-            }
-
-            if ($specialToDate) {
-                $specialToDate = strtotime($specialToDate);
-            } else {
-                $specialToDate = false;
-            }
-
-            if (($specialFromDate === false || $specialFromDate <= time()) &&
-                ($specialToDate === false || $specialToDate >= time())
-            ) {
-                $price = $specialPrice;
-            }
-        }
-
-        return $price;
+        return $this->getStoreData($product->getId(), $store->getId(), 'price');
     }
 }
