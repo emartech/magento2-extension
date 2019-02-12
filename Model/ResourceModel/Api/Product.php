@@ -398,11 +398,12 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param int   $minProductId
-     * @param int   $maxProductId
+     * @param int $minProductId
+     * @param int $maxProductId
      * @param array $storeIds
      *
      * @return $this
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getPrices($minProductId, $maxProductId, $storeIds)
     {
@@ -453,6 +454,11 @@ class Product extends ProductResourceModel
         return $this;
     }
 
+    /**
+     * @param array $args
+     *
+     * @return void
+     */
     public function handlePriceDataTable($args)
     {
         $productId = $args['row'][$this->linkedField];
