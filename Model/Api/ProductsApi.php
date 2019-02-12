@@ -3,35 +3,30 @@
 namespace Emartech\Emarsys\Model\Api;
 
 use Psr\Log\LoggerInterface;
-use Magento\{
-    Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory,
-    Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory,
-    Catalog\Model\ResourceModel\Product\Collection as ProductCollection,
-    Framework\Data\Collection as DataCollection,
-    Catalog\Model\Product,
-    Store\Model\StoreManagerInterface,
-    Catalog\Model\Product\UrlFactory as ProductUrlFactory,
-    Framework\App\Config\ScopeConfigInterface,
-    Store\Model\ScopeInterface,
-    CatalogUrlRewrite\Model\ProductUrlPathGenerator,
-    Store\Model\Store,
-    Framework\UrlInterface,
-    Framework\Webapi\Exception as WebApiException,
-    Framework\EntityManager\MetadataPool,
-    Catalog\Api\Data\ProductInterface
-};
-
-use Emartech\Emarsys\{
-    Api\ProductsApiInterface,
-    Api\Data\ProductsApiResponseInterfaceFactory,
-    Api\Data\ProductsApiResponseInterface,
-    Api\Data\ProductInterfaceFactory,
-    Api\Data\ImagesInterfaceFactory,
-    Api\Data\ImagesInterface,
-    Api\Data\ProductStoreDataInterfaceFactory,
-    Model\ResourceModel\Api\Category as CategoryResource,
-    Model\ResourceModel\Api\Product as ProductResource
-};
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Framework\Data\Collection as DataCollection;
+use Magento\Catalog\Model\Product;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Catalog\Model\Product\UrlFactory as ProductUrlFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
+use Magento\Store\Model\Store;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Emartech\Emarsys\Api\ProductsApiInterface;
+use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
+use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
+use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
+use Emartech\Emarsys\Api\Data\ImagesInterface;
+use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
+use Emartech\Emarsys\Model\ResourceModel\Api\Category as CategoryResource;
+use Emartech\Emarsys\Model\ResourceModel\Api\Product as ProductResource;
 
 class ProductsApi implements ProductsApiInterface
 {

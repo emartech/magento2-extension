@@ -436,7 +436,7 @@ class Product extends ProductResourceModel
         $query = $connection->select()
             ->from($this->getTable('catalog_product_index_price'), $fields)
             ->where($cond)
-            ->where( 'entity_id >= ?', $minProductId)
+            ->where('entity_id >= ?', $minProductId)
             ->where('entity_id <= ?', $maxProductId);
 
         try {
