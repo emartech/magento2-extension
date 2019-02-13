@@ -538,7 +538,7 @@ class ProductsApi implements ProductsApiInterface
 
         foreach ($this->storeIds as $storeId => $storeObject) {
             if ($storeId != 0) {
-                $this->appEmulation->startEnvironmentEmulation($storeId, Area::AREA_FRONTEND, true);
+                $this->appEmulation->startEnvironmentEmulation($storeId, 'frontend', true);
             }
             $returnArray[] = $this->productStoreDataFactory->create()
                 ->setStoreId($storeId)
