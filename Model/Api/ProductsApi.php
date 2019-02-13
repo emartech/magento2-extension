@@ -617,9 +617,15 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleDisplayPrice($product, $store)
     {
-        $product->setStoreId($store->getId());
+        if ($store->getId() != 0) {
+            $product->setStoreId($store->getId());
 
-        return $product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
+            $price = $product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
+        } else {
+            $price = $product->getData('final_price');
+        }
+
+        return $price;
     }
 
     /**
@@ -631,6 +637,6 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handlePrice($product, $store)
     {
-        return $product->getFinalPrice();
+        return $product->getData('final_price');
     }
 }
