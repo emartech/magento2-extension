@@ -18,7 +18,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Framework\Pricing\Helper\Data as PriceHelper;
+use Magento\Store\Model\App\Emulation;
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
@@ -152,9 +152,9 @@ class ProductsApi implements ProductsApiInterface
     private $productResource;
 
     /**
-     * @var PriceHelper
+     * @var Emulation
      */
-    protected $priceHelper;
+    protected $appEmulation;
 
     /**
      * ProductsApi constructor.
@@ -172,7 +172,7 @@ class ProductsApi implements ProductsApiInterface
      * @param MetadataPool $metadataPool
      * @param CategoryResource $categoryResource
      * @param ProductResource $productResource
-     * @param PriceHelper $priceHelper
+     * @param Emulation $appEmulation
      */
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
@@ -188,7 +188,7 @@ class ProductsApi implements ProductsApiInterface
         MetadataPool $metadataPool,
         CategoryResource $categoryResource,
         ProductResource $productResource,
-        PriceHelper $priceHelper
+        Emulation $appEmulation
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
@@ -208,7 +208,7 @@ class ProductsApi implements ProductsApiInterface
         $this->categoryResource = $categoryResource;
         $this->productResource = $productResource;
 
-        $this->priceHelper = $priceHelper;
+        $this->appEmulation = $appEmulation;
     }
 
     /**
@@ -537,6 +537,9 @@ class ProductsApi implements ProductsApiInterface
         $returnArray = [];
 
         foreach ($this->storeIds as $storeId => $storeObject) {
+            if ($storeId != 0) {
+                $this->appEmulation->startEnvironmentEmulation($storeId, Area::AREA_FRONTEND, true);
+            }
             $returnArray[] = $this->productStoreDataFactory->create()
                 ->setStoreId($storeId)
                 ->setStatus($this->getStoreData($product->getId(), $storeId, 'status'))
@@ -546,6 +549,9 @@ class ProductsApi implements ProductsApiInterface
                 ->setPrice($this->handlePrice($product, $storeObject))
                 ->setDisplayPrice($this->handleDisplayPrice($product, $storeObject))
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
+            if ($storeId != 0) {
+                $this->appEmulation->stopEnvironmentEmulation();
+            }
         }
 
         return $returnArray;
