@@ -312,8 +312,7 @@ class Product extends ProductResourceModel
 
         $this
             ->getMainTableFieldItems($mainTableFields, $minProductId, $maxProductId, $storeIds, $attributeMapper)
-            ->getAttributeTableFieldItems($attributeTables, $minProductId, $maxProductId, $storeIds, $attributeMapper)
-            ->getPrices($minProductId, $maxProductId, $storeIds);
+            ->getAttributeTableFieldItems($attributeTables, $minProductId, $maxProductId, $storeIds, $attributeMapper);
 
         return $this->attributeData;
     }
@@ -395,77 +394,6 @@ class Product extends ProductResourceModel
         }
 
         return $this;
-    }
-
-    /**
-     * @param int $minProductId
-     * @param int $maxProductId
-     * @param array $storeIds
-     *
-     * @return $this
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    public function getPrices($minProductId, $maxProductId, $storeIds)
-    {
-        $websiteId = 0;
-        foreach ($storeIds as $storeId) {
-            if ($storeId != 0) {
-                $websiteId = $this->_storeManager->getStore($storeId)->getWebsiteId();
-                break;
-            }
-        }
-
-        $connection = $this->_resource->getConnection();
-
-        $cond = $connection->prepareSqlCondition('customer_group_id', 0)
-            . ' ' . \Magento\Framework\DB\Select::SQL_AND . ' '
-            . $connection->prepareSqlCondition('website_id', $websiteId);
-
-        $least = $connection->getLeastSql(['min_price', 'tier_price']);
-        $minimalExpr = $connection->getCheckSql(
-            'tier_price IS NOT NULL',
-            $least,
-            'min_price'
-        );
-
-        $fields = [
-            $this->linkedField => 'entity_id',
-            'price' => $minimalExpr,
-        ];
-
-        $query = $connection->select()
-            ->from($this->getTable('catalog_product_index_price'), $fields)
-            ->where($cond)
-            ->where('entity_id >= ?', $minProductId)
-            ->where('entity_id <= ?', $maxProductId);
-
-        try {
-            $this->iterator->walk(
-                (string)$query,
-                [[$this, 'handlePriceDataTable']],
-                [
-                    'store_ids' => $storeIds,
-                ],
-                $this->_resource->getConnection()
-            );
-        } catch (\Exception $e) { // @codingStandardsIgnoreLine
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array $args
-     *
-     * @return void
-     */
-    public function handlePriceDataTable($args)
-    {
-        $productId = $args['row'][$this->linkedField];
-
-        foreach ($args['store_ids'] as $storeId) {
-            $this->attributeData[$productId][$storeId]['price'] = $args['row']['price'];
-        }
     }
 
     /**

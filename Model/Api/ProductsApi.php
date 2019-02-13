@@ -613,15 +613,7 @@ class ProductsApi implements ProductsApiInterface
     {
         $product->setStoreId($store->getId());
 
-        $price = $product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
-        $price = $this->priceHelper->currencyByStore(
-            $price,
-            $store,
-            true,
-            false
-        );
-
-        return $price;
+        return $product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
     }
 
     /**
@@ -633,6 +625,6 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handlePrice($product, $store)
     {
-        return $this->getStoreData($product->getId(), $store->getId(), 'price');
+        return $product->getFinalPrice();
     }
 }
