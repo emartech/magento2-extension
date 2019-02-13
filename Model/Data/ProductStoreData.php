@@ -122,7 +122,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $displayPrice
+     * @param string $displayPrice
      *
      * @return $this
      */

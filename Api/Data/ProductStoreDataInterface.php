@@ -17,10 +17,6 @@ interface ProductStoreDataInterface
     const CURRENCY_KEY      = 'currency';
     const DISPLAY_PRICE_KEY = 'display_price';
 
-    const SPECIAL_PRICE_KEY     = 'special_price';
-    const SPECIAL_FROM_DATE_KEY = 'special_from_date';
-    const SPECIAL_TO_DATE_KEY   = 'special_to_date';
-
     /**
      * @return string
      */
@@ -32,7 +28,7 @@ interface ProductStoreDataInterface
     public function getPrice();
 
     /**
-     * @return float
+     * @return string
      */
     public function getDisplayPrice();
 
@@ -76,7 +72,7 @@ interface ProductStoreDataInterface
     public function setPrice($price);
 
     /**
-     * @param float $displayPrice
+     * @param string $displayPrice
      *
      * @return $this
      */

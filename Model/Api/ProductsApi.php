@@ -18,6 +18,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Framework\Pricing\Helper\Data as PriceHelper;
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
@@ -151,21 +152,27 @@ class ProductsApi implements ProductsApiInterface
     private $productResource;
 
     /**
+     * @var PriceHelper
+     */
+    protected $priceHelper;
+
+    /**
      * ProductsApi constructor.
      *
-     * @param CategoryCollectionFactory           $categoryCollectionFactory
-     * @param StoreManagerInterface               $storeManager
-     * @param ScopeConfigInterface                $scopeConfig
-     * @param ProductCollectionFactory            $productCollectionFactory
+     * @param CategoryCollectionFactory $categoryCollectionFactory
+     * @param StoreManagerInterface $storeManager
+     * @param ScopeConfigInterface $scopeConfig
+     * @param ProductCollectionFactory $productCollectionFactory
      * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
-     * @param ProductInterfaceFactory             $productFactory
-     * @param ImagesInterfaceFactory              $imagesFactory
-     * @param ProductStoreDataInterfaceFactory    $productStoreDataFactory
-     * @param ProductUrlFactory                   $productUrlFactory
-     * @param LoggerInterface                     $logger
-     * @param MetadataPool                        $metadataPool
-     * @param CategoryResource                    $categoryResource
-     * @param ProductResource                     $productResource
+     * @param ProductInterfaceFactory $productFactory
+     * @param ImagesInterfaceFactory $imagesFactory
+     * @param ProductStoreDataInterfaceFactory $productStoreDataFactory
+     * @param ProductUrlFactory $productUrlFactory
+     * @param LoggerInterface $logger
+     * @param MetadataPool $metadataPool
+     * @param CategoryResource $categoryResource
+     * @param ProductResource $productResource
+     * @param PriceHelper $priceHelper
      */
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
@@ -180,7 +187,8 @@ class ProductsApi implements ProductsApiInterface
         LoggerInterface $logger,
         MetadataPool $metadataPool,
         CategoryResource $categoryResource,
-        ProductResource $productResource
+        ProductResource $productResource,
+        PriceHelper $priceHelper
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
@@ -199,6 +207,8 @@ class ProductsApi implements ProductsApiInterface
         $this->metadataPool = $metadataPool;
         $this->categoryResource = $categoryResource;
         $this->productResource = $productResource;
+
+        $this->priceHelper = $priceHelper;
     }
 
     /**
@@ -270,6 +280,7 @@ class ProductsApi implements ProductsApiInterface
     protected function initCollection()
     {
         $this->productCollection = $this->productCollectionFactory->create();
+        $this->productCollection->addFinalPrice();
 
         $this->linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
 
@@ -595,23 +606,20 @@ class ProductsApi implements ProductsApiInterface
      * @param Product $product
      * @param Store   $store
      *
-     * @return int | float
+     * @return string
      */
     // @codingStandardsIgnoreLine
     protected function handleDisplayPrice($product, $store)
     {
-        $price = $this->getStoreData($product->getId(), $store->getId(), 'price');
-        if (empty($price)) {
-            $price = $this->getStoreData($product->getId(), 0, 'price');
-        }
+        $product->setStoreId($store->getId());
 
-        if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
-            try {
-                $price = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
-            } catch (\Exception $e) {
-                $this->logger->error($e);
-            }
-        }
+        $price = $product->getPriceInfo()->getPrice('final_price')->getAmount()->getValue();
+        $price = $this->priceHelper->currencyByStore(
+            $price,
+            $store,
+            true,
+            false
+        );
 
         return $price;
     }
