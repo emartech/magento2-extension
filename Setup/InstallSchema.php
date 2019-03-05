@@ -36,10 +36,10 @@ class InstallSchema implements InstallSchemaInterface
      */
     private function createEmarsysEventsTable(SchemaSetupInterface $setup)
     {
-        $tableName = $setup->getTable('emarsys_events_data');
+        $tableName = $setup->getTable('emartech_events_data');
         if ($setup->getConnection()->isTableExists($tableName) != true) {
             $table = $setup->getConnection()->newTable(
-                $setup->getTable('emarsys_events_data')
+                $setup->getTable('emartech_events_data')
             )
                 ->addColumn(
                     'event_id',

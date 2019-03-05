@@ -99,7 +99,7 @@ class EventRepository implements EventRepositoryInterface
                             SELECT
                                 database()
                         )
-                        AND TABLE_NAME = 'emarsys_events_data'
+                        AND TABLE_NAME = 'emartech_events_data'
                 ) <= (
                     SELECT
                         CAST(? AS UNSIGNED)

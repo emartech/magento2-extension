@@ -20,7 +20,7 @@ use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Store\Model\App\Emulation;
 use Emartech\Emarsys\Api\ProductsApiInterface;
-use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
+//use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
 use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
@@ -42,9 +42,9 @@ class ProductsApi implements ProductsApiInterface
     private $productCollectionFactory;
 
     /**
-     * @var ProductsApiResponseInterfaceFactory
+     * @var ProductsApiResponseInterface
      */
-    private $productsApiResponseFactory;
+    private $productsApiResponse;
 
     /**
      * @var ProductCollection
@@ -156,6 +156,8 @@ class ProductsApi implements ProductsApiInterface
      */
     protected $appEmulation;
 
+    protected $_objectManagerInterface;
+
     /**
      * ProductsApi constructor.
      *
@@ -163,7 +165,7 @@ class ProductsApi implements ProductsApiInterface
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $scopeConfig
      * @param ProductCollectionFactory $productCollectionFactory
-     * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
+     * @param ProductsApiResponseInterface $productsApiResponse
      * @param ProductInterfaceFactory $productFactory
      * @param ImagesInterfaceFactory $imagesFactory
      * @param ProductStoreDataInterfaceFactory $productStoreDataFactory
@@ -179,7 +181,7 @@ class ProductsApi implements ProductsApiInterface
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $scopeConfig,
         ProductCollectionFactory $productCollectionFactory,
-        ProductsApiResponseInterfaceFactory $productsApiResponseFactory,
+        ProductsApiResponseInterface $productsApiResponse,
         ProductInterfaceFactory $productFactory,
         ImagesInterfaceFactory $imagesFactory,
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
@@ -188,8 +190,10 @@ class ProductsApi implements ProductsApiInterface
         MetadataPool $metadataPool,
         CategoryResource $categoryResource,
         ProductResource $productResource,
-        Emulation $appEmulation
-    ) {
+        Emulation $appEmulation,
+        \Magento\Framework\ObjectManagerInterface $objectManagerInterface
+    )
+    {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
         $this->scopeConfig = $scopeConfig;
@@ -197,7 +201,7 @@ class ProductsApi implements ProductsApiInterface
         $this->productUrlFactory = $productUrlFactory;
 
         $this->productCollectionFactory = $productCollectionFactory;
-        $this->productsApiResponseFactory = $productsApiResponseFactory;
+        $this->productsApiResponse = $productsApiResponse;
 
         $this->productFactory = $productFactory;
         $this->imagesFactory = $imagesFactory;
@@ -209,11 +213,12 @@ class ProductsApi implements ProductsApiInterface
         $this->productResource = $productResource;
 
         $this->appEmulation = $appEmulation;
+        $this->_objectManagerInterface = $objectManagerInterface;
     }
 
     /**
-     * @param int    $page
-     * @param int    $pageSize
+     * @param int $page
+     * @param int $pageSize
      * @param string $storeId
      *
      * @return ProductsApiResponseInterface
@@ -235,14 +240,14 @@ class ProductsApi implements ProductsApiInterface
             ->handleIds($page, $pageSize)
             ->handleCategoryIds()
             ->handleChildrenProductIds()
-            ->handleStockData()
+            //->handleStockData()
             ->handleAttributes()
             ->setWhere()
             ->setOrder();
 
         $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
-        return $this->productsApiResponseFactory->create()->setCurrentPage($page)
+        return $this->productsApiResponse->setCurrentPage($page)
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
             ->setTotalCount($this->numberOfItems)
@@ -281,9 +286,33 @@ class ProductsApi implements ProductsApiInterface
     {
         $this->productCollection = $this->productCollectionFactory->create();
         $this->productCollection->addFinalPrice();
+        $this->productCollection->addAttributeToSelect('*');
+
+
+        $connection = $this->productCollection->getSelect()->getConnection();
+        //If we have multistock (custom module) we have to add
+        //$websiteId = $store->getWebsiteId() to condition
+        $websiteId = 0;
+        $joinCondition = $connection->quoteInto(
+            'e.entity_id = stock_status_index.product_id' . ' AND stock_status_index.website_id = ?',
+            $websiteId
+        );
+
+        $joinCondition .= $connection->quoteInto(
+            ' AND stock_status_index.stock_id = ?',
+            1
+        );
+
+        $this->productCollection->getSelect()->joinLeft(
+            ['stock_status_index' => $connection->getTableName('cataloginventory_stock_status')],
+            $joinCondition,
+            [
+                'is_salable' => 'stock_status',
+                'qty'
+            ]
+        );
 
         $this->linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
-
         $this->productResource->setLinkedField($this->linkField);
 
         return $this;
@@ -387,13 +416,14 @@ class ProductsApi implements ProductsApiInterface
     {
         $returnArray = [];
 
+        /** @var \Magento\Catalog\Model\Product $product */
         foreach ($this->productCollection as $product) {
             $returnArray[] = $this->productFactory->create()->setType($product->getTypeId())
                 ->setCategories($this->handleCategories($product))
                 ->setChildrenEntityIds($this->handleChildrenEntityIds($product))
                 ->setEntityId($product->getId())
-                ->setIsInStock($this->handleStock($product))
-                ->setQty($this->handleQty($product))
+                ->setIsInStock($product->isAvailable())
+                ->setQty($product->getQty())
                 ->setSku($product->getSku())
                 ->setImages($this->handleImages($product))
                 ->setStoreData($this->handleProductStoreData($product));
@@ -440,10 +470,11 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleImages($product)
     {
+
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         try {
-            $image = $this->getStoreData($product->getId(), 0, 'image');
+            $image = $product->getImage();
         } catch (\Exception $e) {
             $image = null;
         }
@@ -453,7 +484,7 @@ class ProductsApi implements ProductsApiInterface
         }
 
         try {
-            $smallImage = $this->getStoreData($product->getId(), 0, 'small_image');
+            $smallImage = $product->getSmallImage();
         } catch (\Exception $e) {
             $smallImage = null;
         }
@@ -463,7 +494,7 @@ class ProductsApi implements ProductsApiInterface
         }
 
         try {
-            $thumbnail = $this->getStoreData($product->getId(), 0, 'thumbnail');
+            $thumbnail = $product->getThumbnail();
         } catch (\Exception $e) {
             $thumbnail = null;
         }
@@ -501,11 +532,14 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleCategories($product)
     {
-        if (array_key_exists($product->getEntityId(), $this->categoryIds)) {
-            return $this->categoryIds[$product->getEntityId()];
+        $_objectManager = $this->_objectManagerInterface;
+        $paths = [];
+        foreach ($product->getCategoryIds() as $categoryId) {
+            $category = $_objectManager->create('\Magento\Catalog\Model\Category')->load($categoryId);
+            $paths[] = $category->getPath();
         }
 
-        return [];
+        return $paths;
     }
 
     /**
@@ -527,7 +561,7 @@ class ProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @param Product $product
+     * @param \Magento\Catalog\Model\Product $product
      *
      * @return array
      */
@@ -540,12 +574,13 @@ class ProductsApi implements ProductsApiInterface
             if ($storeId != 0) {
                 $this->appEmulation->startEnvironmentEmulation($storeId, 'frontend', true);
             }
+
             $returnArray[] = $this->productStoreDataFactory->create()
                 ->setStoreId($storeId)
-                ->setStatus($this->getStoreData($product->getId(), $storeId, 'status'))
-                ->setDescription($this->getStoreData($product->getId(), $storeId, 'description'))
+                ->setStatus($product->getStatus())
+                ->setDescription($product->getDescription())
                 ->setLink($this->handleLink($product, $storeObject))
-                ->setName($this->getStoreData($product->getId(), $storeId, 'name'))
+                ->setName($product->getName())
                 ->setPrice($this->handlePrice($product, $storeObject))
                 ->setDisplayPrice($this->handleDisplayPrice($product, $storeObject))
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
@@ -558,8 +593,8 @@ class ProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @param int    $productId
-     * @param int    $storeId
+     * @param int $productId
+     * @param int $storeId
      * @param string $attributeCode
      *
      * @return string|null
@@ -578,20 +613,14 @@ class ProductsApi implements ProductsApiInterface
 
     /**
      * @param Product $product
-     * @param Store   $store
+     * @param Store $store
      *
      * @return string
      */
     // @codingStandardsIgnoreLine
     protected function handleLink($product, $store)
     {
-        $link = $this->getStoreData($product->getId(), $store->getId(), 'url_key');
-
-        if ($link) {
-            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
-        }
-
-        return '';
+        return $product->getUrlModel()->getUrl($product);
     }
 
     /**
@@ -610,7 +639,7 @@ class ProductsApi implements ProductsApiInterface
 
     /**
      * @param Product $product
-     * @param Store   $store
+     * @param Store $store
      *
      * @return string
      */
@@ -630,7 +659,7 @@ class ProductsApi implements ProductsApiInterface
 
     /**
      * @param Product $product
-     * @param Store   $store
+     * @param Store $store
      *
      * @return int | float
      */
