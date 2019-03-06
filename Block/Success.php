@@ -50,7 +50,7 @@ class Success extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     *  @return \Magento\Sales\Model\Order | false
+     * @return \Magento\Sales\Model\Order | false
      */
     private function getOrder()
     {
