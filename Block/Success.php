@@ -49,6 +49,9 @@ class Success extends \Magento\Framework\View\Element\Template
         return $this->_checkoutSession->getLastOrderId();
     }
 
+    /**
+     *  @return \Magento\Sales\Model\Order | false
+     */
     private function getOrder()
     {
         if ($this->_checkoutSession->getLastRealOrderId()) {
@@ -83,7 +86,8 @@ class Success extends \Magento\Framework\View\Element\Template
     {
         return [
             'orderId' => $this->getOrderId(),
-            'items' => $this->getLineItems()
+            'items' => $this->getLineItems(),
+            'email' => $this->getOrder()->getCustomerEmail()
         ];
     }
 
