@@ -43,6 +43,11 @@ pipeline {
             sh 'VERSION=2.1.8 sh dev/jenkins/run.sh'
           }
         }
+        stage('Build and run tests on Magento 2.3.0') {
+          steps {
+            sh 'VERSION=2.3.0 sh dev/jenkins/run.sh'
+          }
+        }
       }
     }
   }
@@ -52,6 +57,7 @@ pipeline {
       sh 'docker rmi mage_node'
       sh 'VERSION=2.2.6 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
       sh 'VERSION=2.1.8 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
+      sh 'VERSION=2.3.0 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")
