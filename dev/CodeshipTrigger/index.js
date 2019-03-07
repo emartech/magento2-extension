@@ -33,6 +33,7 @@ async function triggerBuild(accessToken, organizationUuid, projectUuid, revision
 }
 
 async function run(user, password, revision) {
+    console.log(`Releasing revision "${revision}" via Codeship...`);
     console.log("Authenticating...");
 
     const accessToken = await retrieveAccessToken(user, password);

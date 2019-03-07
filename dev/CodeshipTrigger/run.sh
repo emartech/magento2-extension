@@ -13,5 +13,5 @@ docker run --rm \
     -v "$(pwd)/package-lock.json:/package-lock.json" \
     -e "CODESHIP_USER=$CODESHIP_USER" \
     -e "CODESHIP_PASSWORD=$CODESHIP_PASSWORD" \
-    -e "REVISION=$REVISION" \
+    -e "REVISION=$GIT_COMMIT" \
     node bash -c "npm i && node index.js"
