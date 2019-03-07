@@ -9,6 +9,8 @@ pipeline {
     NPM_TOKEN           = credentials('npm_token')
     MAGENTO_REPO_KEY    = credentials('magento_repo_key')
     MAGENTO_REPO_SECRET = credentials('magento_repo_secret')
+    CODESHIP_USER       = credentials('integrations_team_codeship_user')
+    CODESHIP_PASSWORD   = credentials('integrations_team_codeship_password')
     MYSQL_HOST          = 'db'
     MYSQL_USER          = 'magento'
     MYSQL_PASSWORD      = 'magento'
@@ -43,11 +45,6 @@ pipeline {
             sh 'VERSION=2.1.8 sh dev/jenkins/run.sh'
           }
         }
-        stage('Build and run tests on Magento 2.3.0') {
-          steps {
-            sh 'VERSION=2.3.0 sh dev/jenkins/run.sh'
-          }
-        }
       }
     }
   }
@@ -57,9 +54,10 @@ pipeline {
       sh 'docker rmi mage_node'
       sh 'VERSION=2.2.6 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
       sh 'VERSION=2.1.8 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
-      sh 'VERSION=2.3.0 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
     }
     success {
+      sh 'dev/CodeshipTrigger/run.sh'
+
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")
     }
     failure {
