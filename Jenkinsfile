@@ -50,10 +50,10 @@ pipeline {
   }
   post {
     always {
-      sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers…\''
-      sh 'docker rmi mage_node'
-      sh 'VERSION=2.2.6 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
-      sh 'VERSION=2.1.8 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all'
+      sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers...\''
+      sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
+      sh 'VERSION=2.2.6 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.1.8 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
     }
     success {
       sh 'dev/CodeshipTrigger/run.sh'
