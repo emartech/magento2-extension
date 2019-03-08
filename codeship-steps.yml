@@ -1,19 +1,6 @@
 - type: serial
   steps:
-    - type: parallel
-      steps:
-        - name: Magento code style check
-          service: magento-static
-          command: /bin/sh -c "sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh"
-        - name: Magento DI compilation check
-          service: magento-test.local
-          command: /bin/sh -c "sh vendor/emartech/emarsys-magento2-extension/dev/Magento/compile.sh"
-    - name: running api tests and code style
-      service: node
-      command: /bin/sh -c "npm i && npm t"
-    - name: running e2e tests
-      service: node
-      command: /bin/sh -c "npm i && npm run e2e:ci"
     - name: deploy to staging on Google Kubernetes Engine
+      tag: master
       service: deployment
       command: /bin/bash -c "codeship_google authenticate && gcloud container clusters get-credentials cluster-1 --region=europe-west2 && sh /deploy/restart.sh web-staging"
