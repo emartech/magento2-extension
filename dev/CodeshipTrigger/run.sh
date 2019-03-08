@@ -14,4 +14,6 @@ docker run --rm \
     -e "CODESHIP_USER=$CODESHIP_USER" \
     -e "CODESHIP_PASSWORD=$CODESHIP_PASSWORD" \
     -e "REVISION=$GIT_COMMIT" \
-    node bash -c "npm i && node index.js"
+    node bash -c "npm i && node index.js" \
+    --http-proxy=$http_proxy \
+    --https-proxy=https_proxy
