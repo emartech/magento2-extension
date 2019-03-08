@@ -16,4 +16,4 @@ docker run --rm \
     -e "REVISION=$GIT_COMMIT" \
     node bash -c "npm i && node index.js" \
     --http-proxy=$http_proxy \
-    --https-proxy=https_proxy
+    --https-proxy=$https_proxy
