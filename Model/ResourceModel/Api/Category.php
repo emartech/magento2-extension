@@ -7,6 +7,7 @@
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
 use Magento\Catalog\Model\Indexer\Category\Product\Processor;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
 use Magento\Catalog\Model\ResourceModel\Category\TreeFactory;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
@@ -42,15 +43,16 @@ class Category extends CategoryResourceModel
     /**
      * Category constructor.
      *
-     * @param Context               $context
-     * @param StoreManagerInterface $storeManager
-     * @param Factory               $modelFactory
-     * @param ManagerInterface      $eventManager
-     * @param TreeFactory           $categoryTreeFactory
-     * @param CollectionFactory     $categoryCollectionFactory
-     * @param Iterator              $iterator
-     * @param Processor             $processor
-     * @param array                 $data
+     * @param Context                   $context
+     * @param StoreManagerInterface     $storeManager
+     * @param Factory                   $modelFactory
+     * @param ManagerInterface          $eventManager
+     * @param TreeFactory               $categoryTreeFactory
+     * @param CollectionFactory         $categoryCollectionFactory
+     * @param Iterator                  $iterator
+     * @param Processor                 $processor
+     * @param ProductMetadataInterface  $productMetadata
+     * @param array                     $data
      */
     public function __construct(
         Context $context,
@@ -61,20 +63,33 @@ class Category extends CategoryResourceModel
         CollectionFactory $categoryCollectionFactory,
         Iterator $iterator,
         Processor $processor,
+        ProductMetadataInterface $productMetadata,
         array $data = []
     ) {
         $this->iterator = $iterator;
 
-        parent::__construct(
-            $context,
-            $storeManager,
-            $modelFactory,
-            $eventManager,
-            $categoryTreeFactory,
-            $categoryCollectionFactory,
-            $processor,
-            $data
-        );
+        if (version_compare($productMetadata->getVersion(), '2.3.0', '>=')) {
+            parent::__construct(
+                $context,
+                $storeManager,
+                $modelFactory,
+                $eventManager,
+                $categoryTreeFactory,
+                $categoryCollectionFactory,
+                $processor,
+                $data
+            );
+        } else {
+            parent::__construct(
+                $context,
+                $storeManager,
+                $modelFactory,
+                $eventManager,
+                $categoryTreeFactory,
+                $categoryCollectionFactory,
+                $data
+            );
+        }
     }
 
     /**
