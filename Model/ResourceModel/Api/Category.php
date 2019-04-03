@@ -6,6 +6,7 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
+use Magento\Catalog\Model\Indexer\Category\Product\Processor;
 use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
 use Magento\Catalog\Model\ResourceModel\Category\TreeFactory;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
@@ -48,6 +49,7 @@ class Category extends CategoryResourceModel
      * @param TreeFactory           $categoryTreeFactory
      * @param CollectionFactory     $categoryCollectionFactory
      * @param Iterator              $iterator
+     * @param Processor             $processor
      * @param array                 $data
      */
     public function __construct(
@@ -58,6 +60,7 @@ class Category extends CategoryResourceModel
         TreeFactory $categoryTreeFactory,
         CollectionFactory $categoryCollectionFactory,
         Iterator $iterator,
+        Processor $processor,
         array $data = []
     ) {
         $this->iterator = $iterator;
@@ -69,6 +72,7 @@ class Category extends CategoryResourceModel
             $eventManager,
             $categoryTreeFactory,
             $categoryCollectionFactory,
+            $processor,
             $data
         );
     }
