@@ -22,6 +22,7 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Registry;
 use Emartech\Emarsys\Model\SettingsFactory;
 use Magento\Directory\Model\CurrencyFactory;
+use Magento\Framework\ObjectManagerInterface;
 
 /**
  * Class Snippets
@@ -65,6 +66,11 @@ class Snippets extends Template
     private $categoryCollectionFactory;
 
     /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
      * Snippets constructor.
      *
      * @param Context                   $context
@@ -75,6 +81,7 @@ class Snippets extends Template
      * @param CurrencyFactory           $currencyFactory
      * @param JsonSerializer            $jsonSerializer
      * @param CategoryCollectionFactory $categoryCollectionFactory
+     * @param ObjectManagerInterface    $objectManager
      * @param array                     $data
      */
     public function __construct(
@@ -86,6 +93,7 @@ class Snippets extends Template
         CurrencyFactory $currencyFactory,
         JsonSerializer $jsonSerializer,
         CategoryCollectionFactory $categoryCollectionFactory,
+        ObjectManagerInterface $objectManager,
         array $data = []
     ) {
         $this->storeManager = $context->getStoreManager();
@@ -96,6 +104,7 @@ class Snippets extends Template
         $this->currencyFactory = $currencyFactory;
         $this->jsonSerializer = $jsonSerializer;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->objectManager = $objectManager;
         parent::__construct($context, $data);
     }
 
