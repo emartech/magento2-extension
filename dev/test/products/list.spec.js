@@ -31,11 +31,11 @@ describe('Products endpoint', function() {
   });
 
   it('returns child entities for configurable products', async function() {
-    const page = 67;
+    const page = this.magentoVersion === '2.3.0' ? 68 : 67;
     const limit = 1;
 
     const { products } = await this.magentoApi.execute('products', 'get', { page, limit });
-    const { products: expectedProducts } = getProducts(this.hostname, page, limit);
+    const { products: expectedProducts } = getProducts(this.hostname, 67, limit, this.magentoVersion);
     const product = products[0];
     const expectedProduct = expectedProducts[0];
 

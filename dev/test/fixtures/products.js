@@ -1,13 +1,13 @@
 'use strict';
 
-const getProducts = (hostname, page, limit) => {
+const getProducts = (hostname, page, limit, magentoVersion) => {
   return {
-    products: products(hostname, page, limit),
+    products: products(hostname, page, limit, magentoVersion),
     productCount
   };
 };
 
-const products = (hostname, page, limit) => {
+const products = (hostname, page, limit, magentoVersion) => {
   if (page === 3 && limit === 10) {
     return [
       {
@@ -47,16 +47,32 @@ const products = (hostname, page, limit) => {
   }
 
   if (page === 67 && limit === 1) {
-    return [
-      {
-        type: 'configurable',
-        children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
-      }
-    ];
+    return configurable[magentoVersion];
   }
 };
 
 const productCount = 2048;
+
+const configurable = {
+  '2.1.8': [
+    {
+      type: 'configurable',
+      children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+    }
+  ],
+  '2.2.6': [
+    {
+      type: 'configurable',
+      children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+    }
+  ],
+  '2.3.0': [
+    {
+      type: 'configurable',
+      children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+    }
+  ]
+};
 
 module.exports = {
   getProducts

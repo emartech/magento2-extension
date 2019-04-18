@@ -66,10 +66,11 @@ describe('Webextend scripts', function() {
 
     it('should include product', async function() {
       const emarsysSnippets = await getEmarsysSnippetContents('cassius-sparring-tank.html');
+      const productId = this.magentoVersion === '2.3.0' ? 730 : 729;
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"729"},"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>'
+          `<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"${productId}"},"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
       ).to.be.true;
     });
