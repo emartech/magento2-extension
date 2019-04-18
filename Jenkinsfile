@@ -35,6 +35,11 @@ pipeline {
     }
     stage('Run versions in parallel') {
       parallel {
+        stage('Build and run tests on Magento 2.3.0') {
+          steps {
+            sh 'VERSION=2.3.0 sh dev/jenkins/run.sh'
+          }
+        }
         stage('Build and run tests on Magento 2.2.6') {
           steps {
             sh 'VERSION=2.2.6 sh dev/jenkins/run.sh'
@@ -52,6 +57,7 @@ pipeline {
     always {
       sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers...\''
       sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
+      sh 'VERSION=2.3.0 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.2.6 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.1.8 docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
     }
