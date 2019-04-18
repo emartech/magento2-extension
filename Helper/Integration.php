@@ -2,7 +2,7 @@
 
 namespace Emartech\Emarsys\Helper;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
+
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
@@ -28,10 +28,10 @@ class Integration extends AbstractHelper
     /** @var WriterInterface */
     // @codingStandardsIgnoreLine
     protected $configWriter;
-    /** @var ScopeConfigInterface */
-    // @codingStandardsIgnoreLine
-    protected $scopeConfig;
 
+    /**
+     * @var array
+     */
     private $integrationData = [
         'name'       => 'Emarsys Integration',
         'email'      => 'emarsys@emarsys.com',
@@ -43,6 +43,11 @@ class Integration extends AbstractHelper
      * @var \Zend\Uri\Http
      */
     private $http;
+
+    /**
+     * @var Context
+     */
+    private $context;
 
     const MAGENTO_VERSION=2;
 
@@ -56,7 +61,6 @@ class Integration extends AbstractHelper
      * @param Token $token
      * @param Provider $tokenProvider
      * @param WriterInterface $configWriter
-     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
         Context $context,
@@ -66,16 +70,15 @@ class Integration extends AbstractHelper
         Json $json,
         Token $token,
         Provider $tokenProvider,
-        WriterInterface $configWriter,
-        ScopeConfigInterface $scopeConfig
+        WriterInterface $configWriter
     ) {
         parent::__construct($context);
+        $this->context = $context;
         $this->integrationService = $integrationService;
         $this->token = $token;
         $this->authorizationService = $authorizationService;
         $this->tokenProvider = $tokenProvider;
         $this->configWriter = $configWriter;
-        $this->scopeConfig = $scopeConfig;
         $this->json = $json;
         $this->http = $http;
     }
@@ -141,7 +144,7 @@ class Integration extends AbstractHelper
      */
     private function getBaseUrl()
     {
-        $baseUrl = $this->scopeConfig->getValue('web/unsecure/base_url');
+        $baseUrl = $this->context->getScopeConfig()->getValue('web/unsecure/base_url');
 
         if (!$baseUrl) {
             throw new SetupException('Missing base_url setting. Set web/unsecure/base_url.');

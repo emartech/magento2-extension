@@ -16,9 +16,8 @@ use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
 use Magento\Store\Model\Store;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
-
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
@@ -144,12 +143,12 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @var string
      */
-    private $linkField = '';
+    private $linkField = 'entity_id';
 
     /**
-     * @var MetadataPool
+     * @var ObjectManagerInterface
      */
-    private $metadataPool;
+    private $objectManager;
 
     /**
      * @var CategoryResource
@@ -174,9 +173,9 @@ class ProductsApi implements ProductsApiInterface
      * @param ProductStoreDataInterfaceFactory    $productStoreDataFactory
      * @param ProductUrlFactory                   $productUrlFactory
      * @param LoggerInterface                     $logger
-     * @param MetadataPool                        $metadataPool
      * @param CategoryResource                    $categoryResource
      * @param ProductResource                     $productResource
+     * @param ObjectManagerInterface              $objectManager
      */
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
@@ -189,27 +188,24 @@ class ProductsApi implements ProductsApiInterface
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
         ProductUrlFactory $productUrlFactory,
         LoggerInterface $logger,
-        MetadataPool $metadataPool,
         CategoryResource $categoryResource,
-        ProductResource $productResource
+        ProductResource $productResource,
+        ObjectManagerInterface $objectManager
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
         $this->productUrlFactory = $productUrlFactory;
-
         $this->productCollectionFactory = $productCollectionFactory;
         $this->productsApiResponseFactory = $productsApiResponseFactory;
-
         $this->productFactory = $productFactory;
         $this->imagesFactory = $imagesFactory;
         $this->productStoreDataFactory = $productStoreDataFactory;
         $this->logger = $logger;
-
-        $this->metadataPool = $metadataPool;
         $this->categoryResource = $categoryResource;
         $this->productResource = $productResource;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -282,7 +278,12 @@ class ProductsApi implements ProductsApiInterface
     {
         $this->productCollection = $this->productCollectionFactory->create();
 
-        $this->linkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
+        if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
+            $metadataPool = $this->objectManager->create(
+                'Magento\Framework\EntityManager\MetadataPool'
+            );
+            $this->linkField = $metadataPool->getMetadata(ProductInterface::class)->getLinkField();
+        }
 
         return $this;
     }

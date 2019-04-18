@@ -14,15 +14,19 @@ use Magento\Framework\UrlInterface;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Catalog\Api\Data\CategoryInterface;
-
+use Magento\Framework\ObjectManagerInterface;
 use Emartech\Emarsys\Api\CategoriesApiInterface;
 use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface;
 use Emartech\Emarsys\Api\Data\CategoryInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoryStoreDataInterfaceFactory;
 
+/**
+ * Class CategoriesApi
+ *
+ * @package Emartech\Emarsys\Model\Api
+ */
 class CategoriesApi implements CategoriesApiInterface
 {
     /**
@@ -93,12 +97,12 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @var string
      */
-    private $linkField = '';
+    private $linkField = 'entity_id';
 
     /**
-     * @var MetadataPool
+     * @var ObjectManagerInterface
      */
-    private $metadataPool;
+    private $objectManager;
 
     /**
      * CategoriesApi constructor.
@@ -111,7 +115,7 @@ class CategoriesApi implements CategoriesApiInterface
      * @param CategoryInterfaceFactory              $categoryFactory
      * @param CategoryStoreDataInterfaceFactory     $categoryStoreDataFactory
      * @param CategoryUrlPathGenerator              $categoryUrlPathGenerator
-     * @param MetadataPool                          $metadataPool
+     * @param ObjectManagerInterface                $objectManager
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -122,7 +126,7 @@ class CategoriesApi implements CategoriesApiInterface
         CategoryInterfaceFactory $categoryFactory,
         CategoryStoreDataInterfaceFactory $categoryStoreDataFactory,
         CategoryUrlPathGenerator $categoryUrlPathGenerator,
-        MetadataPool $metadataPool
+        ObjectManagerInterface $objectManager
     ) {
         $this->storeManager = $storeManager;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
@@ -132,7 +136,7 @@ class CategoriesApi implements CategoriesApiInterface
         $this->categoryFactory = $categoryFactory;
         $this->categoryStoreDataFactory = $categoryStoreDataFactory;
         $this->categoryUrlPathGenerator = $categoryUrlPathGenerator;
-        $this->metadataPool = $metadataPool;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -194,8 +198,12 @@ class CategoriesApi implements CategoriesApiInterface
     private function initCollection()
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
-
-        $this->linkField = 'entity_id';
+        if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
+            $metadataPool = $this->objectManager->create(
+                'Magento\Framework\EntityManager\MetadataPool'
+            );
+            $this->linkField = $metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
+        }
 
         return $this;
     }
