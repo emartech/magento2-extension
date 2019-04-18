@@ -2,7 +2,6 @@
 
 namespace Emartech\Emarsys\Helper;
 
-
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;

@@ -199,6 +199,7 @@ class CategoriesApi implements CategoriesApiInterface
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
         if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
+            // @codingStandardsIgnoreLine
             $metadataPool = $this->objectManager->create(
                 'Magento\Framework\EntityManager\MetadataPool'
             );
