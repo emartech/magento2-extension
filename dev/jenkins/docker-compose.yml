@@ -30,9 +30,6 @@ services:
       - NPM_TOKEN=$NPM_TOKEN
       - MYSQL_DATABASE=magento
       - MAGENTO_URL=magento-test.local
-      - CYPRESS_PROJECT_ID=xo2cjm
-      - HTTP_PROXY=http://webproxy.emarsys.at:3128
-      - HTTPS_PROXY=http://webproxy.emarsys.at:3128
     links:
       - magento-test:magento-test.local
       - db

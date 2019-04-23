@@ -32,7 +32,7 @@ compose up -d
 echo "\n|--- Waiting for containers to initialize"
 sh ./wait.sh
 echo "\n|--- Running frontend tests"
-compose run --rm node sh -c "npm run e2e:ci"
+compose run --rm node sh -c "npm run e2e"
 
 echo "\n\n|--- All tests passed"
 
