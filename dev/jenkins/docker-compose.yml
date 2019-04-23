@@ -30,6 +30,7 @@ services:
       - NPM_TOKEN=$NPM_TOKEN
       - MYSQL_DATABASE=magento
       - MAGENTO_URL=magento-test.local
+      - CYPRESS_PROJECT_ID=xo2cjm
     links:
       - magento-test:magento-test.local
       - db
