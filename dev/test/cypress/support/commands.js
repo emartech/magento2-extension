@@ -39,8 +39,10 @@ Cypress.Commands.add('shouldNotShowErrorMessage', excludeErrorMessage => {
   if (excludeErrorMessage) {
     return cy
       .get('[data-ui-id="message-error"]')
-      .invoke('text')
-      .should('contain', excludeErrorMessage);
+      .should(($errorBox) => {
+        const errorMessage = $errorBox.text();
+        expect(errorMessage).to.include(excludeErrorMessage);
+      });
   } else {
     return cy.get('[data-ui-id="message-error"]').should('not.be.visible');
   }

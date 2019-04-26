@@ -46,7 +46,7 @@ describe('Marketing Events', function() {
 
       cy.shouldNotExistsEvents();
       cy.wait(1000);
-      cy.shouldNotShowErrorMessage('Unable to send mail.');
+      cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
     });
@@ -59,7 +59,7 @@ describe('Marketing Events', function() {
 
       cy.shouldNotExistsEvents();
       cy.wait(1000);
-      cy.shouldNotShowErrorMessage('Unable to send mail.');
+      cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { email: newEmail });
     });
@@ -73,7 +73,7 @@ describe('Marketing Events', function() {
 
       cy.shouldNotExistsEvents();
       cy.wait(1000);
-      cy.shouldNotShowErrorMessage('Unable to send mail.');
+      cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
     });

@@ -43,6 +43,29 @@ const expectTrackDataToInclude = (data) => {
   }
 };
 
+const loginWithTrackDataExpectation = (customer) => {
+  expectedTrackDataList.push({
+    search: false,
+    category: false,
+    product: false,
+    exchangeRate: 1,
+    slug: 'cypress-testslug',
+    store: { merchantId }
+  });
+  expectedTrackDataList.push({
+    search: false,
+    category: false,
+    product: false,
+    exchangeRate: 1,
+    slug: 'cypress-testslug',
+    store: { merchantId }
+  });
+
+  cy.loginWithCustomer({ customer });
+
+  cy.wait(2000);
+};
+
 const visitMainPage = () => {
   expectedTrackDataList.push({
     search: false,
@@ -104,7 +127,7 @@ const viewAndAddFirstItemToCart = () => {
     store: { merchantId: 'merchantId123' }
   });
 
-  cy.get('.product-image-container').first().click();
+  cy.get('.product-image-container').first().click({ force: true });
   cy.wait(2000);
 
   cy.get('#product-addtocart-button').click();
@@ -113,6 +136,7 @@ const viewAndAddFirstItemToCart = () => {
 
 const buyItem = () => {
   cy.get('.action.showcart').click();
+  cy.wait(2000);
   cy.get('#top-cart-btn-checkout').click({ force: true });
   cy.wait(8000);
 
@@ -153,9 +177,50 @@ const buyItem = () => {
   });
 };
 
+const buyItemWithLoggedInUser = () => {
+  cy.get('.action.showcart').click();
+  cy.wait(2000);
+  cy.get('#top-cart-btn-checkout').click({ force: true });
+  cy.wait(8000);
+
+  cy.get('#checkout-step-shipping input.input-text[name="street[0]"]').type('Cloverfield lane 1');
+  cy.get('#checkout-step-shipping input.input-text[name="city"]').type('Nowhere');
+  cy.get('#checkout-step-shipping select.select[name="country_id"]').select('HU');
+  cy.get('#checkout-step-shipping input.input-text[name="postcode"]').type('2800');
+  cy.get('#checkout-step-shipping input.input-text[name="telephone"]').type('0036905556969');
+
+  cy.wait(2000);
+  cy.get('button[data-role="opc-continue"]').click();
+  cy.wait(2000);
+
+  expectedTrackDataList.push({
+    search: false,
+    category: false,
+    product: false,
+    exchangeRate: 1,
+    slug: 'cypress-testslug',
+    store: { merchantId }
+  });
+
+  cy.get('button[title="Place Order"]').click();
+  cy.wait(8000);
+
+  cy.window().then((win) => {
+    const orderData = win.Emarsys.Magento2.orderData;
+    expect(orderData.orderId).to.be.not.undefined;
+    expect(orderData.items).to.be.eql([{
+      item: '24-MB02',
+      price: 59,
+      quantity: 1
+    }]);
+    expect(orderData.email).to.be.equal('cypress@default.com');
+  });
+};
+
 describe('Web extend scripts', function() {
   before(() => {
     cy.task('getDefaultCustomer').as('defaultCustomer');
+    cy.task('getMagentoVersion').as('magentoVersion');
   });
 
   context('are disabled', function() {
@@ -206,10 +271,14 @@ describe('Web extend scripts', function() {
       });
     });
 
-    it('should include proper web tracking data', function() {
+    it.only('should include proper web tracking data', function() {
       expectWebExtendFilesToBeIncluded();
 
       addValidationForTrackingData();
+
+      if (this.magentoVersion === '2.3.0') {
+        loginWithTrackDataExpectation(this.defaultCustomer);
+      }
 
       visitMainPage();
 
@@ -219,7 +288,11 @@ describe('Web extend scripts', function() {
 
       viewAndAddFirstItemToCart();
 
-      buyItem();
+      if (this.magentoVersion === '2.3.0') {
+        buyItemWithLoggedInUser();
+      } else {
+        buyItem();
+      }
     });
   });
 });

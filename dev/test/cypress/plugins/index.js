@@ -52,6 +52,13 @@ const getMagentoApi = async () => {
   });
 };
 
+let magentoVersion = null;
+const getMagentoVersion = async () => {
+  const magentoApi = await getMagentoApi();
+  const result = await magentoApi.execute('systeminfo', 'get');
+  magentoVersion = result.magento_version;
+};
+
 let defaultCustomer = null;
 const createCustomer = async (customer, password) => {
   const magentoApi = await getMagentoApi();
@@ -97,6 +104,12 @@ module.exports = (on, config) => {
         throw new Error('Magento config set failed!');
       }
       return response.data;
+    },
+    getMagentoVersion: async () => {
+      if (!magentoVersion) {
+        await getMagentoVersion();
+      }
+      return magentoVersion;
     },
     getEventTypeFromDb: async eventType => {
       const event = await db
