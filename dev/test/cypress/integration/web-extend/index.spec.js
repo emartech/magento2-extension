@@ -177,7 +177,7 @@ const buyItem = () => {
   });
 };
 
-const buyItemWithLoggedInUser = () => {
+const buyItemWithLoggedInUser = (customer) => {
   cy.get('.action.showcart').click();
   cy.wait(2000);
   cy.get('#top-cart-btn-checkout').click({ force: true });
@@ -213,7 +213,7 @@ const buyItemWithLoggedInUser = () => {
       price: 59,
       quantity: 1
     }]);
-    expect(orderData.email).to.be.equal('cypress@default.com');
+    expect(orderData.email).to.be.equal(customer.email);
   });
 };
 
@@ -289,7 +289,7 @@ describe('Web extend scripts', function() {
       viewAndAddFirstItemToCart();
 
       if (this.magentoVersion === '2.3.0') {
-        buyItemWithLoggedInUser();
+        buyItemWithLoggedInUser(this.defaultCustomer);
       } else {
         buyItem();
       }
