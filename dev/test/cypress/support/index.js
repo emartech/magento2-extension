@@ -1,24 +1,7 @@
 'use strict';
 
+require('cypress-plugin-retries');
 require('./commands');
-
-before(() => {
-  cy.task('setConfig', {
-    websiteId: 1,
-    config: {
-      storeSettings: [
-        {
-          storeId: 0,
-          slug: 'cypress-testadminslug'
-        },
-        {
-          storeId: 1,
-          slug: 'cypress-testslug'
-        }
-      ]
-    }
-  });
-});
 
 afterEach(() => {
   cy.wait(4000);

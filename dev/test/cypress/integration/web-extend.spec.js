@@ -8,11 +8,7 @@ const expectWebExtendFilesToBeIncluded = () => {
   checkWebExtendScriptTagsNotIncluded(0);
 };
 
-const expectWebExtendFilesNotToBeIncluded = () => {
-  checkWebExtendScriptTagsNotIncluded(2);
-};
-
-const checkWebExtendScriptTagsNotIncluded = (remainingTags) => {
+const checkWebExtendScriptTagsNotIncluded = remainingTags => {
   cy.on('window:load', win => {
     const scripts = win.document.getElementsByTagName('script');
     if (scripts.length) {
@@ -31,19 +27,19 @@ const addValidationForTrackingData = () => {
   cy.on('window:before:load', win => {
     win.Emarsys = win.Emarsys || {};
     win.Emarsys.Magento2 = win.Emarsys.Magento2 || {};
-    win.Emarsys.Magento2.track = (data) => expectTrackDataToInclude(data);
+    win.Emarsys.Magento2.track = data => expectTrackDataToInclude(data);
   });
 };
 
 const expectedTrackDataList = [];
-const expectTrackDataToInclude = (data) => {
+const expectTrackDataToInclude = data => {
   const expectedData = expectedTrackDataList.shift();
   if (expectedData) {
     expect(data).to.containSubset(expectedData);
   }
 };
 
-const loginWithTrackDataExpectation = (customer) => {
+const loginWithTrackDataExpectation = customer => {
   expectedTrackDataList.push({
     search: false,
     category: false,
@@ -127,7 +123,9 @@ const viewAndAddFirstItemToCart = () => {
     store: { merchantId: 'merchantId123' }
   });
 
-  cy.get('.product-image-container').first().click({ force: true });
+  cy.get('.product-image-container')
+    .first()
+    .click({ force: true });
   cy.wait(2000);
 
   cy.get('#product-addtocart-button').click();
@@ -165,19 +163,21 @@ const buyItem = () => {
   cy.get('button[title="Place Order"]').click();
   cy.wait(8000);
 
-  cy.window().then((win) => {
+  cy.window().then(win => {
     const orderData = win.Emarsys.Magento2.orderData;
     expect(orderData.orderId).to.be.not.undefined;
-    expect(orderData.items).to.be.eql([{
-      item: '24-MB02',
-      price: 59,
-      quantity: 1
-    }]);
+    expect(orderData.items).to.be.eql([
+      {
+        item: '24-MB02',
+        price: 59,
+        quantity: 1
+      }
+    ]);
     expect(orderData.email).to.be.equal('guest@cypress.net');
   });
 };
 
-const buyItemWithLoggedInUser = (customer) => {
+const buyItemWithLoggedInUser = customer => {
   cy.get('.action.showcart').click();
   cy.wait(2000);
   cy.get('#top-cart-btn-checkout').click({ force: true });
@@ -205,94 +205,65 @@ const buyItemWithLoggedInUser = (customer) => {
   cy.get('button[title="Place Order"]').click();
   cy.wait(8000);
 
-  cy.window().then((win) => {
+  cy.window().then(win => {
     const orderData = win.Emarsys.Magento2.orderData;
     expect(orderData.orderId).to.be.not.undefined;
-    expect(orderData.items).to.be.eql([{
-      item: '24-MB02',
-      price: 59,
-      quantity: 1
-    }]);
+    expect(orderData.items).to.be.eql([
+      {
+        item: '24-MB02',
+        price: 59,
+        quantity: 1
+      }
+    ]);
+    console.log(orderData);
+    console.log(customer);
     expect(orderData.email).to.be.equal(customer.email);
   });
 };
 
 describe('Web extend scripts', function() {
   before(() => {
+    cy.task('setConfig', {
+      injectSnippet: 'enabled',
+      merchantId,
+      webTrackingSnippetUrl
+    });
+    cy.wait(1000);
     cy.task('getDefaultCustomer').as('defaultCustomer');
     cy.task('getMagentoVersion').as('magentoVersion');
   });
 
-  context('are disabled', function() {
-    before(function() {
-      cy.task('setConfig', {
-        websiteId: 1,
-        config: {
-          injectSnippet: 'disabled',
-          merchantId: null,
-          webTrackingSnippetUrl: null
-        }
-      });
-      cy.wait(1000);
-      cy.task('flushMagentoCache');
-      cy.wait(1000);
-    });
+  it('should send extended customer data', function() {
+    addValidationForTrackingData();
 
-    it('should include proper web tracking data', function() {
-      expectWebExtendFilesNotToBeIncluded();
-
-      cy.visit('/');
-      cy.wait(2000);
+    cy.loginWithCustomer({ customer: this.defaultCustomer }).then(() => {
+      const customerData = JSON.parse(localStorage.getItem('mage-cache-storage'));
+      expect(customerData.customer.id).to.be.not.undefined;
+      expect(customerData.customer.email).to.be.not.undefined;
     });
   });
 
-  context('are enabled', function() {
-    before(() => {
-      cy.task('setConfig', {
-        websiteId: 1,
-        config: {
-          injectSnippet: 'enabled',
-          merchantId,
-          webTrackingSnippetUrl
-        }
-      });
-      cy.wait(1000);
-      cy.task('flushMagentoCache');
-      cy.wait(1000);
-    });
+  it.only('should include proper web tracking data', function() {
+    expectWebExtendFilesToBeIncluded();
 
-    it('should send extended customer data', function() {
-      addValidationForTrackingData();
+    addValidationForTrackingData();
 
-      cy.loginWithCustomer({ customer: this.defaultCustomer }).then(() => {
-        const customerData = JSON.parse(localStorage.getItem('mage-cache-storage'));
-        expect(customerData.customer.id).to.be.not.undefined;
-        expect(customerData.customer.email).to.be.not.undefined;
-      });
-    });
+    if (this.magentoVersion === '2.3.0') {
+      loginWithTrackDataExpectation(this.defaultCustomer);
+    }
 
-    it('should include proper web tracking data', function() {
-      expectWebExtendFilesToBeIncluded();
+    visitMainPage();
 
-      addValidationForTrackingData();
+    searchForBag();
 
-      if (this.magentoVersion === '2.3.0') {
-        loginWithTrackDataExpectation(this.defaultCustomer);
-      }
+    viewGearCategory();
 
-      visitMainPage();
+    viewAndAddFirstItemToCart();
 
-      searchForBag();
-
-      viewGearCategory();
-
-      viewAndAddFirstItemToCart();
-
-      if (this.magentoVersion === '2.3.0') {
-        buyItemWithLoggedInUser(this.defaultCustomer);
-      } else {
-        buyItem();
-      }
-    });
+    if (this.magentoVersion === '2.3.0') {
+      buyItemWithLoggedInUser(this.defaultCustomer);
+    } else {
+      buyItem();
+    }
   });
 });

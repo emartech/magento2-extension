@@ -96,9 +96,35 @@ module.exports = (on, config) => {
       await clearEvents();
       return true;
     },
-    setConfig: async ({ websiteId = 1, config = {} }) => {
+    setConfig: async ({
+      websiteId = 1,
+      collectMarketingEvents = 'disabled',
+      injectSnippet = 'disabled',
+      merchantId = null,
+      webTrackingSnippetUrl = null
+    }) => {
       const magentoApi = await getMagentoApi();
-      const response = await magentoApi.execute('config', 'set', { websiteId, config });
+      const config = {
+        websiteId,
+        config: {
+          collectMarketingEvents,
+          injectSnippet,
+          merchantId,
+          webTrackingSnippetUrl,
+          storeSettings: [
+            {
+              storeId: 0,
+              slug: 'cypress-testadminslug'
+            },
+            {
+              storeId: 1,
+              slug: 'cypress-testslug'
+            }
+          ]
+        }
+      };
+
+      const response = await magentoApi.execute('config', 'set', config);
 
       if (response.data.status !== 'ok') {
         throw new Error('Magento config set failed!');
