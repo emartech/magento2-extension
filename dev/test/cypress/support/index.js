@@ -4,8 +4,8 @@ require('cypress-plugin-retries');
 require('./commands');
 
 afterEach(() => {
-  cy.wait(4000);
   cy.task('clearEvents');
+  cy.wait(4000);
 });
 
 Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars
