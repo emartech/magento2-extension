@@ -243,7 +243,7 @@ describe('Web extend scripts', function() {
     });
   });
 
-  it.only('should include proper web tracking data', function() {
+  it('should include proper web tracking data', function() {
     expectWebExtendFilesToBeIncluded();
 
     addValidationForTrackingData();
