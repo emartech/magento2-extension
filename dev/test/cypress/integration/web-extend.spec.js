@@ -174,6 +174,7 @@ const buyItem = () => {
       }
     ]);
     expect(orderData.email).to.be.equal('guest@cypress.net');
+    console.log('SUCCESSULLY BOUGHT');
   });
 };
 
@@ -215,8 +216,8 @@ const buyItemWithLoggedInUser = customer => {
         quantity: 1
       }
     ]);
-    console.log(orderData);
-    console.log(customer);
+    console.log('orderData', JSON.stringify(orderData));
+    console.log('customer', JSON.stringify(customer));
     expect(orderData.email).to.be.equal(customer.email);
   });
 };
