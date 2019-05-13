@@ -3,11 +3,13 @@
 require('cypress-plugin-retries');
 require('./commands');
 
+before(() => {
+  Cypress.env('RETRIES', 3);
+});
+
 afterEach(() => {
-  console.log('GLOBAL AFTEREACH START');
   cy.task('clearEvents');
   cy.wait(4000);
-  console.log('GLOBAL AFTEREACH END');
 });
 
 Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars

@@ -31,13 +31,15 @@ const addValidationForTrackingData = () => {
   });
 };
 
-const expectedTrackDataList = [];
+let expectedTrackDataList = [];
 const expectTrackDataToInclude = data => {
   const expectedData = expectedTrackDataList.shift();
   if (expectedData) {
     expect(data).to.containSubset(expectedData);
   }
 };
+
+const clearTrackDataToInclude = () => expectedTrackDataList = [];
 
 const loginWithTrackDataExpectation = customer => {
   expectedTrackDataList.push({
@@ -229,9 +231,13 @@ describe('Web extend scripts', function() {
       merchantId,
       webTrackingSnippetUrl
     });
+  });
+
+  beforeEach(() => {
     cy.wait(1000);
     cy.task('getDefaultCustomer').as('defaultCustomer');
     cy.task('getMagentoVersion').as('magentoVersion');
+    clearTrackDataToInclude();
   });
 
   it('should send extended customer data', function() {
@@ -239,6 +245,7 @@ describe('Web extend scripts', function() {
 
     cy.loginWithCustomer({ customer: this.defaultCustomer }).then(() => {
       const customerData = JSON.parse(localStorage.getItem('mage-cache-storage'));
+      expect(customerData.customer).to.be.not.undefined;
       expect(customerData.customer.id).to.be.not.undefined;
       expect(customerData.customer.email).to.be.not.undefined;
     });
