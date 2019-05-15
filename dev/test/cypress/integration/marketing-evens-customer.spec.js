@@ -40,6 +40,7 @@ describe('Marketing Events', function() {
     cy.shouldNotShowErrorMessage();
 
     cy.task('setDefaultCustomerProperty', { password: newPassword });
+    cy.task('clearEvents');
   });
 
   it('should create customer_email_changed event', function() {
@@ -54,6 +55,7 @@ describe('Marketing Events', function() {
     cy.shouldNotShowErrorMessage();
 
     cy.task('setDefaultCustomerProperty', { email: newEmail });
+    cy.task('clearEvents');
   });
 
   it('should create customer_email_and_password_changed event', function() {
@@ -69,5 +71,6 @@ describe('Marketing Events', function() {
     cy.shouldNotShowErrorMessage();
 
     cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
+    cy.task('clearEvents');
   });
 });

@@ -21,15 +21,21 @@ const getDbConnectionConfig = () => {
   };
 };
 
-const db = knex({
-  client: 'mysql',
-  connection: getDbConnectionConfig()
-});
+let db = null;
+const getDb = () => {
+  if (!db) {
+    db = knex({
+      client: 'mysql',
+      connection: getDbConnectionConfig()
+    });
+  }
+  return db;
+};
 
 let magentoToken = null;
 const getMagentoToken = async () => {
   if (!magentoToken) {
-    const { token } = await db
+    const { token } = await getDb()
       .select('token')
       .from('integration')
       .where({ name: 'Emarsys Integration' })
@@ -64,7 +70,7 @@ const createCustomer = async (customer, password) => {
   const magentoApi = await getMagentoApi();
   await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer, password } });
 
-  const { entity_id: entityId } = await db
+  const { entity_id: entityId } = await getDb()
     .select('entity_id')
     .from('customer_entity')
     .where({ email: customer.email })
@@ -74,7 +80,7 @@ const createCustomer = async (customer, password) => {
 };
 
 const clearEvents = async () => {
-  return await db.truncate('emarsys_events_data');
+  return await getDb().truncate('emarsys_events_data');
 };
 
 const flushMagentoCache = async () => {
@@ -138,7 +144,7 @@ module.exports = (on, config) => {
       return magentoVersion;
     },
     getEventTypeFromDb: async eventType => {
-      const event = await db
+      const event = await getDb()
         .select()
         .from('emarsys_events_data')
         .where({
@@ -154,7 +160,7 @@ module.exports = (on, config) => {
       return event;
     },
     getAllEvents: async () => {
-      return await db.select().from('emarsys_events_data');
+      return await getDb().select().from('emarsys_events_data');
     },
     createCustomer: async ({ customer }) => {
       return await createCustomer(customer, 'Password1234');
@@ -185,7 +191,7 @@ module.exports = (on, config) => {
       return defaultCustomer;
     },
     getSubscription: async email => {
-      return await db
+      return await getDb()
         .select()
         .from('newsletter_subscriber')
         .where({ subscriber_email: email })
@@ -193,7 +199,7 @@ module.exports = (on, config) => {
     },
     setDoubleOptin: async stateOn => {
       if (stateOn) {
-        return await db
+        return await getDb()
           .insert({
             scope: 'default',
             scope_id: 0,
@@ -202,7 +208,7 @@ module.exports = (on, config) => {
           })
           .into('core_config_data');
       } else {
-        return await db('core_config_data')
+        return await getDb()('core_config_data')
           .where({ path: 'newsletter/subscription/confirm' })
           .delete();
       }

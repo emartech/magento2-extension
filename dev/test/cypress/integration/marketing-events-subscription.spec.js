@@ -38,6 +38,7 @@ describe('Marketing Events', function() {
       });
       cy.shouldNotShowErrorMessage();
       cy.isNotSubscribed(guestEmail);
+      cy.task('clearEvents');
     });
   });
 
@@ -71,6 +72,7 @@ describe('Marketing Events', function() {
       });
       cy.shouldNotShowErrorMessage();
       cy.isNotSubscribed(guestEmail);
+      cy.task('clearEvents');
     });
   });
 });

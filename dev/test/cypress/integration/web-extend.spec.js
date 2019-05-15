@@ -5,10 +5,6 @@ const webTrackingSnippetUrl = Cypress.env('snippetUrl');
 const predictUrl = `http://cdn.scarabresearch.com/js/${merchantId}/scarab-v2.js`;
 
 const expectWebExtendFilesToBeIncluded = () => {
-  checkWebExtendScriptTagsNotIncluded(0);
-};
-
-const checkWebExtendScriptTagsNotIncluded = remainingTags => {
   cy.on('window:load', win => {
     const scripts = win.document.getElementsByTagName('script');
     if (scripts.length) {
@@ -18,7 +14,8 @@ const checkWebExtendScriptTagsNotIncluded = remainingTags => {
           jsFilesToBeIncluded = jsFilesToBeIncluded.filter(e => e !== scripts[i].src);
         }
       }
-      expect(jsFilesToBeIncluded.length).to.be.equal(remainingTags);
+      console.log('jsFilesToBeIncluded', JSON.stringify(jsFilesToBeIncluded));
+      expect(jsFilesToBeIncluded.length).to.be.equal(0);
     }
   });
 };
@@ -210,6 +207,8 @@ const buyItemWithLoggedInUser = customer => {
 
   cy.window().then(win => {
     const orderData = win.Emarsys.Magento2.orderData;
+    console.log('orderData', JSON.stringify(orderData));
+    console.log('customer', JSON.stringify(customer));
     expect(orderData.orderId).to.be.not.undefined;
     expect(orderData.items).to.be.eql([
       {
@@ -218,8 +217,6 @@ const buyItemWithLoggedInUser = customer => {
         quantity: 1
       }
     ]);
-    console.log('orderData', JSON.stringify(orderData));
-    console.log('customer', JSON.stringify(customer));
     expect(orderData.email).to.be.equal(customer.email);
   });
 };
@@ -249,6 +246,7 @@ describe('Web extend scripts', function() {
       expect(customerData.customer.id).to.be.not.undefined;
       expect(customerData.customer.email).to.be.not.undefined;
     });
+    cy.task('clearEvents');
   });
 
   it('should include proper web tracking data', function() {
@@ -273,5 +271,6 @@ describe('Web extend scripts', function() {
     } else {
       buyItem();
     }
+    cy.task('clearEvents');
   });
 });

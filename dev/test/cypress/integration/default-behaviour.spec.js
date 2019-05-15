@@ -16,10 +16,6 @@ describe('Default behaviour with everything turned off', function() {
     const predictUrl = `http://cdn.scarabresearch.com/js/${merchantId}/scarab-v2.js`;
 
     const expectWebExtendFilesNotToBeIncluded = () => {
-      checkWebExtendScriptTagsNotIncluded(2);
-    };
-
-    const checkWebExtendScriptTagsNotIncluded = remainingTags => {
       cy.on('window:load', win => {
         const scripts = win.document.getElementsByTagName('script');
         if (scripts.length) {
@@ -29,7 +25,7 @@ describe('Default behaviour with everything turned off', function() {
               jsFilesToBeIncluded = jsFilesToBeIncluded.filter(e => e !== scripts[i].src);
             }
           }
-          expect(jsFilesToBeIncluded.length).to.be.equal(remainingTags);
+          expect(jsFilesToBeIncluded.length).to.be.equal(2);
         }
       });
     };
@@ -39,6 +35,7 @@ describe('Default behaviour with everything turned off', function() {
 
       cy.visit('/');
       cy.wait(2000);
+      cy.task('clearEvents');
     });
   });
 
@@ -76,6 +73,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
+      cy.task('clearEvents');
     });
 
     it('should not create customer_email_changed event', function() {
@@ -89,6 +87,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { email: newEmail });
+      cy.task('clearEvents');
     });
 
     it('should create customer_email_and_password_changed event', function() {
@@ -103,6 +102,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
+      cy.task('clearEvents');
     });
   });
 
@@ -135,6 +135,7 @@ describe('Default behaviour with everything turned off', function() {
 
         cy.shouldNotExistsEvents();
         cy.isNotSubscribed(guestEmail);
+        cy.task('clearEvents');
       });
     });
 
@@ -163,6 +164,7 @@ describe('Default behaviour with everything turned off', function() {
 
         cy.shouldNotExistsEvents();
         cy.isNotSubscribed(guestEmail);
+        cy.task('clearEvents');
       });
     });
   });
