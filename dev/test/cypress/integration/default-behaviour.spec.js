@@ -30,7 +30,7 @@ describe('Default behaviour with everything turned off', function() {
       });
     };
 
-    it('should include proper web tracking data', function() {
+    it('should not include proper web tracking data', function() {
       expectWebExtendFilesNotToBeIncluded();
 
       cy.visit('/');
@@ -90,7 +90,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.task('clearEvents');
     });
 
-    it('should create customer_email_and_password_changed event', function() {
+    it('should not create customer_email_and_password_changed event', function() {
       const newEmail = 'cypress5@default.com';
       const newPassword = 'newPassword4';
 

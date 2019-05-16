@@ -121,8 +121,7 @@ const viewAndAddFirstItemToCart = () => {
     store: { merchantId: 'merchantId123' }
   });
 
-  cy.get('.product-image-container')
-    .first()
+  cy.get('.product-items a[title="Fusion Backpack"]')
     .click({ force: true });
   cy.wait(2000);
 
