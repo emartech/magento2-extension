@@ -35,6 +35,11 @@ pipeline {
     }
     stage('Run versions in parallel') {
       parallel {
+        stage('Build and run tests on Magento Enterprise 2.3.1') {
+          steps {
+            sh 'VERSION=2.3.1ee sh dev/jenkins/run.sh'
+          }
+        }
         stage('Build and run tests on Magento 2.3.0') {
           steps {
             sh 'VERSION=2.3.0 sh dev/jenkins/run.sh'
