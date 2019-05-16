@@ -49,9 +49,11 @@ Cypress.on('fail', error => {
 
 console.log = function(...args) {
   logs += args.join('\n');
+  logs += '\n';
 };
 
 Cypress.Commands.overwrite('log', (originalFn, ...args) => {
   logs += args.join('\n');
+  logs += '\n';
   originalFn(...args);
 });

@@ -14,7 +14,6 @@ const expectWebExtendFilesToBeIncluded = () => {
           jsFilesToBeIncluded = jsFilesToBeIncluded.filter(e => e !== scripts[i].src);
         }
       }
-      console.log('jsFilesToBeIncluded', JSON.stringify(jsFilesToBeIncluded));
       expect(jsFilesToBeIncluded.length).to.be.equal(0);
     }
   });
@@ -228,6 +227,8 @@ describe('Web extend scripts', function() {
       merchantId,
       webTrackingSnippetUrl
     });
+    cy.task('flushMagentoCache');
+    cy.wait(1000);
   });
 
   beforeEach(() => {
