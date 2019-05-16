@@ -7,28 +7,6 @@ const getLastEvent = async db =>
     .orderBy('event_id', 'desc')
     .first();
 
-const localCartItem = magentoVersion => {
-  return {
-    sku: 'WS03',
-    qty: 1,
-    product_type: 'configurable',
-    product_option: {
-      extension_attributes: {
-        configurable_item_options: [
-          {
-            option_id: 93,
-            option_value: 50
-          },
-          {
-            option_id: magentoVersion === '2.1.8' ? 142 : 145,
-            option_value: 167
-          }
-        ]
-      }
-    }
-  };
-};
-
 const localAddresses = {
   shipping_address: {
     region: 'New York',
@@ -60,7 +38,7 @@ const localAddresses = {
   shipping_method_code: 'flatrate'
 };
 
-const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
+const createNewCustomerOrder = async (magentoApi, customer, localCartItem) => {
   const { data: cartId } = await magentoApi.post({
     path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
   });
@@ -68,7 +46,7 @@ const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
   await magentoApi.post({
     path: `/index.php/rest/V1/carts/${cartId}/items`,
     payload: {
-      cartItem: Object.assign(localCartItem(magentoVersion), { quote_id: cartId })
+      cartItem: Object.assign(localCartItem, { quote_id: cartId })
     }
   });
 
@@ -91,7 +69,7 @@ const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
   return { cartId, orderId };
 };
 
-const createNewGuestOrder = async (magentoApi, magentoVersion) => {
+const createNewGuestOrder = async (magentoApi, localCartItem) => {
   const { data: cartId } = await magentoApi.post({
     path: '/index.php/rest/V1/guest-carts'
   });
@@ -99,7 +77,7 @@ const createNewGuestOrder = async (magentoApi, magentoVersion) => {
   const { data: item } = await magentoApi.post({
     path: `/index.php/rest/V1/guest-carts/${cartId}/items`,
     payload: {
-      cartItem: Object.assign(localCartItem(magentoVersion), { quote_id: cartId })
+      cartItem: Object.assign(localCartItem, { quote_id: cartId })
     }
   });
   const quoteId = item.quote_id;
@@ -172,19 +150,24 @@ const expectCustomerMatches = function(createdEventData, customer) {
   });
 };
 
-const expectOrderMatches = function(createdEventData) {
+const expectOrderMatches = function(createdEventData, localCartItem) {
   const orderItem = createdEventData.order.items[0];
-  expect(orderItem.sku).to.contain(localCartItem().sku);
+  expect(orderItem.sku).to.contain(localCartItem.sku);
   expect(createdEventData.order.addresses).to.have.property('shipping');
   expect(createdEventData.order.addresses).to.have.property('billing');
 };
 
-const expectCustomerAndOrderMatches = function(createdEventData, customer) {
+const expectCustomerAndOrderMatches = function(createdEventData, customer, localCartItem) {
   expectCustomerMatches(createdEventData, customer);
-  expectOrderMatches(createdEventData);
+  expectOrderMatches(createdEventData, localCartItem);
 };
 
 describe('Marketing events: sales', function() {
+  let localCartItem;
+  before(function() {
+    localCartItem = this.localCartItem;
+  });
+
   after(async function() {
     await this.magentoApi.execute('config', 'set', {
       websiteId: 1,
@@ -206,7 +189,7 @@ describe('Marketing events: sales', function() {
     });
 
     it('should not create event', async function() {
-      await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
+      await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
 
       const createdEvent = await getLastEvent(this.db);
 
@@ -225,7 +208,7 @@ describe('Marketing events: sales', function() {
     describe('when customer', function() {
       let orderId;
       before(async function() {
-        const order = await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
+        const order = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
         orderId = order.orderId;
       });
 
@@ -235,7 +218,7 @@ describe('Marketing events: sales', function() {
           const createdEventData = JSON.parse(event.event_data);
 
           expect(event.event_type).to.equal('sales_email_order_template');
-          expectCustomerAndOrderMatches(createdEventData, this.customer);
+          expectCustomerAndOrderMatches(createdEventData, this.customer, localCartItem);
           expect(createdEventData.order.addresses).to.have.property('billing');
           expect(event.entity_id).to.equal(parseInt(orderId));
           expect(event.website_id).to.equal(1);
@@ -250,7 +233,7 @@ describe('Marketing events: sales', function() {
           const event = await getLastEvent(this.db);
           const createdEventData = JSON.parse(event.event_data);
           expect(event.event_type).to.equal('sales_email_invoice_template');
-          expectCustomerAndOrderMatches(createdEventData, this.customer);
+          expectCustomerAndOrderMatches(createdEventData, this.customer, localCartItem);
           expect(createdEventData.invoice.order_id).to.equal(orderId);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
@@ -265,7 +248,7 @@ describe('Marketing events: sales', function() {
           const createdEventData = JSON.parse(event.event_data);
 
           expect(event.event_type).to.equal('sales_email_shipment_template');
-          expectCustomerAndOrderMatches(createdEventData, this.customer);
+          expectCustomerAndOrderMatches(createdEventData, this.customer, localCartItem);
           expect(createdEventData.order.shipments[0].order_id).to.equal(orderId);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
@@ -276,7 +259,7 @@ describe('Marketing events: sales', function() {
         let orderId;
 
         before(async function() {
-          const order = await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
+          const order = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
           orderId = order.orderId;
         });
         describe('commented', function() {
@@ -287,7 +270,7 @@ describe('Marketing events: sales', function() {
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('sales_email_order_comment_template');
-            expectCustomerAndOrderMatches(createdEventData, this.customer);
+            expectCustomerAndOrderMatches(createdEventData, this.customer, localCartItem);
             expect(createdEventData.order.comments[0].comment).to.equal('Comment on order');
             expect(event.website_id).to.equal(1);
             expect(event.store_id).to.equal(1);
@@ -302,7 +285,7 @@ describe('Marketing events: sales', function() {
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('sales_email_creditmemo_template');
-            expectCustomerAndOrderMatches(createdEventData, this.customer);
+            expectCustomerAndOrderMatches(createdEventData, this.customer, localCartItem);
             expect(createdEventData.creditmemo.order_id).to.equal(orderId);
             expect(event.website_id).to.equal(1);
             expect(event.store_id).to.equal(1);
@@ -321,7 +304,7 @@ describe('Marketing events: sales', function() {
         });
 
         it('should not create event', async function() {
-          await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
+          await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
 
           const createdEvent = await getLastEvent(this.db);
 
@@ -333,7 +316,7 @@ describe('Marketing events: sales', function() {
     describe('when guest', function() {
       let orderId;
       before(async function() {
-        const order = await createNewGuestOrder(this.magentoApi, this.magentoVersion);
+        const order = await createNewGuestOrder(this.magentoApi, localCartItem);
         orderId = order.orderId;
       });
 
@@ -343,7 +326,7 @@ describe('Marketing events: sales', function() {
           const createdEventData = JSON.parse(event.event_data);
 
           expect(event.event_type).to.equal('sales_email_order_guest_template');
-          expectOrderMatches(createdEventData);
+          expectOrderMatches(createdEventData, localCartItem);
           expect(createdEventData.order.addresses.billing.email).to.equal(localAddresses.billing_address.email);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
@@ -359,7 +342,7 @@ describe('Marketing events: sales', function() {
 
           expect(event.event_type).to.equal('sales_email_invoice_guest_template');
           expect(createdEventData.customerEmail).to.equal(localAddresses.billing_address.email);
-          expectOrderMatches(createdEventData);
+          expectOrderMatches(createdEventData, localCartItem);
           expect(createdEventData.invoice.order_id).to.equal(orderId);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
@@ -374,7 +357,7 @@ describe('Marketing events: sales', function() {
           const createdEventData = JSON.parse(event.event_data);
 
           expect(event.event_type).to.equal('sales_email_shipment_guest_template');
-          expectOrderMatches(createdEventData, this.customer);
+          expectOrderMatches(createdEventData, localCartItem);
           expect(createdEventData.order.shipments[0].order_id).to.equal(orderId);
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
@@ -384,7 +367,7 @@ describe('Marketing events: sales', function() {
       describe('order is', function() {
         let orderId;
         before(async function() {
-          const order = await createNewGuestOrder(this.magentoApi, this.magentoVersion);
+          const order = await createNewGuestOrder(this.magentoApi, localCartItem);
           orderId = order.orderId;
         });
 
@@ -396,7 +379,7 @@ describe('Marketing events: sales', function() {
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('sales_email_order_comment_guest_template');
-            expectOrderMatches(createdEventData, this.customer);
+            expectOrderMatches(createdEventData, localCartItem);
             expect(createdEventData.order.comments[0].comment).to.equal('Comment on order');
             expect(event.website_id).to.equal(1);
             expect(event.store_id).to.equal(1);
@@ -411,7 +394,7 @@ describe('Marketing events: sales', function() {
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('sales_email_creditmemo_guest_template');
-            expectOrderMatches(createdEventData, this.customer);
+            expectOrderMatches(createdEventData, localCartItem);
             expect(createdEventData.creditmemo.order_id).to.equal(orderId);
             expect(event.website_id).to.equal(1);
             expect(event.store_id).to.equal(1);

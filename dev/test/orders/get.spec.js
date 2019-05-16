@@ -1,27 +1,5 @@
 'use strict';
 
-const localCartItem = magentoVersion => {
-  return {
-    sku: 'WS03',
-    qty: 1,
-    product_type: 'configurable',
-    product_option: {
-      extension_attributes: {
-        configurable_item_options: [
-          {
-            option_id: 93,
-            option_value: 50
-          },
-          {
-            option_id: magentoVersion === '2.1.8' ? 142 : 145,
-            option_value: 167
-          }
-        ]
-      }
-    }
-  };
-};
-
 const localAddresses = {
   shipping_address: {
     region: 'New York',
@@ -53,7 +31,7 @@ const localAddresses = {
   shipping_method_code: 'flatrate'
 };
 
-const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
+const createNewCustomerOrder = async (magentoApi, customer, localCartItem) => {
   const { data: cartId } = await magentoApi.post({
     path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
   });
@@ -61,7 +39,7 @@ const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
   await magentoApi.post({
     path: `/index.php/rest/V1/carts/${cartId}/items`,
     payload: {
-      cartItem: Object.assign(localCartItem(magentoVersion), { quote_id: cartId })
+      cartItem: Object.assign(localCartItem, { quote_id: cartId })
     }
   });
 
@@ -87,10 +65,13 @@ const createNewCustomerOrder = async (magentoApi, customer, magentoVersion) => {
 const orderCount = 8;
 
 describe('Orders endpoint', function() {
+  let localCartItem;
+
   before(async function() {
     await this.dbCleaner.clearOrders();
+    localCartItem = this.localCartItem;
     for (let orderNumber = 0; orderCount > orderNumber; orderNumber++) {
-      await createNewCustomerOrder(this.magentoApi, this.customer, this.magentoVersion);
+      await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
     }
   });
 

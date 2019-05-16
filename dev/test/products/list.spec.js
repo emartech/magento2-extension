@@ -8,7 +8,13 @@ describe('Products endpoint', function() {
     const limit = 10;
 
     const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit });
-    const { products: expectedProducts, productCount: expectedProductCount } = getProducts(this.hostname, page, limit);
+    const { products: expectedProducts, productCount: expectedProductCount } = getProducts(
+      this.hostname,
+      page,
+      limit,
+      this.magentoVersion,
+      this.magentoEdition
+    );
 
     const product = products[0];
     const expectedProduct = expectedProducts[0];
@@ -35,7 +41,13 @@ describe('Products endpoint', function() {
     const limit = 1;
 
     const { products } = await this.magentoApi.execute('products', 'get', { page, limit });
-    const { products: expectedProducts } = getProducts(this.hostname, 67, limit, this.magentoVersion);
+    const { products: expectedProducts } = getProducts(
+      this.hostname,
+      67,
+      limit,
+      this.magentoVersion,
+      this.magentoEdition
+    );
     const product = products[0];
     const expectedProduct = expectedProducts[0];
 

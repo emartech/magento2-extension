@@ -7,7 +7,7 @@ const getLastEvent = async db =>
     .orderBy('event_id', 'desc')
     .first();
 
-const createNewOrder = async (magentoApi, customer, magentoVersion) => {
+const createNewOrder = async (magentoApi, customer, localCartItem) => {
   const { data: cartId } = await magentoApi.post({
     path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
   });
@@ -15,26 +15,7 @@ const createNewOrder = async (magentoApi, customer, magentoVersion) => {
   await magentoApi.post({
     path: `/index.php/rest/V1/carts/${cartId}/items`,
     payload: {
-      cartItem: {
-        sku: 'WS03',
-        qty: 1,
-        product_type: 'configurable',
-        quote_id: cartId,
-        product_option: {
-          extension_attributes: {
-            configurable_item_options: [
-              {
-                option_id: 93,
-                option_value: 50
-              },
-              {
-                option_id: magentoVersion === '2.1.8' ? 142 : 145,
-                option_value: 167
-              }
-            ]
-          }
-        }
-      }
+      cartItem: Object.assign(localCartItem, { quote_id: cartId })
     }
   });
 
@@ -106,6 +87,10 @@ const cancelOrder = async (magentoApi, orderId) => {
 };
 
 describe('Order events', function() {
+  let localCartItem;
+  before(function() {
+    localCartItem = this.localCartItem;
+  });
   context('setting enabled', function() {
     before(async function() {
       await this.magentoApi.execute('config', 'set', {
@@ -115,7 +100,7 @@ describe('Order events', function() {
     });
 
     it('should create orders/new event and an orders/fulfilled', async function() {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
+      const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
 
       const { event_type: createEventType, event_data: createEventPayload } = await getLastEvent(this.db);
       const createdEventData = JSON.parse(createEventPayload);
@@ -134,7 +119,7 @@ describe('Order events', function() {
     });
 
     it('should create orders/cancelled event', async function() {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
+      const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
       await cancelOrder(this.magentoApi, orderId);
 
       const { event_type: cancelEventType } = await getLastEvent(this.db);
@@ -154,7 +139,7 @@ describe('Order events', function() {
       it('should not create event', async function() {
         await this.magentoApi.execute('config', 'setDefault', 1);
 
-        await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
+        await createNewOrder(this.magentoApi, this.customer, localCartItem);
         const createEvent = await getLastEvent(this.db);
 
         expect(createEvent).to.be.undefined;
@@ -165,7 +150,7 @@ describe('Order events', function() {
   context('setting disabled', function() {
     it('should not create event', async function() {
       await this.magentoApi.execute('config', 'setDefault', 1);
-      await createNewOrder(this.magentoApi, this.customer, this.magentoVersion);
+      await createNewOrder(this.magentoApi, this.customer, localCartItem);
 
       const createEvent = await getLastEvent(this.db);
 

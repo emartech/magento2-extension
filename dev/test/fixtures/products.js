@@ -1,9 +1,9 @@
 'use strict';
 
-const getProducts = (hostname, page, limit, magentoVersion) => {
+const getProducts = (hostname, page, limit, magentoVersion, magentoEdition) => {
   return {
-    products: products(hostname, page, limit, magentoVersion),
-    productCount
+    products: products(hostname, page, limit, magentoVersion, magentoEdition),
+    productCount: (magentoVersion === '2.3.1' && magentoEdition === 'Enterprise') ? 2050 : 2048
   };
 };
 
@@ -51,8 +51,6 @@ const products = (hostname, page, limit, magentoVersion) => {
   }
 };
 
-const productCount = 2048;
-
 const configurable = {
   '2.1.8': [
     {
@@ -64,6 +62,12 @@ const configurable = {
     {
       type: 'configurable',
       children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+    }
+  ],
+  '2.3.0': [
+    {
+      type: 'configurable',
+      children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
     }
   ],
   '2.3.0': [

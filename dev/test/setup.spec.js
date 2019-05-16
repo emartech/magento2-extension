@@ -92,13 +92,43 @@ const clearStoreSettings = magentoApi => async () => {
   });
 };
 
-const getMagentoVersion = async (magentoApi) => {
+const getMagentoSystemInfo = async (magentoApi) => {
   const result = await magentoApi.execute('systeminfo', 'get');
-  return result.magento_version;
+  return result;
+};
+
+const localCartItem = (magentoVersion, magentoEdition) => {
+  let options = [
+    {
+      option_id: 93,
+      option_value: 50
+    },
+    {
+      option_id: 145,
+      option_value: 167
+    }
+  ];
+
+  if (magentoVersion === '2.1.8') {
+    options[1].option_id = 142;
+  } else if (magentoVersion === '2.3.1' && magentoEdition === 'Enterprise') {
+    options[0].option_value = 59;
+    options[1] = { option_id: 187, option_value: 179 };
+  }
+
+  return {
+    sku: 'WS03',
+    qty: 1,
+    product_type: 'configurable',
+    product_option: {
+      extension_attributes: {
+        configurable_item_options: options
+      }
+    }
+  };
 };
 
 before(async function() {
-  this.timeout(30000);
   this.db = knex({
     client: 'mysql',
     connection: {
@@ -137,10 +167,12 @@ before(async function() {
   });
   this.setDefaultStoreSettings = setDefaultStoreSettings(this.magentoApi);
   this.clearStoreSettings = clearStoreSettings(this.magentoApi);
-  this.magentoVersion = await getMagentoVersion(this.magentoApi);
+  const magentoSystemInfo = await getMagentoSystemInfo(this.magentoApi);
+  this.magentoVersion = magentoSystemInfo.magento_version;
+  this.magentoEdition = magentoSystemInfo.magento_edition;
 
   console.log('----------------------');
-  console.log(`MAGENTO VERSION IN MOCHA: ${this.magentoVersion}`);
+  console.log(`MAGENTO VERSION IN MOCHA: ${this.magentoVersion} (${this.magentoEdition})`);
   console.log('----------------------');
 
   await this.magentoApi.execute('config', 'setDefault', 1);
@@ -154,6 +186,7 @@ before(async function() {
     this.deleteProduct = deleteProduct(this.magentoApi);
     this.createCategory = createCategory(this.magentoApi);
     this.deleteCategory = deleteCategory(this.magentoApi);
+    this.localCartItem = localCartItem(this.magentoVersion, this.magentoEdition);
 
     try {
       this.customer = await this.createCustomer(
