@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright ©2018 Itegration Ltd., Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 namespace Emartech\Emarsys\Model\Api;
 
@@ -21,6 +25,7 @@ use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface;
 use Emartech\Emarsys\Api\Data\CategoryInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoryStoreDataInterfaceFactory;
+use Emartech\Emarsys\Helper\LinkField;
 
 /**
  * Class CategoriesApi
@@ -97,12 +102,17 @@ class CategoriesApi implements CategoriesApiInterface
     /**
      * @var string
      */
-    private $linkField = 'entity_id';
+    private $linkField;
 
     /**
      * @var ObjectManagerInterface
      */
     private $objectManager;
+
+    /**
+     * @var LinkField
+     */
+    private $linkFieldHelper;
 
     /**
      * CategoriesApi constructor.
@@ -116,6 +126,7 @@ class CategoriesApi implements CategoriesApiInterface
      * @param CategoryStoreDataInterfaceFactory     $categoryStoreDataFactory
      * @param CategoryUrlPathGenerator              $categoryUrlPathGenerator
      * @param ObjectManagerInterface                $objectManager
+     * @param LinkField                             $linkFieldHelper
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -126,7 +137,8 @@ class CategoriesApi implements CategoriesApiInterface
         CategoryInterfaceFactory $categoryFactory,
         CategoryStoreDataInterfaceFactory $categoryStoreDataFactory,
         CategoryUrlPathGenerator $categoryUrlPathGenerator,
-        ObjectManagerInterface $objectManager
+        ObjectManagerInterface $objectManager,
+        LinkField $linkFieldHelper
     ) {
         $this->storeManager = $storeManager;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
@@ -137,6 +149,8 @@ class CategoriesApi implements CategoriesApiInterface
         $this->categoryStoreDataFactory = $categoryStoreDataFactory;
         $this->categoryUrlPathGenerator = $categoryUrlPathGenerator;
         $this->objectManager = $objectManager;
+        $this->linkFieldHelper = $linkFieldHelper;
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(CategoryInterface::class);
     }
 
     /**
@@ -198,14 +212,6 @@ class CategoriesApi implements CategoriesApiInterface
     private function initCollection()
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
-        if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
-            // @codingStandardsIgnoreLine
-            $metadataPool = $this->objectManager->create(
-                'Magento\Framework\EntityManager\MetadataPool'
-            );
-            $this->linkField = $metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
-        }
-
         return $this;
     }
 

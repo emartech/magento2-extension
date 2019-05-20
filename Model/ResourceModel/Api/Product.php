@@ -6,6 +6,7 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
 use Magento\Eav\Model\Entity\Context;
@@ -20,6 +21,7 @@ use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
+use Emartech\Emarsys\Helper\LinkField;
 
 /**
  * Class Product
@@ -55,7 +57,20 @@ class Product extends ProductResourceModel
      */
     private $productAttributeCollectionFactory;
 
+    /**
+     * @var LinkField
+     */
+    private $linkFieldHelper;
+
+    /**
+     * @var string
+     */
     private $mainTable = '';
+
+    /**
+     * @var string
+     */
+    private $linkField = 'entity_id';
 
     /**
      * @var array
@@ -106,6 +121,7 @@ class Product extends ProductResourceModel
      * @param DefaultAttributes                 $defaultAttributes
      * @param ProductAttributeCollectionFactory $productAttributeCollectionFactory
      * @param Iterator                          $iterator
+     * @param LinkField                         $linkFieldHelper
      * @param array                             $data
      */
     public function __construct(
@@ -120,10 +136,13 @@ class Product extends ProductResourceModel
         DefaultAttributes $defaultAttributes,
         ProductAttributeCollectionFactory $productAttributeCollectionFactory,
         Iterator $iterator,
+        LinkField $linkFieldHelper,
         array $data = []
     ) {
         $this->iterator = $iterator;
         $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
+        $this->linkFieldHelper = $linkFieldHelper;
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
 
         parent::__construct(
             $context,
@@ -142,37 +161,32 @@ class Product extends ProductResourceModel
     /**
      * @param $page
      * @param $pageSize
-     * @param $linkField
      *
      * @return array
-     * @throws \Zend_Db_Statement_Exception
      */
-    public function handleIds($page, $pageSize, $linkField)
+    public function handleIds($page, $pageSize)
     {
         $productsTable = $this->getTable('catalog_product_entity');
 
-        $itemsCountQuery = $this->_resource->getConnection()->select()
-            ->from($productsTable, ['count' => 'count(' . $linkField . ')']);
+        $itemsCountQuery = $this->_resource
+            ->getConnection()
+            ->select()
+            ->from($productsTable, ['count' => 'count(' . $this->linkField . ')']);
 
         $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery);
 
-        $subFields = ['eid' => 'entity_id'];
-        if ($linkField !== 'entity_id') {
-            $subFields['eeid'] = $linkField;
-        }
+        $subFields['eid'] = $this->linkField;
 
         $subSelect = $this->_resource->getConnection()->select()
             ->from($productsTable, $subFields)
-            ->order('entity_id')
+            ->order($this->linkField)
             ->limit($pageSize, $page);
 
         $fields = ['minId' => 'min(tmp.eid)', 'maxId' => 'max(tmp.eid)'];
-        if ($linkField !== 'entity_id') {
-            $fields['minEId'] = 'min(tmp.eeid)';
-            $fields['maxEId'] = 'max(tmp.eeid)';
-        }
 
-        $idQuery = $this->_resource->getConnection()->select()
+        $idQuery = $this->_resource
+            ->getConnection()
+            ->select()
             ->from(['tmp' => $subSelect], $fields);
 
         $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery);
@@ -183,18 +197,12 @@ class Product extends ProductResourceModel
             'maxId'         => (int)$minMaxValues['maxId'],
         ];
 
-        if (array_key_exists('minEId', $minMaxValues) && array_key_exists('maxEId', $minMaxValues)) {
-            $returnArray['minEId'] = $minMaxValues['minEId'];
-            $returnArray['maxEId'] = $minMaxValues['maxEId'];
-        }
-
         return $returnArray;
     }
 
     /**
-     * @param int    $minProductId
-     * @param int    $maxProductId
-     * @param string $linkField
+     * @param int $minProductId
+     * @param int $maxProductId
      *
      * @return array
      */
@@ -276,10 +284,16 @@ class Product extends ProductResourceModel
         ];
     }
 
+    /**
+     * @param int   $minProductId
+     * @param int   $maxProductId
+     * @param array $storeIds
+     *
+     * @return array
+     */
     public function getAttributeData($minProductId, $maxProductId, $storeIds)
     {
         $this->mainTable = $this->getEntityTable();
-
         $this->attributeData = [];
 
         $attributeMapper = [];
@@ -329,20 +343,20 @@ class Product extends ProductResourceModel
     private function getMainTableFieldItems($mainTableFields, $minProductId, $maxProductId, $storeIds, $attributeMapper)
     {
         if ($mainTableFields) {
-            if (!in_array('entity_id', $mainTableFields)) {
-                $mainTableFields[] = 'entity_id';
+            if (!in_array($this->linkField, $mainTableFields)) {
+                $mainTableFields[] = $this->linkField;
             }
             $attributesQuery = $this->_resource->getConnection()->select()
                 ->from($this->getTable($this->mainTable), $mainTableFields)
-                ->where('entity_id >= ?', $minProductId)
-                ->where('entity_id <= ?', $maxProductId);
+                ->where($this->linkField . ' >= ?', $minProductId)
+                ->where($this->linkField . ' <= ?', $maxProductId);
 
             $this->iterator->walk(
                 (string)$attributesQuery,
                 [[$this, 'handleMainTableAttributeDataTable']],
                 [
                     'storeIds'        => $storeIds,
-                    'fields'          => array_diff($mainTableFields, ['entity_id']),
+                    'fields'          => array_diff($mainTableFields, [$this->linkField]),
                     'attributeMapper' => $attributeMapper,
                 ],
                 $this->_resource->getConnection()
@@ -372,9 +386,9 @@ class Product extends ProductResourceModel
 
         foreach ($attributeTables as $attributeTable) {
             $attributeQueries[] = $this->_resource->getConnection()->select()
-                ->from($this->getTable($attributeTable), ['attribute_id', 'store_id', 'entity_id', 'value'])
-                ->where('entity_id >= ?', $minProductId)
-                ->where('entity_id <= ?', $maxProductId)
+                ->from($this->getTable($attributeTable), ['attribute_id', 'store_id', $this->linkField, 'value'])
+                ->where($this->linkField . ' >= ?', $minProductId)
+                ->where($this->linkField . ' <= ?', $maxProductId)
                 ->where('store_id IN (?)', $storeIds)
                 ->where('attribute_id IN (?)', $attributeMapper);
         }
@@ -403,7 +417,7 @@ class Product extends ProductResourceModel
      */
     public function handleMainTableAttributeDataTable($args)
     {
-        $productId = $args['row']['entity_id'];
+        $productId = $args['row'][$this->linkField];
 
         foreach ($args['storeIds'] as $storeId) {
             $this->initStoreProductData($productId, $storeId);
@@ -421,7 +435,7 @@ class Product extends ProductResourceModel
      */
     public function handleAttributeDataTable($args)
     {
-        $productId = $args['row']['entity_id'];
+        $productId = $args['row'][$this->linkField];
         $attributeCode = $this->findAttributeCodeById($args['row']['attribute_id'], $args['attributeMapper']);
         $storeId = $args['row']['store_id'];
 

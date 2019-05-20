@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright ©2019 Itegration Ltd., Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 namespace Emartech\Emarsys\Model\Api;
 
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
@@ -27,7 +30,13 @@ use Emartech\Emarsys\Api\Data\ImagesInterface;
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
 use Emartech\Emarsys\Model\ResourceModel\Api\Category as CategoryResource;
 use Emartech\Emarsys\Model\ResourceModel\Api\Product as ProductResource;
+use Emartech\Emarsys\Helper\LinkField;
 
+/**
+ * Class ProductsApi
+ *
+ * @package Emartech\Emarsys\Model\Api
+ */
 class ProductsApi implements ProductsApiInterface
 {
     /**
@@ -108,16 +117,6 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @var int
      */
-    private $minEId = 0;
-
-    /**
-     * @var int
-     */
-    private $maxEId = 0;
-
-    /**
-     * @var int
-     */
     private $numberOfItems = 0;
 
     /**
@@ -143,7 +142,7 @@ class ProductsApi implements ProductsApiInterface
     /**
      * @var string
      */
-    private $linkField = 'entity_id';
+    private $linkField;
 
     /**
      * @var ObjectManagerInterface
@@ -161,6 +160,11 @@ class ProductsApi implements ProductsApiInterface
     private $productResource;
 
     /**
+     * @var LinkField
+     */
+    private $linkFieldHelper;
+
+    /**
      * ProductsApi constructor.
      *
      * @param CategoryCollectionFactory           $categoryCollectionFactory
@@ -176,6 +180,7 @@ class ProductsApi implements ProductsApiInterface
      * @param CategoryResource                    $categoryResource
      * @param ProductResource                     $productResource
      * @param ObjectManagerInterface              $objectManager
+     * @param LinkField                           $linkFieldHelper
      */
     public function __construct(
         CategoryCollectionFactory $categoryCollectionFactory,
@@ -190,7 +195,8 @@ class ProductsApi implements ProductsApiInterface
         LoggerInterface $logger,
         CategoryResource $categoryResource,
         ProductResource $productResource,
-        ObjectManagerInterface $objectManager
+        ObjectManagerInterface $objectManager,
+        LinkField $linkFieldHelper
     ) {
         $this->categoryCollectionFactory = $categoryCollectionFactory;
 
@@ -206,6 +212,8 @@ class ProductsApi implements ProductsApiInterface
         $this->categoryResource = $categoryResource;
         $this->productResource = $productResource;
         $this->objectManager = $objectManager;
+        $this->linkFieldHelper = $linkFieldHelper;
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
     }
 
     /**
@@ -216,7 +224,6 @@ class ProductsApi implements ProductsApiInterface
      * @return ProductsApiResponseInterface
      * @throws WebApiException
      * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Zend_Db_Statement_Exception
      */
     public function get($page, $pageSize, $storeId)
     {
@@ -277,15 +284,6 @@ class ProductsApi implements ProductsApiInterface
     protected function initCollection()
     {
         $this->productCollection = $this->productCollectionFactory->create();
-
-        if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
-            // @codingStandardsIgnoreLine
-            $metadataPool = $this->objectManager->create(
-                'Magento\Framework\EntityManager\MetadataPool'
-            );
-            $this->linkField = $metadataPool->getMetadata(ProductInterface::class)->getLinkField();
-        }
-
         return $this;
     }
 
@@ -294,7 +292,6 @@ class ProductsApi implements ProductsApiInterface
      * @param int $pageSize
      *
      * @return $this
-     * @throws \Zend_Db_Statement_Exception
      */
     // @codingStandardsIgnoreLine
     protected function handleIds($page, $pageSize)
@@ -302,19 +299,11 @@ class ProductsApi implements ProductsApiInterface
         $page--;
         $page *= $pageSize;
 
-        $data = $this->productResource->handleIds($page, $pageSize, $this->linkField);
+        $data = $this->productResource->handleIds($page, $pageSize);
 
         $this->numberOfItems = $data['numberOfItems'];
         $this->minId = $data['minId'];
         $this->maxId = $data['maxId'];
-
-        if (array_key_exists('minEId', $data) && array_key_exists('maxEId', $data)) {
-            $this->minEId = $data['minEId'];
-            $this->maxEId = $data['maxEId'];
-        } else {
-            $this->minEId = $this->minId;
-            $this->maxEId = $this->maxId;
-        }
 
         return $this;
     }
@@ -337,7 +326,7 @@ class ProductsApi implements ProductsApiInterface
     protected function handleChildrenProductIds()
     {
         $this->childrenProductIds = $this->productResource
-            ->getChildrenProductIds($this->minEId, $this->maxEId);
+            ->getChildrenProductIds($this->minId, $this->maxId);
 
         return $this;
     }
@@ -368,8 +357,8 @@ class ProductsApi implements ProductsApiInterface
     protected function setWhere()
     {
         $this->productCollection
-            ->addFieldToFilter('entity_id', ['from' => $this->minId])
-            ->addFieldToFilter('entity_id', ['to' => $this->maxId]);
+            ->addFieldToFilter($this->linkField, ['from' => $this->minId])
+            ->addFieldToFilter($this->linkField, ['to' => $this->maxId]);
 
         return $this;
     }
@@ -382,7 +371,7 @@ class ProductsApi implements ProductsApiInterface
     {
         $this->productCollection
             ->groupByAttribute($this->linkField)
-            ->setOrder('entity_id', DataCollection::SORT_ORDER_ASC);
+            ->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }
@@ -543,14 +532,14 @@ class ProductsApi implements ProductsApiInterface
     protected function handleProductStoreData($product)
     {
         $returnArray = [];
-
         foreach ($this->storeIds as $storeId => $storeObject) {
+            $productId = $product->getData($this->linkField);
             $returnArray[] = $this->productStoreDataFactory->create()
                 ->setStoreId($storeId)
-                ->setStatus($this->getStoreData($product->getId(), $storeId, 'status'))
-                ->setDescription($this->getStoreData($product->getId(), $storeId, 'description'))
+                ->setStatus($this->getStoreData($productId, $storeId, 'status'))
+                ->setDescription($this->getStoreData($productId, $storeId, 'description'))
                 ->setLink($this->handleLink($product, $storeObject))
-                ->setName($this->getStoreData($product->getId(), $storeId, 'name'))
+                ->setName($this->getStoreData($productId, $storeId, 'name'))
                 ->setPrice($this->handlePrice($product, $storeObject))
                 ->setDisplayPrice($this->handleDisplayPrice($product, $storeObject))
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
@@ -587,7 +576,7 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleLink($product, $store)
     {
-        $link = $this->getStoreData($product->getId(), $store->getId(), 'url_key');
+        $link = $this->getStoreData($product->getData($this->linkField), $store->getId(), 'url_key');
 
         if ($link) {
             return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
@@ -619,9 +608,10 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleDisplayPrice($product, $store)
     {
-        $price = $this->getStoreData($product->getId(), $store->getId(), 'price');
+        $productId = $product->getData($this->linkField);
+        $price = $this->getStoreData($productId, $store->getId(), 'price');
         if (empty($price)) {
-            $price = $this->getStoreData($product->getId(), 0, 'price');
+            $price = $this->getStoreData($productId, 0, 'price');
         }
 
         $product->setPrice($price);
@@ -653,12 +643,13 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handlePrice($product, $store)
     {
-        $price = $this->getStoreData($product->getId(), $store->getId(), 'price');
-        $specialPrice = $this->getStoreData($product->getId(), $store->getId(), 'special_price');
+        $productId = $product->getData($this->linkField);
+        $price = $this->getStoreData($productId, $store->getId(), 'price');
+        $specialPrice = $this->getStoreData($productId, $store->getId(), 'special_price');
 
         if (!empty($specialPrice)) {
-            $specialFromDate = $this->getStoreData($product->getId(), $store->getId(), 'special_from_date');
-            $specialToDate = $this->getStoreData($product->getId(), $store->getId(), 'special_end_date');
+            $specialFromDate = $this->getStoreData($productId, $store->getId(), 'special_from_date');
+            $specialToDate = $this->getStoreData($productId, $store->getId(), 'special_end_date');
 
             if ($specialFromDate) {
                 $specialFromDate = strtotime($specialFromDate);
