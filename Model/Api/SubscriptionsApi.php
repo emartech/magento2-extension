@@ -217,8 +217,8 @@ class SubscriptionsApi implements SubscriptionsApiInterface
 
         // @codingStandardsIgnoreLine
         $this->subscriptionCollection->getSelect()->joinLeft(
-            [$storeTable],
-            $storeTable . '.store_id = main_table.store_id',
+            ['store' => $storeTable],
+            'store.store_id = main_table.store_id',
             ['website_id']
         );
 
