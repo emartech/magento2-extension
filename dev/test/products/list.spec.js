@@ -37,7 +37,18 @@ describe('Products endpoint', function() {
   });
 
   it('returns child entities for configurable products', async function() {
-    const page = this.magentoVersion === '2.3.0' ? 68 : 67;
+    let page;
+    switch (this.magentoVersion) {
+      case '2.3.0':
+        page = 68;
+        break;
+      case '2.3.1':
+        page = 70;
+        break;
+      default:
+        page = 67;
+    }
+
     const limit = 1;
 
     const { products } = await this.magentoApi.execute('products', 'get', { page, limit });
