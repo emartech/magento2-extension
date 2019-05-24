@@ -87,6 +87,7 @@ class EventRepository implements EventRepositoryInterface
      */
     public function isSinceIdIsHigherThanAutoIncrement($sinceId)
     {
+        $eventsTableName = $this->eventResourceModel->getTable('emarsys_events_data');
         return (bool) $this->eventResourceModel->getConnection()->fetchOne("
             SELECT
                 (
@@ -99,11 +100,11 @@ class EventRepository implements EventRepositoryInterface
                             SELECT
                                 database()
                         )
-                        AND TABLE_NAME = 'emarsys_events_data'
+                        AND TABLE_NAME = ?
                 ) <= (
                     SELECT
                         CAST(? AS UNSIGNED)
                 );
-        ", [$sinceId]);
+        ", [$eventsTableName, $sinceId]);
     }
 }

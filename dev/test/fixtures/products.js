@@ -2,12 +2,12 @@
 
 const getProducts = (hostname, page, limit, magentoVersion, magentoEdition) => {
   return {
-    products: products(hostname, page, limit, magentoVersion, magentoEdition),
-    productCount: (magentoVersion === '2.3.1' && magentoEdition === 'Enterprise') ? 2050 : 2048
+    products: products(hostname, page, limit, magentoVersion, magentoEdition, magentoEdition),
+    productCount: magentoVersion === '2.3.1' && magentoEdition === 'Enterprise' ? 2050 : 2048
   };
 };
 
-const products = (hostname, page, limit, magentoVersion) => {
+const products = (hostname, page, limit, magentoVersion, magentoEdition) => {
   if (page === 3 && limit === 10) {
     return [
       {
@@ -47,35 +47,49 @@ const products = (hostname, page, limit, magentoVersion) => {
   }
 
   if (page === 67 && limit === 1) {
-    return configurable[magentoVersion];
+    return configurable[magentoVersion][magentoEdition];
   }
 };
 
 const configurable = {
-  '2.1.8': [
-    {
-      type: 'configurable',
-      children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
-    }
-  ],
-  '2.2.6': [
-    {
-      type: 'configurable',
-      children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
-    }
-  ],
-  '2.3.0': [
-    {
-      type: 'configurable',
-      children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
-    }
-  ],
-  '2.3.1': [
-    {
-      type: 'configurable',
-      children_entity_ids: [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
-    }
-  ]
+  '2.1.8': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+      }
+    ]
+  },
+  '2.2.6': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+      }
+    ]
+  },
+  '2.3.0': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ]
+  },
+  '2.3.1': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ],
+    Enterprise: [
+      {
+        type: 'configurable',
+        children_entity_ids: [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
+      }
+    ]
+  }
 };
 
 module.exports = {
