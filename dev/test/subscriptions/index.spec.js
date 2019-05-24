@@ -1,10 +1,10 @@
 'use strict';
 
-const createSubscriptionGetter = db => {
+const createSubscriptionGetter = (db, tablePrefix) => {
   return async email => {
     return await db
       .select()
-      .from('newsletter_subscriber')
+      .from(`${tablePrefix}newsletter_subscriber`)
       .where({ subscriber_email: email })
       .first();
   };
@@ -25,12 +25,12 @@ describe('Subscriptions api', function() {
   let subscriptionFor;
 
   before(function() {
-    subscriptionFor = createSubscriptionGetter(this.db);
+    subscriptionFor = createSubscriptionGetter(this.db, this.getTableName(''));
   });
 
   describe('update', function() {
     afterEach(async function() {
-      await this.db('newsletter_subscriber')
+      await this.db(this.getTableName('newsletter_subscriber'))
         .whereIn('subscriber_email', [noCustomerEmail, customerEmail])
         .delete();
     });
@@ -101,7 +101,7 @@ describe('Subscriptions api', function() {
             store_id: storeId
           }
         ])
-        .into('newsletter_subscriber');
+        .into(this.getTableName('newsletter_subscriber'));
     });
 
     it('should list all subscriber without filters', async function() {

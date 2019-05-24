@@ -74,12 +74,16 @@ describe('Webextend scripts', function() {
 
     it('should include product', async function() {
       const emarsysSnippets = await getEmarsysSnippetContents('cassius-sparring-tank.html');
+      const fullVersion = this.magentoVersion + this.magentoEdition;
       let productId;
-      switch (this.magentoVersion) {
-        case '2.3.0':
+      switch (fullVersion) {
+        case '2.3.0Community':
           productId = 730;
           break;
-        case '2.3.1':
+        case '2.3.1Community':
+          productId = 730;
+          break;
+        case '2.3.1Enterprise':
           productId = 732;
           break;
         default:

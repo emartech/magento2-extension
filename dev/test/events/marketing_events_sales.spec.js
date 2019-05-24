@@ -3,7 +3,7 @@
 const getLastEvent = async db =>
   await db
     .select()
-    .from('emarsys_events_data')
+    .from(`${tablePrefix}emarsys_events_data`)
     .orderBy('event_id', 'desc')
     .first();
 
@@ -162,9 +162,12 @@ const expectCustomerAndOrderMatches = function(createdEventData, customer, local
   expectOrderMatches(createdEventData, localCartItem);
 };
 
+let tablePrefix;
+
 describe('Marketing events: sales', function() {
   let localCartItem;
   before(function() {
+    tablePrefix = this.getTableName('');
     localCartItem = this.localCartItem;
   });
 
@@ -173,7 +176,7 @@ describe('Marketing events: sales', function() {
       websiteId: 1,
       config: { collectMarketingEvents: 'disabled' }
     });
-    await this.db.truncate('emarsys_events_data');
+    await this.db.truncate(this.getTableName('emarsys_events_data'));
   });
 
   describe('If config collectMarketingEvents is disabled', function() {
@@ -296,7 +299,7 @@ describe('Marketing events: sales', function() {
       describe('store is not enabled', function() {
         before(async function() {
           await this.clearStoreSettings();
-          await this.db.truncate('emarsys_events_data');
+          await this.db.truncate(this.getTableName('emarsys_events_data'));
         });
 
         after(async function() {

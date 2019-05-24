@@ -13,7 +13,7 @@ const customer = {
 
 describe('Customer events', function() {
   afterEach(async function() {
-    await this.db.raw('DELETE FROM customer_entity where email = "yolo99@yolo.net"');
+    await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email = "yolo99@yolo.net"`);
     await this.magentoApi.execute('config', 'setDefault', 1);
   });
 
@@ -23,7 +23,7 @@ describe('Customer events', function() {
 
     const event = await this.db
       .select()
-      .from('emarsys_events_data')
+      .from(this.getTableName('emarsys_events_data'))
       .where({ event_type: 'customers/update' })
       .first();
 
@@ -40,7 +40,7 @@ describe('Customer events', function() {
 
     const event = await this.db
       .select()
-      .from('emarsys_events_data')
+      .from(this.getTableName('emarsys_events_data'))
       .where({ event_type: 'customers/update' })
       .first();
 

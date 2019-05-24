@@ -21,7 +21,7 @@ const createCustomer = (magentoApi, db) => async (customer, password) => {
 
   const { entity_id: entityId } = await db
     .select('entity_id')
-    .from('customer_entity')
+    .from(getTableName('customer_entity'))
     .where({ email: customer.email })
     .first();
 
@@ -51,14 +51,16 @@ const deleteCategory = magentoApi => async categoryId => {
   return await magentoApi.delete({ path: `/index.php/rest/V1/categories/${categoryId}` });
 };
 
+const getTableName = table => `${process.env.TABLE_PREFIX}${table}`;
+
 const setCurrencyConfig = async db => {
-  await db('core_config_data')
+  await db(getTableName('core_config_data'))
     .where({ path: 'currency/options/default' })
     .update({ value: 'UGX' });
-  await db('core_config_data')
+  await db(getTableName('core_config_data'))
     .where({ path: 'currency/options/allow' })
     .update({ value: 'USD,UGX' });
-  await db('directory_currency_rate').insert({
+  await db(getTableName('directory_currency_rate')).insert({
     currency_from: 'USD',
     currency_to: 'UGX',
     rate: '2'
@@ -92,7 +94,7 @@ const clearStoreSettings = magentoApi => async () => {
   });
 };
 
-const getMagentoSystemInfo = async (magentoApi) => {
+const getMagentoSystemInfo = async magentoApi => {
   const result = await magentoApi.execute('systeminfo', 'get');
   return result;
 };
@@ -129,6 +131,10 @@ const localCartItem = (magentoVersion, magentoEdition) => {
 };
 
 before(async function() {
+  console.log(`MAGENTO TABLE PREFIX: ${process.env.TABLE_PREFIX}`);
+
+  this.getTableName = getTableName;
+
   this.db = knex({
     client: 'mysql',
     connection: {
@@ -143,14 +149,18 @@ before(async function() {
 
   const { token } = await this.db
     .select('token')
-    .from('integration')
+    .from(this.getTableName('integration'))
     .where({ name: 'Emarsys Integration' })
-    .leftJoin('oauth_token', 'integration.consumer_id', 'oauth_token.consumer_id')
+    .leftJoin(
+      this.getTableName('oauth_token'),
+      this.getTableName('integration.consumer_id'),
+      this.getTableName('oauth_token.consumer_id')
+    )
     .first();
 
   const { value: baseUrl } = await this.db
     .select('value')
-    .from('core_config_data')
+    .from(this.getTableName('core_config_data'))
     .where({ path: 'web/unsecure/base_url' })
     .first();
 

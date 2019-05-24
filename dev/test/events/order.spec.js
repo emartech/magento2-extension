@@ -3,7 +3,7 @@
 const getLastEvent = async db =>
   await db
     .select()
-    .from('emarsys_events_data')
+    .from(`${tablePrefix}emarsys_events_data`)
     .orderBy('event_id', 'desc')
     .first();
 
@@ -86,9 +86,12 @@ const cancelOrder = async (magentoApi, orderId) => {
   });
 };
 
+let tablePrefix;
+
 describe('Order events', function() {
   let localCartItem;
   before(function() {
+    tablePrefix = this.getTableName('');
     localCartItem = this.localCartItem;
   });
   context('setting enabled', function() {

@@ -34,7 +34,7 @@ run-local-e2e:
 	-CYPRESS_baseUrl=http://magento-test.local:8889 ./dev/test/node_modules/.bin/cypress run --project ./dev/test/
 
 run-npmt:
-	-@$(COMPOSE) run --rm node npm t
+	-@$(COMPOSE) run --rm -e "TABLE_PREFIX=$$TABLE_PREFIX" node npm t
 
 quick-test: ## Runs tests
 	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run quick-test
