@@ -9,7 +9,12 @@ alias compose="docker-compose -p mage_$VERSION"
 
 compose down
 
-echo "\n|--- Running tests on Magento $VERSION"
+if [[ "$TABLE_PREFIX" == "" ]]
+then
+  echo "\n|--- Running tests on Magento $VERSION"
+else
+  echo "\n|--- Running tests on Magento $VERSION with $TABLE_PREFIX"
+fi
 echo "\n|--- Starting containers"
 compose up -d
 echo "\n|--- Waiting for containers to initialize"

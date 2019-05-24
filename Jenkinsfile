@@ -40,19 +40,24 @@ pipeline {
             sh 'VERSION=2.3.1ee sh dev/jenkins/run.sh'
           }
         }
+        stage('Build and run tests on Magento 2.3.1 with table prefix') {
+          steps {
+            sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run.sh'
+          }
+        }
         stage('Build and run tests on Magento 2.3.0') {
           steps {
-            sh 'VERSION=2.3.0 sh dev/jenkins/run.sh'
+            sh 'VERSION=2.3.0ce sh dev/jenkins/run.sh'
           }
         }
         stage('Build and run tests on Magento 2.2.6') {
           steps {
-            sh 'VERSION=2.2.6 sh dev/jenkins/run.sh'
+            sh 'VERSION=2.2.6ce sh dev/jenkins/run.sh'
           }
         }
         stage('Build and run tests on Magento 2.1.8') {
           steps {
-            sh 'VERSION=2.1.8 sh dev/jenkins/run.sh'
+            sh 'VERSION=2.1.8ce sh dev/jenkins/run.sh'
           }
         }
       }
