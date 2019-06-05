@@ -77,7 +77,7 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->addColumn(
                     'event_data',
-                    'mediumblob',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_BLOB,
                     null,
                     ['default' => null, 'nullable' => false],
                     'Event Data'
@@ -108,6 +108,7 @@ class InstallSchema implements InstallSchemaInterface
                     ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX]
                 );
             $setup->getConnection()->createTable($table);
+            $setup->getConnection()->modifyColumn($tableName, 'event_data', 'mediumblob');
         }
     }
 }
