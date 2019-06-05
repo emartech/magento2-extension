@@ -77,7 +77,7 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->addColumn(
                     'event_data',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_BLOB,
+                    'mediumblob',
                     null,
                     ['default' => null, 'nullable' => false],
                     'Event Data'

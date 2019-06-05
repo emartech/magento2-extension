@@ -14,7 +14,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
     ) {
         $setup->startSetup();
 
-        if (version_compare($context->getVersion(), '1.5.1') < 0) {
+        if (version_compare($context->getVersion(), '1.5.2') < 0) {
             $tableName = $setup->getTable('emarsys_events_data');
 
             if ($setup->getConnection()->isTableExists($tableName) == true) {
