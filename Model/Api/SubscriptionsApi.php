@@ -241,7 +241,10 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             if (!is_array($websiteId)) {
                 $websiteId = explode(',', $websiteId);
             }
-            $this->subscriptionCollection->addFieldToFilter($this->storeTableName . '.website_id', ['in' => $websiteId]);
+            $this->subscriptionCollection->addFieldToFilter(
+                $this->storeTableName . '.website_id',
+                ['in' => $websiteId]
+            );
         }
 
         return $this;
