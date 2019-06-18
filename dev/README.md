@@ -164,6 +164,8 @@ Update the version in `etc/module.xml`:
 </config>
 ```
 
+Push the changes.
+
 Delete all local tags and fetch the valid tags
 ```
 git tag -l | xargs git tag -d
@@ -172,17 +174,25 @@ git fetch --tags
 
 Commit with message that will be the release title. Tag the commit:
 ```
-$ git tag v1.1.3
+git tag v1.1.3
 ```
 
 Push with tags:
 ```
-$ git push --tags
+git push --tags
 ```
 
 Go to repository on GitHub, click releases and then on Draft new release button.
 
+Fill in the details and release a new version.
+
 Got to [packagist.org](https://packagist.org/packages/emartech/emarsys-magento2-extension) (sign in credentials on secret.emarsys.net) and click the green **Update** button. You should see the new release appear on the right side of the page.
+
+If you accidentally tagged the wrong commit, you can update the tag like this. It amends to the release.
+```
+git tag -f v.1.1.3
+git push -f --tags
+```
 
 ## Codeship env
 * [Install](https://documentation.codeship.com/pro/jet-cli/installation/) `jet`
