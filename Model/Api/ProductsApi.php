@@ -274,8 +274,6 @@ class ProductsApi implements ProductsApiInterface
             }
         }
 
-        krsort($this->storeIds);
-
         return $this;
     }
 
