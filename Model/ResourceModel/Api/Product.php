@@ -347,7 +347,7 @@ class Product extends ProductResourceModel
                 $mainTableFields[] = $this->linkField;
             }
             $attributesQuery = $this->_resource->getConnection()->select()
-                ->from($this->getTable($this->mainTable), $mainTableFields)
+                ->from($this->mainTable, $mainTableFields)
                 ->where($this->linkField . ' >= ?', $minProductId)
                 ->where($this->linkField . ' <= ?', $maxProductId);
 
@@ -386,7 +386,7 @@ class Product extends ProductResourceModel
 
         foreach ($attributeTables as $attributeTable) {
             $attributeQueries[] = $this->_resource->getConnection()->select()
-                ->from($this->getTable($attributeTable), ['attribute_id', 'store_id', $this->linkField, 'value'])
+                ->from($attributeTable, ['attribute_id', 'store_id', $this->linkField, 'value'])
                 ->where($this->linkField . ' >= ?', $minProductId)
                 ->where($this->linkField . ' <= ?', $maxProductId)
                 ->where('store_id IN (?)', $storeIds)
