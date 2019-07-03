@@ -3,6 +3,7 @@
  * Copyright ©2019 Itegration Ltd., Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Emartech\Emarsys\Model\Api;
 
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
@@ -273,6 +274,8 @@ class ProductsApi implements ProductsApiInterface
             }
         }
 
+        krsort($this->storeIds);
+
         return $this;
     }
 
@@ -532,6 +535,7 @@ class ProductsApi implements ProductsApiInterface
     protected function handleProductStoreData($product)
     {
         $returnArray = [];
+
         foreach ($this->storeIds as $storeId => $storeObject) {
             $productId = $product->getData($this->linkField);
             $returnArray[] = $this->productStoreDataFactory->create()
@@ -562,6 +566,10 @@ class ProductsApi implements ProductsApiInterface
             && array_key_exists($attributeCode, $this->attributeData[$productId][$storeId])
         ) {
             return $this->attributeData[$productId][$storeId][$attributeCode];
+        }
+
+        if ($storeId != 0) {
+            return $this->getStoreData($productId, 0, $attributeCode);
         }
 
         return null;
@@ -610,9 +618,6 @@ class ProductsApi implements ProductsApiInterface
     {
         $productId = $product->getData($this->linkField);
         $price = $this->getStoreData($productId, $store->getId(), 'price');
-        if (empty($price)) {
-            $price = $this->getStoreData($productId, 0, 'price');
-        }
 
         $product->setPrice($price);
         // @codingStandardsIgnoreStart
