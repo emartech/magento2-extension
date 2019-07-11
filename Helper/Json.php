@@ -46,7 +46,7 @@ class Json extends AbstractHelper
         if (version_compare($this->productMetadata->getVersion(), '2.2.0', '>=')) {
             $objManager = \Magento\Framework\App\ObjectManager::getInstance();
             /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
-            $serializer = $objManager->create('Magento\Framework\Serialize\Serializer\Json');
+            $serializer = $objManager->create(\Magento\Framework\Serialize\Serializer\Json::class);
             return $serializer->serialize($data);
         }
 
@@ -67,7 +67,7 @@ class Json extends AbstractHelper
         if (version_compare($this->productMetadata->getVersion(), '2.2.0', '>=')) {
             $objManager = \Magento\Framework\App\ObjectManager::getInstance();
             /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
-            $serializer = $objManager->create('Magento\Framework\Serialize\Serializer\Json');
+            $serializer = $objManager->create(\Magento\Framework\Serialize\Serializer\Json::class);
             return $serializer->unserialize($string);
         }
 

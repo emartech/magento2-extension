@@ -45,10 +45,10 @@ class LinkField extends AbstractHelper
      */
     public function getEntityLinkField($class, $linkField = 'entity_id')
     {
-        if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
+        if (class_exists(\Magento\Framework\EntityManager\MetadataPool::class)) {
             // @codingStandardsIgnoreLine
             $metadataPool = $this->objectManager->create(
-                'Magento\Framework\EntityManager\MetadataPool'
+                \Magento\Framework\EntityManager\MetadataPool::class
             );
             $linkField = $metadataPool->getMetadata($class)->getLinkField();
         }

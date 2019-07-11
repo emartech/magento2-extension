@@ -155,9 +155,8 @@ class Event extends AbstractModel implements EventInterface
     /**
      * @return void
      */
-    // @codingStandardsIgnoreLine
     protected function _construct()
     {
-        $this->_init('Emartech\Emarsys\Model\ResourceModel\Event');
+        $this->_init(\Emartech\Emarsys\Model\ResourceModel\Event::class);
     }
 }

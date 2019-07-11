@@ -237,10 +237,10 @@ class Snippets extends Template
                 $categoryIds = $this->removeDefaultCategories($category->getPathIds());
 
                 $linkField = 'entity_id';
-                if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
+                if (class_exists(\Magento\Framework\EntityManager\MetadataPool::class)) {
                     // @codingStandardsIgnoreLine
                     $metadataPool = $this->objectManager->create(
-                        'Magento\Framework\EntityManager\MetadataPool'
+                        \Magento\Framework\EntityManager\MetadataPool::class
                     );
                     $linkField = $metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
                 }

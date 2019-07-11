@@ -12,6 +12,10 @@ use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Setup\Exception as SetupException;
 use Zend\Uri\Http;
 
+/**
+ * Class Uninstall
+ * @package Emartech\Emarsys\Setup
+ */
 class Integration extends AbstractHelper
 {
     /** @var IntegrationService */
