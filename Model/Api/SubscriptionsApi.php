@@ -64,6 +64,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     private $subscriptionCollection;
 
     /**
+     * @var string
+     */
+    private $storeTableName;
+
+    /**
      * SubscriptionsApi constructor.
      *
      * @param CollectionFactory                        $subscriberCollectionFactory
@@ -160,7 +165,8 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     private function initCollection()
     {
         $this->subscriptionCollection = $this->subscriberCollectionFactory->create();
-
+        $this->storeTableName = $this->subscriptionCollection->getResource()->getTable('store');
+        
         return $this;
     }
 
@@ -213,12 +219,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      */
     private function joinWebsite()
     {
-        $storeTable = $this->subscriptionCollection->getResource()->getTable('store');
 
         // @codingStandardsIgnoreLine
         $this->subscriptionCollection->getSelect()->joinLeft(
-            [$storeTable],
-            $storeTable . '.store_id = main_table.store_id',
+            [$this->storeTableName],
+            $this->storeTableName . '.store_id = main_table.store_id',
             ['website_id']
         );
 
@@ -236,7 +241,10 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             if (!is_array($websiteId)) {
                 $websiteId = explode(',', $websiteId);
             }
-            $this->subscriptionCollection->addFieldToFilter('website_id', ['in' => $websiteId]);
+            $this->subscriptionCollection->addFieldToFilter(
+                $this->storeTableName . '.website_id',
+                ['in' => $websiteId]
+            );
         }
 
         return $this;

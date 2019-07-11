@@ -2,6 +2,13 @@ db:
   image: healthcheck/percona
   cached: true
   encrypted_env_file: codeship.env.encrypted
+
+
+dockercfg-generator:
+  image: codeship/gcr-dockercfg-generator
+  add_docker: true
+  encrypted_env_file: codeship.env.encrypted
+
 magento-test.local:
   image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.6
   container_name: magento-test.local
@@ -12,15 +19,16 @@ magento-test.local:
     - ./dev/setup:/opt/emartech/setup
     - .:/app/vendor/emartech/emarsys-magento2-extension
     - ./dev/cache-flush.php:/app/cache-flush.php
+    - ./dev/Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
   cached: true
   encrypted_env_file: codeship.env.encrypted
+  environment:
+    - MYSQL_DATABASE=magento
+    - MAGENTO_URL=http://magento-test.local
   dockercfg_service: dockercfg-generator
-dockercfg-generator:
-  image: codeship/gcr-dockercfg-generator
-  add_docker: true
-  encrypted_env_file: codeship.env.encrypted
+
 magento-static:
-  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.5
+  image: eu.gcr.io/ems-plugins/magento-sampledata:2.2.6
   container_name: magento-static
   volumes:
     - ./dev/setup:/opt/emartech/setup
@@ -28,23 +36,21 @@ magento-static:
   cached: true
   encrypted_env_file: codeship.env.encrypted
   dockercfg_service: dockercfg-generator
-dockercfg-generator:
-  image: codeship/gcr-dockercfg-generator
-  add_docker: true
-  encrypted_env_file: codeship.env.encrypted
+
 node:
   container_name: mage_node
   build:
     context: ./dev
-    dockerfile: ./Docker/Dockerfile-node
+    dockerfile: ./Docker/Dockerfile-node-CI
     encrypted_args_file: codeship.env.encrypted
-  volumes:
-    - ./dev/test:/test
   depends_on:
     - db
     - magento-test.local
   cached: true
   encrypted_env_file: codeship.env.encrypted
+  environment:
+    - MYSQL_DATABASE=magento
+
 deployment:
   image: codeship/google-cloud-deployment
   encrypted_env_file: codeship.env.encrypted

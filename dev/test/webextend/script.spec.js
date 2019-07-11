@@ -56,20 +56,44 @@ describe('Webextend scripts', function() {
 
     it('should include category', async function() {
       const emarsysSnippets = await getEmarsysSnippetContents('men/tops-men.html');
+      let categoryIds;
+      if (this.magentoVersion === '2.3.1' && this.magentoEdition === 'Enterprise') {
+        categoryIds = ['12', '13'];
+      } else {
+        categoryIds = ['11', '12'];
+      }
+
       expect(
         emarsysSnippets.includes(
-          //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Tops"],"ids":["11","12"]},"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>'
+          `<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Tops"],"ids":${JSON.stringify(
+            categoryIds
+          )}},"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
       ).to.be.true;
     });
 
     it('should include product', async function() {
       const emarsysSnippets = await getEmarsysSnippetContents('cassius-sparring-tank.html');
+      const fullVersion = this.magentoVersion + this.magentoEdition;
+      let productId;
+      switch (fullVersion) {
+        case '2.3.0Community':
+          productId = 730;
+          break;
+        case '2.3.1Community':
+          productId = 730;
+          break;
+        case '2.3.1Enterprise':
+          productId = 732;
+          break;
+        default:
+          productId = 729;
+      }
+
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"729"},"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>'
+          `<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"${productId}"},"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
       ).to.be.true;
     });

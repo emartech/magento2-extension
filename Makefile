@@ -86,5 +86,8 @@ devlog: ## Tail dev conatiner docker logs
 testlog: ## Tail test conatiner docker logs
 	@$(COMPOSE) logs -f magento-test
 
+build-cypress: ## Build Cypress image (usage: make build-cypress VERSION=3.1.4)
+	cd dev/CypressBuild && sh build.sh $(VERSION)
+
 help: ## This help message
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' -e 's/:.*#/: #/' | column -t -s '##'

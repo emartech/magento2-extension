@@ -5,9 +5,10 @@
   "scripts": {
     "test": "npm run mocha && npm run code-style",
     "e2e": "cypress run --browser chrome",
+    "e2e:ci": "cypress run --browser chrome --record --key 80ddf60c-0dca-4075-8074-31207092e038",
     "e2e:debug": "DEBUG=cypress:* cypress run --browser chrome",
     "quick-test": "npm run mocha",
-    "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 30000 --colors ./setup.spec.js './!(node_modules|cypress)/**/*.spec.js'",
+    "mocha": "./node_modules/mocha/bin/mocha --exit --timeout 60000 --colors ./setup.spec.js './!(node_modules|cypress)/**/*.spec.js'",
     "code-style": "eslint '!(node_modules)/**/**.js'"
   },
   "repository": {
@@ -20,23 +21,24 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@emartech/magento2-api": "3.25.0",
-    "axios": "0.18.0",
+    "@emartech/magento2-api": "3.28.0",
+    "axios": "0.19.0",
     "chai": "4.2.0",
     "chai-string": "1.5.0",
     "chai-subset": "1.6.0",
-    "eslint": "5.12.1",
+    "cheerio": "1.0.0-rc.3",
+    "cypress": "3.3.1",
+    "cypress-plugin-retries": "1.2.2",
+    "eslint": "5.16.0",
     "eslint-config-emarsys": "5.1.0",
-    "eslint-plugin-mocha": "5.2.1",
-    "eslint-plugin-no-only-tests": "2.1.0",
+    "eslint-plugin-mocha": "5.3.0",
+    "eslint-plugin-no-only-tests": "2.3.1",
     "eslint-plugin-security": "1.4.0",
-    "knex": "0.16.3",
-    "mocha": "5.2.0",
-    "mysql": "2.16.0",
-    "sinon": "7.2.3",
-    "sinon-chai": "3.3.0",
     "form-data": "2.3.3",
-    "cheerio": "1.0.0-rc.2",
-    "cypress": "3.1.4"
+    "knex": "0.17.5",
+    "mocha": "6.1.4",
+    "mysql": "2.17.1",
+    "sinon": "7.3.2",
+    "sinon-chai": "3.3.0"
   }
 }

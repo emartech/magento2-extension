@@ -31,7 +31,7 @@ describe('Customers endpoint', function() {
   });
 
   after(async function() {
-    await this.db.raw('DELETE FROM customer_entity where email like "%@customer.net"');
+    await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email like "%@customer.net"`);
   });
 
   it('returns customers according to page and page_size inlcuding last_page', async function() {

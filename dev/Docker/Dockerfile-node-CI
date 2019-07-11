@@ -1,0 +1,10 @@
+FROM emarsys/ems-integration-cypress:latest
+ARG NPM_TOKEN
+ENV NPM_TOKEN=${NPM_TOKEN}
+
+COPY test /test
+
+WORKDIR /test
+RUN npm i && \
+    ./node_modules/.bin/cypress install && \
+    ./node_modules/.bin/cypress verify

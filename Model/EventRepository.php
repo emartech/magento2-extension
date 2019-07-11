@@ -3,18 +3,13 @@
 
 namespace Emartech\Emarsys\Model;
 
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
-use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Exception\InputException;
 
 use Emartech\Emarsys\Api\Data\EventInterface;
 use Emartech\Emarsys\Model\EventFactory as EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event as EventResourceModel;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
-use Emartech\Emarsys\Model\ResourceModel\Event\Collection as EventCollection;
 use Emartech\Emarsys\Api\EventRepositoryInterface;
 
 /**
@@ -35,38 +30,25 @@ class EventRepository implements EventRepositoryInterface
     private $eventResourceModel;
 
     /**
-     * @var SearchResultsInterfaceFactory
-     */
-    private $searchResultsFactory;
-
-    /**
      * @var EventCollectionFactory
      */
     private $eventCollectionFactory;
-
-    private $collectionProcessor;
 
     /**
      * EventRepository constructor.
      *
      * @param EventFactory                  $eventFactory
      * @param EventResourceModel            $eventResourceModel
-     * @param SearchResultsInterfaceFactory $searchResultsFactory
      * @param EventCollectionFactory        $eventCollectionFactory
-     * @param CollectionProcessorInterface  $collectionProcessor
      */
     public function __construct(
         EventFactory $eventFactory,
         EventResourceModel $eventResourceModel,
-        SearchResultsInterfaceFactory $searchResultsFactory,
-        EventCollectionFactory $eventCollectionFactory,
-        CollectionProcessorInterface $collectionProcessor
+        EventCollectionFactory $eventCollectionFactory
     ) {
         $this->eventFactory = $eventFactory;
         $this->eventResourceModel = $eventResourceModel;
-        $this->searchResultsFactory = $searchResultsFactory;
         $this->eventCollectionFactory = $eventCollectionFactory;
-        $this->collectionProcessor = $collectionProcessor;
     }
 
     /**
@@ -100,38 +82,12 @@ class EventRepository implements EventRepositoryInterface
     }
 
     /**
-     * @param string                  $eventType
-     * @param SearchCriteriaInterface $searchCriteria
-     *
-     * @return SearchResultsInterface
-     * @throws InputException
-     */
-    public function getList($eventType, SearchCriteriaInterface $searchCriteria)
-    {
-        if (!$eventType) {
-            throw InputException::requiredField('entity_type');
-        }
-
-        /** @var EventCollection $eventCollection */
-        $eventCollection = $this->eventCollectionFactory->create();
-        $eventCollection->addFieldToFilter('entity_type_code', ['eq' => $eventType]);
-
-        $this->collectionProcessor->process($searchCriteria, $eventCollection);
-
-        /** @var SearchResultsInterface $searchResults */
-        $searchResults = $this->searchResultsFactory->create();
-        $searchResults->setSearchCriteria($searchCriteria);
-        $searchResults->setItems($eventCollection->getItems());
-        $searchResults->setTotalCount($eventCollection->getSize());
-        return $searchResults;
-    }
-
-    /**
      * @param string sinceId
      * @return bool
      */
     public function isSinceIdIsHigherThanAutoIncrement($sinceId)
     {
+        $eventsTableName = $this->eventResourceModel->getTable('emarsys_events_data');
         return (bool) $this->eventResourceModel->getConnection()->fetchOne("
             SELECT
                 (
@@ -144,11 +100,11 @@ class EventRepository implements EventRepositoryInterface
                             SELECT
                                 database()
                         )
-                        AND TABLE_NAME = 'emarsys_events_data'
+                        AND TABLE_NAME = ?
                 ) <= (
                     SELECT
                         CAST(? AS UNSIGNED)
                 );
-        ", [$sinceId]);
+        ", [$eventsTableName, $sinceId]);
     }
 }

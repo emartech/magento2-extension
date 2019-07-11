@@ -5,7 +5,6 @@ namespace Emartech\Emarsys\Helper;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Newsletter\Model\Subscriber;
-use Psr\Log\LoggerInterface;
 use Magento\Framework\App\Helper\Context;
 use Magento\Store\Model\StoreManagerInterface;
 use Emartech\Emarsys\Helper\Json as JsonSerializer;
@@ -42,7 +41,6 @@ class CustomerEventHandler extends BaseEventHandler
      * @param EventRepositoryInterface $eventRepository
      * @param EventCollectionFactory   $eventCollectionFactory
      * @param Context                  $context
-     * @param LoggerInterface          $logger
      * @param StoreManagerInterface    $storeManager
      * @param JsonSerializer           $jsonSerializer
      */
@@ -54,7 +52,6 @@ class CustomerEventHandler extends BaseEventHandler
         EventRepositoryInterface $eventRepository,
         EventCollectionFactory $eventCollectionFactory,
         Context $context,
-        LoggerInterface $logger,
         StoreManagerInterface $storeManager,
         JsonSerializer $jsonSerializer
     ) {
@@ -62,7 +59,6 @@ class CustomerEventHandler extends BaseEventHandler
         $this->subscriber = $subscriber;
 
         parent::__construct(
-            $logger,
             $storeManager,
             $configReader,
             $eventFactory,

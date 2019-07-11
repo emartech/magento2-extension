@@ -6,22 +6,19 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
-use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
 use Magento\Catalog\Model\ResourceModel\Category\TreeFactory;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Eav\Model\Entity\Context;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\Factory;
-use Magento\Framework\Event\ManagerInterface;
 use Magento\Catalog\Model\Category as CategoryModel;
+use Magento\Eav\Model\Entity\AbstractEntity;
 
 /**
  * Class Category
  *
  * @package Emartech\Emarsys\Model\ResourceModel\Api
  */
-class Category extends CategoryResourceModel
+class Category extends AbstractEntity
 {
     /**
      * @var Iterator
@@ -39,38 +36,29 @@ class Category extends CategoryResourceModel
     private $categories = [];
 
     /**
+     * Category collection factory
+     *
+     * @var CollectionFactory
+     */
+    private $categoryCollectionFactory;
+
+    /**
      * Category constructor.
      *
-     * @param Context               $context
-     * @param StoreManagerInterface $storeManager
-     * @param Factory               $modelFactory
-     * @param ManagerInterface      $eventManager
-     * @param TreeFactory           $categoryTreeFactory
-     * @param CollectionFactory     $categoryCollectionFactory
-     * @param Iterator              $iterator
-     * @param array                 $data
+     * @param Context           $context
+     * @param CollectionFactory $categoryCollectionFactory
+     * @param Iterator          $iterator
+     * @param array             $data
      */
     public function __construct(
         Context $context,
-        StoreManagerInterface $storeManager,
-        Factory $modelFactory,
-        ManagerInterface $eventManager,
-        TreeFactory $categoryTreeFactory,
         CollectionFactory $categoryCollectionFactory,
         Iterator $iterator,
         array $data = []
     ) {
         $this->iterator = $iterator;
-
-        parent::__construct(
-            $context,
-            $storeManager,
-            $modelFactory,
-            $eventManager,
-            $categoryTreeFactory,
-            $categoryCollectionFactory,
-            $data
-        );
+        $this->categoryCollectionFactory = $categoryCollectionFactory;
+        parent::__construct($context, $data);
     }
 
     /**
@@ -84,7 +72,7 @@ class Category extends CategoryResourceModel
         $this->categoryIds = [];
 
         $categoryQuery = $this->_resource->getConnection()->select()
-            ->from($this->getCategoryProductTable(), ['category_id', 'product_id'])
+            ->from($this->getTable('catalog_category_product'), ['category_id', 'product_id'])
             ->where('product_id >= ?', $minProductId)
             ->where('product_id <= ?', $maxProductId);
 
@@ -138,7 +126,7 @@ class Category extends CategoryResourceModel
     private function getCategory($categoryId)
     {
         if (!array_key_exists($categoryId, $this->categories)) {
-            $categoryCollection = $this->_categoryCollectionFactory->create();
+            $categoryCollection = $this->categoryCollectionFactory->create();
             foreach ($categoryCollection as $category) {
                 $this->categories[$category->getId()] = $category;
             }

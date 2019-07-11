@@ -2,7 +2,6 @@
 
 namespace Emartech\Emarsys\Helper;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
@@ -11,8 +10,6 @@ use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Setup\Exception as SetupException;
-use Emartech\Emarsys\Helper\Json;
-use Psr\Log\LoggerInterface;
 use Zend\Uri\Http;
 
 class Integration extends AbstractHelper
@@ -21,8 +18,6 @@ class Integration extends AbstractHelper
     private $integrationService;
     /** @var AuthorizationService */
     private $authorizationService;
-    /**  @var LoggerInterface */
-    private $logger;
     /** @var Json */
     private $json;
     /** @var Token */
@@ -32,10 +27,10 @@ class Integration extends AbstractHelper
     /** @var WriterInterface */
     // @codingStandardsIgnoreLine
     protected $configWriter;
-    /** @var ScopeConfigInterface */
-    // @codingStandardsIgnoreLine
-    protected $scopeConfig;
 
+    /**
+     * @var array
+     */
     private $integrationData = [
         'name'       => 'Emarsys Integration',
         'email'      => 'emarsys@emarsys.com',
@@ -48,6 +43,11 @@ class Integration extends AbstractHelper
      */
     private $http;
 
+    /**
+     * @var Context
+     */
+    private $context;
+
     const MAGENTO_VERSION=2;
 
     /**
@@ -55,34 +55,29 @@ class Integration extends AbstractHelper
      * @param Context $context
      * @param IntegrationService $integrationService
      * @param AuthorizationService $authorizationService
-     * @param LoggerInterface $logger
      * @param Http $http
      * @param Json $json
      * @param Token $token
      * @param Provider $tokenProvider
      * @param WriterInterface $configWriter
-     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
         Context $context,
         IntegrationService $integrationService,
         AuthorizationService $authorizationService,
-        LoggerInterface $logger,
         Http $http,
         Json $json,
         Token $token,
         Provider $tokenProvider,
-        WriterInterface $configWriter,
-        ScopeConfigInterface $scopeConfig
+        WriterInterface $configWriter
     ) {
         parent::__construct($context);
+        $this->context = $context;
         $this->integrationService = $integrationService;
         $this->token = $token;
         $this->authorizationService = $authorizationService;
         $this->tokenProvider = $tokenProvider;
         $this->configWriter = $configWriter;
-        $this->scopeConfig = $scopeConfig;
-        $this->logger = $logger;
         $this->json = $json;
         $this->http = $http;
     }
@@ -98,7 +93,7 @@ class Integration extends AbstractHelper
                 $this->authorizationService->grantAllPermissions($integration->getId());
                 $this->token->createVerifierToken($integration->getConsumerId());
             } catch (\Exception $e) {
-                $this->logger->error($e);
+                $this->_logger->error($e);
             }
         }
     }
@@ -148,7 +143,7 @@ class Integration extends AbstractHelper
      */
     private function getBaseUrl()
     {
-        $baseUrl = $this->scopeConfig->getValue('web/unsecure/base_url');
+        $baseUrl = $this->context->getScopeConfig()->getValue('web/unsecure/base_url');
 
         if (!$baseUrl) {
             throw new SetupException('Missing base_url setting. Set web/unsecure/base_url.');

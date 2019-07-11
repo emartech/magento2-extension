@@ -9,6 +9,7 @@ namespace Emartech\Emarsys\Block;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
 use Emartech\Emarsys\Helper\Json as JsonSerializer;
@@ -21,8 +22,7 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\Registry;
 use Emartech\Emarsys\Model\SettingsFactory;
 use Magento\Directory\Model\CurrencyFactory;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Catalog\Api\Data\CategoryInterface;
+use Magento\Framework\ObjectManagerInterface;
 
 /**
  * Class Snippets
@@ -66,9 +66,9 @@ class Snippets extends Template
     private $categoryCollectionFactory;
 
     /**
-     * @var MetadataPool
+     * @var ObjectManagerInterface
      */
-    private $metadataPool;
+    private $objectManager;
 
     /**
      * Snippets constructor.
@@ -81,7 +81,7 @@ class Snippets extends Template
      * @param CurrencyFactory           $currencyFactory
      * @param JsonSerializer            $jsonSerializer
      * @param CategoryCollectionFactory $categoryCollectionFactory
-     * @param MetadataPool              $metadataPool
+     * @param ObjectManagerInterface    $objectManager
      * @param array                     $data
      */
     public function __construct(
@@ -93,7 +93,7 @@ class Snippets extends Template
         CurrencyFactory $currencyFactory,
         JsonSerializer $jsonSerializer,
         CategoryCollectionFactory $categoryCollectionFactory,
-        MetadataPool $metadataPool,
+        ObjectManagerInterface $objectManager,
         array $data = []
     ) {
         $this->storeManager = $context->getStoreManager();
@@ -104,7 +104,7 @@ class Snippets extends Template
         $this->currencyFactory = $currencyFactory;
         $this->jsonSerializer = $jsonSerializer;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
-        $this->metadataPool = $metadataPool;
+        $this->objectManager = $objectManager;
         parent::__construct($context, $data);
     }
 
@@ -236,7 +236,14 @@ class Snippets extends Template
 
                 $categoryIds = $this->removeDefaultCategories($category->getPathIds());
 
-                $linkField = $this->metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
+                $linkField = 'entity_id';
+                if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
+                    // @codingStandardsIgnoreLine
+                    $metadataPool = $this->objectManager->create(
+                        'Magento\Framework\EntityManager\MetadataPool'
+                    );
+                    $linkField = $metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
+                }
 
                 /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
                 $categoryCollection = $this->categoryCollectionFactory->create()

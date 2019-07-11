@@ -46,14 +46,14 @@ describe('Config endpoint', function() {
 
       await this.db
         .delete()
-        .from('core_config_data')
+        .from(this.getTableName('core_config_data'))
         .where('path', 'like', 'emartech/emarsys/config/%');
 
       await this.magentoApi.execute('config', 'setDefault', websiteId);
 
       const config = await this.db
         .select()
-        .from('core_config_data')
+        .from(this.getTableName('core_config_data'))
         .where('scope_id', websiteId)
         .andWhere('path', 'like', 'emartech/emarsys/config/%');
 
@@ -61,7 +61,10 @@ describe('Config endpoint', function() {
         const configItem = config.find(item => {
           return item.path === `emartech/emarsys/config/${dbKeys[key]}`;
         });
-        expect(configItem.value).to.be.equal(defaults[key]);
+
+        if (configItem || defaults[key] !== null) {
+          expect(configItem.value).to.be.equal(defaults[key]);
+        }
       }
     });
   });
@@ -75,7 +78,7 @@ describe('Config endpoint', function() {
 
       const config = await this.db
         .select()
-        .from('core_config_data')
+        .from(this.getTableName('core_config_data'))
         .where('scope_id', websiteId)
         .andWhere('path', 'like', 'emartech/emarsys/config/%');
 

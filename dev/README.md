@@ -34,7 +34,7 @@ The web container will expose its port `80` to port `8888` on the host machine.
 
 By default the Magento store will be available at http://magento.local:8888, but you have to add this to your `/etc/hosts` file first:
 ```
-127.0.0.1 magento.local
+127.0.0.1 magento-dev.local magento-test.local
 ```
 
 ### Create test DB
@@ -164,6 +164,8 @@ Update the version in `etc/module.xml`:
 </config>
 ```
 
+Push the changes.
+
 Delete all local tags and fetch the valid tags
 ```
 git tag -l | xargs git tag -d
@@ -172,20 +174,32 @@ git fetch --tags
 
 Commit with message that will be the release title. Tag the commit:
 ```
-$ git tag v1.1.3
+git tag v1.1.3
 ```
 
 Push with tags:
 ```
-$ git push --tags
+git push --tags
 ```
 
 Go to repository on GitHub, click releases and then on Draft new release button.
 
+Fill in the details and release a new version.
+
 Got to [packagist.org](https://packagist.org/packages/emartech/emarsys-magento2-extension) (sign in credentials on secret.emarsys.net) and click the green **Update** button. You should see the new release appear on the right side of the page.
+
+If you accidentally tagged the wrong commit, you can update the tag like this. It amends to the release.
+```
+git tag -f v.1.1.3
+git push -f --tags
+```
 
 ## Codeship env
 * [Install](https://documentation.codeship.com/pro/jet-cli/installation/) `jet`
 * Download the `aes` key from [Codeship](https://app.codeship.com/projects/290273/configure) into the project directory.
 * Run `$ jet encrypt codeship.env codeship.env.encrypted`
 * Commit `codeship.env.encrypted` into the repo.
+
+## Update Cypress
+* Update the vesrion in `package.json`
+* Run `make build-cypress VERSION=new-version` from project root

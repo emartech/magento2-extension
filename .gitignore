@@ -1,4 +1,5 @@
 .env
+!dev/jenkins/.env
 dev/db-data/
 dev/test/node_modules
 codeship.aes

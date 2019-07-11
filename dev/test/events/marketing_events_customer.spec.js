@@ -22,20 +22,20 @@ const newsletterCustomer = {
   disable_auto_group_change: 0
 };
 
-const resetPasswordResetRequestEvent = async db => {
-  return await db.truncate('password_reset_request_event');
-};
-
 describe('Marketing events: customer', function() {
   afterEach(async function() {
-    await resetPasswordResetRequestEvent(this.db);
-    await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net"');
+    await this.db.truncate(this.getTableName('password_reset_request_event'));
+    await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email = "yolo@yolo.net"`);
     await this.dbCleaner.resetEmarsysEventsData();
   });
 
   after(async function() {
-    await this.db.raw('DELETE FROM newsletter_subscriber');
-    await this.db.raw('DELETE FROM customer_entity where email = "yolo@yolo.net" OR email = "yolo@newsletter.net"');
+    await this.db.raw(`DELETE FROM ${this.getTableName('newsletter_subscriber')}`);
+    await this.db.raw(
+      `DELETE FROM ${this.getTableName(
+        'customer_entity'
+      )} where email = "yolo@yolo.net" OR email = "yolo@newsletter.net"`
+    );
   });
 
   context('if collectMarketingEvents turned off', function() {
@@ -50,7 +50,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events_data')
+        .from(this.getTableName('emarsys_events_data'))
         .where({ event_type: 'customer_new_account_registered_no_password' })
         .first();
 
@@ -64,7 +64,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events_data')
+        .from(this.getTableName('emarsys_events_data'))
         .where({ event_type: 'customer_new_account_registered' })
         .first();
 
@@ -85,7 +85,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events_data')
+        .from(this.getTableName('emarsys_events_data'))
         .where({ event_type: 'customer_password_reset_confirmation' })
         .first();
 
@@ -106,7 +106,7 @@ describe('Marketing events: customer', function() {
 
       const event = await this.db
         .select()
-        .from('emarsys_events_data')
+        .from(this.getTableName('emarsys_events_data'))
         .where({ event_type: 'customer_password_reminder' })
         .first();
 
@@ -121,19 +121,23 @@ describe('Marketing events: customer', function() {
       });
 
       beforeEach(async function() {
-        await this.db.raw('DELETE FROM newsletter_subscriber');
-        await this.db.raw('DELETE FROM emarsys_events_data');
+        await this.db.raw(`DELETE FROM ${this.getTableName('newsletter_subscriber')}`);
+        await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
       });
 
       after(async function() {
-        await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
-        await this.db.raw('DELETE FROM newsletter_subscriber');
-        await this.db.raw('DELETE FROM customer_entity WHERE email="yolo@newsletter.net"');
+        await this.db.raw(
+          `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
+        );
+        await this.db.raw(`DELETE FROM ${this.getTableName('newsletter_subscriber')}`);
+        await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} WHERE email="yolo@newsletter.net"`);
       });
 
       context('is disabled', function() {
         it('should NOT create newsletter_send_confirmation_success_email event', async function() {
-          await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
+          await this.db.raw(
+            `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
+          );
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
             payload: {
@@ -153,7 +157,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
 
           expect(event).to.be.undefined;
@@ -177,7 +181,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events_data');
+          await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -198,7 +202,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
 
           expect(event).to.be.undefined;
@@ -223,7 +227,7 @@ describe('Marketing events: customer', function() {
           }
         });
 
-        await this.db.raw('DELETE FROM emarsys_events_data');
+        await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
         await this.magentoApi.put({
           path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -244,7 +248,7 @@ describe('Marketing events: customer', function() {
 
         const event = await this.db
           .select()
-          .from('emarsys_events_data')
+          .from(this.getTableName('emarsys_events_data'))
           .first();
 
         expect(event).to.be.undefined;
@@ -254,7 +258,7 @@ describe('Marketing events: customer', function() {
         before(async function() {
           await this.db
             .insert({ scope: 'default', scope_id: 0, path: 'newsletter/subscription/confirm', value: 1 })
-            .into('core_config_data');
+            .into(this.getTableName('core_config_data'));
 
           // this is for invalidating config cache
           await this.magentoApi.execute('config', 'set', {
@@ -266,7 +270,9 @@ describe('Marketing events: customer', function() {
         });
 
         after(async function() {
-          await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
+          await this.db.raw(
+            `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
+          );
         });
 
         it('should NOT create newsletter_send_confirmation_request_email event', async function() {
@@ -289,7 +295,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
 
           expect(event).to.be.undefined;
@@ -313,7 +319,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events_data');
+          await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -334,7 +340,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
 
           expect(event).to.be.undefined;
@@ -359,7 +365,7 @@ describe('Marketing events: customer', function() {
           }
         });
 
-        await this.db.raw('DELETE FROM emarsys_events_data');
+        await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
         await this.magentoApi.put({
           path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -380,7 +386,7 @@ describe('Marketing events: customer', function() {
 
         const event = await this.db
           .select()
-          .from('emarsys_events_data')
+          .from(this.getTableName('emarsys_events_data'))
           .first();
 
         expect(event).to.be.undefined;
@@ -396,7 +402,7 @@ describe('Marketing events: customer', function() {
     it('should create customer_new_account_registered_no_password event', async function() {
       await this.createCustomer(customer);
 
-      const events = await this.db.select().from('emarsys_events_data');
+      const events = await this.db.select().from(this.getTableName('emarsys_events_data'));
 
       expect(events.length).to.be.equal(1);
 
@@ -412,7 +418,7 @@ describe('Marketing events: customer', function() {
     it('should create customer_new_account_registered event', async function() {
       await this.createCustomer(customer, 'Password1234');
 
-      const events = await this.db.select().from('emarsys_events_data');
+      const events = await this.db.select().from(this.getTableName('emarsys_events_data'));
 
       expect(events.length).to.be.equal(1);
 
@@ -435,7 +441,7 @@ describe('Marketing events: customer', function() {
         }
       });
 
-      const events = await this.db.select().from('emarsys_events_data');
+      const events = await this.db.select().from(this.getTableName('emarsys_events_data'));
 
       expect(events.length).to.be.equal(1);
 
@@ -459,7 +465,7 @@ describe('Marketing events: customer', function() {
         }
       });
 
-      const events = await this.db.select().from('emarsys_events_data');
+      const events = await this.db.select().from(this.getTableName('emarsys_events_data'));
 
       expect(events.length).to.be.equal(1);
 
@@ -481,12 +487,14 @@ describe('Marketing events: customer', function() {
       });
 
       beforeEach(async function() {
-        await this.db.raw('DELETE FROM newsletter_subscriber');
-        await this.db.raw('DELETE FROM emarsys_events_data');
+        await this.db.raw(`DELETE FROM ${this.getTableName('newsletter_subscriber')}`);
+        await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
       });
 
       after(async function() {
-        await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
+        await this.db.raw(
+          `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
+        );
       });
 
       context('is disabled', function() {
@@ -510,7 +518,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
           const createdEventData = JSON.parse(event.event_data);
 
@@ -543,7 +551,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events_data');
+          await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -564,7 +572,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
           const createdEventData = JSON.parse(event.event_data);
 
@@ -584,7 +592,7 @@ describe('Marketing events: customer', function() {
         before(async function() {
           await this.db
             .insert({ scope: 'default', scope_id: 0, path: 'newsletter/subscription/confirm', value: 1 })
-            .into('core_config_data');
+            .into(this.getTableName('core_config_data'));
 
           // this is for invalidating config cache
           await this.magentoApi.execute('config', 'set', {
@@ -596,7 +604,9 @@ describe('Marketing events: customer', function() {
         });
 
         after(async function() {
-          await this.db.raw('DELETE FROM core_config_data WHERE path="newsletter/subscription/confirm"');
+          await this.db.raw(
+            `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
+          );
         });
 
         it('should create newsletter_send_confirmation_request_email event', async function() {
@@ -619,17 +629,22 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
           const createdEventData = JSON.parse(event.event_data);
 
-          expect(event.event_type).to.equal('newsletter_send_confirmation_request_email');
+          if (this.magentoVersion === '2.1.8') {
+            // possible bug, even with "Need to Confirm set to Yes" this version sends a success email 💩
+            expect(event.event_type).to.equal('newsletter_send_confirmation_success_email');
+            expect(createdEventData.subscriber.subscriber_status).to.equal(1);
+          } else {
+            expect(event.event_type).to.equal('newsletter_send_confirmation_request_email');
+            expect(createdEventData.subscriber.subscriber_status).to.equal(2);
+          }
+
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
           expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.subscriber.subscriber_status).to.equal(2);
-          expect(createdEventData.subscriber.subscriber_email).to.equal(subscriber.email);
-          expect(createdEventData.subscriber.subscriber_status).to.equal(2);
           expect(createdEventData.customer.firstname).to.equal(subscriber.firstname);
           expect(createdEventData.customer.lastname).to.equal(subscriber.lastname);
         });
@@ -653,7 +668,7 @@ describe('Marketing events: customer', function() {
             }
           });
 
-          await this.db.raw('DELETE FROM emarsys_events_data');
+          await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
           await this.magentoApi.put({
             path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -674,7 +689,7 @@ describe('Marketing events: customer', function() {
 
           const event = await this.db
             .select()
-            .from('emarsys_events_data')
+            .from(this.getTableName('emarsys_events_data'))
             .first();
           const createdEventData = JSON.parse(event.event_data);
 
@@ -708,7 +723,7 @@ describe('Marketing events: customer', function() {
           }
         });
 
-        await this.db.raw('DELETE FROM emarsys_events_data');
+        await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
         await this.magentoApi.put({
           path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
@@ -729,7 +744,7 @@ describe('Marketing events: customer', function() {
 
         const { event_type: createdEventType, event_data: data } = await this.db
           .select()
-          .from('emarsys_events_data')
+          .from(this.getTableName('emarsys_events_data'))
           .first();
         const createdEventData = JSON.parse(data);
 

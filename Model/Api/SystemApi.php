@@ -2,7 +2,7 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Framework\App\ProductMetadata;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Module\ModuleListInterface;
 
 use Emartech\Emarsys\Api\SystemApiInterface;
@@ -17,7 +17,7 @@ use Emartech\Emarsys\Helper\ConfigReader;
 class SystemApi implements SystemApiInterface
 {
     /**
-     * @var ProductMetadata
+     * @var ProductMetadataInterface
      */
     private $productMetadata;
 
@@ -39,13 +39,13 @@ class SystemApi implements SystemApiInterface
     /**
      * SystemApi constructor.
      *
-     * @param ProductMetadata                   $productMetadata
+     * @param ProductMetadataInterface          $productMetadata
      * @param SystemApiResponseInterfaceFactory $systemApiResponseFactory
      * @param ModuleListInterface               $moduleList
      * @param ConfigReader                      $configReader
      */
     public function __construct(
-        ProductMetadata $productMetadata,
+        ProductMetadataInterface $productMetadata,
         SystemApiResponseInterfaceFactory $systemApiResponseFactory,
         ModuleListInterface $moduleList,
         ConfigReader $configReader

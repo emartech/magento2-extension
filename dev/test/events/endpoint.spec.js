@@ -46,7 +46,9 @@ describe('Events API endpoint', function() {
 
   afterEach(async function() {
     await this.db.raw(
-      'DELETE FROM customer_entity where email in ("yolo@yolo.net", "doggo@yolo.net", "pupper@yolo.net")'
+      `DELETE FROM ${this.getTableName(
+        'customer_entity'
+      )} where email in ("yolo@yolo.net", "doggo@yolo.net", "pupper@yolo.net")`
     );
   });
 
@@ -68,7 +70,7 @@ describe('Events API endpoint', function() {
 
     expect(secondEventsResponse.lastPage).to.equal(2);
 
-    const eventsInDb = await this.db.select().from('emarsys_events_data');
+    const eventsInDb = await this.db.select().from(this.getTableName('emarsys_events_data'));
     expect(eventsInDb.length).to.equal(2);
     const firstEvent = eventsInDb[0];
     expect(firstEvent.website_id).to.equal(1);

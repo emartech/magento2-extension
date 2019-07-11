@@ -1,10 +1,10 @@
 'use strict';
 
-const createSubscriptionGetter = db => {
+const createSubscriptionGetter = (db, tablePrefix) => {
   return async email => {
     return await db
       .select()
-      .from('newsletter_subscriber')
+      .from(`${tablePrefix}newsletter_subscriber`)
       .where({ subscriber_email: email })
       .first();
   };
@@ -25,14 +25,37 @@ describe('Subscriptions api', function() {
   let subscriptionFor;
 
   before(function() {
-    subscriptionFor = createSubscriptionGetter(this.db);
+    subscriptionFor = createSubscriptionGetter(this.db, this.getTableName(''));
   });
 
   describe('update', function() {
     afterEach(async function() {
-      await this.db('newsletter_subscriber')
-        .whereIn('subscriber_email', [noCustomerEmail, customerEmail])
+      await this.db(this.getTableName('newsletter_subscriber'))
+        .whereIn('subscriber_email', [noCustomerEmail, noCustomerEmail2, customerEmail])
         .delete();
+    });
+
+    it('should handle multiple subscriptions at once', async function() {
+      expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
+      expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.false;
+      expect(isSubscribed(await subscriptionFor(noCustomerEmail2))).to.be.false;
+
+      try {
+        await this.magentoApi.execute('subscriptions', 'update', {
+          subscriptions: [
+            { subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId },
+            { subscriber_email: noCustomerEmail, subscriber_status: true },
+            { subscriber_email: noCustomerEmail2, subscriber_status: true }
+          ]
+        });
+      } catch (error) {
+        const message = error.response.data.message || 'POST subscriptions/update failed';
+        expect.fail(error.response.status, 200, message);
+      }
+
+      expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.true;
+      expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.true;
+      expect(isSubscribed(await subscriptionFor(noCustomerEmail2))).to.be.true;
     });
 
     describe('subscribe', function() {
@@ -81,6 +104,7 @@ describe('Subscriptions api', function() {
       });
     });
   });
+
   describe('get', function() {
     let customerEmail2;
     let customerId2;
@@ -101,7 +125,7 @@ describe('Subscriptions api', function() {
             store_id: storeId
           }
         ])
-        .into('newsletter_subscriber');
+        .into(this.getTableName('newsletter_subscriber'));
     });
 
     it('should list all subscriber without filters', async function() {

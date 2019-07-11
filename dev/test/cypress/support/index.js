@@ -1,37 +1,59 @@
 'use strict';
 
+require('cypress-plugin-retries');
 require('./commands');
 
 before(() => {
-  cy.task('setConfig', {
-    websiteId: 1,
-    config: {
-      storeSettings: [
-        {
-          storeId: 0,
-          slug: 'cypress-testadminslug'
-        },
-        {
-          storeId: 1,
-          slug: 'cypress-testslug'
-        }
-      ]
-    }
+  Cypress.env('RETRIES', 3);
+});
+
+// afterEach(() => {
+//   cy.log('GLOBAL AFTEREACH START');
+//   console.log('GLOBAL AFTEREACH START');
+
+//   cy.log('GLOBAL AFTEREACH END');
+//   console.log('GLOBAL AFTEREACH END');
+// });
+
+Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars
+  console.log('uncaught:exception', err.toString());
+  return false;
+});
+
+let logs = '';
+
+Cypress.on('window:before:load', window => {
+  const docIframe = window.parent.document.getElementById("Your App: 'test'");
+  const appWindow = docIframe.contentWindow;
+
+  ['log', 'info', 'error', 'warn', 'debug'].forEach(consoleProperty => {
+    appWindow.console[consoleProperty] = function(...args) {
+      logs += args.join(' ') + '\n';
+    };
   });
 });
 
-beforeEach(() => {
-  Cypress.cy.onUncaughtException = function() {
-    console.log('FRONTEND_ERROR');
-  };
+Cypress.mocha.getRunner().on('test', () => {
+  logs = '';
 });
 
-afterEach(() => {
-  cy.wait(4000);
-  cy.task('clearEvents');
+Cypress.on('fail', error => {
+  if (!error) {
+    error = '';
+  }
+  error.stack += '\nConsole Logs:\n========================\n';
+  error.stack += logs;
+  logs = '';
+  throw error;
 });
 
-Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars
-  cy.task('log', err.toString());
-  return false;
+console.log = function(...args) {
+  logs += args.join('\n');
+  logs += '\n';
+};
+
+Cypress.Commands.overwrite('log', (originalFn, ...args) => {
+  logs += args.join('\n');
+  logs += '\n';
+  originalFn(...args);
 });
