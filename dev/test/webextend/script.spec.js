@@ -86,6 +86,9 @@ describe('Webextend scripts', function() {
         case '2.3.1Enterprise':
           productId = 732;
           break;
+        case '2.3.2Enterprise':
+          productId = 730;
+          break;
         default:
           productId = 729;
       }

@@ -113,7 +113,7 @@ const localCartItem = (magentoVersion, magentoEdition) => {
 
   if (magentoVersion === '2.1.8') {
     options[1].option_id = 142;
-  } else if (magentoVersion === '2.3.1' && magentoEdition === 'Enterprise') {
+  } else if (magentoVersion.startsWith('2.3.') && magentoEdition === 'Enterprise') {
     options[0].option_value = 59;
     options[1] = { option_id: 187, option_value: 179 };
   }

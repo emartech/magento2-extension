@@ -3,7 +3,7 @@
 const getProducts = (hostname, page, limit, magentoVersion, magentoEdition) => {
   return {
     products: products(hostname, page, limit, magentoVersion, magentoEdition, magentoEdition),
-    productCount: magentoVersion === '2.3.1' && magentoEdition === 'Enterprise' ? 2050 : 2048
+    productCount: magentoVersion.startsWith('2.3.') && magentoEdition === 'Enterprise' ? 2050 : 2048
   };
 };
 
@@ -87,6 +87,20 @@ const configurable = {
       {
         type: 'configurable',
         children_entity_ids: [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
+      }
+    ]
+  },
+  '2.3.2': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ],
+    Enterprise: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
       }
     ]
   }
