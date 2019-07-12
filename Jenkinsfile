@@ -28,13 +28,13 @@ pipeline {
   }
 
   stages {
-    stage('Remove old images') {
-      steps {
-        catchError {
-          sh 'docker rmi emarsys/ems-integration-magento-sampledata:2.3.2ce emarsys/ems-integration-magento-sampledata:2.2.6ce emarsys/ems-integration-magento-sampledata:2.1.8ce emarsys/ems-integration-magento-sampledata:2.3.1ce-prefixed emarsys/ems-integration-magento-sampledata:2.3.2ee'
-        }
-      }
-    }
+    // stage('Remove old images') {
+    //   steps {
+    //     catchError {
+    //       sh 'docker rmi emarsys/ems-integration-magento-sampledata:2.3.2ce emarsys/ems-integration-magento-sampledata:2.2.6ce emarsys/ems-integration-magento-sampledata:2.1.8ce emarsys/ems-integration-magento-sampledata:2.3.1ce-prefixed emarsys/ems-integration-magento-sampledata:2.3.2ee'
+    //     }
+    //   }
+    // }
     stage('Build node image') {
       steps {
         sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node ./dev'
