@@ -28,11 +28,6 @@ pipeline {
   }
 
   stages {
-    stage('Remove old images') {
-      steps {
-        sh 'docker rmi emarsys/ems-integration-magento-sampledata:1.9.3ce emarsys/ems-integration-magento-sampledata:2.2.6ce emarsys/ems-integration-magento-sampledata:2.1.8ce emarsys/ems-integration-magento-sampledata:2.3.1ce-prefixed'
-      }
-    }
     stage('Build node image') {
       steps {
         sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node ./dev'
