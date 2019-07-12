@@ -28,7 +28,7 @@ pipeline {
   }
 
   stages {
-    stage('Build node image') {
+    stage('Remove old images') {
       steps {
         catchError {
           sh 'docker rmi emarsys/ems-integration-magento-sampledata:2.3.2ce emarsys/ems-integration-magento-sampledata:2.2.6ce emarsys/ems-integration-magento-sampledata:2.1.8ce emarsys/ems-integration-magento-sampledata:2.3.1ce-prefixed emarsys/ems-integration-magento-sampledata:2.3.2ee'
