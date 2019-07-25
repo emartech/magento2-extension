@@ -282,15 +282,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      */
     private function filterSubscribed($subscribed = null)
     {
-        switch ($subscribed) {
-            case true:
-                $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
-                break;
-            case false:
-                $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
-                break;
+        if ($subscribed === true) {
+            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
+        } elseif ($subscribed === false) {
+            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
         }
-
         return $this;
     }
 

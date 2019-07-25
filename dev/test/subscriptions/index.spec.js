@@ -11,7 +11,7 @@ const createSubscriptionGetter = (db, tablePrefix) => {
 };
 
 const isSubscribed = subscription => {
-  return subscription !== undefined && subscription.subscriber_status === 1;
+  return subscription !== undefined && parseInt(subscription.subscriber_status) === 1;
 };
 
 const noCustomerEmail = 'no-customer@a.com';
@@ -35,17 +35,12 @@ describe('Subscriptions api', function() {
         .delete();
     });
 
-    it('should handle multiple subscriptions at once', async function() {
-      expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
-      expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.false;
-      expect(isSubscribed(await subscriptionFor(noCustomerEmail2))).to.be.false;
-
+    it('should handle multiple subscriptions at once and create only for customers', async function() {
       try {
         await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [
-            { subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId },
-            { subscriber_email: noCustomerEmail, subscriber_status: true },
-            { subscriber_email: noCustomerEmail2, subscriber_status: true }
+            { subscriber_email: noCustomerEmail, subscriber_status: true, website_id: 1, customer_id: 0 },
+            { subscriber_email: customerEmail, subscriber_status: true, website_id: 1, customer_id: customerId }
           ]
         });
       } catch (error) {
@@ -53,17 +48,68 @@ describe('Subscriptions api', function() {
         expect.fail(error.response.status, 200, message);
       }
 
-      expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.true;
-      expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.true;
-      expect(isSubscribed(await subscriptionFor(noCustomerEmail2))).to.be.true;
+      const subscribers = await this.magentoApi.execute('subscriptions', 'list', {
+        page: 1,
+        limit: 100,
+        onlyGuest: false,
+        websiteId: 1
+      });
+      const [customer] = subscribers.subscriptions;
+
+      expect(isSubscribed(customer)).to.be.true;
+      expect(customer.website_id).to.equal(1);
+      expect(await subscriptionFor(noCustomerEmail)).to.be.undefined;
     });
 
-    describe('subscribe', function() {
+    it('should handle multiple subscription updates at once and update only for existing', async function() {
+      await this.db(this.getTableName('newsletter_subscriber')).insert([
+        { subscriber_email: customerEmail, subscriber_status: 3, store_id: 1, customer_id: customerId },
+        { subscriber_email: noCustomerEmail, subscriber_status: 3, store_id: 1, customer_id: 0 },
+        { subscriber_email: noCustomerEmail2, subscriber_status: 3, store_id: 1, customer_id: 0 }
+      ]);
+
+      try {
+        await this.magentoApi.execute('subscriptions', 'update', {
+          subscriptions: [
+            { subscriber_email: customerEmail, subscriber_status: true, website_id: 1, customer_id: customerId },
+            { subscriber_email: noCustomerEmail, subscriber_status: true, website_id: 1, customer_id: 0 },
+            { subscriber_email: noCustomerEmail2, subscriber_status: true, website_id: 1, customer_id: 0 }
+          ]
+        });
+      } catch (error) {
+        const message = error.response.data.message || 'POST subscriptions/update failed';
+        expect.fail(error.response.status, 200, message);
+      }
+
+      const subscribers = await this.magentoApi.execute('subscriptions', 'list', {
+        page: 1,
+        limit: 100,
+        onlyGuest: false,
+        websiteId: 1
+      });
+      const [customer, noCustomer, noCustomer2] = subscribers.subscriptions;
+
+      expect(isSubscribed(customer)).to.be.true;
+      expect(customer.website_id).to.equal(1);
+      expect(isSubscribed(noCustomer)).to.be.true;
+      expect(noCustomer.website_id).to.equal(1);
+      expect(isSubscribed(noCustomer2)).to.be.true;
+      expect(noCustomer2.website_id).to.equal(1);
+    });
+
+    context('subscribe', function() {
       it('should set subscription without customer', async function() {
+        await this.db(this.getTableName('newsletter_subscriber')).insert({
+          subscriber_email: noCustomerEmail,
+          subscriber_status: 3,
+          store_id: 1,
+          customer_id: 0
+        });
+
         expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.false;
 
         await this.magentoApi.execute('subscriptions', 'update', {
-          subscriptions: [{ subscriber_email: noCustomerEmail, subscriber_status: true }]
+          subscriptions: [{ subscriber_email: noCustomerEmail, subscriber_status: true, website_id: 1, customer_id: 0 }]
         });
 
         expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.true;
@@ -73,7 +119,9 @@ describe('Subscriptions api', function() {
         expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
 
         await this.magentoApi.execute('subscriptions', 'update', {
-          subscriptions: [{ subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId }]
+          subscriptions: [
+            { subscriber_email: customerEmail, subscriber_status: true, website_id: 1, customer_id: customerId }
+          ]
         });
 
         expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.true;
@@ -82,22 +130,34 @@ describe('Subscriptions api', function() {
 
     describe('unsubscribe', function() {
       it('should unsubscribe without customer', async function() {
-        await this.magentoApi.execute('subscriptions', 'update', {
-          subscriptions: [{ subscriber_email: noCustomerEmail, subscriber_status: true }]
-        });
-        await this.magentoApi.execute('subscriptions', 'update', {
-          subscriptions: [{ subscriber_email: noCustomerEmail, subscriber_status: false }]
+        await this.db(this.getTableName('newsletter_subscriber')).insert({
+          subscriber_email: noCustomerEmail,
+          subscriber_status: 1,
+          store_id: 1,
+          customer_id: 0
         });
 
-        expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.false;
+        await this.magentoApi.execute('subscriptions', 'update', {
+          subscriptions: [
+            { subscriber_email: noCustomerEmail, subscriber_status: false, website_id: 1, customer_id: 0 }
+          ]
+        });
+
+        const subscriber = await subscriptionFor(noCustomerEmail);
+        expect(subscriber).not.to.be.undefined;
+        expect(isSubscribed(subscriber)).to.be.false;
       });
 
       it('should unsubscribe with customer', async function() {
         await this.magentoApi.execute('subscriptions', 'update', {
-          subscriptions: [{ subscriber_email: customerEmail, subscriber_status: true, customer_id: customerId }]
+          subscriptions: [
+            { subscriber_email: customerEmail, subscriber_status: true, website_id: 1, customer_id: customerId }
+          ]
         });
         await this.magentoApi.execute('subscriptions', 'update', {
-          subscriptions: [{ subscriber_email: customerEmail, subscriber_status: false, customer_id: customerId }]
+          subscriptions: [
+            { subscriber_email: customerEmail, subscriber_status: false, website_id: 1, customer_id: customerId }
+          ]
         });
 
         expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
