@@ -2,12 +2,14 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory;
 use Magento\Newsletter\Model\ResourceModel\Subscriber\Collection;
+use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory;
 use Magento\Newsletter\Model\SubscriberFactory;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Model\Config\Share;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
 
 use Emartech\Emarsys\Api\SubscriptionsApiInterface;
 use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
@@ -69,6 +71,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     private $storeTableName;
 
     /**
+     * @var CustomerRepositoryInterface
+     */
+    private $customerRepository;
+
+    /**
      * SubscriptionsApi constructor.
      *
      * @param CollectionFactory                        $subscriberCollectionFactory
@@ -78,6 +85,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      * @param Share                                    $customerModelConfigShare
      * @param SubscriptionsApiResponseInterfaceFactory $subscriptionsResponseFactory
      * @param StatusResponseInterfaceFactory           $statusResponseFactory
+     * @param CustomerRepositoryInterface              $customerRepository
      */
     public function __construct(
         CollectionFactory $subscriberCollectionFactory,
@@ -86,7 +94,8 @@ class SubscriptionsApi implements SubscriptionsApiInterface
         SubscriptionInterfaceFactory $subscriptionFactory,
         Share $customerModelConfigShare,
         SubscriptionsApiResponseInterfaceFactory $subscriptionsResponseFactory,
-        StatusResponseInterfaceFactory $statusResponseFactory
+        StatusResponseInterfaceFactory $statusResponseFactory,
+        CustomerRepositoryInterface $customerRepository
     ) {
         $this->storeManager = $storeManager;
         $this->customerModelConfigShare = $customerModelConfigShare;
@@ -97,6 +106,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
         $this->subscriberCollectionFactory = $subscriberCollectionFactory;
         $this->subscriptionFactory = $subscriptionFactory;
         $this->subscriptionsResponseFactory = $subscriptionsResponseFactory;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -143,8 +153,6 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      */
     public function update($subscriptions)
     {
-        $this->initCollection();
-
         /** @var SubscriptionInterface $subscription */
         foreach ($subscriptions as $subscription) {
             $this->changeSubscription(
@@ -166,7 +174,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     {
         $this->subscriptionCollection = $this->subscriberCollectionFactory->create();
         $this->storeTableName = $this->subscriptionCollection->getResource()->getTable('store');
-        
+
         return $this;
     }
 
@@ -274,11 +282,15 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      */
     private function filterSubscribed($subscribed = null)
     {
-        if ($subscribed === true) {
-            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
-        } elseif ($subscribed === false) {
-            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
+        switch ($subscribed) {
+            case true:
+                $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
+                break;
+            case false:
+                $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
+                break;
         }
+
         return $this;
     }
 
@@ -330,6 +342,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     {
         if ($subscription->getSubscriberEmail()) {
             $this
+                ->initCollection()
                 ->filterEmail($subscription->getSubscriberEmail())
                 ->filterCustomer($subscription->getCustomerId());
 
@@ -343,11 +356,17 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             $subscriber = $this->subscriptionCollection->fetchItem();
 
             if (!$subscriber) {
-                if ($type !== Subscriber::STATUS_SUBSCRIBED) {
+                if ($type !== Subscriber::STATUS_SUBSCRIBED || !$subscription->getCustomerId()) {
                     return false;
                 }
 
+                if (false === ($customer = $this->getCustomerData($subscription->getCustomerId()))
+                    || $customer->getWebsiteId() != $subscription->getWebsiteId()
+                ) {
+                    return false;
+                }
                 $subscriber = $this->subscriberFactory->create();
+                $subscription->setStoreId($customer->getStoreId());
             }
 
             foreach ($subscription->getData() as $key => $value) {
@@ -361,5 +380,19 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param int $customerId
+     *
+     * @return bool|CustomerInterface
+     */
+    private function getCustomerData($customerId)
+    {
+        try {
+            return $this->customerRepository->getById($customerId);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
