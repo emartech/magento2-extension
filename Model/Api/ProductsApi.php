@@ -284,7 +284,8 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function initCollection()
     {
-        $this->productCollection = $this->productCollectionFactory->create();
+        $this->productCollection = $this->productCollectionFactory->create()
+            ->addFinalPrice();
         return $this;
     }
 
@@ -532,18 +533,28 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleProductStoreData($product)
     {
+        $product->setPriceCalculation(false);
+
         $returnArray = [];
 
         foreach ($this->storeIds as $storeId => $storeObject) {
             $productId = $product->getData($this->linkField);
+
+            $price = (float)$product->getFinalPrice();
+            $displayPrice = (float)$this->getDisplayPrice($price, $storeObject);
+            $originalPrice = (float)$product->getPrice();
+            $originalDisplayPrice = (float)$this->getDisplayPrice($originalPrice, $storeObject);
+
             $returnArray[] = $this->productStoreDataFactory->create()
                 ->setStoreId($storeId)
                 ->setStatus($this->getStoreData($productId, $storeId, 'status'))
                 ->setDescription($this->getStoreData($productId, $storeId, 'description'))
                 ->setLink($this->handleLink($product, $storeObject))
                 ->setName($this->getStoreData($productId, $storeId, 'name'))
-                ->setPrice($this->handlePrice($product, $storeObject))
-                ->setDisplayPrice($this->handleDisplayPrice($product, $storeObject))
+                ->setPrice($price)
+                ->setDisplayPrice($displayPrice)
+                ->setOriginalPrice($originalPrice)
+                ->setOriginalDisplayPrice($originalDisplayPrice)
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
         }
 
@@ -606,70 +617,19 @@ class ProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @param Product $product
-     * @param Store   $store
+     * @param float $price
+     * @param Store $store
      *
-     * @return int | float
+     * @return float
      */
-    // @codingStandardsIgnoreLine
-    protected function handleDisplayPrice($product, $store)
+    protected function getDisplayPrice($price, $store)
     {
-        $productId = $product->getData($this->linkField);
-        $price = $this->getStoreData($productId, $store->getId(), 'price');
-
-        $product->setPrice($price);
-        // @codingStandardsIgnoreStart
-        try {
-            $product->getFinalPrice();
-        } catch (\Exception $e) {
-        }
-        // @codingStandardsIgnoreEnd
-
         if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
             try {
                 $tmp = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
                 $price = $tmp;
             } catch (\Exception $e) {
                 $this->logger->error($e);
-            }
-        }
-
-        return $price;
-    }
-
-    /**
-     * @param Product $product
-     * @param Store   $store
-     *
-     * @return int | float
-     */
-    // @codingStandardsIgnoreLine
-    protected function handlePrice($product, $store)
-    {
-        $productId = $product->getData($this->linkField);
-        $price = $this->getStoreData($productId, $store->getId(), 'price');
-        $specialPrice = $this->getStoreData($productId, $store->getId(), 'special_price');
-
-        if (!empty($specialPrice)) {
-            $specialFromDate = $this->getStoreData($productId, $store->getId(), 'special_from_date');
-            $specialToDate = $this->getStoreData($productId, $store->getId(), 'special_end_date');
-
-            if ($specialFromDate) {
-                $specialFromDate = strtotime($specialFromDate);
-            } else {
-                $specialFromDate = false;
-            }
-
-            if ($specialToDate) {
-                $specialToDate = strtotime($specialToDate);
-            } else {
-                $specialToDate = false;
-            }
-
-            if (($specialFromDate === false || $specialFromDate <= time()) &&
-                ($specialToDate === false || $specialToDate >= time())
-            ) {
-                $price = $specialPrice;
             }
         }
 

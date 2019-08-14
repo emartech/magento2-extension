@@ -44,9 +44,28 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
         return $this->getData(self::PRICE_KEY);
     }
 
+    /**
+     * @return float
+     */
     public function getDisplayPrice()
     {
         return $this->getData(self::DISPLAY_PRICE_KEY);
+    }
+
+    /**
+     * @return float
+     */
+    public function getOriginalPrice()
+    {
+        return $this->getData(self::ORIGINAL_PRICE_KEY);
+    }
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayPrice()
+    {
+        return $this->getData(self::ORIGINAL_DISPLAY_PRICE_KEY);
     }
 
     /**
@@ -129,6 +148,30 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     public function setDisplayPrice($displayPrice)
     {
         $this->setData(self::DISPLAY_PRICE_KEY, $displayPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $originalPrice
+     *
+     * @return $this
+     */
+    public function setOriginalPrice($originalPrice)
+    {
+        $this->setData(self::ORIGINAL_PRICE_KEY, $originalPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $originalDisplayPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayPrice($originalDisplayPrice)
+    {
+        $this->setData(self::ORIGINAL_DISPLAY_PRICE_KEY, $originalDisplayPrice);
 
         return $this;
     }

@@ -8,18 +8,16 @@ namespace Emartech\Emarsys\Api\Data;
  */
 interface ProductStoreDataInterface
 {
-    const NAME_KEY          = 'name';
-    const PRICE_KEY         = 'price';
-    const LINK_KEY          = 'url_key';
-    const DESCRIPTION_KEY   = 'description';
-    const STATUS_KEY        = 'status';
-    const STORE_ID_KEY      = 'store_id';
-    const CURRENCY_KEY      = 'currency';
-    const DISPLAY_PRICE_KEY = 'display_price';
-
-    const SPECIAL_PRICE_KEY     = 'special_price';
-    const SPECIAL_FROM_DATE_KEY = 'special_from_date';
-    const SPECIAL_TO_DATE_KEY   = 'special_to_date';
+    const NAME_KEY                   = 'name';
+    const LINK_KEY                   = 'url_key';
+    const DESCRIPTION_KEY            = 'description';
+    const STATUS_KEY                 = 'status';
+    const STORE_ID_KEY               = 'store_id';
+    const CURRENCY_KEY               = 'currency';
+    const PRICE_KEY                  = 'price';
+    const DISPLAY_PRICE_KEY          = 'display_price';
+    const ORIGINAL_PRICE_KEY         = 'original_price';
+    const ORIGINAL_DISPLAY_PRICE_KEY = 'original_display_price';
 
     /**
      * @return string
@@ -35,6 +33,16 @@ interface ProductStoreDataInterface
      * @return float
      */
     public function getDisplayPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayPrice();
 
     /**
      * @return string
@@ -81,6 +89,20 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setDisplayPrice($displayPrice);
+
+    /**
+     * @param float $originalPrice
+     *
+     * @return $this
+     */
+    public function setOriginalPrice($originalPrice);
+
+    /**
+     * @param float $originalDisplayPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayPrice($originalDisplayPrice);
 
     /**
      * @param string $link
