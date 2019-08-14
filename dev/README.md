@@ -188,6 +188,8 @@ Fill in the details and release a new version.
 
 Got to [packagist.org](https://packagist.org/packages/emartech/emarsys-magento2-extension) (sign in credentials on secret.emarsys.net) and click the green **Update** button. You should see the new release appear on the right side of the page.
 
+Change the version in the `LATEST_MAGENTO_MODULE_VERSIONS` environment variable on `ems-shopify-app-conn` and `ems-shopify-app-conn-staging`
+
 If you accidentally tagged the wrong commit, you can update the tag like this. It amends to the release.
 ```
 git tag -f v.1.1.3
