@@ -26,7 +26,8 @@ const products = (hostname, page, limit, magentoVersion, magentoEdition) => {
         store_data: [
           {
             name: 'Sprite Foam Yoga Brick',
-            price: 5,
+            display_price: 2,
+            original_display_price: 5,
             link: `http://${hostname}/index.php/sprite-foam-yoga-brick.html`,
             status: 1,
             // eslint-disable-next-line

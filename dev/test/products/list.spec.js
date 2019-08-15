@@ -7,7 +7,6 @@ describe('Products endpoint', function() {
     const page = 3;
     const limit = 10;
 
-    const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit });
     const { products: expectedProducts, productCount: expectedProductCount } = getProducts(
       this.hostname,
       page,
@@ -16,8 +15,18 @@ describe('Products endpoint', function() {
       this.magentoEdition
     );
 
-    const product = products[0];
     const expectedProduct = expectedProducts[0];
+
+    await this.createProduct({
+      sku: expectedProduct.sku,
+      custom_attributes: {
+        special_price: 2
+      }
+    });
+
+    const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit });
+
+    const product = products[0];
 
     expect(products.length).to.equal(expectedProducts.length);
     expect(productCount).to.equal(expectedProductCount);
@@ -31,7 +40,7 @@ describe('Products endpoint', function() {
     expect(product.categories[1]).to.equal(expectedProduct.categories[1]);
 
     const storeLevelProduct = product.store_data[0];
-    ['name', 'price', 'link', 'status', 'description'].forEach(key => {
+    ['name', 'display_price', 'original_display_price', 'link', 'status', 'description'].forEach(key => {
       expect(storeLevelProduct[key]).to.equal(expectedProduct.store_data[0][key]);
     });
   });
