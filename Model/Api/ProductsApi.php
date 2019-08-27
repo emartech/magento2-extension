@@ -390,7 +390,7 @@ class ProductsApi implements ProductsApiInterface
             $returnArray[] = $this->productFactory->create()->setType($product->getTypeId())
                 ->setCategories($this->handleCategories($product))
                 ->setChildrenEntityIds($this->handleChildrenEntityIds($product))
-                ->setEntityId($product->getId())
+                ->setEntityId($product->getData($this->linkField))
                 ->setIsInStock($this->handleStock($product))
                 ->setQty($this->handleQty($product))
                 ->setSku($product->getSku())
@@ -424,8 +424,8 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleQty($product)
     {
-        if (array_key_exists($product->getId(), $this->stockData)) {
-            return $this->stockData[$product->getId()]['qty'];
+        if (array_key_exists($product->getData($this->linkField), $this->stockData)) {
+            return $this->stockData[$product->getData($this->linkField)]['qty'];
         }
 
         return 0;
@@ -442,7 +442,7 @@ class ProductsApi implements ProductsApiInterface
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         try {
-            $image = $this->getStoreData($product->getId(), 0, 'image');
+            $image = $this->getStoreData($product->getData($this->linkField), 0, 'image');
         } catch (\Exception $e) {
             $image = null;
         }
@@ -452,7 +452,7 @@ class ProductsApi implements ProductsApiInterface
         }
 
         try {
-            $smallImage = $this->getStoreData($product->getId(), 0, 'small_image');
+            $smallImage = $this->getStoreData($product->getData($this->linkField), 0, 'small_image');
         } catch (\Exception $e) {
             $smallImage = null;
         }
@@ -462,7 +462,7 @@ class ProductsApi implements ProductsApiInterface
         }
 
         try {
-            $thumbnail = $this->getStoreData($product->getId(), 0, 'thumbnail');
+            $thumbnail = $this->getStoreData($product->getData($this->linkField), 0, 'thumbnail');
         } catch (\Exception $e) {
             $thumbnail = null;
         }
