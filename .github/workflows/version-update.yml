@@ -1,0 +1,14 @@
+name: Release
+on: release
+
+jobs:
+  send:
+    name: Send new verison
+    runs-on: ubuntu-latest
+    steps:
+      - name: HTTP client
+        if: github.event.action == 'published'
+        run: curl -X POST -H "Authorization:${AUTH_TOKEN}" -H "Content-Type:application/json" --data '{"action":"${{github.event.action}}", "version":"${{github.event.release.tag_name}}"}' ${CONNECTOR_URL}
+        env:
+          AUTH_TOKEN: ${{ secrets.authToken }}
+          CONNECTOR_URL: ${{ secrets.connectorUrl }}
