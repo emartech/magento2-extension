@@ -30,13 +30,6 @@ use Magento\Framework\Webapi\Exception as WebApiException;
  */
 class AttributesApi implements AttributesApiInterface
 {
-    private $types = [
-        'customer',
-        'customer_address',
-        'product',
-        'category',
-    ];
-
     /**
      * @var AttributesApiResponseInterfaceFactory
      */
@@ -106,7 +99,7 @@ class AttributesApi implements AttributesApiInterface
      */
     public function get($type)
     {
-        if (!in_array($type, $this->types)) {
+        if (!in_array($type, self::TYPES)) {
             throw new WebApiException(__('Invalid Type'));
         }
 

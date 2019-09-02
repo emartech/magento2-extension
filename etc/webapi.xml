@@ -36,6 +36,12 @@
             <resource ref="Emartech_Emarsys::api_configs"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/config/attributes/:type" method="POST">
+        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setAttributes"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_configs"/>
+        </resources>
+    </route>
     <route url="/V1/emarsys/products" method="GET">
         <service class="Emartech\Emarsys\Api\ProductsApiInterface" method="get"/>
         <resources>

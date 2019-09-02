@@ -20,6 +20,13 @@ interface AttributesApiInterface
     const TYPE_PRODUCT          = 'product';
     const TYPE_CATEGORY         = 'category';
 
+    const TYPES = [
+        self::TYPE_CUSTOMER,
+        self::TYPE_CUSTOMER_ADDRESS,
+        self::TYPE_PRODUCT,
+        self::TYPE_CATEGORY,
+    ];
+
     const CUSTOMER_ENTITY_TYPE_ID         = 1;
     const CUSTOMER_ADDRESS_ENTITY_TYPE_ID = 2;
     const CATEGORY_ENTITY_TYPE_ID         = 3;

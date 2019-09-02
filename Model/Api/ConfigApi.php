@@ -2,11 +2,13 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Emartech\Emarsys\Api\AttributesApiInterface;
 use Emartech\Emarsys\Api\ConfigApiInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
-use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\StatusResponseInterface;
+use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
+use Magento\Framework\Webapi\Exception as WebApiException;
 
 /**
  * Class ConfigApi
@@ -93,6 +95,30 @@ class ConfigApi implements ConfigApiInterface
         }
 
         if ($foundDifference) {
+            $config->cleanScope();
+        }
+
+        return $this->statusResponseFactory->create()
+            ->setStatus('ok');
+    }
+
+    /**
+     * @param string   $type
+     * @param string[] $codes
+     *
+     * @return StatusResponseInterface
+     * @throws WebApiException
+     */
+    public function setAttributes($type, $codes)
+    {
+        if (!in_array($type, AttributesApiInterface::TYPES)) {
+            throw new WebApiException(__('Invalid Type'));
+        }
+
+        /** @var ConfigInterface $config */
+        $config = $this->configFactory->create();
+
+        if ($config->setConfigValue($type . self::ATTRIBUTE_CONFIG_POST_TAG, $codes, 0, 'default')) {
             $config->cleanScope();
         }
 
