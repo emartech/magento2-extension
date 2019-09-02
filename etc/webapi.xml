@@ -60,4 +60,10 @@
             <resource ref="Emartech_Emarsys::api_orders"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/attributes/:type" method="GET">
+        <service class="Emartech\Emarsys\Api\AttributesApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_attributes"/>
+        </resources>
+    </route>
 </routes>
