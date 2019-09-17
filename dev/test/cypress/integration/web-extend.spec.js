@@ -126,6 +126,8 @@ const viewAndAddFirstItemToCart = () => {
   cy.wait(2000);
 
   cy.get('#product-addtocart-button').click();
+  cy.wait(10000);
+  cy.get('#product-addtocart-button').click();
   cy.wait(2000);
 };
 
@@ -166,8 +168,8 @@ const buyItem = () => {
     expect(orderData.items).to.be.eql([
       {
         item: '24-MB02',
-        price: 59,
-        quantity: 1
+        price: 118,
+        quantity: 2
       }
     ]);
     expect(orderData.email).to.be.equal('guest@cypress.net');
@@ -211,8 +213,8 @@ const buyItemWithLoggedInUser = customer => {
     expect(orderData.items).to.be.eql([
       {
         item: '24-MB02',
-        price: 59,
-        quantity: 1
+        price: 118,
+        quantity: 2
       }
     ]);
     expect(orderData.email).to.be.equal(customer.email);
