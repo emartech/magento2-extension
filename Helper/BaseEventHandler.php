@@ -133,7 +133,7 @@ class BaseEventHandler extends AbstractHelper
 
         $this->eventRepository->save($eventModel);
 
-        $this->_logger->info('event_type: ' . $type . ', event_data: ' . $data);
+        $this->_logger->info('event_type: ' . $type);
     }
 
     /**

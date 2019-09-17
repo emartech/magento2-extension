@@ -275,11 +275,6 @@ class ProductsApi implements ProductsApiInterface
 
         foreach ($availableStores as $availableStore) {
             if (in_array($availableStore->getId(), $storeIds)) {
-                if (!$this->websiteId) {
-                    $this->websiteId = $availableStore->getWebsiteId();
-                } elseif ($this->websiteId != $availableStore->getWebsiteId()) {
-                    throw new WebApiException(__('Store Ids must belong to the same website'));
-                }
                 $this->storeIds[$availableStore->getId()] = $availableStore;
             }
         }
