@@ -101,6 +101,11 @@ class ProductsApi implements ProductsApiInterface
     private $storeIds = [];
 
     /**
+     * @var int
+     */
+    private $websiteId = 0;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -270,6 +275,11 @@ class ProductsApi implements ProductsApiInterface
 
         foreach ($availableStores as $availableStore) {
             if (in_array($availableStore->getId(), $storeIds)) {
+                if (!$this->websiteId) {
+                    $this->websiteId = $availableStore->getWebsiteId();
+                } elseif ($this->websiteId != $availableStore->getWebsiteId()) {
+                    throw new WebApiException(__('Store Ids must belong to the same website'));
+                }
                 $this->storeIds[$availableStore->getId()] = $availableStore;
             }
         }
@@ -390,7 +400,7 @@ class ProductsApi implements ProductsApiInterface
             $returnArray[] = $this->productFactory->create()->setType($product->getTypeId())
                 ->setCategories($this->handleCategories($product))
                 ->setChildrenEntityIds($this->handleChildrenEntityIds($product))
-                ->setEntityId($product->getData($this->linkField))
+                ->setEntityId($product->getEntityId())
                 ->setIsInStock($this->handleStock($product))
                 ->setQty($this->handleQty($product))
                 ->setSku($product->getSku())
