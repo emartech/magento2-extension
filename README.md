@@ -2,7 +2,6 @@ For development environment information refer to [dev README](dev/README.md).
 
 
 # Magento2 integration for the Emarsys Marketing Platform installation guide
-[ ![Codeship Status for emartech/magento2-extension](https://app.codeship.com/projects/df2056c0-3b1f-0136-0a27-1e274df65f02/status?branch=master)](https://app.codeship.com/projects/290273)
 
 1. ### Composer install the package
     ```
