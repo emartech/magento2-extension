@@ -6,8 +6,6 @@ use Emartech\Emarsys\Api\Data\ConfigInterface;
 
 interface ConfigApiInterface
 {
-    const ATTRIBUTE_CONFIG_POST_TAG = '_attributes';
-
     /**
      * @param int                                        $websiteId
      * @param \Emartech\Emarsys\Api\Data\ConfigInterface $config
@@ -25,9 +23,10 @@ interface ConfigApiInterface
 
     /**
      * @param string   $type
+     * @param int      $websiteId
      * @param string[] $codes
      *
      * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
      */
-    public function setAttributes($type, $codes);
+    public function setAttributes($type, $websiteId, $codes);
 }

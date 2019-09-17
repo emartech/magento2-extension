@@ -22,6 +22,8 @@ interface ConfigInterface
     const SCOPE_TYPE_DEFAULT       = 'websites';
     const XML_PATH_EMARSYS_PRE_TAG = 'emartech/emarsys/config/';
 
+    const ATTRIBUTE_CONFIG_POST_TAG = '_attributes';
+
     /**
      * @param string     $key
      * @param string|int $index
@@ -133,7 +135,7 @@ interface ConfigInterface
      * @param string   $key
      * @param null|int $websiteId
      *
-     * @return string
+     * @return string|string[]
      */
     public function getConfigValue($key, $websiteId = null);
 
@@ -152,4 +154,9 @@ interface ConfigInterface
      * @return bool
      */
     public function isEnabledForStore($key, $storeId = null);
+
+    /**
+     * @return \Magento\Store\Api\Data\WebsiteInterface[]
+     */
+    public function getAvailableWebsites();
 }

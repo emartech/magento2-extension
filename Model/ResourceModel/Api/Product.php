@@ -159,8 +159,8 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param $page
-     * @param $pageSize
+     * @param int $page
+     * @param int $pageSize
      *
      * @return array
      */

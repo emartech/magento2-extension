@@ -104,12 +104,13 @@ class ConfigApi implements ConfigApiInterface
 
     /**
      * @param string   $type
+     * @param int      $websiteId
      * @param string[] $codes
      *
      * @return StatusResponseInterface
      * @throws WebApiException
      */
-    public function setAttributes($type, $codes)
+    public function setAttributes($type, $websiteId, $codes)
     {
         if (!in_array($type, AttributesApiInterface::TYPES)) {
             throw new WebApiException(__('Invalid Type'));
@@ -118,7 +119,11 @@ class ConfigApi implements ConfigApiInterface
         /** @var ConfigInterface $config */
         $config = $this->configFactory->create();
 
-        if ($config->setConfigValue($type . self::ATTRIBUTE_CONFIG_POST_TAG, $codes, 0, 'default')) {
+        if (!array_key_exists($websiteId, $config->getAvailableWebsites())) {
+            throw new WebApiException(__('Invalid Website'));
+        }
+
+        if ($config->setConfigValue($type . ConfigInterface::ATTRIBUTE_CONFIG_POST_TAG, $codes, $websiteId)) {
             $config->cleanScope();
         }
 

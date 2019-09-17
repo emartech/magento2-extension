@@ -21,6 +21,7 @@ interface CustomerAddressInterface
     const POSTCODE_KEY   = 'postcode';
     const TELEPHONE_KEY  = 'telephone';
     const FAX_KEY        = 'fax';
+    const EXTRA_FIELDS   = 'extra_fields';
 
     /**
      * @return string
@@ -74,6 +75,11 @@ interface CustomerAddressInterface
      * @return string
      */
     public function getSuffix();
+
+    /**
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
+     */
+    public function getExtraFields();
 
     /**
      * @param string $suffix
@@ -177,4 +183,11 @@ interface CustomerAddressInterface
      * @return $this
      */
     public function setFax($fax);
+
+    /**
+     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields);
 }

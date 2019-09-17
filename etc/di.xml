@@ -44,6 +44,8 @@
 
     <preference for="Emartech\Emarsys\Api\EventRepositoryInterface" type="Emartech\Emarsys\Model\EventRepository" />
 
+    <preference for="Emartech\Emarsys\Api\Data\ExtraFieldsInterface" type="Emartech\Emarsys\Model\Data\ExtraFields" />
+
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
     </type>
