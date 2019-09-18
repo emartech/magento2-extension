@@ -10,7 +10,8 @@ namespace Emartech\Emarsys\Model\ResourceModel\Api;
 use Emartech\Emarsys\Model\ResourceModel\Api\Customer as CustomerResourceModel;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\ResourceModel\Address as CustomerAddressResourceModel;
-use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory as CustomerAddressAttributeCollectionFactory;
+use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory
+    as CustomerAddressAttributeCollectionFactory;
 use Magento\Eav\Model\Entity\Attribute;
 use Magento\Eav\Model\Entity\Context;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite;
@@ -165,7 +166,7 @@ class CustomerAddress extends CustomerAddressResourceModel
                     ''
                 )
                 ->where('
-                        customer_entity_table.default_shipping = ' . $this->mainTable . '.' . $this->linkField . ' 
+                        customer_entity_table.default_shipping = ' . $this->mainTable . '.' . $this->linkField . '
                         OR
                         customer_entity_table.default_billing = ' . $this->mainTable . '.' . $this->linkField . '
                     ')
@@ -216,7 +217,7 @@ class CustomerAddress extends CustomerAddressResourceModel
                     ''
                 )
                 ->where('
-                        customer_entity_table.default_shipping = ' . $attributeTable . '.' . $this->linkField . ' 
+                        customer_entity_table.default_shipping = ' . $attributeTable . '.' . $this->linkField . '
                         OR
                         customer_entity_table.default_billing = ' . $attributeTable . '.' . $this->linkField . '
                     ')

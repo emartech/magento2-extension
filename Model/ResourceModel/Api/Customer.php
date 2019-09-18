@@ -92,7 +92,6 @@ class Customer extends CustomerResourceModel
         );
     }
 
-
     /**
      * @param Collection $collection
      *

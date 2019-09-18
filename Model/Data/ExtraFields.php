@@ -2,7 +2,6 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-
 use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
 use Magento\Framework\DataObject;
 

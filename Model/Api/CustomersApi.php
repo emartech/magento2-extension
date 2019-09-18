@@ -346,7 +346,11 @@ class CustomersApi implements CustomersApiInterface
         }
 
         $this->addressAttributeData = $this->customerAddressResource
-            ->getAttributeData($this->minId, $this->maxId, array_merge($this->addressFields, $this->extraAddressFields));
+            ->getAttributeData(
+                $this->minId,
+                $this->maxId,
+                array_merge($this->addressFields, $this->extraAddressFields)
+            );
 
         return $this;
     }
@@ -401,8 +405,18 @@ class CustomersApi implements CustomersApiInterface
         /** @var CustomerInterface $customerItem */
         $customerItem = $this->customerFactory->create()
             ->setId($customer->getId())
-            ->setBillingAddress($this->getAddressFromCustomer($customer->getId(), $customer->getData('default_billing')))
-            ->setShippingAddress($this->getAddressFromCustomer($customer->getId(), $customer->getData('default_shipping')))
+            ->setBillingAddress(
+                $this->getAddressFromCustomer(
+                    $customer->getId(),
+                    $customer->getData('default_billing')
+                )
+            )
+            ->setShippingAddress(
+                $this->getAddressFromCustomer(
+                    $customer->getId(),
+                    $customer->getData('default_shipping')
+                )
+            )
             ->setWebsiteId($customer->getWebsiteId())
             ->setStoreId($customer->getStoreId())
             ->setEmail($customer->getEmail())
