@@ -6,32 +6,32 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
-use Magento\Framework\Data\Collection as DataCollection;
-use Psr\Log\LoggerInterface;
-use Magento\Catalog\Model\Product;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\Product\UrlFactory as ProductUrlFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
-use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
-use Magento\Store\Model\Store;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Emartech\Emarsys\Api\ProductsApiInterface;
-use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
-use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
-use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ImagesInterface;
+use Emartech\Emarsys\Api\Data\ImagesInterfaceFactory;
+use Emartech\Emarsys\Api\Data\ProductInterfaceFactory;
+use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
+use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
+use Emartech\Emarsys\Api\ProductsApiInterface;
+use Emartech\Emarsys\Helper\LinkField;
 use Emartech\Emarsys\Model\ResourceModel\Api\Category as CategoryResource;
 use Emartech\Emarsys\Model\ResourceModel\Api\Product as ProductResource;
-use Emartech\Emarsys\Helper\LinkField;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\Product\UrlFactory as ProductUrlFactory;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Data\Collection as DataCollection;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\Store;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ProductsApi
@@ -252,7 +252,8 @@ class ProductsApi implements ProductsApiInterface
 
         $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
-        return $this->productsApiResponseFactory->create()->setCurrentPage($page)
+        return $this->productsApiResponseFactory->create()
+            ->setCurrentPage($page)
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
             ->setTotalCount($this->numberOfItems)

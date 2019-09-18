@@ -2,9 +2,9 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
+use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
+use Magento\Framework\DataObject;
 
 /**
  * Class CustomerAddress
@@ -114,6 +114,14 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     public function getTelephone()
     {
         return $this->getData(self::TELEPHONE_KEY);
+    }
+
+    /**
+     * @return ExtraFieldsInterface[]
+     */
+    public function getExtraFields()
+    {
+        return $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
@@ -256,6 +264,17 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     public function setTelephone($telephone)
     {
         $this->setData(self::TELEPHONE_KEY, $telephone);
+        return $this;
+    }
+
+    /**
+     * @param ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields)
+    {
+        $this->setData(self::EXTRA_FIELDS, $extraFields);
         return $this;
     }
 }
