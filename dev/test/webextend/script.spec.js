@@ -18,7 +18,7 @@ describe('Webextend scripts', function() {
         websiteId: 1,
         config: {
           injectSnippet: 'enabled',
-          merchantId: '123',
+          merchantId: 'abc123',
           webTrackingSnippetUrl: 'http://yolo.hu/script'
         }
       });
@@ -32,14 +32,14 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          `<script type="text/javascript">    var ScarabQueue = ScarabQueue || [];    (function(id) {      if (document.getElementById(id)) return;      var js = document.createElement('script'); js.id = id;      js.src = '\\/' + '\\/' + 'cdn.scarabresearch.com/js/123/scarab-v2.js';      var fs = document.getElementsByTagName('script')[0];      fs.parentNode.insertBefore(js, fs);    })('scarab-js-api');  </script>`
+          `<script type="text/javascript">    var ScarabQueue = ScarabQueue || [];    (function(id) {      if (document.getElementById(id)) return;      var js = document.createElement('script'); js.id = id;      js.src = '\\/' + '\\/' + 'cdn.scarabresearch.com/js/abc123/scarab-v2.js';      var fs = document.getElementsByTagName('script')[0];      fs.parentNode.insertBefore(js, fs);    })('scarab-js-api');  </script>`
         )
       ).to.be.true;
 
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>'
         )
       ).to.be.true;
     });
@@ -49,7 +49,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"123"},"search":{"term":"magento is shit"},"exchangeRate":2,"slug":"testslug"});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":false,"store":{"merchantId":"abc123"},"search":{"term":"magento is shit"},"exchangeRate":2,"slug":"testslug"});</script>'
         )
       ).to.be.true;
     });
@@ -67,7 +67,7 @@ describe('Webextend scripts', function() {
         emarsysSnippets.includes(
           `<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Tops"],"ids":${JSON.stringify(
             categoryIds
-          )}},"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
+          )}},"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
       ).to.be.true;
     });
@@ -99,7 +99,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          `<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"${productId}"},"category":false,"store":{"merchantId":"123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
+          `<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"${productId}"},"category":false,"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
       ).to.be.true;
     });
