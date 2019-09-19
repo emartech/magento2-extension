@@ -1,10 +1,10 @@
 'use strict';
 
-const { defaultCustomerAttributes, defaultCustomerAddressAttributes } = require('./attributes');
+const { customerAttributes, customerAddressAttributes } = require('./attributes');
 
 const websiteId = 1;
 
-describe.only('Attributes endpoint', function() {
+describe('Attributes endpoint', function() {
   afterEach(async function() {});
 
   after(async function() {});
@@ -17,9 +17,11 @@ describe.only('Attributes endpoint', function() {
       });
 
       if (this.magentoVersion.startsWith('2.1')) {
-        expect(mappedAttributes).to.eql(defaultCustomerAttributes.old);
+        expect(mappedAttributes).to.have.deep.members(customerAttributes.old);
+      } else if (this.magentoEdition === 'Enterprise') {
+        expect(mappedAttributes).to.have.deep.members(customerAttributes.enterprise);
       } else {
-        expect(mappedAttributes).to.eql(defaultCustomerAttributes.new);
+        expect(mappedAttributes).to.have.deep.members(customerAttributes.new);
       }
     });
 
@@ -30,9 +32,9 @@ describe.only('Attributes endpoint', function() {
       });
 
       if (this.magentoVersion.startsWith('2.1')) {
-        expect(mappedAttributes).to.eql(defaultCustomerAddressAttributes.old);
+        expect(mappedAttributes).to.have.deep.members(customerAddressAttributes.old);
       } else {
-        expect(mappedAttributes).to.eql(defaultCustomerAddressAttributes.new);
+        expect(mappedAttributes).to.have.deep.members(customerAddressAttributes.new);
       }
     });
   });

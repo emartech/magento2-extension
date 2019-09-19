@@ -24,5 +24,11 @@ else
   echo "   >> Skipping installation."
 fi
 
+echo "-|| Creating EAV fields"
+bin/magento emartech:attribute:create
+
+echo "-|| Setting EAV field for customer 1"
+composer update emartech/attributes-magento2-extension
+bin/magento emartech:customer-attribute:set --customer_id 1 --attribute_name emarsys_test_favorite_car --attribute_value ferrari
 
 bin/magento cache:flush
