@@ -1,4 +1,4 @@
-'uset strict';
+'use strict';
 
 const customerAttributes = {
   old: [
