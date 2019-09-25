@@ -11,6 +11,7 @@ pipeline {
     MAGENTO_REPO_SECRET = credentials('magento_repo_secret')
     CODESHIP_USER       = credentials('integrations_team_codeship_user')
     CODESHIP_PASSWORD   = credentials('integrations_team_codeship_password')
+    GCP_SERVICE_ACCOUNT = credentials('plugins-gcloud-ci-service-account-keyfile')
     MYSQL_HOST          = 'db'
     MYSQL_USER          = 'magento'
     MYSQL_PASSWORD      = 'magento'
@@ -28,13 +29,16 @@ pipeline {
   }
 
   stages {
-    // stage('Remove old images') {
-    //   steps {
-    //     catchError {
-    //       sh 'docker rmi emarsys/ems-integration-magento-sampledata:2.3.2ce emarsys/ems-integration-magento-sampledata:2.2.6ce emarsys/ems-integration-magento-sampledata:2.1.8ce emarsys/ems-integration-magento-sampledata:2.3.1ce-prefixed emarsys/ems-integration-magento-sampledata:2.3.2ee'
-    //     }
-    //   }
-    // }
+    stage('Test kubectl') {
+      steps {
+        sh 'echo $GCP_SERVICE_ACCOUNT > ci-account.json'
+        sh 'docker run --name gcloud-auth -v $(pwd)/ci-account.json:/auth/ci-account.json iben12/gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
+        sh 'docker run --rm -it --volumes-from gcloud-auth gke-service kubectl get pod'
+        sh 'docker rm gcloud-auth'
+        sh 'docker rmi iben12/gke-service'
+        sh 'rm ci-account.json'
+      }
+    }
     stage('Build node image') {
       steps {
         sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node ./dev'
