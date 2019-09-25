@@ -31,7 +31,7 @@ pipeline {
   stages {
     stage('Test kubectl') {
       steps {
-        sh 'echo $GCP_SERVICE_ACCOUNT > ci-account.json'
+        sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
         sh 'docker run --name gcloud-auth -v "$(pwd)/ci-account.json:/auth/ci-account.json" iben12/gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
         sh 'docker run --rm -it --volumes-from gcloud-auth gke-service kubectl get pod'
         sh 'docker rm gcloud-auth'
