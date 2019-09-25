@@ -32,9 +32,8 @@ pipeline {
     stage('Test kubectl') {
       steps {
         sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
-        sh 'cat ci-account.json'
         sh 'docker run --name gcloud-auth -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" -v "$(pwd)/ci-account.json:/auth/ci-account.json" iben12/gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
-        sh 'docker run --rm -it -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth gke-service kubectl get pod'
+        sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth gke-service kubectl get pod'
         sh 'docker rm gcloud-auth'
         sh 'docker rmi iben12/gke-service'
         sh 'rm ci-account.json'
