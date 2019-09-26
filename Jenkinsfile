@@ -34,11 +34,34 @@ pipeline {
         sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node ./dev'
       }
     }
-    stage('Run versions in parallel: Chapter 1') {
+    stage('Run tests on current versions') {
       parallel {
         stage('Magento 2.3.2CE: build and run tests') {
           steps {
             sh 'VERSION=2.3.2ce sh dev/jenkins/run.sh'
+          }
+        }
+        stage('Magento 2.3.2EE: build and run tests') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
+          }
+        }
+      }
+    }
+    stage('Deploy to staging') {
+      steps {
+        sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
+        sh 'docker run --name gcloud-auth -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" -v "$(pwd)/ci-account.json:/auth/ci-account.json" iben12/gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
+        sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth iben12/gke-service kubectl set env deployment web-staging EXTENSION_SHA=$GIT_COMMIT'
+        sh 'docker rm gcloud-auth'
+        sh 'rm ci-account.json'
+      }
+    }
+    stage('Run tests on other versions') {
+      parallel {
+        stage('Magento 2.3.1CE with table prefix: build and run tests') {
+          steps {
+            sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run.sh'
           }
         }
         stage('Magento 2.2.6CE: build and run tests') {
@@ -51,29 +74,6 @@ pipeline {
             sh 'VERSION=2.1.8ce sh dev/jenkins/run.sh'
           }
         }
-      }
-    }
-    stage('Run versions in parallel: Chapter 2') {
-      parallel {
-        stage('Magento 2.3.1CE with table prefix: build and run tests') {
-          steps {
-            sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run.sh'
-          }
-        }
-        stage('Magento 2.3.2EE: build and run tests') {
-          steps {
-            sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
-          }
-        }
-      }
-    }
-    stage('kubectl POC') {
-      steps {
-        sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
-        sh 'docker run --name gcloud-auth -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" -v "$(pwd)/ci-account.json:/auth/ci-account.json" iben12/gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
-        sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth iben12/gke-service kubectl get pod'
-        sh 'docker rm gcloud-auth'
-        sh 'rm ci-account.json'
       }
     }
   }
