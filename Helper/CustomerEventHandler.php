@@ -12,6 +12,7 @@ use Emartech\Emarsys\Helper\Json as JsonSerializer;
 use Emartech\Emarsys\Model\EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
 use Emartech\Emarsys\Api\EventRepositoryInterface;
+use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 
 /**
  * Class CustomerEventHandler
@@ -32,6 +33,11 @@ class CustomerEventHandler extends BaseEventHandler
     private $subscriber;
 
     /**
+     * @var CustomerHelper
+     */
+    private $customerHelper;
+
+    /**
      * CustomerEventHandler constructor.
      *
      * @param CustomerFactory          $customerFactory
@@ -43,6 +49,7 @@ class CustomerEventHandler extends BaseEventHandler
      * @param Context                  $context
      * @param StoreManagerInterface    $storeManager
      * @param JsonSerializer           $jsonSerializer
+     * @param CustomerHelper           $customerHelper
      */
     public function __construct(
         CustomerFactory $customerFactory,
@@ -53,10 +60,12 @@ class CustomerEventHandler extends BaseEventHandler
         EventCollectionFactory $eventCollectionFactory,
         Context $context,
         StoreManagerInterface $storeManager,
-        JsonSerializer $jsonSerializer
+        JsonSerializer $jsonSerializer,
+        CustomerHelper $customerHelper
     ) {
         $this->customerFactory = $customerFactory;
         $this->subscriber = $subscriber;
+        $this->customerHelper = $customerHelper;
 
         parent::__construct(
             $storeManager,
@@ -87,23 +96,13 @@ class CustomerEventHandler extends BaseEventHandler
             $type = self::DEFAULT_TYPE;
         }
 
-        /** @var Customer $customer */
-        $customer = $this->customerFactory->create()->load($customerId);
-
-        $customerData = $customer->toArray();
-        $customerData['id'] = $customerData['entity_id'];
-
-        if ($customer->getDefaultBillingAddress()) {
-            $customerData['billing_address'] = $customer->getDefaultBillingAddress()->toArray();
-        }
-        if ($customer->getDefaultShippingAddress()) {
-            $customerData['shipping_address'] = $customer->getDefaultShippingAddress()->toArray();
-        }
-
-        $subscription = $this->subscriber->loadByCustomerId($customerId);
-        $customerData['accepts_marketing'] = $subscription->getStatus();
-
-        $this->saveEvent($websiteId, $storeId, $type, $customer->getId(), $customerData);
+        $this->saveEvent(
+            $websiteId,
+            $storeId,
+            $type,
+            $customerId,
+            $this->customerHelper->getOneCustomer($customerId, $websiteId, true)
+        );
 
         return true;
     }

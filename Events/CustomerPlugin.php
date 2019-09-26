@@ -4,26 +4,19 @@ namespace Emartech\Emarsys\Events;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
-use Emartech\Emarsys\Model\EventRepository;
-use Emartech\Emarsys\Model\SettingsFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 use Emartech\Emarsys\Helper\Json;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\Reflection\DataObjectProcessor;
-use Magento\Customer\Helper\View as CustomerViewHelper;
-use \Psr\Log\LoggerInterface;
-use Magento\Customer\Model\CustomerRegistry;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Newsletter\Model\Subscriber;
-use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\Event as EventModel;
-use Magento\Customer\Model\EmailNotificationInterface;
+use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
+use Emartech\Emarsys\Model\EventRepository;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\Data\CustomerSecure;
-
+use Magento\Customer\Model\EmailNotificationInterface;
 use Magento\Framework\Exception\AlreadyExistsException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Newsletter\Model\Subscriber;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class CustomerPlugin
@@ -42,11 +35,6 @@ class CustomerPlugin
     const EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION       = 'customer_password_reset_confirmation';
 
     /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
      * @var StoreManagerInterface
      */
     private $storeManager;
@@ -62,24 +50,9 @@ class CustomerPlugin
     private $eventRepository;
 
     /**
-     * @var CustomerRegistry
-     */
-    private $customerRegistry;
-
-    /**
      * @var EmarsysEventFactory
      */
     private $eventFactory;
-
-    /**
-     * @var DataObjectProcessor
-     */
-    private $dataProcessor;
-
-    /**
-     * @var CustomerViewHelper
-     */
-    private $customerViewHelper;
 
     /**
      * @var Json
@@ -92,49 +65,37 @@ class CustomerPlugin
     private $configReader;
 
     /**
-     * @var CustomerFactory
+     * @var CustomerHelper
      */
-    private $customerFactory;
+    private $customerHelper;
 
     /**
      * CustomerPlugin constructor.
      *
-     * @param ScopeConfigInterface  $scopeConfig
      * @param StoreManagerInterface $storeManager
      * @param LoggerInterface       $logger
      * @param EventRepository       $eventRepository
-     * @param CustomerRegistry      $customerRegistry
-     * @param CustomerFactory       $customerFactory
      * @param EmarsysEventFactory   $eventFactory
-     * @param DataObjectProcessor   $dataProcessor
-     * @param CustomerViewHelper    $customerViewHelper
      * @param ConfigReader          $configReader
      * @param Json                  $json
+     * @param CustomerHelper        $customerHelper
      */
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
         LoggerInterface $logger,
         EventRepository $eventRepository,
-        CustomerRegistry $customerRegistry,
-        CustomerFactory $customerFactory,
         EmarsysEventFactory $eventFactory,
-        DataObjectProcessor $dataProcessor,
-        CustomerViewHelper $customerViewHelper,
         ConfigReader $configReader,
-        Json $json
+        Json $json,
+        CustomerHelper $customerHelper
     ) {
-        $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
         $this->logger = $logger;
         $this->eventRepository = $eventRepository;
-        $this->customerRegistry = $customerRegistry;
         $this->eventFactory = $eventFactory;
-        $this->dataProcessor = $dataProcessor;
-        $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->configReader = $configReader;
-        $this->customerFactory = $customerFactory;
+        $this->customerHelper = $customerHelper;
     }
 
     /**
@@ -221,7 +182,7 @@ class CustomerPlugin
             self::EVENT_CUSTOMER_NEW_ACCOUNT . $type,
             $customer->getId(),
             [
-                'customer' => $this->getFullCustomerObject($customer)->getData(),
+                'customer' => $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true),
                 'back_url' => $backUrl,
                 'store'    => $this->storeManager->getStore($storeId)->getData(),
             ]
@@ -257,7 +218,7 @@ class CustomerPlugin
         $store = $this->storeManager->getStore($savedCustomer->getStoreId());
 
         $eventData = [
-            'customer'            => $this->getFullCustomerObject($savedCustomer)->getData(),
+            'customer'            => $this->customerHelper->getOneCustomer($savedCustomer->getId(), $websiteId, true),
             'store'               => $store->getData(),
             'orig_customer_email' => $origCustomerEmail,
             'new_customer_email'  => $savedCustomer->getEmail(),
@@ -322,7 +283,7 @@ class CustomerPlugin
             self::EVENT_CUSTOMER_PASSWORD_REMINDER,
             $customer->getId(),
             [
-                'customer' => $this->getFullCustomerObject($customer)->getData(),
+                'customer' => $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true),
                 'store'    => $store->getData(),
             ]
         );
@@ -358,7 +319,7 @@ class CustomerPlugin
             self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION,
             $customer->getId(),
             [
-                'customer' => $this->getFullCustomerObject($customer)->getData(),
+                'customer' => $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true),
                 'store'    => $store->getData(),
             ]
         );
@@ -381,29 +342,12 @@ class CustomerPlugin
     }
 
     /**
-     * @param CustomerInterface $customer
-     *
-     * @return CustomerSecure
-     * @throws NoSuchEntityException
-     */
-    private function getFullCustomerObject($customer)
-    {
-        // No need to flatten the custom attributes or nested objects since the only usage is for email templates and
-        // object passed for events
-        $mergedCustomerData = $this->customerRegistry->retrieveSecureData($customer->getId());
-        $customerData = $this->dataProcessor
-            ->buildOutputDataArray($customer, \Magento\Customer\Api\Data\CustomerInterface::class);
-        $mergedCustomerData->addData($customerData);
-
-        return $mergedCustomerData;
-    }
-
-    /**
      * @param Subscriber $subscriber
+     * @param int $websiteId
      *
      * @return array
      */
-    private function getDataFromSubscription(Subscriber $subscriber)
+    private function getDataFromSubscription(Subscriber $subscriber, $websiteId)
     {
         $data = [
             'subscriber' => $subscriber->getData(),
@@ -413,8 +357,7 @@ class CustomerPlugin
             $data['subscriber'] = $subscriber->getData();
         }
         if ($subscriber->getCustomerId()) {
-            $customer = $this->customerFactory->create()->load($subscriber->getCustomerId());
-            $data['customer'] = $customer->getData();
+            $data['customer'] = $this->customerHelper->getOneCustomer($subscriber->getCustomerId(), $websiteId, true);
         }
         return $data;
     }
@@ -444,7 +387,7 @@ class CustomerPlugin
                 $storeId,
                 $type,
                 $subscriber->getId(),
-                $this->getDataFromSubscription($subscriber)
+                $this->getDataFromSubscription($subscriber, $websiteId)
             );
         } catch (\Exception $e) {
             return false;

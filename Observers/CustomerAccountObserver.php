@@ -24,8 +24,16 @@ class CustomerAccountObserver implements ObserverInterface
      */
     private $logger;
 
-    public function __construct(CustomerEventHandler $customerEventHandler, LoggerInterface $logger)
-    {
+    /**
+     * CustomerAccountObserver constructor.
+     *
+     * @param CustomerEventHandler $customerEventHandler
+     * @param LoggerInterface      $logger
+     */
+    public function __construct(
+        CustomerEventHandler $customerEventHandler,
+        LoggerInterface $logger
+    ) {
         $this->customerEventHandler = $customerEventHandler;
         $this->logger = $logger;
     }
