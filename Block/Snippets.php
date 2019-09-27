@@ -228,20 +228,11 @@ class Snippets extends Template
 
                 $categoryIds = $this->removeDefaultCategories($category->getPathIds());
 
-                $linkField = 'entity_id';
-                if (class_exists(\Magento\Framework\EntityManager\MetadataPool::class)) {
-                    // @codingStandardsIgnoreLine
-                    $metadataPool = $this->objectManager->create(
-                        \Magento\Framework\EntityManager\MetadataPool::class
-                    );
-                    $linkField = $metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
-                }
-
                 /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
                 $categoryCollection = $this->categoryCollectionFactory->create()
                     ->setStore($this->storeManager->getStore())
                     ->addAttributeToSelect('name')
-                    ->addFieldToFilter($linkField, ['in' => $categoryIds]);
+                    ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
 
                 /** @var Category $category */
                 foreach ($categoryCollection as $categoryItem) {
