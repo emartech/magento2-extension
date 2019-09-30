@@ -244,7 +244,6 @@ class CustomersApi implements CustomersApiInterface
         return $customerArray;
     }
 
-
     /**
      * @return $this
      */
