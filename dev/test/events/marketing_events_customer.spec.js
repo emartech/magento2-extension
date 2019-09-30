@@ -8,7 +8,13 @@ const customer = {
   lastname: 'World',
   store_id: 1,
   website_id: 1,
-  disable_auto_group_change: 0
+  disable_auto_group_change: 0,
+  custom_attributes: [
+    {
+      attribute_code: 'emarsys_test_favorite_car',
+      value: 'skoda'
+    }
+  ]
 };
 
 const newsletterCustomer = {
@@ -397,6 +403,19 @@ describe('Marketing events: customer', function() {
   context('if collectMarketingEvents turned on', function() {
     before(async function() {
       await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
+      await this.magentoApi.execute('attributes', 'set', {
+        websiteId: 1,
+        type: 'customer',
+        attributeCodes: ['emarsys_test_favorite_car']
+      });
+    });
+
+    after(async function() {
+      await this.magentoApi.execute('attributes', 'set', {
+        websiteId: 1,
+        type: 'customer',
+        attributeCodes: []
+      });
     });
 
     it('should create customer_new_account_registered_no_password event', async function() {
@@ -411,6 +430,7 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.eql(customer.email);
+      expect(eventData.customer.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
       expect(event.website_id).to.equal(1);
       expect(event.store_id).to.equal(1);
     });
@@ -427,6 +447,7 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.eql(customer.email);
+      expect(eventData.customer.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
       expect(event.website_id).to.equal(1);
       expect(event.store_id).to.equal(1);
     });
@@ -451,6 +472,7 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.equal(this.customer.email);
+      expect(eventData.customer.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
       expect(event.website_id).to.equal(1);
       expect(event.store_id).to.equal(1);
     });
@@ -475,6 +497,7 @@ describe('Marketing events: customer', function() {
 
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.equal(this.customer.email);
+      expect(eventData.customer.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
       expect(event.website_id).to.equal(1);
       expect(event.store_id).to.equal(1);
     });
