@@ -8,9 +8,8 @@ use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Helper\View as CustomerViewHelper;
 use Emartech\Emarsys\Helper\Json;
+use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 use Psr\Log\LoggerInterface;
 use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
 use Magento\Framework\Exception\LocalizedException;
@@ -38,14 +37,6 @@ class SenderBuilderPlugin
      */
     private $eventRepository;
     /**
-     * @var CustomerRepositoryInterface
-     */
-    private $customerRepositoryInterface;
-    /**
-     * @var CustomerViewHelper
-     */
-    private $customerViewHelper;
-    /**
      * @var Json
      */
     private $json;
@@ -53,34 +44,39 @@ class SenderBuilderPlugin
      * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @var int
+     */
+    private $websiteId;
+    /**
+     * @var CustomerHelper
+     */
+    private $customerHelper;
 
     /**
      * SenderBuilderPlugin constructor.
      *
-     * @param ConfigReader                $configReader
-     * @param EmarsysEventFactory         $eventFactory
-     * @param EventRepository             $eventRepository
-     * @param CustomerRepositoryInterface $customerRepositoryInterface
-     * @param CustomerViewHelper          $customerViewHelper
-     * @param Json                        $json
-     * @param LoggerInterface             $logger
+     * @param ConfigReader $configReader
+     * @param EmarsysEventFactory $eventFactory
+     * @param EventRepository $eventRepository
+     * @param Json $json
+     * @param CustomerHelper $customerHelper
+     * @param LoggerInterface $logger
      */
     public function __construct(
         ConfigReader $configReader,
         EmarsysEventFactory $eventFactory,
         EventRepository $eventRepository,
-        CustomerRepositoryInterface $customerRepositoryInterface,
-        CustomerViewHelper $customerViewHelper,
         Json $json,
+        CustomerHelper $customerHelper,
         LoggerInterface $logger
     ) {
         $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
         $this->eventRepository = $eventRepository;
-        $this->customerRepositoryInterface = $customerRepositoryInterface;
-        $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->logger = $logger;
+        $this->customerHelper = $customerHelper;
     }
 
     /**
@@ -104,7 +100,7 @@ class SenderBuilderPlugin
             $identityContainer->setAccessible(true);
             $identityContainer = $identityContainer->getValue($senderBuilder);
             $storeId = $identityContainer->getStore()->getStoreId();
-            $websiteId = $identityContainer->getStore()->getWebsiteId();
+            $this->websiteId = $identityContainer->getStore()->getWebsiteId();
 
             if (!$this->configReader->isEnabledForStore(ConfigInterface::MARKETING_EVENTS, $storeId)) {
                 return $proceed();
@@ -121,7 +117,7 @@ class SenderBuilderPlugin
             $data['emailCopyTo'] = $identityContainer->getEmailCopyTo();
 
             $this->saveEvent(
-                $websiteId,
+                $this->websiteId,
                 $storeId,
                 $templateContainer->getTemplateId(),
                 $data['order']['entity_id'],
@@ -185,10 +181,7 @@ class SenderBuilderPlugin
         $data[$key]['addresses']['billing'] = $order->getBillingAddress()->toArray();
         $data['is_guest'] = $order->getCustomerIsGuest();
         if ($order->getCustomerId()) {
-            /** @var \Magento\Customer\Model\Data\Customer $customer */
-            $customer = $this->customerRepositoryInterface->getById($order->getCustomerId());
-            $customer->setData('name', $this->customerViewHelper->getCustomerName($customer));
-            $data['customer'] = $customer->__toArray();
+            $data['customer'] = $this->customerHelper->getOneCustomer($order->getCustomerId(), $this->websiteId, true);
         }
         $data[$key]['payment'] = $order->getPayment()->getData();
 

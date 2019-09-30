@@ -146,7 +146,13 @@ const expectCustomerMatches = function(createdEventData, customer) {
     email: customer.email,
     firstname: customer.firstname,
     lastname: customer.lastname,
-    entityId: customer.id
+    entityId: customer.id,
+    extra_fields: [
+      {
+        key: customer.custom_attributes[0].attribute_code,
+        value: customer.custom_attributes[0].value
+      }
+    ]
   });
 };
 
@@ -175,6 +181,11 @@ describe('Marketing events: sales', function() {
     await this.magentoApi.execute('config', 'set', {
       websiteId: 1,
       config: { collectMarketingEvents: 'disabled' }
+    });
+    await this.magentoApi.execute('attributes', 'set', {
+      websiteId: 1,
+      type: 'customer',
+      attributeCodes: []
     });
     await this.db.truncate(this.getTableName('emarsys_events_data'));
   });
@@ -205,6 +216,11 @@ describe('Marketing events: sales', function() {
       await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: { collectMarketingEvents: 'enabled' }
+      });
+      await this.magentoApi.execute('attributes', 'set', {
+        websiteId: 1,
+        type: 'customer',
+        attributeCodes: ['emarsys_test_favorite_car']
       });
     });
 

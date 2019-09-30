@@ -208,7 +208,13 @@ before(async function() {
           lastname: 'Default',
           store_id: 1,
           website_id: 1,
-          disable_auto_group_change: 0
+          disable_auto_group_change: 0,
+          custom_attributes: [
+            {
+              attribute_code: 'emarsys_test_favorite_car',
+              value: 'skoda'
+            }
+          ]
         },
         'Password1234'
       );
