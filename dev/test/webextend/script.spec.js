@@ -86,6 +86,9 @@ describe('Webextend scripts', function() {
         case '2.3.2Community':
           productId = 730;
           break;
+        case '2.3.3Community':
+          productId = 730;
+          break;
         case '2.3.1Enterprise':
           productId = 732;
           break;
