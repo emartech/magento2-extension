@@ -41,6 +41,11 @@ pipeline {
             sh 'VERSION=2.3.2ce sh dev/jenkins/run.sh'
           }
         }
+        stage('Magento 2.3.3CE: build and run tests') {
+          steps {
+            sh 'VERSION=2.3.3ce sh dev/jenkins/run.sh'
+          }
+        }
         stage('Magento 2.3.2EE: build and run tests') {
           steps {
             sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
@@ -81,6 +86,7 @@ pipeline {
     always {
       sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers...\''
       sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
+      sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.2ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.2.6ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
