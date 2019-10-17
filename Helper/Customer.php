@@ -435,6 +435,8 @@ class Customer extends AbstractHelper
         /** @var CustomerInterface $customerItem */
         $customerItem = $this->customerFactory->create()
             ->setId($customer->getId())
+            ->setRpToken($customer->getRpToken())
+            ->setRpTokenCreatedAt($customer->getRpTokenCreatedAt())
             ->setBillingAddress($billingAddress)
             ->setShippingAddress($shippingAddress)
             ->setWebsiteId($customer->getWebsiteId())
