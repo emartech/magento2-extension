@@ -473,6 +473,8 @@ describe('Marketing events: customer', function() {
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.equal(this.customer.email);
       expect(eventData.customer.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
+      expect(eventData.customer.rp_token).not.to.be.undefined;
+      expect(eventData.customer.rp_token_created_at).not.to.be.undefined;
       expect(event.website_id).to.equal(1);
       expect(event.store_id).to.equal(1);
     });
@@ -498,6 +500,8 @@ describe('Marketing events: customer', function() {
       const eventData = JSON.parse(event.event_data);
       expect(eventData.customer.email).to.equal(this.customer.email);
       expect(eventData.customer.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
+      expect(eventData.customer.rp_token).not.to.be.undefined;
+      expect(eventData.customer.rp_token_created_at).not.to.be.undefined;
       expect(event.website_id).to.equal(1);
       expect(event.store_id).to.equal(1);
     });
