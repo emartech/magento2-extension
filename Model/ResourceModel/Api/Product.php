@@ -245,16 +245,23 @@ class Product extends ProductResourceModel
     /**
      * @param int $minProductId
      * @param int $maxProductId
+     * @param string $linkField
      *
      * @return array
      */
-    public function getStockData($minProductId, $maxProductId)
+    public function getStockData($minProductId, $maxProductId, $linkField = 'entity_id')
     {
         $this->stockData = [];
+        $stockItemTable = $this->getTable('cataloginventory_stock_item');
         $stockQuery = $this->_resource->getConnection()->select()
-            ->from($this->getTable('cataloginventory_stock_item'), ['is_in_stock', 'qty', 'product_id'])
-            ->where('product_id >= ?', $minProductId)
-            ->where('product_id <= ?', $maxProductId)
+            ->from($stockItemTable, ['is_in_stock', 'qty', 'product_id'])
+            ->joinLeft(
+                ['entity_table' => $this->getTable('catalog_product_entity')],
+                'entity_table.entity_id = ' . $stockItemTable . '.product_id',
+                []
+            )
+            ->where('entity_table.' . $linkField . ' >= ?', $minProductId)
+            ->where('entity_table.' . $linkField . ' <= ?', $maxProductId)
             ->where('stock_id = ?', 1);
 
         $this->iterator->walk(

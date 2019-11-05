@@ -345,7 +345,7 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleStockData()
     {
-        $this->stockData = $this->productResource->getStockData($this->minId, $this->maxId);
+        $this->stockData = $this->productResource->getStockData($this->minId, $this->maxId, $this->linkField);
 
         return $this;
     }
