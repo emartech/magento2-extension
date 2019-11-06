@@ -108,12 +108,13 @@ class Snippets extends Template
     public function getTrackingData()
     {
         return [
-            'product'      => $this->getCurrentProduct(),
-            'category'     => $this->getCategory(),
-            'store'        => $this->getStoreData(),
-            'search'       => $this->getSearchData(),
-            'exchangeRate' => $this->getExchangeRate(),
-            'slug'         => $this->getStoreSlug(),
+            'product'            => $this->getCurrentProduct(),
+            'category'           => $this->getCategory(0),
+            'localized_category' => $this->getCategory(),
+            'store'              => $this->getStoreData(),
+            'search'             => $this->getSearchData(),
+            'exchangeRate'       => $this->getExchangeRate(),
+            'slug'               => $this->getStoreSlug()
         ];
     }
 
@@ -219,7 +220,7 @@ class Snippets extends Template
      * @return mixed
      * @throws \Exception
      */
-    public function getCategory()
+    public function getCategory($storeId = null)
     {
         try {
             $category = $this->coreRegistry->registry('current_category');
@@ -230,7 +231,7 @@ class Snippets extends Template
 
                 /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
                 $categoryCollection = $this->categoryCollectionFactory->create()
-                    ->setStore($this->storeManager->getStore())
+                    ->setStore($this->storeManager->getStore($storeId))
                     ->addAttributeToSelect('name')
                     ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
 
