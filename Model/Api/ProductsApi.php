@@ -431,7 +431,7 @@ class ProductsApi implements ProductsApiInterface
     protected function handleQty($product)
     {
         if (array_key_exists($product->getData($this->linkField), $this->stockData)) {
-            return $this->stockData[$product->getData($this->linkField)]['qty'];
+            return $this->stockData[$product->getEntityId()]['qty'];
         }
 
         return 0;
