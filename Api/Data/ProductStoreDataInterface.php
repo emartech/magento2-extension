@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface ProductStoreDataInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface ProductStoreDataInterface
 {
     const NAME_KEY                   = 'name';

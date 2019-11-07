@@ -12,10 +12,6 @@ use Emartech\Emarsys\Model\Event;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\Collection;
 
-/**
- * Class EventsApi
- * @package Emartech\Emarsys\Model\Api
- */
 class EventsApi implements EventsApiInterface
 {
     /**

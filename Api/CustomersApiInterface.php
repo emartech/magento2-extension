@@ -4,10 +4,6 @@ namespace Emartech\Emarsys\Api;
 
 use Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
 
-/**
- * Interface CustomersApiInterface
- * @package Emartech\Emarsys\Api
- */
 interface CustomersApiInterface
 {
     /**

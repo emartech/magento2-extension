@@ -6,10 +6,6 @@ use Magento\Framework\DataObject;
 
 use Emartech\Emarsys\Api\Data\SystemApiResponseInterface;
 
-/**
- * Class SystemApiResponse
- * @package Emartech\Emarsys\Model\Data
- */
 class SystemApiResponse extends DataObject implements SystemApiResponseInterface
 {
     /**

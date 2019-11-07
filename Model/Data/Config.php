@@ -10,10 +10,6 @@ use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\DataObject;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Class Config
- * @package Emartech\Emarsys\Model\Data
- */
 class Config extends DataObject implements ConfigInterface
 {
     /**

@@ -5,10 +5,6 @@ namespace Emartech\Emarsys\Model\Data;
 use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
 use Magento\Framework\DataObject;
 
-/**
- * Class ExtraFields
- * @package Emartech\Emarsys\Model\Data
- */
 class ExtraFields extends DataObject implements ExtraFieldsInterface
 {
     /**

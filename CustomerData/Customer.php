@@ -4,10 +4,6 @@ namespace Emartech\Emarsys\CustomerData;
 
 use Magento\Customer\CustomerData\Customer as OriginalCustomerData;
 
-/**
- * Class Customer
- * @package Emartech\Emarsys\CustomerData
- */
 class Customer extends OriginalCustomerData
 {
     /**

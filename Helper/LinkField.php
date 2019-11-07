@@ -10,11 +10,6 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\ObjectManagerInterface;
 
-/**
- * Class LinkField
- *
- * @package Emartech\Emarsys\Helper
- */
 class LinkField extends AbstractHelper
 {
 

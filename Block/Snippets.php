@@ -23,10 +23,6 @@ use Emartech\Emarsys\Model\SettingsFactory;
 use Magento\Directory\Model\CurrencyFactory;
 use Magento\Framework\ObjectManagerInterface;
 
-/**
- * Class Snippets
- * @package Emartech\Emarsys\Block
- */
 class Snippets extends Template
 {
     /**

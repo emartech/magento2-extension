@@ -33,11 +33,6 @@ use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class ProductsApi
- *
- * @package Emartech\Emarsys\Model\Api
- */
 class ProductsApi implements ProductsApiInterface
 {
     /**

@@ -7,10 +7,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface ExtraFieldsInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface ExtraFieldsInterface
 {
     const KEY_KEY   = 'key';

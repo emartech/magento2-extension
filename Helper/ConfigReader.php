@@ -7,10 +7,6 @@ use Magento\Framework\App\Helper\Context;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 
-/**
- * Class ConfigReader
- * @package Emartech\Emarsys\Helper
- */
 class ConfigReader extends AbstractHelper
 {
     /**

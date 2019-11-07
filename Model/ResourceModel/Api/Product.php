@@ -23,11 +23,6 @@ use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductA
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
 use Emartech\Emarsys\Helper\LinkField;
 
-/**
- * Class Product
- *
- * @package Emartech\Emarsys\Model\ResourceModel\Api
- */
 class Product extends ProductResourceModel
 {
     const PRODUCT_ENTITY_TYPE_ID = 4;

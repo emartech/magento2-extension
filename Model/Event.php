@@ -6,10 +6,6 @@ use Magento\Framework\Model\AbstractModel;
 
 use Emartech\Emarsys\Api\Data\EventInterface;
 
-/**
- * Class Event
- * @package Emartech\Emarsys\Model
- */
 class Event extends AbstractModel implements EventInterface
 {
     /**

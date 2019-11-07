@@ -4,9 +4,6 @@ namespace Emartech\Emarsys\Api\Data;
 
 use Magento\Sales\Api\Data\OrderInterface as OriginalOrderInterface;
 
-/**
- * Interface OrderInterface
- */
 interface OrderInterface extends OriginalOrderInterface
 {
     const ID_KEY = 'id';

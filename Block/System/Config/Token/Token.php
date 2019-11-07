@@ -6,10 +6,6 @@ namespace Emartech\Emarsys\Block\System\Config\Token;
 use Emartech\Emarsys\Helper\Integration;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-/**
- * Class Uninstall
- * @package Emartech\Emarsys\Setup
- */
 class Token extends \Magento\Config\Block\System\Config\Form\Field
 {
     private $integrationHelper;

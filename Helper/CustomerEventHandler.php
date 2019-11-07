@@ -14,10 +14,6 @@ use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollect
 use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 
-/**
- * Class CustomerEventHandler
- * @package Emartech\Emarsys\Helper
- */
 class CustomerEventHandler extends BaseEventHandler
 {
     const DEFAULT_TYPE = 'customers/update';

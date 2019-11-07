@@ -18,10 +18,6 @@ use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\Order\Creditmemo;
 use Emartech\Emarsys\Model\Event as EventModel;
 
-/**
- * Class SenderBuilderPlugin
- * @package Emartech\Emarsys\Events
- */
 class SenderBuilderPlugin
 {
     /**

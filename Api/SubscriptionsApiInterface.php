@@ -5,10 +5,6 @@ namespace Emartech\Emarsys\Api;
 use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
 use Emartech\Emarsys\Api\Data\StatusResponseInterface;
 
-/**
- * Interface SubscriptionsApiInterface
- * @package Emartech\Emarsys\Api
- */
 interface SubscriptionsApiInterface
 {
     /**

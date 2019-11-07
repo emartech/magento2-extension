@@ -11,10 +11,6 @@ use Emartech\Emarsys\Model\EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
 use Emartech\Emarsys\Api\EventRepositoryInterface;
 
-/**
- * Class SubscriptionEventHandler
- * @package Emartech\Emarsys\Helper
- */
 class SubscriptionEventHandler extends BaseEventHandler
 {
     const DEFAULT_TYPE = 'subscription/unknown';

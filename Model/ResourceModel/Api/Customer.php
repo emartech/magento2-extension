@@ -19,10 +19,6 @@ use Magento\Framework\Validator\Factory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Eav\Model\Entity\Attribute;
 
-/**
- * Class Customer
- * @package Emartech\Emarsys\Model\ResourceModel\Api
- */
 class Customer extends CustomerResourceModel
 {
     const CUSTOMER_ENTITY_TYPE_ID = 1;

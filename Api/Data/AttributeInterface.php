@@ -7,10 +7,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface AttributeInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface AttributeInterface
 {
     const CODE_KEY                = 'code';

@@ -13,11 +13,6 @@ use Magento\Eav\Model\Entity\Context;
 use Magento\Catalog\Model\Category as CategoryModel;
 use Magento\Eav\Model\Entity\AbstractEntity;
 
-/**
- * Class Category
- *
- * @package Emartech\Emarsys\Model\ResourceModel\Api
- */
 class Category extends AbstractEntity
 {
     /**
