@@ -36,19 +36,14 @@ pipeline {
     }
     stage('Run tests on current versions') {
       parallel {
-        stage('Magento 2.3.2CE: build and run tests') {
-          steps {
-            sh 'VERSION=2.3.2ce sh dev/jenkins/run.sh'
-          }
-        }
         stage('Magento 2.3.3CE: build and run tests') {
           steps {
             sh 'VERSION=2.3.3ce sh dev/jenkins/run.sh'
           }
         }
-        stage('Magento 2.3.2EE: build and run tests') {
+        stage('Magento 2.3.3EE: build and run tests') {
           steps {
-            sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
+            sh 'VERSION=2.3.3ee sh dev/jenkins/run.sh'
           }
         }
       }
@@ -62,13 +57,22 @@ pipeline {
         sh 'rm ci-account.json'
       }
     }
-    stage('Run tests on other versions') {
+    stage('Run tests on recent versions') {
       parallel {
+        stage('Magento 2.3.1EE: build and run tests') {
+          steps {
+            sh 'VERSION=2.3.1ee sh dev/jenkins/run.sh'
+          }
+        }
         stage('Magento 2.3.1CE with table prefix: build and run tests') {
           steps {
             sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run.sh'
           }
         }
+      }
+    }
+    stage('Run tests on legacy versions') {
+      parallel {
         stage('Magento 2.2.6CE: build and run tests') {
           steps {
             sh 'VERSION=2.2.6ce sh dev/jenkins/run.sh'
