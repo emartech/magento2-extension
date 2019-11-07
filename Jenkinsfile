@@ -101,6 +101,7 @@ pipeline {
       sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.3.3ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'docker rmi emarsys/ems-integration-cypress:latest'
     }
     success {
