@@ -119,8 +119,8 @@ const localCartItem = (magentoVersion, magentoEdition) => {
           option_value: 50
         },
         {
-          option_id: 145,
-          option_value: 142
+          option_id: 142,
+          option_value: 167
         }
       ],
       '2.3.3': [
@@ -169,7 +169,7 @@ const localCartItem = (magentoVersion, magentoEdition) => {
   };
 
   const options = versionOptions[magentoEdition][magentoVersion] ? versionOptions[magentoEdition][magentoVersion] : defaultOptions;
-  
+
   return {
     sku: 'WS03',
     qty: 1,
