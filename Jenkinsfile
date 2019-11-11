@@ -102,7 +102,7 @@ pipeline {
       sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.3ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'docker rmi emarsys/ems-integration-cypress:latest'
+      sh 'docker rmi emarsys/ems-integration-cypress:3.4.1 || echo \'Could not find image emarsys/ems-integration-cypress:3.4.1\''
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")
