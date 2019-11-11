@@ -383,7 +383,7 @@ class Customer extends DataObject implements CustomerInterface
     }
 
     /**
-     * @param ExtraFieldsInterface $extraFields
+     * @param ExtraFieldsInterface[] $extraFields
      *
      * @return $this
      */

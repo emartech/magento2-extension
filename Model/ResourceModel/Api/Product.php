@@ -243,8 +243,8 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param int $minProductId
-     * @param int $maxProductId
+     * @param int    $minProductId
+     * @param int    $maxProductId
      * @param string $linkField
      *
      * @return array
@@ -292,13 +292,14 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param int   $minProductId
-     * @param int   $maxProductId
-     * @param array $storeIds
+     * @param int      $minProductId
+     * @param int      $maxProductId
+     * @param array    $storeIds
+     * @param string[] $attributeCodes
      *
      * @return array
      */
-    public function getAttributeData($minProductId, $maxProductId, $storeIds)
+    public function getAttributeData($minProductId, $maxProductId, $storeIds, $attributeCodes)
     {
         $this->mainTable = $this->getEntityTable();
         $this->attributeData = [];
@@ -311,12 +312,7 @@ class Product extends ProductResourceModel
         $productAttributeCollection = $this->productAttributeCollectionFactory->create();
         $productAttributeCollection
             ->addFieldToFilter('entity_type_id', ['eq' => self::PRODUCT_ENTITY_TYPE_ID])
-            ->addFieldToFilter('attribute_code', [
-                'in' => array_values(array_merge(
-                    $this->storeProductAttributeCodes,
-                    $this->globalProductAttributeCodes
-                )),
-            ]);
+            ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
         /** @var ProductAttribute $productAttribute */
         foreach ($productAttributeCollection as $productAttribute) {

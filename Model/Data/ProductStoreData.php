@@ -2,6 +2,7 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
 use Magento\Framework\DataObject;
 
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterface;
@@ -90,6 +91,14 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     public function getCurrencyCode()
     {
         return $this->getData(self::CURRENCY_KEY);
+    }
+
+    /**
+     * @return ExtraFieldsInterface[]
+     */
+    public function getExtraFields()
+    {
+        return $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
@@ -209,6 +218,17 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     {
         $this->setData(self::CURRENCY_KEY, $currencyCode);
 
+        return $this;
+    }
+
+    /**
+     * @param ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields)
+    {
+        $this->setData(self::EXTRA_FIELDS, $extraFields);
         return $this;
     }
 }

@@ -18,6 +18,7 @@ interface ProductStoreDataInterface
     const DISPLAY_PRICE_KEY          = 'display_price';
     const ORIGINAL_PRICE_KEY         = 'original_price';
     const ORIGINAL_DISPLAY_PRICE_KEY = 'original_display_price';
+    const EXTRA_FIELDS               = 'extra_fields';
 
     /**
      * @return string
@@ -68,6 +69,11 @@ interface ProductStoreDataInterface
      * @return string
      */
     public function getCurrencyCode();
+
+    /**
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
+     */
+    public function getExtraFields();
 
     /**
      * @param string $name
@@ -138,4 +144,11 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setCurrencyCode($currencyCode);
+
+    /**
+     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields);
 }

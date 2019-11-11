@@ -119,7 +119,7 @@ class ConfigApi implements ConfigApiInterface
         /** @var ConfigInterface $config */
         $config = $this->configFactory->create();
 
-        if (!array_key_exists($websiteId, $config->getAvailableWebsites())) {
+        if (0 !== $websiteId && !array_key_exists($websiteId, $config->getAvailableWebsites())) {
             throw new WebApiException(__('Invalid Website'));
         }
 
