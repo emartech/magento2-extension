@@ -24,10 +24,6 @@ use Magento\Customer\Model\ResourceModel\Attribute\CollectionFactory as Customer
 use Magento\Eav\Model\Entity\Attribute as EavAttributeModel;
 use Magento\Framework\Webapi\Exception as WebApiException;
 
-/**
- * Class AttributesApi
- * @package Emartech\Emarsys\Model\Api
- */
 class AttributesApi implements AttributesApiInterface
 {
     /**

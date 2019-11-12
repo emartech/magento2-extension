@@ -34,21 +34,21 @@ pipeline {
         sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node ./dev'
       }
     }
+    stage('Run code style check') {
+      steps {
+        sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
+      }
+    }
     stage('Run tests on current versions') {
       parallel {
-        stage('Magento 2.3.2CE: build and run tests') {
-          steps {
-            sh 'VERSION=2.3.2ce sh dev/jenkins/run.sh'
-          }
-        }
         stage('Magento 2.3.3CE: build and run tests') {
           steps {
             sh 'VERSION=2.3.3ce sh dev/jenkins/run.sh'
           }
         }
-        stage('Magento 2.3.2EE: build and run tests') {
+        stage('Magento 2.3.3EE: build and run tests') {
           steps {
-            sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
+            sh 'VERSION=2.3.3ee sh dev/jenkins/run.sh'
           }
         }
       }
@@ -62,13 +62,22 @@ pipeline {
         sh 'rm ci-account.json'
       }
     }
-    stage('Run tests on other versions') {
+    stage('Run tests on recent versions') {
       parallel {
+        stage('Magento 2.3.2EE: build and run tests') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
+          }
+        }
         stage('Magento 2.3.1CE with table prefix: build and run tests') {
           steps {
             sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run.sh'
           }
         }
+      }
+    }
+    stage('Run tests on legacy versions') {
+      parallel {
         stage('Magento 2.2.6CE: build and run tests') {
           steps {
             sh 'VERSION=2.2.6ce sh dev/jenkins/run.sh'
@@ -92,7 +101,8 @@ pipeline {
       sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'docker rmi emarsys/ems-integration-cypress:latest'
+      sh 'VERSION=2.3.3ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
+      sh 'docker rmi emarsys/ems-integration-cypress:3.4.1 || echo \'Could not find image emarsys/ems-integration-cypress:3.4.1\''
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")

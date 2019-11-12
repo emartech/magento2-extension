@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface CustomerAddressInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface CustomerAddressInterface
 {
     const PREFIX_KEY     = 'prefix';

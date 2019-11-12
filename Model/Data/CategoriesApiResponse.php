@@ -5,10 +5,6 @@ namespace Emartech\Emarsys\Model\Data;
 use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface;
 use Emartech\Emarsys\Api\Data\CategoryInterface;
 
-/**
- * Class ProductsApiResponse
- * @package Emartech\Emarsys\Model\Data
- */
 class CategoriesApiResponse extends ListApiResponseBase implements CategoriesApiResponseInterface
 {
     /**

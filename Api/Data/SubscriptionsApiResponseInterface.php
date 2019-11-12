@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface SubscriptionsApiResponseInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface SubscriptionsApiResponseInterface extends ListApiResponseBaseInterface
 {
     const SUBSCRIPTIONS_KEY = 'subscriptions';

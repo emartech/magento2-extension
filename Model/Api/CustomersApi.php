@@ -14,10 +14,6 @@ use Magento\Customer\Model\Config\Share as ConfigShare;
 use Magento\Framework\Data\Collection as DataCollection;
 use Magento\Framework\Webapi\Exception as WebApiException;
 
-/**
- * Class CustomersApi
- * @package Emartech\Emarsys\Model\Api
- */
 class CustomersApi implements CustomersApiInterface
 {
     /**

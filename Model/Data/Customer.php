@@ -7,10 +7,6 @@ use Emartech\Emarsys\Api\Data\CustomerInterface;
 use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
 use Magento\Framework\DataObject;
 
-/**
- * Class Customer
- * @package Emartech\Emarsys\Model\Data
- */
 class Customer extends DataObject implements CustomerInterface
 {
     /**

@@ -6,10 +6,6 @@ use Magento\Framework\DataObject;
 
 use Emartech\Emarsys\Api\Data\CategoryStoreDataInterface;
 
-/**
- * Class CategoryStoreData
- * @package Emartech\Emarsys\Model\Data
- */
 class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
 {
     /**

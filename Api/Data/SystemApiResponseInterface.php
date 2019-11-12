@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface SystemApiResponseInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface SystemApiResponseInterface
 {
     const MAGENTO_VERSION_KEY = 'magento_version';

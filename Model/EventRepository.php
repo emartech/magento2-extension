@@ -12,10 +12,6 @@ use Emartech\Emarsys\Model\ResourceModel\Event as EventResourceModel;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
 use Emartech\Emarsys\Api\EventRepositoryInterface;
 
-/**
- * Class EventRepository
- * @package Emartech\Emarsys\Model
- */
 class EventRepository implements EventRepositoryInterface
 {
 

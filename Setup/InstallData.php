@@ -7,10 +7,6 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Emartech\Emarsys\Helper\Integration;
 
-/**
- * Class InstallData
- * @package Emartech\Emarsys\Setup
- */
 class InstallData implements InstallDataInterface
 {
     /**

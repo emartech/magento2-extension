@@ -4,10 +4,6 @@ namespace Emartech\Emarsys\Api;
 
 use Emartech\Emarsys\Api\Data\EventInterface;
 
-/**
- * Interface EventRepositoryInterface
- * @package Emartech\Emarsys\Api
- */
 interface EventRepositoryInterface
 {
     /**

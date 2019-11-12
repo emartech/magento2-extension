@@ -10,10 +10,6 @@ use Emartech\Emarsys\Api\Data\StatusResponseInterface;
 use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
 use Magento\Framework\Webapi\Exception as WebApiException;
 
-/**
- * Class ConfigApi
- * @package Emartech\Emarsys\Model\Api
- */
 class ConfigApi implements ConfigApiInterface
 {
     /**

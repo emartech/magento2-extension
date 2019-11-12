@@ -7,10 +7,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface AttributesApiResponseInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface AttributesApiResponseInterface
 {
     const ATTRIBUTES_KEY = 'attributes';

@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface ConfigInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface ConfigInterface
 {
     const CONFIG_ENABLED            = 'enabled';

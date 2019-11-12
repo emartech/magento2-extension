@@ -11,10 +11,6 @@ use Emartech\Emarsys\Api\Data\AttributeInterface;
 use Emartech\Emarsys\Api\Data\AttributesApiResponseInterface;
 use Magento\Framework\DataObject;
 
-/**
- * Class AttributesApiResponse
- * @package Emartech\Emarsys\Model\Data
- */
 class AttributesApiResponse extends DataObject implements AttributesApiResponseInterface
 {
     /**

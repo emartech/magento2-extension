@@ -9,10 +9,6 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class CustomerAccountObserver
- * @package Emartech\Emarsys\Observers
- */
 class CustomerAccountObserver implements ObserverInterface
 {
     /**

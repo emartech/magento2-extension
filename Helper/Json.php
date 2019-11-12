@@ -10,10 +10,6 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\ProductMetadataInterface;
 
-/**
- * Class Json
- * @package Emartech\Emarsys\Helper
- */
 class Json extends AbstractHelper
 {
     /**

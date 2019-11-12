@@ -8,10 +8,6 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class SalesOrderObserver
- * @package Emartech\Emarsys\Observers
- */
 class SalesOrderObserver implements ObserverInterface
 {
     /**

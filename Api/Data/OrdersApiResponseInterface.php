@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface OrdersApiResponseInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface OrdersApiResponseInterface extends ListApiResponseBaseInterface
 {
     const ITEMS_KEY = 'items';

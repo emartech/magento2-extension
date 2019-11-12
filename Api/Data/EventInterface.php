@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface EventInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface EventInterface
 {
     const EVENT_ID_KEY   = 'event_id';

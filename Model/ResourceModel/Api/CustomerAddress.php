@@ -19,10 +19,6 @@ use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Framework\Validator\Factory;
 
-/**
- * Class CustomerAddress
- * @package Emartech\Emarsys\Model\ResourceModel\Api
- */
 class CustomerAddress extends CustomerAddressResourceModel
 {
     const CUSTOMER_ADDRESS_ENTITY_TYPE_ID = 2;

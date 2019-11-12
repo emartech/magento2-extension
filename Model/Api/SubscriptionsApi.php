@@ -19,10 +19,6 @@ use Emartech\Emarsys\Api\Data\SubscriptionInterface;
 use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
 
-/**
- * Class SubscriptionsApi
- * @package Emartech\Emarsys\Model\Api
- */
 class SubscriptionsApi implements SubscriptionsApiInterface
 {
     /**

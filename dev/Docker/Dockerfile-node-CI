@@ -1,4 +1,4 @@
-FROM emarsys/ems-integration-cypress:latest
+FROM emarsys/ems-integration-cypress:3.4.1
 ARG NPM_TOKEN
 ENV NPM_TOKEN=${NPM_TOKEN}
 

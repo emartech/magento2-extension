@@ -23,10 +23,6 @@ use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory as CustomerC
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 
-/**
- * Class Customer
- * @package Emartech\Emarsys\Helper
- */
 class Customer extends AbstractHelper
 {
     /**

@@ -6,10 +6,6 @@ use Magento\Framework\DataObject;
 
 use Emartech\Emarsys\Api\Data\StoreConfigInterface;
 
-/**
- * Class StoreConfig
- * @package Emartech\Emarsys\Model\Data
- */
 class StoreConfig extends DataObject implements StoreConfigInterface
 {
     /**

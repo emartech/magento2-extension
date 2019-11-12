@@ -6,10 +6,6 @@ use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 
-/**
- * Class InstallSchema
- * @package Emartech\Emarsys\Setup
- */
 class InstallSchema implements InstallSchemaInterface
 {
     /**

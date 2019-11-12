@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface CategoriesApiResponseInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface CategoriesApiResponseInterface extends ListApiResponseBaseInterface
 {
     const CATEGORIES_KEY = 'categories';

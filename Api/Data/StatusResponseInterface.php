@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface StatusResponseInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface StatusResponseInterface
 {
     const STATUS_KEY   = 'status';

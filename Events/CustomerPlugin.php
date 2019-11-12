@@ -18,10 +18,6 @@ use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class CustomerPlugin
- * @package Emartech\Emarsys\Events
- */
 class CustomerPlugin
 {
     const EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL = 'newsletter_send_confirmation_success_email';

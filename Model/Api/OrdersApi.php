@@ -10,10 +10,6 @@ use Emartech\Emarsys\Api\OrdersApiInterface;
 use Emartech\Emarsys\Api\Data\OrdersApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 
-/**
- * Class SystemApi
- * @package Emartech\Emarsys\Model\Api
- */
 class OrdersApi implements OrdersApiInterface
 {
     /**

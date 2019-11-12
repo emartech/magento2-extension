@@ -10,10 +10,6 @@ use Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory as OrderItemC
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableProduct;
 use Magento\Bundle\Model\Product\Type as BundleProduct;
 
-/**
- * Class Success
- * @package Emartech\Emarsys\Block
- */
 class Success extends \Magento\Framework\View\Element\Template
 {
     // @codingStandardsIgnoreLine

@@ -12,10 +12,6 @@ use Emartech\Emarsys\Model\EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
 use Emartech\Emarsys\Api\EventRepositoryInterface;
 
-/**
- * Class SalesEventHandler
- * @package Emartech\Emarsys\Helper
- */
 class SalesEventHandler extends BaseEventHandler
 {
 

@@ -5,10 +5,6 @@ namespace Emartech\Emarsys\Model\Data;
 use Emartech\Emarsys\Api\Data\AttributeInterface;
 use Magento\Framework\DataObject;
 
-/**
- * Class Attribute
- * @package Emartech\Emarsys\Model\Data
- */
 class Attribute extends DataObject implements AttributeInterface
 {
     /**

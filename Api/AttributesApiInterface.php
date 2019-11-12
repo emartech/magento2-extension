@@ -9,10 +9,6 @@ namespace Emartech\Emarsys\Api;
 
 use Emartech\Emarsys\Api\Data\AttributesApiResponseInterface;
 
-/**
- * Interface AttributesApiInterface
- * @package Emartech\Emarsys\Api
- */
 interface AttributesApiInterface
 {
     const TYPE_CUSTOMER         = 'customer';

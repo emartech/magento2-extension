@@ -4,10 +4,6 @@ namespace Emartech\Emarsys\Api\Data;
 
 use Emartech\Emarsys\Api\Data\ImagesInterface;
 
-/**
- * Interface ProductInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface ProductInterface
 {
     const ENTITY_ID_KEY           = 'entity_id';

@@ -27,11 +27,6 @@ use Emartech\Emarsys\Api\Data\CategoryInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoryStoreDataInterfaceFactory;
 use Emartech\Emarsys\Helper\LinkField;
 
-/**
- * Class CategoriesApi
- *
- * @package Emartech\Emarsys\Model\Api
- */
 class CategoriesApi implements CategoriesApiInterface
 {
     /**
