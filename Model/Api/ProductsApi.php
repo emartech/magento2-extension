@@ -19,11 +19,6 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Class ProductsApi
- *
- * @package Emartech\Emarsys\Model\Api
- */
 class ProductsApi implements ProductsApiInterface
 {
 

@@ -30,10 +30,6 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
 use Exception;
 
-/**
- * Class Product
- * @package Emartech\Emarsys\Helper
- */
 class Product extends AbstractHelper
 {
     /**
