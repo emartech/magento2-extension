@@ -11,6 +11,15 @@ const getEmarsysSnippetContents = async path => {
     .replace(/(?:\r\n|\r|\n)/g, '');
 };
 
+const alterProductVisibility = async (magentoApi, sku) => {
+  await magentoApi.put({
+    path: `/index.php/rest/V1/products/${sku}`,
+    payload: {
+      product: { visibility: 4 }
+    }
+  });
+};
+
 describe('Webextend scripts', function() {
   describe('enabled', function() {
     beforeEach(async function() {
@@ -39,7 +48,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":false,"localized_category":false,"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":false,"localizedCategory":false,"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>'
         )
       ).to.be.true;
     });
@@ -49,7 +58,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":false,"localized_category":false,"store":{"merchantId":"abc123"},"search":{"term":"magento is shit"},"exchangeRate":2,"slug":"testslug"});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":false,"localizedCategory":false,"store":{"merchantId":"abc123"},"search":{"term":"magento is shit"},"exchangeRate":2,"slug":"testslug"});</script>'
         )
       ).to.be.true;
     });
@@ -67,7 +76,7 @@ describe('Webextend scripts', function() {
         emarsysSnippets.includes(
           `<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Tops"],"ids":${JSON.stringify(
             categoryIds
-          )}},"localized_category":{"names":["Men","Tops"],"ids":${JSON.stringify(
+          )}},"localizedCategory":{"names":["Men","Tops"],"ids":${JSON.stringify(
             categoryIds
           )}},"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
@@ -107,9 +116,17 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          `<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"${productId}"},"category":false,"localized_category":false,"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
+          `<script>Emarsys.Magento2.track({"product":{"sku":"MT12","id":"${productId}","isVisibleChild":false},"category":false,"localizedCategory":false,"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
       ).to.be.true;
+    });
+
+    it('should include if product is visible child', async function() {
+      await alterProductVisibility(this.magentoApi, 'MT12-XS-Blue');
+      const emarsysSnippets = await getEmarsysSnippetContents('cassius-sparring-tank-xs-blue.html');
+
+      expect(emarsysSnippets.includes('"sku":"MT12-XS-Blue"')).to.be.true;
+      expect(emarsysSnippets.includes('"isVisibleChild":true')).to.be.true;
     });
 
     describe('store is not enabled', function() {

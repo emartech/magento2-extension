@@ -12,6 +12,7 @@ use Emartech\Emarsys\Helper\ConfigReader;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
@@ -59,6 +60,10 @@ class Snippets extends Template
      * @var ObjectManagerInterface
      */
     private $objectManager;
+    /**
+     * @var Configurable
+     */
+    private $configurable;
 
     /**
      * Snippets constructor.
@@ -81,6 +86,7 @@ class Snippets extends Template
         ConfigReader $configReader,
         CurrencyFactory $currencyFactory,
         CategoryCollectionFactory $categoryCollectionFactory,
+        Configurable $configurable,
         ObjectManagerInterface $objectManager,
         array $data = []
     ) {
@@ -91,6 +97,7 @@ class Snippets extends Template
         $this->configReader = $configReader;
         $this->currencyFactory = $currencyFactory;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->configurable = $configurable;
         $this->objectManager = $objectManager;
         parent::__construct($context, $data);
     }
@@ -106,7 +113,7 @@ class Snippets extends Template
         return [
             'product'            => $this->getCurrentProduct(),
             'category'           => $this->getCategory(0),
-            'localized_category' => $this->getCategory(),
+            'localizedCategory' => $this->getCategory(),
             'store'              => $this->getStoreData(),
             'search'             => $this->getSearchData(),
             'exchangeRate'       => $this->getExchangeRate(),
@@ -177,9 +184,11 @@ class Snippets extends Template
         try {
             $product = $this->coreRegistry->registry('current_product');
             if ($product instanceof Product) {
+                $isVisibleChild = $this->isVisibleChild($product);
                 return [
                     'sku' => $product->getSku(),
                     'id'  => $product->getId(),
+                    'isVisibleChild' => $isVisibleChild
                 ];
             }
         } catch (\Exception $e) {
@@ -297,5 +306,23 @@ class Snippets extends Template
     public function isInjectable()
     {
         return $this->configReader->isEnabledForStore(ConfigInterface::INJECT_WEBEXTEND_SNIPPETS);
+    }
+
+    /**
+     * @param Product $product
+     * @return bool
+     */
+    private function isVisibleChild(Product $product)
+    {
+        $productId = $product->getId();
+        $productVisibility = $product->getVisibility();
+        $visibleInCatalogOrSearch = [2, 4];
+        if ($product->getTypeId() === 'simple' && in_array($productVisibility, $visibleInCatalogOrSearch, false)) {
+            $parentConfigObject = $this->configurable->getParentIdsByChild($productId);
+            if (!empty($parentConfigObject)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
