@@ -133,7 +133,13 @@ class Customer extends CustomerResourceModel
         $subFields['eid'] = $this->linkField;
 
         $subSelect = $this->_resource->getConnection()->select()
-            ->from($customerTable, $subFields)
+            ->from($customerTable, $subFields);
+
+        if ($websiteId) {
+            $subSelect->where('website_id = :website_id');
+        }
+
+        $subSelect
             ->order($this->linkField)
             ->limit($pageSize, $page);
 
@@ -144,7 +150,7 @@ class Customer extends CustomerResourceModel
             ->select()
             ->from(['tmp' => $subSelect], $fields);
 
-        $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery);
+        $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery, $bind);
 
         $returnArray = [
             'numberOfItems' => (int)$numberOfItems,
