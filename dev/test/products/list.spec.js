@@ -7,8 +7,7 @@ const { getProducts } = require('../fixtures/products');
 const getAxiosInstance = (hostname, token) =>
   axios.create({
     baseURL: `http://${hostname}`,
-    headers: { Authorization: `Bearer ${token}` },
-    timeout: 30000
+    headers: { Authorization: `Bearer ${token}` }
   });
 
 const getFirstProduct = async (hostname, token) => {
