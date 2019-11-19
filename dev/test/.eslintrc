@@ -25,6 +25,7 @@
     "new-cap": 0,
     "no-unused-expressions": 0,
     "no-unused-vars": [2, { "vars": "all", "args": "after-used" }],
+    "operator-linebreak": "off",
     "require-yield": 0,
     "security/detect-child-process": 0,
     "security/detect-non-literal-fs-filename": 0,
