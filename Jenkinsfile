@@ -78,9 +78,9 @@ pipeline {
     }
     stage('Run tests on legacy versions') {
       parallel {
-        stage('Magento 2.2.6CE: build and run tests') {
+        stage('Magento 2.1.9EE: build and run tests') {
           steps {
-            sh 'VERSION=2.2.6ce sh dev/jenkins/run.sh'
+            sh 'VERSION=2.1.9ee sh dev/jenkins/run.sh'
           }
         }
         stage('Magento 2.1.8CE: build and run tests') {

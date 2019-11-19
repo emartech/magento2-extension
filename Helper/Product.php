@@ -29,7 +29,6 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
 use Exception;
-use Psr\Log\LoggerInterface;
 
 class Product extends AbstractHelper
 {
@@ -149,11 +148,6 @@ class Product extends AbstractHelper
     private $extraFieldsFactory;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * Product constructor.
      *
      * @param ConfigInterfaceFactory           $configFactory
@@ -165,7 +159,6 @@ class Product extends AbstractHelper
      * @param ProductStoreDataInterfaceFactory $productStoreDataFactory
      * @param ExtraFieldsInterfaceFactory      $extraFieldsFactory
      * @param Context                          $context
-     * @param LoggerInterface                  $logger
      */
     public function __construct(
         ConfigInterfaceFactory $configFactory,
@@ -176,8 +169,7 @@ class Product extends AbstractHelper
         ImagesInterfaceFactory $imagesFactory,
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
         ExtraFieldsInterfaceFactory $extraFieldsFactory,
-        Context $context,
-        LoggerInterface $logger
+        Context $context
     ) {
         $this->configFactory = $configFactory;
         $this->productCollectionFactory = $productCollectionFactory;
@@ -187,7 +179,6 @@ class Product extends AbstractHelper
         $this->imagesFactory = $imagesFactory;
         $this->productStoreDataFactory = $productStoreDataFactory;
         $this->extraFieldsFactory = $extraFieldsFactory;
-        $this->logger = $logger;
 
         parent::__construct(
             $context
@@ -605,7 +596,7 @@ class Product extends AbstractHelper
                 $tmp = $store->getBaseCurrency()->convert($price, $store->getCurrentCurrencyCode());
                 $price = $tmp;
             } catch (\Exception $e) {
-                $this->logger->error($e);
+                $this->_logger->error($e->getMessage());
             }
         }
 
