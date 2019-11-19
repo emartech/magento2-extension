@@ -66,7 +66,10 @@ describe('Webextend scripts', function() {
     it('should include category', async function() {
       const emarsysSnippets = await getEmarsysSnippetContents('men/tops-men.html');
       let categoryIds;
-      if (this.magentoVersion === '2.3.1' && this.magentoEdition === 'Enterprise') {
+      if (
+        (this.magentoVersion === '2.3.1' || this.magentoVersion === '2.1.9') &&
+        this.magentoEdition === 'Enterprise'
+      ) {
         categoryIds = ['12', '13'];
       } else {
         categoryIds = ['11', '12'];
@@ -99,6 +102,9 @@ describe('Webextend scripts', function() {
           break;
         case '2.3.3Community':
           productId = 730;
+          break;
+        case '2.1.9Enterprise':
+          productId = 731;
           break;
         case '2.3.1Enterprise':
           productId = 732;

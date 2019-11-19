@@ -10,6 +10,7 @@ const DbCleaner = require('./db-cleaner');
 const url = require('url');
 const Magento2ApiClient = require('@emartech/magento2-api');
 const { productFactory } = require('./factories/products');
+const cartItem = require('./fixtures/cart-item');
 
 chai.use(chaiString);
 chai.use(chaiSubset);
@@ -99,89 +100,6 @@ const getMagentoSystemInfo = async magentoApi => {
   return result;
 };
 
-const localCartItem = (magentoVersion, magentoEdition) => {
-  const defaultOptions = [
-    {
-      option_id: 93,
-      option_value: 50
-    },
-    {
-      option_id: 145,
-      option_value: 167
-    }
-  ];
-
-  const versionOptions = {
-    Community: {
-      '2.1.8': [
-        {
-          option_id: 93,
-          option_value: 50
-        },
-        {
-          option_id: 142,
-          option_value: 167
-        }
-      ],
-      '2.3.3': [
-        {
-          option_id: 93,
-          option_value: 5477
-        },
-        {
-          option_id: 150,
-          option_value: 5594
-        }
-      ]
-    },
-    Enterprise: {
-      '2.3.1': [
-        {
-          option_id: 93,
-          option_value: 59
-        },
-        {
-          option_id: 187,
-          option_value: 179
-        }
-      ],
-      '2.3.2': [
-        {
-          option_id: 93,
-          option_value: 59
-        },
-        {
-          option_id: 187,
-          option_value: 179
-        }
-      ],
-      '2.3.3': [
-        {
-          option_id: 93,
-          option_value: 5486
-        },
-        {
-          option_id: 192,
-          option_value: 5603
-        }
-      ]
-    }
-  };
-
-  const options = versionOptions[magentoEdition][magentoVersion] ? versionOptions[magentoEdition][magentoVersion] : defaultOptions;
-
-  return {
-    sku: 'WS03',
-    qty: 1,
-    product_type: 'configurable',
-    product_option: {
-      extension_attributes: {
-        configurable_item_options: options
-      }
-    }
-  };
-};
-
 before(async function() {
   console.log(`MAGENTO TABLE PREFIX: ${process.env.TABLE_PREFIX}`);
 
@@ -248,7 +166,7 @@ before(async function() {
     this.deleteProduct = deleteProduct(this.magentoApi);
     this.createCategory = createCategory(this.magentoApi);
     this.deleteCategory = deleteCategory(this.magentoApi);
-    this.localCartItem = localCartItem(this.magentoVersion, this.magentoEdition);
+    this.localCartItem = cartItem.get(this.magentoVersion, this.magentoEdition);
 
     try {
       this.customer = await this.createCustomer(

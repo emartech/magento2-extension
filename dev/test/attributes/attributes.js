@@ -89,6 +89,37 @@ const customerAttributes = {
     { code: 'emarsys_test_favorite_movie', name: 'Favorite Movie' },
     { code: 'emarsys_test_favorite_song', name: 'Favorite Song' },
     { code: 'emarsys_test_favorite_car', name: 'Favorite Car' }
+  ],
+  oldEnterprise: [
+    { code: 'website_id', name: 'Associate to Website' },
+    { code: 'store_id', name: 'Create In' },
+    { code: 'created_in', name: 'Created From' },
+    { code: 'prefix', name: 'Prefix' },
+    { code: 'firstname', name: 'First Name' },
+    { code: 'middlename', name: 'Middle Name/Initial' },
+    { code: 'lastname', name: 'Last Name' },
+    { code: 'suffix', name: 'Suffix' },
+    { code: 'email', name: 'Email' },
+    { code: 'group_id', name: 'Group' },
+    { code: 'dob', name: 'Date of Birth' },
+    { code: 'default_billing', name: 'Default Billing Address' },
+    { code: 'default_shipping', name: 'Default Shipping Address' },
+    { code: 'taxvat', name: 'Tax/VAT Number' },
+    { code: 'confirmation', name: 'Is Confirmed' },
+    { code: 'created_at', name: 'Created At' },
+    { code: 'gender', name: 'Gender' },
+    { code: 'disable_auto_group_change', name: 'Disable Automatic Group Change Based on VAT ID' },
+    { code: 'updated_at', name: 'Updated At' },
+    { code: 'failures_num', name: 'Failures Number' },
+    { code: 'first_failure', name: 'First Failure Date' },
+    { code: 'lock_expires', name: 'Failures Number' },
+    { code: 'reward_update_notification', name: 'Reward update notification' },
+    { code: 'reward_warning_notification', name: 'Reward warning notification' },
+    { code: 'emarsys_test_favorite_sport', name: 'Favorite Sport' },
+    { code: 'emarsys_test_favorite_book', name: 'Favorite Book' },
+    { code: 'emarsys_test_favorite_movie', name: 'Favorite Movie' },
+    { code: 'emarsys_test_favorite_song', name: 'Favorite Song' },
+    { code: 'emarsys_test_favorite_car', name: 'Favorite Car' }
   ]
 };
 

@@ -16,10 +16,14 @@ describe('Attributes endpoint', function() {
       const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'customer' });
       const mappedAttributes = mapAttributes(attributes);
 
-      if (this.magentoVersion.startsWith('2.1')) {
+      if (this.magentoVersion.startsWith('2.1') && this.magentoEdition === 'Commuinty') {
         expect(mappedAttributes).to.have.deep.members(customerAttributes.old);
       } else if (this.magentoEdition === 'Enterprise') {
-        expect(mappedAttributes).to.have.deep.members(customerAttributes.enterprise);
+        if (this.magentoVersion.startsWith('2.1')) {
+          expect(mappedAttributes).to.have.deep.members(customerAttributes.oldEnterprise);
+        } else {
+          expect(mappedAttributes).to.have.deep.members(customerAttributes.enterprise);
+        }
       } else {
         expect(mappedAttributes).to.have.deep.members(customerAttributes.new);
       }

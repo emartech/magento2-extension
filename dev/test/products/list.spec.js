@@ -18,7 +18,6 @@ const getFirstProduct = async (hostname, token) => {
 };
 
 describe('Products endpoint', function() {
-
   before(async function() {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 0,
@@ -85,6 +84,9 @@ describe('Products endpoint', function() {
         break;
       case '2.3.1':
         page = this.magentoEdition === 'Enterprise' ? 70 : 68;
+        break;
+      case '2.1.9':
+        page = this.magentoEdition === 'Enterprise' ? 69 : 68;
         break;
       case '2.3.2':
         page = 68; //this.magentoEdition === 'Enterprise' ? 70 : 68;
