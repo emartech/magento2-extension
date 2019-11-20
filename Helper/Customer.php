@@ -163,12 +163,17 @@ class Customer extends AbstractHelper
     }
 
     /**
+     * @param int $websiteId
      * @return $this
      */
-    public function initCollection()
+    public function initCollection($websiteId)
     {
         /** @var CustomerCollection customerCollection */
         $this->customerCollection = $this->customerCollectionFactory->create();
+
+        if ($websiteId) {
+            $this->customerCollection->addFieldToFilter('website_id', ['eq' => $websiteId]);
+        }
 
         return $this;
     }
@@ -183,7 +188,7 @@ class Customer extends AbstractHelper
     public function getOneCustomer($customerId, $websiteId, $toArray = false)
     {
         $this
-            ->initCollection()
+            ->initCollection($websiteId)
             ->setWhere('entity_id', $customerId, $customerId)
             ->joinSubscriptionStatus()
             ->getCustomersAttributeData(

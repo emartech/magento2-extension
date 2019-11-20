@@ -111,7 +111,7 @@ class CustomersApi implements CustomersApiInterface
 
         $this
             ->handleWebsiteId($websiteId, $onlyReg)
-            ->initCollection()
+            ->initCollection($websiteId)
             ->handleIds($page, $pageSize)
             ->handleAttributeData($websiteId)
             ->handleAddressesAttributeData($websiteId)
@@ -144,11 +144,13 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
+     * @param int $websiteId
+     *
      * @return $this
      */
-    private function initCollection()
+    private function initCollection($websiteId)
     {
-        $this->customerHelper->initCollection();
+        $this->customerHelper->initCollection($websiteId);
 
         return $this;
     }
