@@ -16,7 +16,7 @@ describe('Attributes endpoint', function() {
       const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'customer' });
       const mappedAttributes = mapAttributes(attributes);
 
-      if (this.magentoVersion.startsWith('2.1') && this.magentoEdition === 'Commuinty') {
+      if (this.magentoVersion.startsWith('2.1') && this.magentoEdition === 'Community') {
         expect(mappedAttributes).to.have.deep.members(customerAttributes.old);
       } else if (this.magentoEdition === 'Enterprise') {
         if (this.magentoVersion.startsWith('2.1')) {
