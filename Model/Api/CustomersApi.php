@@ -111,10 +111,10 @@ class CustomersApi implements CustomersApiInterface
 
         $this
             ->handleWebsiteId($websiteId, $onlyReg)
-            ->initCollection($websiteId)
+            ->initCollection()
             ->handleIds($page, $pageSize)
-            ->handleAttributeData($websiteId)
-            ->handleAddressesAttributeData($websiteId)
+            ->handleAttributeData()
+            ->handleAddressesAttributeData()
             ->joinSubscriptionStatus()
             ->setWhere()
             ->setOrder();
@@ -126,7 +126,7 @@ class CustomersApi implements CustomersApiInterface
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
             ->setTotalCount($this->numberOfItems)
-            ->setCustomers($this->handleCustomers($websiteId));
+            ->setCustomers($this->handleCustomers());
     }
 
     /**
@@ -144,13 +144,11 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @param int $websiteId
-     *
      * @return $this
      */
-    private function initCollection($websiteId)
+    private function initCollection()
     {
-        $this->customerHelper->initCollection($websiteId);
+        $this->customerHelper->initCollection($this->websiteId);
 
         return $this;
     }
@@ -176,32 +174,28 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @param int $websiteId
-     *
      * @return $this
      */
-    private function handleAttributeData($websiteId)
+    private function handleAttributeData()
     {
         $this->customerHelper->getCustomersAttributeData(
             $this->minId,
             $this->maxId,
-            $websiteId
+            $this->websiteId
         );
 
         return $this;
     }
 
     /**
-     * @param int $websiteId
-     *
      * @return $this
      */
-    private function handleAddressesAttributeData($websiteId)
+    private function handleAddressesAttributeData()
     {
         $this->customerHelper->getCustomersAddressesAttributeData(
             $this->minId,
             $this->maxId,
-            $websiteId
+            $this->websiteId
         );
 
         return $this;
@@ -228,15 +222,13 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @param int $websiteId
-     *
      * @return array
      */
-    private function handleCustomers($websiteId)
+    private function handleCustomers()
     {
         $customerArray = [];
         foreach ($this->customerHelper->getCustomerCollection() as $customer) {
-            $customerArray[] = $this->customerHelper->buildCustomerObject($customer, $websiteId);
+            $customerArray[] = $this->customerHelper->buildCustomerObject($customer, $this->websiteId);
         }
 
         return $customerArray;
