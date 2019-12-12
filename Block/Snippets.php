@@ -9,6 +9,7 @@ namespace Emartech\Emarsys\Block;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
+use Emartech\Emarsys\Helper\Json;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
@@ -64,6 +65,10 @@ class Snippets extends Template
      * @var Configurable
      */
     private $configurable;
+    /**
+     * @var Json
+     */
+    private $jsonHelper;
 
     /**
      * Snippets constructor.
@@ -88,6 +93,7 @@ class Snippets extends Template
         CategoryCollectionFactory $categoryCollectionFactory,
         Configurable $configurable,
         ObjectManagerInterface $objectManager,
+        Json $jsonHelper,
         array $data = []
     ) {
         $this->storeManager = $context->getStoreManager();
@@ -99,6 +105,7 @@ class Snippets extends Template
         $this->categoryCollectionFactory = $categoryCollectionFactory;
         $this->configurable = $configurable;
         $this->objectManager = $objectManager;
+        $this->jsonHelper = $jsonHelper;
         parent::__construct($context, $data);
     }
 
@@ -110,7 +117,7 @@ class Snippets extends Template
      */
     public function getTrackingData()
     {
-        return [
+        return $this->jsonHelper->serialize([
             'product'            => $this->getCurrentProduct(),
             'category'           => $this->getCategory(0),
             'localizedCategory' => $this->getCategory(),
@@ -118,7 +125,7 @@ class Snippets extends Template
             'search'             => $this->getSearchData(),
             'exchangeRate'       => $this->getExchangeRate(),
             'slug'               => $this->getStoreSlug()
-        ];
+        ]);
     }
 
     /**
