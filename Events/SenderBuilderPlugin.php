@@ -177,7 +177,11 @@ class SenderBuilderPlugin
         $data[$key]['addresses']['billing'] = $order->getBillingAddress()->toArray();
         $data['is_guest'] = $order->getCustomerIsGuest();
         if ($order->getCustomerId()) {
-            $data['customer'] = $this->customerHelper->getOneCustomer($order->getCustomerId(), $this->websiteId, true);
+            $data['customer'] = false;
+            $customerData = $this->customerHelper->getOneCustomer($order->getCustomerId(), $this->websiteId, true);
+            if (false !== $customerData) {
+                $data['customer'] = $customerData;
+            }
         }
         $data[$key]['payment'] = $order->getPayment()->getData();
 

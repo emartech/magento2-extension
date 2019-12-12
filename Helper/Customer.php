@@ -183,7 +183,7 @@ class Customer extends AbstractHelper
      * @param int  $websiteId
      * @param bool $toArray
      *
-     * @return CustomerInterface|array
+     * @return CustomerInterface|array|bool
      */
     public function getOneCustomer($customerId, $websiteId, $toArray = false)
     {
@@ -204,7 +204,11 @@ class Customer extends AbstractHelper
         /** @var CustomerModel $customer */
         $customer = $this->getCustomerCollection()->fetchItem();
 
-        return $this->buildCustomerObject($customer, $websiteId, $toArray);
+        if ($customer instanceof CustomerModel) {
+            return $this->buildCustomerObject($customer, $websiteId, $toArray);
+        }
+
+        return false;
     }
 
     /**

@@ -172,17 +172,21 @@ class CustomerPlugin
             return $proceed($customer, $type, $backUrl, $storeId, $senderMailStoreId);
         }
 
-        $this->saveEvent(
-            $websiteId,
-            $storeId,
-            self::EVENT_CUSTOMER_NEW_ACCOUNT . $type,
-            $customer->getId(),
-            [
-                'customer' => $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true),
-                'back_url' => $backUrl,
-                'store'    => $this->storeManager->getStore($storeId)->getData(),
-            ]
-        );
+        $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
+
+        if (false !== $customerData) {
+            $this->saveEvent(
+                $websiteId,
+                $storeId,
+                self::EVENT_CUSTOMER_NEW_ACCOUNT . $type,
+                $customer->getId(),
+                [
+                    'customer' => $customerData,
+                    'back_url' => $backUrl,
+                    'store'    => $this->storeManager->getStore($storeId)->getData(),
+                ]
+            );
+        }
     }
 
     /**
@@ -213,8 +217,10 @@ class CustomerPlugin
 
         $store = $this->storeManager->getStore($savedCustomer->getStoreId());
 
+        $customerData = $this->customerHelper->getOneCustomer($savedCustomer->getId(), $websiteId, true);
+
         $eventData = [
-            'customer'            => $this->customerHelper->getOneCustomer($savedCustomer->getId(), $websiteId, true),
+            'customer'            => $customerData,
             'store'               => $store->getData(),
             'orig_customer_email' => $origCustomerEmail,
             'new_customer_email'  => $savedCustomer->getEmail(),
@@ -273,16 +279,20 @@ class CustomerPlugin
 
         $store = $this->storeManager->getStore($storeId);
 
-        $this->saveEvent(
-            $websiteId,
-            $storeId,
-            self::EVENT_CUSTOMER_PASSWORD_REMINDER,
-            $customer->getId(),
-            [
-                'customer' => $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true),
-                'store'    => $store->getData(),
-            ]
-        );
+        $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
+
+        if (false !== $customerData) {
+            $this->saveEvent(
+                $websiteId,
+                $storeId,
+                self::EVENT_CUSTOMER_PASSWORD_REMINDER,
+                $customer->getId(),
+                [
+                    'customer' => $customerData,
+                    'store'    => $store->getData(),
+                ]
+            );
+        }
     }
 
     /**
@@ -309,16 +319,20 @@ class CustomerPlugin
 
         $store = $this->storeManager->getStore($storeId);
 
-        $this->saveEvent(
-            $websiteId,
-            $storeId,
-            self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION,
-            $customer->getId(),
-            [
-                'customer' => $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true),
-                'store'    => $store->getData(),
-            ]
-        );
+        $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
+
+        if (null !== $customerData) {
+            $this->saveEvent(
+                $websiteId,
+                $storeId,
+                self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION,
+                $customer->getId(),
+                [
+                    'customer' => $customerData,
+                    'store'    => $store->getData(),
+                ]
+            );
+        }
     }
 
     /**
@@ -353,7 +367,11 @@ class CustomerPlugin
             $data['subscriber'] = $subscriber->getData();
         }
         if ($subscriber->getCustomerId()) {
-            $data['customer'] = $this->customerHelper->getOneCustomer($subscriber->getCustomerId(), $websiteId, true);
+            $customerData = $this->customerHelper->getOneCustomer($subscriber->getCustomerId(), $websiteId, true);
+            $data['customer'] = false;
+            if (null !== $customerData) {
+                $data['customer'] = $customerData;
+            }
         }
         return $data;
     }

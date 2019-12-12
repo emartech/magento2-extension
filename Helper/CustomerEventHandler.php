@@ -92,12 +92,42 @@ class CustomerEventHandler extends BaseEventHandler
             $type = self::DEFAULT_TYPE;
         }
 
+        $customerData = $this->customerHelper->getOneCustomer($customerId, $websiteId, true);
+
+        if (false !== $customerData) {
+            $this->saveEvent(
+                $websiteId,
+                $storeId,
+                $type,
+                $customerId,
+                $customerData
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array       $customerData
+     * @param int         $customerId
+     * @param int         $websiteId
+     * @param int         $storeId
+     * @param null|string $type
+     *
+     * @return bool
+     */
+    public function storeUserDataDirectly($customerData, $customerId, $websiteId, $storeId, $type = null)
+    {
+        if (!$this->isEnabledForWebsite($websiteId)) {
+            return false;
+        }
+
         $this->saveEvent(
             $websiteId,
             $storeId,
             $type,
             $customerId,
-            $this->customerHelper->getOneCustomer($customerId, $websiteId, true)
+            $customerData
         );
 
         return true;
