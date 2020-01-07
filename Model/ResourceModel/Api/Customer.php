@@ -225,7 +225,7 @@ class Customer extends CustomerResourceModel
      */
     private function getStoreIdsFromWebsite($websiteId)
     {
-        if (!array_key_exists($websiteId, $this->stores)) {
+        if (array_key_exists($websiteId,  $this->stores)) {
             $this->stores[$websiteId] = $this->storeCollectionFactory
                 ->create()
                 ->addFieldToFilter('website_id', $websiteId)
