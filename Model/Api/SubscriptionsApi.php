@@ -348,15 +348,15 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             $subscriber = $this->subscriptionCollection->fetchItem();
 
             if (!$subscriber) {
-                if ($type !== Subscriber::STATUS_SUBSCRIBED || !$subscription->getCustomerId()) {
-                    return false;
-                }
-
-                if (false === ($customer = $this->getCustomerData($subscription->getCustomerId()))
+                if ($type !== Subscriber::STATUS_SUBSCRIBED
+                    || !$subscription->getCustomerId()
+                    || false === ($customer = $this->getCustomerData($subscription->getCustomerId()))
                     || $customer->getWebsiteId() != $subscription->getWebsiteId()
+                    || $customer->getEmail() != $subscription->getSubscriberEmail()
                 ) {
                     return false;
                 }
+
                 $subscriber = $this->subscriberFactory->create();
                 $subscription->setStoreId($customer->getStoreId());
             }
