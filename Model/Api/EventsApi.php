@@ -36,8 +36,8 @@ class EventsApi implements EventsApiInterface
 
     /**
      * EventsApi constructor.
-     *
-     * @param CollectionFactory                 $eventCollectionFactory
+     * @param EventRepository $eventRepository
+     * @param CollectionFactory $eventCollectionFactory
      * @param EventsApiResponseInterfaceFactory $eventsApiResponseFactory
      */
     public function __construct(

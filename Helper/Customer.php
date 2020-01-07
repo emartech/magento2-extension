@@ -190,7 +190,7 @@ class Customer extends AbstractHelper
         $this
             ->initCollection($websiteId)
             ->setWhere('entity_id', $customerId, $customerId)
-            ->joinSubscriptionStatus()
+            ->joinSubscriptionStatus($websiteId)
             ->getCustomersAttributeData(
                 $customerId,
                 $customerId,
@@ -224,11 +224,13 @@ class Customer extends AbstractHelper
     }
 
     /**
+     * @param int $websiteId
+     *
      * @return $this
      */
-    public function joinSubscriptionStatus()
+    public function joinSubscriptionStatus($websiteId)
     {
-        $this->customerResource->joinSubscriptionStatus($this->customerCollection);
+        $this->customerResource->joinSubscriptionStatus($this->customerCollection, $websiteId);
 
         return $this;
     }

@@ -115,7 +115,7 @@ class CustomersApi implements CustomersApiInterface
             ->handleIds($page, $pageSize)
             ->handleAttributeData()
             ->handleAddressesAttributeData()
-            ->joinSubscriptionStatus()
+            ->joinSubscriptionStatus($websiteId)
             ->setWhere()
             ->setOrder();
 
@@ -235,11 +235,13 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
+     * @param int $websiteId
+     *
      * @return $this
      */
-    private function joinSubscriptionStatus()
+    private function joinSubscriptionStatus($websiteId)
     {
-        $this->customerHelper->joinSubscriptionStatus();
+        $this->customerHelper->joinSubscriptionStatus($websiteId);
 
         return $this;
     }

@@ -9,6 +9,7 @@ namespace Emartech\Emarsys\Model\ResourceModel\Api;
 use Magento\Customer\Model\ResourceModel\Attribute\CollectionFactory as CustomerAttributeCollectionFactory;
 use Magento\Customer\Model\ResourceModel\Customer as CustomerResourceModel;
 use Magento\Customer\Model\ResourceModel\Customer\Collection;
+use Magento\Eav\Model\Entity\Attribute;
 use Magento\Eav\Model\Entity\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite;
@@ -16,8 +17,8 @@ use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Validator\Factory;
+use Magento\Store\Model\ResourceModel\Store\CollectionFactory as StoreCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Eav\Model\Entity\Attribute;
 
 class Customer extends CustomerResourceModel
 {
@@ -48,18 +49,28 @@ class Customer extends CustomerResourceModel
     private $linkField = 'entity_id';
 
     /**
+     * @var array
+     */
+    private $stores = [];
+
+    /**
+     * @var StoreCollectionFactory
+     */
+    private $storeCollectionFactory;
+
+    /**
      * Customer constructor.
      *
      * @param CustomerAttributeCollectionFactory $customerAttributeCollectionFactory
-     * @param Iterator                           $iterator
-     * @param Context                            $context
-     * @param Snapshot                           $entitySnapshot
-     * @param RelationComposite                  $entityRelationComposite
-     * @param ScopeConfigInterface               $scopeConfig
-     * @param Factory                            $validatorFactory
-     * @param DateTime                           $dateTime
-     * @param StoreManagerInterface              $storeManager
-     * @param array                              $data
+     * @param Iterator $iterator
+     * @param Context $context
+     * @param Snapshot $entitySnapshot
+     * @param RelationComposite $entityRelationComposite
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Factory $validatorFactory
+     * @param DateTime $dateTime
+     * @param StoreManagerInterface $storeManager
+     * @param array $data
      */
     public function __construct(
         CustomerAttributeCollectionFactory $customerAttributeCollectionFactory,
@@ -71,10 +82,12 @@ class Customer extends CustomerResourceModel
         Factory $validatorFactory,
         DateTime $dateTime,
         StoreManagerInterface $storeManager,
+        StoreCollectionFactory $storeCollectionFactory,
         $data = []
     ) {
         $this->customerAttributeCollectionFactory = $customerAttributeCollectionFactory;
         $this->iterator = $iterator;
+        $this->storeCollectionFactory = $storeCollectionFactory;
 
         parent::__construct(
             $context,
@@ -90,14 +103,18 @@ class Customer extends CustomerResourceModel
 
     /**
      * @param Collection $collection
+     * @param int $websiteId
      *
      * @return void
      */
-    public function joinSubscriptionStatus($collection)
+    public function joinSubscriptionStatus($collection, $websiteId)
     {
+        $storeIds = $this->getStoreIdsFromWebsite($websiteId);
+
         $subSelect = $this->_resource->getConnection()->select()
             ->from($this->getTable('newsletter_subscriber'), ['subscriber_status'])
             ->where('customer_id = e.entity_id')
+            ->where('store_id IN (?)', $storeIds)
             ->order('subscriber_id DESC')
             ->limit(1, 0);
 
@@ -107,8 +124,8 @@ class Customer extends CustomerResourceModel
     }
 
     /**
-     * @param int       $page
-     * @param int       $pageSize
+     * @param int $page
+     * @param int $pageSize
      * @param int|false $websiteId
      *
      * @return array
@@ -154,16 +171,16 @@ class Customer extends CustomerResourceModel
 
         $returnArray = [
             'numberOfItems' => (int)$numberOfItems,
-            'minId'         => (int)$minMaxValues['minId'],
-            'maxId'         => (int)$minMaxValues['maxId'],
+            'minId' => (int)$minMaxValues['minId'],
+            'maxId' => (int)$minMaxValues['maxId'],
         ];
 
         return $returnArray;
     }
 
     /**
-     * @param int      $minCustomerId
-     * @param int      $maxCustomerId
+     * @param int $minCustomerId
+     * @param int $maxCustomerId
      * @param string[] $attributeCodes
      *
      * @return array
@@ -203,9 +220,25 @@ class Customer extends CustomerResourceModel
     }
 
     /**
+     * @param int $websiteId
+     * @return int[]
+     */
+    private function getStoreIdsFromWebsite($websiteId)
+    {
+        if (array_key_exists($websiteId,  $this->stores)) {
+            $this->stores[$websiteId] = $this->storeCollectionFactory
+                ->create()
+                ->addFieldToFilter('website_id', $websiteId)
+                ->getAllIds();
+        }
+
+        return $this->stores[$websiteId];
+    }
+
+    /**
      * @param string[] $mainTableFields
-     * @param int      $minCustomerId
-     * @param int      $maxCustomerId
+     * @param int $minCustomerId
+     * @param int $maxCustomerId
      * @param string[] $attributeMapper
      *
      * @return $this
@@ -225,7 +258,7 @@ class Customer extends CustomerResourceModel
                 (string)$attributesQuery,
                 [[$this, 'handleMainTableAttributeDataTable']],
                 [
-                    'fields'          => array_diff($mainTableFields, [$this->linkField]),
+                    'fields' => array_diff($mainTableFields, [$this->linkField]),
                     'attributeMapper' => $attributeMapper,
                 ],
                 $this->_resource->getConnection()
@@ -237,8 +270,8 @@ class Customer extends CustomerResourceModel
 
     /**
      * @param array $attributeTables
-     * @param int   $minCustomerId
-     * @param int   $maxCustomerId
+     * @param int $minCustomerId
+     * @param int $maxCustomerId
      * @param array $attributeMapper
      *
      * @return $this
@@ -304,7 +337,7 @@ class Customer extends CustomerResourceModel
     }
 
     /**
-     * @param int   $attributeId
+     * @param int $attributeId
      * @param array $attributeMapper
      *
      * @return string
