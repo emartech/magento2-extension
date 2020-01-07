@@ -64,15 +64,17 @@ const createNewCustomerOrder = async (magentoApi, customer, localCartItem) => {
 
 const orderCount = 8;
 
-describe('Orders endpoint', function() {
+describe.only('Orders endpoint', function() {
   let localCartItem;
 
   before(async function() {
     await this.dbCleaner.clearOrders();
     localCartItem = this.localCartItem;
+    const createRequests = [];
     for (let orderNumber = 0; orderCount > orderNumber; orderNumber++) {
-      await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
+      createRequests.push(createNewCustomerOrder(this.magentoApi, this.customer, localCartItem));
     }
+    await Promise.all(createRequests);
   });
 
   after(async function() {
