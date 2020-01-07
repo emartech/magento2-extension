@@ -53,21 +53,21 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
     }
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getStatus()
+    public function getIsInStock()
     {
-        return $this->getData(self::STATUS_KEY);
+        return (bool) $this->getData(self::IS_IN_STOCK_KEY);
     }
 
     /**
-     * @param int $status
+     * @param int $isInStock
      *
      * @return $this
      */
-    public function setStatus($status)
+    public function setIsInStock($isInStock)
     {
-        $this->setData(self::STATUS_KEY, $status);
+        $this->setData(self::IS_IN_STOCK_KEY, $isInStock);
 
         return $this;
     }

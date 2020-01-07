@@ -7,7 +7,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-
 interface InventoryItemInterface
 {
     const SKU_KEY = 'sku';

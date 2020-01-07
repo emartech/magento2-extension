@@ -14,7 +14,7 @@ interface InventoryItemItemInterface
 {
     const SOURCE_CODE_KEY = 'source_code';
     const QUANTITY_KEY    = 'quantity';
-    const STATUS_KEY      = 'status';
+    const IS_IN_STOCK_KEY = 'is_in_stock';
 
     /**
      * @return string
@@ -41,14 +41,14 @@ interface InventoryItemItemInterface
     public function setQuantity($quantity);
 
     /**
-     * @return int
+     * @return bool
      */
-    public function getStatus();
+    public function getIsInStock();
 
     /**
-     * @param int $status
+     * @param int $isInStock
      *
      * @return $this
      */
-    public function setStatus($status);
+    public function setIsInStock($isInStock);
 }

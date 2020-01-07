@@ -128,7 +128,7 @@ class InventoryApi implements InventoryApiInterface
         if (!array_key_exists($sourceCode, $this->data[$sku])) {
             $this->data[$sku][$sourceCode] = [
                 'quantity' => (float)$args['row']['quantity'],
-                'status'   => (int)$args['row']['status'],
+                'is_in_stock'   => (int)$args['row']['status'],
             ];
         }
     }
@@ -162,7 +162,7 @@ class InventoryApi implements InventoryApiInterface
             $returnArray[] = $this->inventoryItemItemFactory->create()
                 ->setQuantity($data['quantity'])
                 ->setSourceCode($sourceCode)
-                ->setStatus($data['status']);
+                ->setIsInStock($data['is_in_stock']);
         }
 
         return $returnArray;
