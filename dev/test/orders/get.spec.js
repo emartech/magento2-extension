@@ -70,11 +70,9 @@ describe('Orders endpoint', function() {
   before(async function() {
     await this.dbCleaner.clearOrders();
     localCartItem = this.localCartItem;
-    const createRequests = [];
     for (let orderNumber = 0; orderCount > orderNumber; orderNumber++) {
-      createRequests.push(createNewCustomerOrder(this.magentoApi, this.customer, localCartItem));
+      await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
     }
-    await Promise.all(createRequests);
   });
 
   after(async function() {
