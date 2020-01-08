@@ -64,7 +64,7 @@ describe('Customer events', function() {
     try {
       await this.magentoApi.put({
         path: `/rest/V1/customers/${createdCustomer.entityId}`,
-        payload: { customer: {...customer, email: 'yolo100@yolo.net' } }
+        payload: { customer: { ...customer, email: 'yolo100@yolo.net' } }
       });
     } catch (error) {
       console.log(error.response);
