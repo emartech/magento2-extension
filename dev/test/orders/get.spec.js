@@ -64,7 +64,7 @@ const createNewCustomerOrder = async (magentoApi, customer, localCartItem) => {
 
 const orderCount = 8;
 
-describe.only('Orders endpoint', function() {
+describe('Orders endpoint', function() {
   let localCartItem;
 
   before(async function() {
