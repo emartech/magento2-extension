@@ -3,7 +3,7 @@
 const knex = require('knex');
 const Magento2ApiClient = require('@emartech/magento2-api');
 
-const getTableName = table => `${process.env.TABLE_PREFIX}${table}`;
+const getTableName = table => `${process.env.TABLE_PREFIX || ''}${table}`;
 
 const getDbConnectionConfig = () => {
   if (process.env.CYPRESS_baseUrl) {
@@ -107,6 +107,26 @@ module.exports = (on, config) => {
     clearEvents: async () => {
       await clearEvents();
       return true;
+    },
+    disableEmail: async () => {
+      await getDb()
+        .insert({
+          scope: 'default',
+          scope_id: '0',
+          path: 'system/smtp/disable',
+          value: 1
+        })
+        .into('core_config_data');
+
+      return await flushMagentoCache();
+    },
+    enableEmail: async () => {
+      const db = await getDb();
+      await db('core_config_data')
+        .where({ path: 'system/smtp/disable'})
+        .delete();
+
+      return await flushMagentoCache();
     },
     setConfig: async ({
       websiteId = 1,

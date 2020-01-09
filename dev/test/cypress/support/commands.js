@@ -29,10 +29,7 @@ Cypress.Commands.add('loginWithCustomer', ({ customer }) => {
 });
 
 Cypress.Commands.add('logout', () => {
-  cy.visit('/');
-  cy.get('.customer-name').click();
-
-  cy.contains('Sign Out').click();
+  cy.visit('/customer/account/logout/');
 });
 
 Cypress.Commands.add('shouldNotShowErrorMessage', excludeErrorMessage => {
