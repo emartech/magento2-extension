@@ -86,6 +86,18 @@ devlog: ## Tail dev conatiner docker logs
 testlog: ## Tail test conatiner docker logs
 	@$(COMPOSE) logs -f magento-test
 
+refresh-dev: ## Restart dev conatiner
+	@$(COMPOSE) stop magento-dev
+	@$(COMPOSE) rm -f magento-dev
+	@$(COMPOSE) create magento-dev
+	@$(COMPOSE) start magento-dev
+
+refresh-test: ## Restart dev conatiner
+	@$(COMPOSE) stop magento-test
+	@$(COMPOSE) rm -f magento-test
+	@$(COMPOSE) create magento-test
+	@$(COMPOSE) start magento-test
+
 build-cypress: ## Build Cypress image (usage: make build-cypress VERSION=3.1.4)
 	cd dev/CypressBuild && sh build.sh $(VERSION)
 
