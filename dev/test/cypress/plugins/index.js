@@ -116,13 +116,13 @@ module.exports = (on, config) => {
           path: 'system/smtp/disable',
           value: 1
         })
-        .into('core_config_data');
+        .into(getTableName('core_config_data'));
 
       return await flushMagentoCache();
     },
     enableEmail: async () => {
       const db = getDb();
-      await db('core_config_data')
+      await db(getTableName('core_config_data'))
         .where({ path: 'system/smtp/disable' })
         .delete();
 
