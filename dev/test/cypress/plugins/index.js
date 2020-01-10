@@ -121,9 +121,9 @@ module.exports = (on, config) => {
       return await flushMagentoCache();
     },
     enableEmail: async () => {
-      const db = await getDb();
+      const db = getDb();
       await db('core_config_data')
-        .where({ path: 'system/smtp/disable'})
+        .where({ path: 'system/smtp/disable' })
         .delete();
 
       return await flushMagentoCache();
