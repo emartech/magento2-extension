@@ -40,6 +40,11 @@
     <preference for="Emartech\Emarsys\Api\AttributesApiInterface" type="Emartech\Emarsys\Model\Api\AttributesApi" />
     <preference for="Emartech\Emarsys\Api\Data\AttributesApiResponseInterface" type="Emartech\Emarsys\Model\Data\AttributesApiResponse" />
 
+    <preference for="Emartech\Emarsys\Api\Data\InventoryItemInterface" type="Emartech\Emarsys\Model\Data\InventoryItem" />
+    <preference for="Emartech\Emarsys\Api\Data\InventoryItemItemInterface" type="Emartech\Emarsys\Model\Data\InventoryItemItem" />
+    <preference for="Emartech\Emarsys\Api\InventoryApiInterface" type="Emartech\Emarsys\Model\Api\InventoryApi" />
+    <preference for="Emartech\Emarsys\Api\Data\InventoryApiResponseInterface" type="Emartech\Emarsys\Model\Data\InventoryApiResponse" />
+
     <preference for="Emartech\Emarsys\Api\EventRepositoryInterface" type="Emartech\Emarsys\Model\EventRepository" />
 
     <preference for="Emartech\Emarsys\Api\Data\ExtraFieldsInterface" type="Emartech\Emarsys\Model\Data\ExtraFields" />
