@@ -33,8 +33,8 @@ const inventorySourceCode = 'custom_source';
 const skuWithMultipleSources = '24-WB04';
 const skuWithDefaultSource = '24-WB07';
 
-describe.only('Product inventory API', function() {
-  
+describe('Product inventory API', function() {
+
   before(async function() {
     if (this.magentoVersion >= '2.3.0') {
       await createSource(this.magentoApi);
