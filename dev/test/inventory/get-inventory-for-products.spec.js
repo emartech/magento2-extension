@@ -1,3 +1,5 @@
+'use strict';
+
 const createSource = async function(magentoApi) {
   return await magentoApi.post({
     path: '/index.php/rest/V1/inventory/sources',
