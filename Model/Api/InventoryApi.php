@@ -15,6 +15,7 @@ use Emartech\Emarsys\Api\InventoryApiInterface;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Inventory\Model\ResourceModel\SourceItem\Collection as SourceItemCollection;
 use Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory as SourceItemCollectionFactory;
+use Emartech\Emarsys\Helper\Inventory as InventoryHelper;
 
 /**
  * Class InventoryApi
@@ -60,21 +61,20 @@ class InventoryApi implements InventoryApiInterface
 
     /**
      * InventoryApi constructor.
-     *
-     * @param SourceItemCollectionFactory          $sourceItemCollectionFactory
+     * @param InventoryHelper $inventoryHelper
      * @param InventoryApiResponseInterfaceFactory $inventoryApiResponseFactory
-     * @param InventoryItemInterfaceFactory        $inventoryItemInterfaceFactory
-     * @param InventoryItemItemInterfaceFactory    $inventoryItemItemFactory
-     * @param Iterator                             $iterator
+     * @param InventoryItemInterfaceFactory $inventoryItemInterfaceFactory
+     * @param InventoryItemItemInterfaceFactory $inventoryItemItemFactory
+     * @param Iterator $iterator
      */
     public function __construct(
-        SourceItemCollectionFactory $sourceItemCollectionFactory,
+        InventoryHelper $inventoryHelper,
         InventoryApiResponseInterfaceFactory $inventoryApiResponseFactory,
         InventoryItemInterfaceFactory $inventoryItemInterfaceFactory,
         InventoryItemItemInterfaceFactory $inventoryItemItemFactory,
         Iterator $iterator
     ) {
-        $this->sourceItemCollectionFactory = $sourceItemCollectionFactory;
+        $this->sourceItemCollectionFactory = $inventoryHelper->getSourceItemCollectionFactory();
         $this->inventoryApiResponseFactory = $inventoryApiResponseFactory;
         $this->inventoryItemFactory = $inventoryItemInterfaceFactory;
         $this->inventoryItemItemFactory = $inventoryItemItemFactory;
@@ -88,13 +88,19 @@ class InventoryApi implements InventoryApiInterface
      */
     public function getList($sku)
     {
+        /** @var InventoryApiResponseInterface $response */
+        $response = $this->inventoryApiResponseFactory->create();
+
+        if ($this->sourceItemCollectionFactory === false){
+            return $response->setItems([]);
+        }
+
         $this
             ->initCollection()
             ->filterSKUs($sku)
             ->parseInventoryItems();
 
-        return $this->inventoryApiResponseFactory->create()
-            ->setItems($this->handleItems());
+        return $response->setItems($this->handleItems());
     }
 
     /**
