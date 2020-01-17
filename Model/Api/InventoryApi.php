@@ -91,7 +91,7 @@ class InventoryApi implements InventoryApiInterface
         /** @var InventoryApiResponseInterface $response */
         $response = $this->inventoryApiResponseFactory->create();
 
-        if ($this->sourceItemCollectionFactory === false){
+        if ($this->sourceItemCollectionFactory === false) {
             return $response->setItems([]);
         }
 
