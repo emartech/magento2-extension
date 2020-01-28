@@ -95,15 +95,14 @@ pipeline {
     always {
       sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers...\''
       sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
-      sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.2ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.2.6ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.1.9ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.3ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v --rmi all || echo \'Could not stop Docker...\''
-      sh 'docker rmi emarsys/ems-integration-cypress:3.4.1 || echo \'Could not find image emarsys/ems-integration-cypress:3.4.1\''
+      sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.3.2ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.2.6ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.1.9ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.3.3ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")
