@@ -15,6 +15,8 @@ then
 else
   echo "\n|--- Running tests on Magento $VERSION with table prefix $TABLE_PREFIX"
 fi
+echo "\n|--- Pulling newest image version"
+docker pull emarsys/ems-integration-magento-sampledata:$VERSION
 echo "\n|--- Starting containers"
 compose up -d
 echo "\n|--- Waiting for containers to initialize"
