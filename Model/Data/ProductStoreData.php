@@ -218,7 +218,8 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     {
         $this->setData(self::DISPLAY_WEBSHOP_PRICE, $displayWebShopPrice);
 
-        return $this;    }
+        return $this;
+    }
 
     /**
      * @param int $status
