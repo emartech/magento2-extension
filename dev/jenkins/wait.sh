@@ -5,15 +5,16 @@ wait_it()
   while :
   do
     result=$(docker-compose -p "mage_$VERSION" ps | grep magento)
-
-    if [[ ! -z "$result" ]]; then
+    echo "here"
+    echo $result
+    if [ ! -z "$result" ]; then
       healthy=$(echo $result | grep "Up (healthy)")
-      if [[ ! -z "$healthy" ]]; then
+      if [ ! -z "$healthy" ]; then
         echo "ready"
         break
       fi
       exited=$(echo $result | grep "Exit")
-      if [[ ! -z "$exited" ]]; then
+      if [ ! -z "$exited" ]; then
         echo "exited"
         exit 1
       fi
