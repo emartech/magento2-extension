@@ -39,8 +39,8 @@ services:
   db:
     image: healthcheck/percona
     restart: always
-    volumes:
-      - magento-db:/var/lib/mysql
+    # volumes:
+    #   - magento-db:/var/lib/mysql
     ports:
       - "13306:3306"
     env_file:
@@ -65,5 +65,5 @@ services:
     links:
       - magento-test:magento-test.local
       - db
-volumes:
-  magento-db:
+# volumes:
+#   magento-db:

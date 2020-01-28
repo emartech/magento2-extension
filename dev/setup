@@ -30,4 +30,16 @@ bin/magento emartech:attribute:create
 echo "-|| Setting EAV field for customer 1"
 bin/magento emartech:customer-attribute:set --customer_id 1 --attribute_name emarsys_test_favorite_car --attribute_value ferrari
 
+echo "-|| Setting website configuration"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store_website (code, name, default_group_id) VALUES ('second','Second Site',2);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store_group (website_id, root_category_id,name,code) VALUES (2,2,'Second Store','second_store');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store (code,website_id,group_id,name,is_active) VALUES ('second_storeview',2,2,'Second Store View',1);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store (code,website_id,group_id,name,is_active) VALUES ('custom_storeview',1,1,'Custom Store View',1);"
+echo "-|| Setting admin security configuration"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO core_config_data (config_id, scope, scope_id, path, value) VALUES	(37, 'default', 0, 'admin/security/session_lifetime', '86400');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO core_config_data (config_id, scope, scope_id, path, value) VALUES (38, 'default', 0, 'admin/security/password_lifetime', '900');"
+
+echo "-|| Running indexer"
+bin/magento indexer:reindex
+echo "-|| Flushing"
 bin/magento cache:flush

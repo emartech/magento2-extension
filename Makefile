@@ -10,6 +10,10 @@ default: help
 up: ## Creates containers and starts app
 	cd ./dev/test && npm i
 	@$(COMPOSE) up -d --build
+	sh ./dev/wait.sh
+	# -@$(COMPOSE) run --rm -e "TABLE_PREFIX=$$TABLE_PREFIX" node prepare-environment.js
+	# Creating test db...
+	@$(COMPOSE) exec --user root db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento_test > /opt/magento_test.sql'
 
 dup: ## Creates containers and starts app
 	cd ./dev/test && npm i
@@ -34,7 +38,7 @@ ssh-root: ## Enters the web container
 	@$(COMPOSE) exec magento-dev bash
 
 ssh-test: ## Enters the web container
-	@$(COMPOSE) exec magento-test bash
+	@$(COMPOSE) exec --user application magento-test bash
 
 ssh-node: ## Enters the web container
 	@$(COMPOSE) run --rm node /bin/sh
@@ -61,6 +65,7 @@ flush: ## Runs Magento CLI cache:flush command
 	@$(COMPOSE) exec --user application magento-dev bin/magento cache:flush
 
 flush-test: ## Runs Magento CLI cache:flush command
+	date +"Flush Magento +%FT%T%z"
 	@$(COMPOSE) exec --user application magento-test rm -rf generated/code/
 	@$(COMPOSE) exec --user application magento-test bin/magento cache:flush
 
