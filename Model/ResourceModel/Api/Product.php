@@ -546,7 +546,7 @@ class Product extends ProductResourceModel
         foreach ($tables as $table) {
             $unionSelects[] = $this->_resource->getConnection()->select()->reset()
                 ->from($table, $columns)
-                ->where('website_id IN (?)', $websiteIds)
+                ->where('website_id IN (?)', array_keys($websiteIds))
                 ->where('customer_group_id IN (?)', $customerGroupIds)
                 ->where('entity_id >= ?', $minId)
                 ->where('entity_id <= ?', $maxId);
