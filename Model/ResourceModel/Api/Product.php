@@ -6,22 +6,29 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
-use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
-use Magento\Eav\Model\Entity\Context;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\Factory;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Eav\Model\Entity\Attribute\SetFactory;
-use Magento\Eav\Model\Entity\TypeFactory;
-use Magento\Catalog\Model\Product\Attribute\DefaultAttributes;
-use Magento\Framework\Model\ResourceModel\Iterator;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
 use Emartech\Emarsys\Helper\LinkField;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Factory;
+use Magento\Catalog\Model\Indexer\Product\Price\PriceTableResolver;
+use Magento\Catalog\Model\Product\Attribute\DefaultAttributes;
+use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
+use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
+use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
+use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
+use Magento\Customer\Model\Indexer\CustomerGroupDimensionProvider;
+use Magento\Eav\Model\Entity\Attribute\SetFactory;
+use Magento\Eav\Model\Entity\Context;
+use Magento\Eav\Model\Entity\TypeFactory;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Indexer\Dimension;
+use Magento\Framework\Indexer\DimensionFactory;
+use Magento\Framework\Model\ResourceModel\Iterator;
+use Magento\Store\Model\Indexer\WebsiteDimensionProvider;
+use Magento\Store\Model\StoreManagerInterface;
+use Zend_Db_Select;
 
 class Product extends ProductResourceModel
 {
@@ -56,6 +63,21 @@ class Product extends ProductResourceModel
      * @var LinkField
      */
     private $linkFieldHelper;
+
+    /**
+     * @var PriceTableResolver
+     */
+    private $priceTableResolver;
+
+    /**
+     * @var DimensionFactory
+     */
+    private $dimensionFactory;
+
+    /**
+     * @var array
+     */
+    private $priceData = [];
 
     /**
      * @var string
@@ -104,20 +126,19 @@ class Product extends ProductResourceModel
 
     /**
      * Product constructor.
-     *
-     * @param Context                           $context
-     * @param StoreManagerInterface             $storeManager
-     * @param Factory                           $modelFactory
-     * @param CollectionFactory                 $categoryCollectionFactory
-     * @param CategoryResourceModel             $catalogCategory
-     * @param ManagerInterface                  $eventManager
-     * @param SetFactory                        $setFactory
-     * @param TypeFactory                       $typeFactory
-     * @param DefaultAttributes                 $defaultAttributes
+     * @param Context $context
+     * @param StoreManagerInterface $storeManager
+     * @param Factory $modelFactory
+     * @param CollectionFactory $categoryCollectionFactory
+     * @param CategoryResourceModel $catalogCategory
+     * @param ManagerInterface $eventManager
+     * @param SetFactory $setFactory
+     * @param TypeFactory $typeFactory
+     * @param DefaultAttributes $defaultAttributes
      * @param ProductAttributeCollectionFactory $productAttributeCollectionFactory
-     * @param Iterator                          $iterator
-     * @param LinkField                         $linkFieldHelper
-     * @param array                             $data
+     * @param Iterator $iterator
+     * @param LinkField $linkFieldHelper
+     * @param array $data
      */
     public function __construct(
         Context $context,
@@ -138,6 +159,12 @@ class Product extends ProductResourceModel
         $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
         $this->linkFieldHelper = $linkFieldHelper;
         $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
+        if (class_exists(PriceTableResolver::class)) {
+            $this->priceTableResolver = ObjectManager::getInstance()->get(PriceTableResolver::class);
+        }
+        if (class_exists(Dimension::class)) {
+            $this->dimensionFactory = ObjectManager::getInstance()->get(DimensionFactory::class);
+        }
 
         parent::__construct(
             $context,
@@ -188,8 +215,8 @@ class Product extends ProductResourceModel
 
         $returnArray = [
             'numberOfItems' => (int)$numberOfItems,
-            'minId'         => (int)$minMaxValues['minId'],
-            'maxId'         => (int)$minMaxValues['maxId'],
+            'minId' => (int)$minMaxValues['minId'],
+            'maxId' => (int)$minMaxValues['maxId'],
         ];
 
         return $returnArray;
@@ -238,8 +265,8 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param int    $minProductId
-     * @param int    $maxProductId
+     * @param int $minProductId
+     * @param int $maxProductId
      * @param string $linkField
      *
      * @return array
@@ -282,14 +309,14 @@ class Product extends ProductResourceModel
 
         $this->stockData[$productId] = [
             'is_in_stock' => $isInStock,
-            'qty'         => $qty,
+            'qty' => $qty,
         ];
     }
 
     /**
-     * @param int      $minProductId
-     * @param int      $maxProductId
-     * @param array    $storeIds
+     * @param int $minProductId
+     * @param int $maxProductId
+     * @param array $storeIds
      * @param string[] $attributeCodes
      *
      * @return array
@@ -331,8 +358,8 @@ class Product extends ProductResourceModel
 
     /**
      * @param array $mainTableFields
-     * @param int   $minProductId
-     * @param int   $maxProductId
+     * @param int $minProductId
+     * @param int $maxProductId
      * @param array $storeIds
      * @param array $attributeMapper
      *
@@ -353,8 +380,8 @@ class Product extends ProductResourceModel
                 (string)$attributesQuery,
                 [[$this, 'handleMainTableAttributeDataTable']],
                 [
-                    'storeIds'        => $storeIds,
-                    'fields'          => array_diff($mainTableFields, [$this->linkField]),
+                    'storeIds' => $storeIds,
+                    'fields' => array_diff($mainTableFields, [$this->linkField]),
                     'attributeMapper' => $attributeMapper,
                 ],
                 $this->_resource->getConnection()
@@ -366,8 +393,8 @@ class Product extends ProductResourceModel
 
     /**
      * @param array $attributeTables
-     * @param int   $minProductId
-     * @param int   $maxProductId
+     * @param int $minProductId
+     * @param int $maxProductId
      * @param array $storeIds
      * @param array $attributeMapper
      *
@@ -393,7 +420,7 @@ class Product extends ProductResourceModel
 
         try {
             $unionQuery = $this->_resource->getConnection()->select()
-                ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+                ->union($attributeQueries, Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
             $this->iterator->walk(
                 (string)$unionQuery,
                 [[$this, 'handleAttributeDataTable']],
@@ -443,7 +470,7 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param int   $attributeId
+     * @param int $attributeId
      * @param array $attributeMapper
      *
      * @return string
@@ -474,5 +501,125 @@ class Product extends ProductResourceModel
         if (!array_key_exists($storeId, $this->attributeData[$productId])) {
             $this->attributeData[$productId][$storeId] = [];
         }
+    }
+
+    /**
+     * @param array $websiteIds
+     * @param int[] $customerGroupIds
+     * @param int $minId
+     * @param int $maxId
+     *
+     * @return array
+     */
+    public function getPrices($websiteIds, $customerGroupIds, $minId, $maxId)
+    {
+        $this->priceData = [];
+
+        $columns = [
+            'entity_id',
+            'website_id',
+            'customer_group_id',
+            'price',
+            'tax_class_id',
+            'final_price',
+            'minimal_price' => $this->_resource->getConnection()->getCheckSql(
+                'tier_price IS NOT NULL',
+                $this->_resource->getConnection()->getLeastSql(
+                    ['min_price', 'tier_price']
+                ),
+                'min_price'
+            ),
+            'min_price',
+            'max_price',
+            'tier_price',
+        ];
+
+        $tables = [];
+        foreach ($websiteIds as $websiteId => $storeIds) {
+            foreach ($customerGroupIds as $customerGroupId) {
+                $table = $this->getPriceIndexTable($websiteId, $customerGroupId);
+                $tables[$table] = $table;
+            }
+        }
+
+        $unionSelects = [];
+        foreach ($tables as $table) {
+            $unionSelects[] = $this->_resource->getConnection()->select()->reset()
+                ->from($table, $columns)
+                ->where('website_id IN (?)', $websiteIds)
+                ->where('customer_group_id IN (?)', $customerGroupIds)
+                ->where('entity_id >= ?', $minId)
+                ->where('entity_id <= ?', $maxId);
+        }
+
+        $unionQuery = $this->_resource->getConnection()->select()
+            ->union($unionSelects, Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+        $this->iterator->walk(
+            (string)$unionQuery,
+            [[$this, 'handleProductPriceTable']],
+            [
+                'websiteIds' => $websiteIds
+            ],
+            $this->_resource->getConnection()
+        );
+
+        return $this->priceData;
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return void
+     */
+    public function handleProductPriceTable($args)
+    {
+        $websiteId = $args['row']['website_id'];
+
+        if (array_key_exists($websiteId, $args['websiteIds'])) {
+            foreach ($args['websiteIds'][$websiteId] as $storeId) {
+                $entityId = $args['row']['entity_id'];
+                $customerGroupId = $args['row']['customer_group_id'];
+
+                if (!array_key_exists($entityId, $this->priceData)) {
+                    $this->priceData[$entityId] = [];
+                }
+                if (!array_key_exists($storeId, $this->priceData[$entityId])) {
+                    $this->priceData[$entityId][$storeId] = [];
+                }
+
+                $this->priceData[$entityId][$storeId][$customerGroupId] = [
+                    'price' => (float)$args['row']['price'],
+                    'final_price' => (float)$args['row']['final_price'],
+                    'minimal_price' => (float)$args['row']['minimal_price'],
+                ];
+            }
+        }
+    }
+
+    /**
+     * @param int $websiteId
+     * @param int $customerGroupId
+     * @return string
+     */
+    private function getPriceIndexTable($websiteId, $customerGroupId)
+    {
+
+        if (!($this->priceTableResolver instanceof PriceTableResolver)) {
+            return $this->_resource->getTableName('catalog_product_index_price');
+        }
+
+        return $this->priceTableResolver->resolve(
+            'catalog_product_index_price',
+            [
+                $this->dimensionFactory->create(
+                    WebsiteDimensionProvider::DIMENSION_NAME,
+                    (string)$websiteId
+                ),
+                $this->dimensionFactory->create(
+                    CustomerGroupDimensionProvider::DIMENSION_NAME,
+                    (string)$customerGroupId
+                )
+            ]
+        );
     }
 }

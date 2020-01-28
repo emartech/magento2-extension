@@ -38,14 +38,19 @@ class ProductsApi implements ProductsApiInterface
     private $scopeConfig;
 
     /**
-     * @var array
+     * @var int[]
      */
     private $storeIds = [];
 
     /**
-     * @var int
+     * @var array
      */
-    private $websiteId = 0;
+    private $websiteIds = [];
+
+    /**
+     * @var int[]
+     */
+    private $customerGroups = [0];
 
     /**
      * @var int
@@ -129,6 +134,7 @@ class ProductsApi implements ProductsApiInterface
         $this
             ->initCollection()
             ->handleIds($page, $pageSize)
+            ->getPrices()
             ->handleCategoryIds()
             ->handleChildrenProductIds()
             ->handleStockData()
@@ -150,7 +156,6 @@ class ProductsApi implements ProductsApiInterface
      * @param mixed $storeIds
      *
      * @return $this
-     * @throws WebApiException
      */
     // @codingStandardsIgnoreLine
     protected function initStores($storeIds)
@@ -162,8 +167,16 @@ class ProductsApi implements ProductsApiInterface
         $availableStores = $this->storeManager->getStores(true);
 
         foreach ($availableStores as $availableStore) {
-            if (in_array($availableStore->getId(), $storeIds)) {
-                $this->storeIds[$availableStore->getId()] = $availableStore;
+            $storeId = (int)$availableStore->getId();
+            if (in_array($storeId, $storeIds)) {
+                $this->storeIds[$storeId] = $availableStore;
+                $websiteId = (int)$availableStore->getWebsiteId();
+                if ($websiteId) {
+                    if (!array_key_exists($websiteId, $this->websiteIds)) {
+                        $this->websiteIds[$websiteId] = [];
+                    }
+                    $this->websiteIds[$websiteId][] = $storeId;
+                }
             }
         }
 
@@ -198,6 +211,16 @@ class ProductsApi implements ProductsApiInterface
         $this->numberOfItems = $data['numberOfItems'];
         $this->minId = $data['minId'];
         $this->maxId = $data['maxId'];
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function getPrices()
+    {
+        $this->productHelper->getPrices($this->websiteIds, $this->customerGroups, $this->minId, $this->maxId);
 
         return $this;
     }

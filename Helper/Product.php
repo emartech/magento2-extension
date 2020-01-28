@@ -19,6 +19,7 @@ use Emartech\Emarsys\Api\Data\ProductStoreDataInterface;
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterfaceFactory;
 use Emartech\Emarsys\Model\ResourceModel\Api\Category as CategoryResource;
 use Emartech\Emarsys\Model\ResourceModel\Api\Product as ProductResource;
+use Exception;
 use Magento\Catalog\Model\Product as ProductModel;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
@@ -28,7 +29,6 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
-use Exception;
 
 class Product extends AbstractHelper
 {
@@ -148,17 +148,21 @@ class Product extends AbstractHelper
     private $extraFieldsFactory;
 
     /**
+     * @var array
+     */
+    private $priceData = [];
+
+    /**
      * Product constructor.
-     *
-     * @param ConfigInterfaceFactory           $configFactory
-     * @param ProductCollectionFactory         $productCollectionFactory
-     * @param ProductResource                  $productResource
-     * @param CategoryResource                 $categoryResource
-     * @param ProductInterfaceFactory          $productFactory
-     * @param ImagesInterfaceFactory           $imagesFactory
+     * @param ConfigInterfaceFactory $configFactory
+     * @param ProductCollectionFactory $productCollectionFactory
+     * @param ProductResource $productResource
+     * @param CategoryResource $categoryResource
+     * @param ProductInterfaceFactory $productFactory
+     * @param ImagesInterfaceFactory $imagesFactory
      * @param ProductStoreDataInterfaceFactory $productStoreDataFactory
-     * @param ExtraFieldsInterfaceFactory      $extraFieldsFactory
-     * @param Context                          $context
+     * @param ExtraFieldsInterfaceFactory $extraFieldsFactory
+     * @param Context $context
      */
     public function __construct(
         ConfigInterfaceFactory $configFactory,
@@ -283,8 +287,8 @@ class Product extends AbstractHelper
     }
 
     /**
-     * @param int    $minId
-     * @param int    $maxId
+     * @param int $minId
+     * @param int $maxId
      * @param string $linkField
      *
      * @return $this
@@ -297,9 +301,9 @@ class Product extends AbstractHelper
     }
 
     /**
-     * @param int           $minId
-     * @param int           $maxId
-     * @param int[]         $storeIds
+     * @param int $minId
+     * @param int $maxId
+     * @param int[] $storeIds
      * @param null|string[] $fields
      */
     public function getAttributeData($minId, $maxId, $storeIds, $fields = null)
@@ -313,8 +317,8 @@ class Product extends AbstractHelper
 
     /**
      * @param string $linkField
-     * @param int    $min
-     * @param int    $max
+     * @param int $min
+     * @param int $max
      *
      * @return $this
      */
@@ -352,9 +356,9 @@ class Product extends AbstractHelper
 
     /**
      * @param ProductModel $product
-     * @param array        $storeIds
-     * @param string       $linkField
-     * @param bool         $toArray
+     * @param array $storeIds
+     * @param string $linkField
+     * @param bool $toArray
      *
      * @return ProductInterface
      */
@@ -443,8 +447,8 @@ class Product extends AbstractHelper
     }
 
     /**
-     * @param int    $productId
-     * @param int    $storeId
+     * @param int $productId
+     * @param int $storeId
      * @param string $attributeCode
      *
      * @return string|null
@@ -467,8 +471,8 @@ class Product extends AbstractHelper
 
     /**
      * @param ProductModel $product
-     * @param array        $storeIds
-     * @param int          $id
+     * @param array $storeIds
+     * @param int $id
      *
      * @return ImagesInterface
      */
@@ -515,9 +519,9 @@ class Product extends AbstractHelper
 
     /**
      * @param ProductModel $product
-     * @param array        $storeIds
-     * @param int          $productId
-     * @param bool         $toArray
+     * @param array $storeIds
+     * @param int $productId
+     * @param bool $toArray
      *
      * @return ProductStoreDataInterface[]
      */
@@ -533,6 +537,8 @@ class Product extends AbstractHelper
             $displayPrice = (float)$this->getDisplayPrice($price, $storeObject);
             $originalPrice = (float)$product->getPrice();
             $originalDisplayPrice = (float)$this->getDisplayPrice($originalPrice, $storeObject);
+            $webShopPrice = (float)$this->getWebShopPrice($productId, $storeId, 0);
+            $displayWebShopPrice = (float)$this->getDisplayPrice($webShopPrice, $storeObject);
 
             /** @var ProductStoreDataInterface $productStoreData */
             $productStoreData = $this->productStoreDataFactory->create()
@@ -545,6 +551,8 @@ class Product extends AbstractHelper
                 ->setDisplayPrice($displayPrice)
                 ->setOriginalPrice($originalPrice)
                 ->setOriginalDisplayPrice($originalDisplayPrice)
+                ->setWebshopPrice($webShopPrice)
+                ->setDisplayWebshopPrice($displayWebShopPrice)
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
 
             if ($this->getProductExtraFields()) {
@@ -567,6 +575,20 @@ class Product extends AbstractHelper
         }
 
         return $returnArray;
+    }
+
+    protected function getWebShopPrice($productId, $storeId, $customerGroupId = 0)
+    {
+        if (array_key_exists($productId, $this->priceData)
+            && array_key_exists($storeId, $this->priceData[$productId])
+            && array_key_exists($customerGroupId, $this->priceData[$productId][$storeId])
+            && array_key_exists('final_price', $this->priceData[$productId][$storeId][$customerGroupId])
+
+        ) {
+            return $this->priceData[$productId][$storeId][$customerGroupId]['final_price'];
+        }
+
+        return 0;
     }
 
     /**
@@ -605,7 +627,7 @@ class Product extends AbstractHelper
 
     /**
      * @param Store $store
-     * @param int   $productId
+     * @param int $productId
      *
      * @return string
      */
@@ -637,5 +659,20 @@ class Product extends AbstractHelper
             );
         }
         return $this->productUrlSuffix[$storeId];
+    }
+
+    /**
+     * @param array $websiteIds
+     * @param int[] $customerGroupIds
+     * @param int $minId
+     * @param int $maxId
+     *
+     * @return $this
+     */
+    public function getPrices($websiteIds, $customerGroupIds, $minId, $maxId)
+    {
+        $this->priceData = $this->productResource->getPrices($websiteIds, $customerGroupIds, $minId, $maxId);
+
+        return $this;
     }
 }
