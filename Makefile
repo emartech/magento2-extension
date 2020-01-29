@@ -65,7 +65,6 @@ flush: ## Runs Magento CLI cache:flush command
 	@$(COMPOSE) exec --user application magento-dev bin/magento cache:flush
 
 flush-test: ## Runs Magento CLI cache:flush command
-	date +"Flush Magento +%FT%T%z"
 	@$(COMPOSE) exec --user application magento-test rm -rf generated/code/
 	@$(COMPOSE) exec --user application magento-test bin/magento cache:flush
 
