@@ -1,21 +1,6 @@
 'use strict';
 
-const axios = require('axios');
-
 const { getProducts } = require('../fixtures/products');
-
-const getAxiosInstance = (hostname, token) =>
-  axios.create({
-    baseURL: `http://${hostname}`,
-    headers: { Authorization: `Bearer ${token}` }
-  });
-
-const getFirstProduct = async (hostname, token) => {
-  const response = await getAxiosInstance(hostname, token).get(
-    'index.php/rest/V1/emarsys/products?page=1&page_size=1&store_id=0,1'
-  );
-  return response.data.products[0];
-};
 
 describe('Products endpoint', function() {
   before(async function() {
@@ -55,7 +40,7 @@ describe('Products endpoint', function() {
       }
     });
 
-    const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit });
+    const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit, storeIds: [1] });
 
     const product = products[0];
 
@@ -70,7 +55,7 @@ describe('Products endpoint', function() {
     expect(product.categories[0]).to.equal(expectedProduct.categories[0]);
     expect(product.categories[1]).to.equal(expectedProduct.categories[1]);
 
-    const storeLevelProduct = product.store_data[0];
+    const storeLevelProduct = product.store_data[1];
     ['name', 'display_price', 'original_display_price', 'link', 'status', 'description'].forEach(key => {
       expect(storeLevelProduct[key]).to.equal(expectedProduct.store_data[0][key]);
     });
@@ -100,7 +85,7 @@ describe('Products endpoint', function() {
 
     const limit = 1;
 
-    const { products } = await this.magentoApi.execute('products', 'get', { page, limit });
+    const { products } = await this.magentoApi.execute('products', 'get', { page, limit, storeIds: [1] });
     const { products: expectedProducts } = getProducts(
       this.hostname,
       67,
@@ -117,25 +102,32 @@ describe('Products endpoint', function() {
   });
 
   it('returns extra_fields for products', async function() {
-    const product = await getFirstProduct(this.hostname, this.token);
+    const { products: originalProducts } = await this.magentoApi.execute('products', 'get', {
+      page: 1,
+      limit: 1,
+      storeIds: [1]
+    });
 
-    const path = `index.php/rest/V1/products/${product.sku}`;
-    const payload = {
-      product: {
-        custom_attributes: [
-          {
-            attribute_code: 'emarsys_test_fuel_type',
-            value: 'gasoline'
-          },
-          {
-            attribute_code: 'emarsys_test_number_of_seats',
-            value: 6
-          }
-        ]
+    await this.magentoApi.put({
+      path: `/rest/V1/products/${originalProducts[0].sku}`,
+      payload: {
+        product: {
+          custom_attributes: [
+            {
+              attribute_code: 'emarsys_test_fuel_type',
+              value: 'gasoline'
+            },
+            {
+              attribute_code: 'emarsys_test_number_of_seats',
+              value: 6
+            }
+          ]
+        }
       }
-    };
-    await getAxiosInstance(this.hostname, this.token).put(path, payload);
-    const updatedProduct = await getFirstProduct(this.hostname, this.token);
+    });
+
+    const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 1, storeIds: [1] });
+    const updatedProduct = products[0];
 
     expect(updatedProduct.store_data[0].extra_fields[0].key).to.be.equal('emarsys_test_fuel_type');
     expect(updatedProduct.store_data[0].extra_fields[0].value).to.be.equal('gasoline');
