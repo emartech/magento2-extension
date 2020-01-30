@@ -515,6 +515,10 @@ class Product extends ProductResourceModel
     {
         $this->priceData = [];
 
+        if (empty($websiteIds)) {
+            return $this->priceData;
+        }
+
         $columns = [
             'entity_id',
             'website_id',
