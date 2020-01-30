@@ -47,9 +47,10 @@ class ProductDeltaRepository implements ProductDeltaRepositoryInterface
     public function get($id)
     {
         /** @var ProductDeltaInterface $productDelta */
-        $productDelta = $this->productDeltaFactory->create()->load($id);
+        $productDelta = $this->productDeltaFactory->create();
+        $this->productDeltaResourceModel->load($productDelta, $id);
         if (!$productDelta->getId()) {
-            throw new NoSuchEntityException(__('Requested ProductDelta doesn\'t exist'));
+            throw new NoSuchEntityException(__('The ProductDelta with the "%1" ID doesn\'t exist.', $id));
         }
         return $productDelta;
     }
@@ -65,6 +66,18 @@ class ProductDeltaRepository implements ProductDeltaRepositoryInterface
             throw new CouldNotSaveException(__($exception->getMessage()));
         }
         return $productDelta;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create($sku)
+    {
+        /** @var ProductDeltaInterface $productDelta */
+        $productDelta = $this->productDeltaFactory->create();
+        $productDelta->setSku($sku);
+
+        return $this->save($productDelta);
     }
 
     /**
