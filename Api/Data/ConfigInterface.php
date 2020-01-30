@@ -14,10 +14,9 @@ interface ConfigInterface
     const MERCHANT_ID               = 'merchant_id';
     const SNIPPET_URL               = 'web_tracking_snippet_url';
     const STORE_SETTINGS            = 'store_settings';
-
-    const SCOPE_TYPE_DEFAULT       = 'websites';
-    const XML_PATH_EMARSYS_PRE_TAG = 'emartech/emarsys/config/';
-
+    const PRODUCT_DELTA_SYNC        = 'product_delta_sync';
+    const SCOPE_TYPE_DEFAULT        = 'websites';
+    const XML_PATH_EMARSYS_PRE_TAG  = 'emartech/emarsys/config/';
     const ATTRIBUTE_CONFIG_POST_TAG = '_attributes';
 
     /**
@@ -101,6 +100,18 @@ interface ConfigInterface
     public function setWebTrackingSnippetUrl($webTrackingSnippetUrl);
 
     /**
+     * @return string
+     */
+    public function getProductDeltaSync();
+
+    /**
+     * @param string $productDeltaSync
+     *
+     * @return $this
+     */
+    public function setProductDeltaSync($productDeltaSync);
+
+    /**
      * @param string $xmlPostPath
      * @param string $value
      * @param int    $scopeId
@@ -108,7 +119,12 @@ interface ConfigInterface
      *
      * @return bool
      */
-    public function setConfigValue($xmlPostPath, $value, $scopeId, $scope = self::SCOPE_TYPE_DEFAULT);
+    public function setConfigValue(
+        $xmlPostPath,
+        $value,
+        $scopeId,
+        $scope = self::SCOPE_TYPE_DEFAULT
+    );
 
     /**
      * @return void
