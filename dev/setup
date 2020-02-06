@@ -40,7 +40,7 @@ mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE
 echo "-|| Setting admin security configuration"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/session_lifetime', '86400');"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/password_lifetime', '900');"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', '{{base_url}}');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', '{{base_url}}') ON DUPLICATE KEY UPDATE value = '{{base_url}}';"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/url/use_store', '1');"
 
 echo "-|| Running indexer"
