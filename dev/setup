@@ -36,7 +36,7 @@ mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}store (code,website_id,group_id,name,is_active) VALUES ('second_storeview',2,2,'Second Store View',1);"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}store (code,website_id,group_id,name,is_active) VALUES ('custom_storeview',1,1,'Custom Store View',1);"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}inventory_stock_sales_channel (type, code, stock_id) VALUES ('website','second',1);"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}store_group SET default_store_id = (SELECT store_id FROM store WHERE CODE = 'second_storeview') WHERE name = 'Second Store';"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}store_group SET default_store_id = (SELECT store_id FROM ${TABLE_PREFIX}store WHERE CODE = 'second_storeview') WHERE name = 'Second Store';"
 echo "-|| Setting admin security configuration"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/session_lifetime', '86400');"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/password_lifetime', '900');"
