@@ -160,6 +160,12 @@ before(async function() {
 
   await setCurrencyConfig(this.db);
 
+  const tables = await this.db.raw('SHOW TABLES;');
+  const coreConfigData = await this.db.select().from(this.getTableName('core_config_data'));
+
+  console.log('Tables', JSON.stringify(tables, null, 2));
+  console.log('Core config data', JSON.stringify(coreConfigData, null, 2));
+
   if (!process.env.QUICK_TEST) {
     this.createCustomer = createCustomer(this.magentoApi, this.db);
     this.createProduct = createProduct(this.magentoApi);
