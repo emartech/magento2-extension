@@ -2,7 +2,8 @@
 
 export PATH=/bin:/usr/local/bin:$PATH
 
-TABLE_PREFIX=$(mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "SELECT SUBSTRING_INDEX(TABLE_NAME, 'ems_core_config_data', 1) AS table_prefix FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE '%core_config_data' AND TABLE_SCHEMA = 'magento_test';" | tail -n +2)
+TABLE_PREFIX=$(mysql -sN -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "SELECT SUBSTRING_INDEX(TABLE_NAME, 'core_config_data', 1) AS table_prefix FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE '%core_config_data' AND TABLE_SCHEMA = '$MYSQL_DATABASE';")
+echo "The table prefix is: '$TABLE_PREFIX'"
 
 cd /app
 
