@@ -11,6 +11,7 @@ const url = require('url');
 const Magento2ApiClient = require('@emartech/magento2-api');
 const { productFactory } = require('./factories/products');
 const cartItem = require('./fixtures/cart-item');
+const { cacheTablePrefix, getTableName } = require('./helpers/get-table-name');
 
 chai.use(chaiString);
 chai.use(chaiSubset);
@@ -51,8 +52,6 @@ const createCategory = magentoApi => async category => {
 const deleteCategory = magentoApi => async categoryId => {
   return await magentoApi.delete({ path: `/index.php/rest/V1/categories/${categoryId}` });
 };
-
-const getTableName = table => `${process.env.TABLE_PREFIX}${table}`;
 
 const setCurrencyConfig = async db => {
   await db(getTableName('core_config_data'))
@@ -101,9 +100,11 @@ const getMagentoSystemInfo = async magentoApi => {
 };
 
 before(async function() {
-  console.log(`MAGENTO TABLE PREFIX: ${process.env.TABLE_PREFIX}`);
+  await cacheTablePrefix();
 
   this.getTableName = getTableName;
+
+  console.log(`MAGENTO TABLE PREFIX: ${getTableName('')}`);
 
   this.db = knex({
     client: 'mysql',
@@ -162,9 +163,6 @@ before(async function() {
 
   const tables = await this.db.raw('SHOW TABLES;');
   const coreConfigData = await this.db.select().from(this.getTableName('core_config_data'));
-
-  console.log('Tables', JSON.stringify(tables, null, 2));
-  console.log('Core config data', JSON.stringify(coreConfigData, null, 2));
 
   if (!process.env.QUICK_TEST) {
     this.createCustomer = createCustomer(this.magentoApi, this.db);
