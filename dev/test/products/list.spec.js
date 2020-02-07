@@ -43,6 +43,7 @@ describe('Products endpoint', function() {
     const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit, storeIds: [1] });
 
     const product = products[0];
+    console.log(JSON.stringify(product, null, 2));
 
     expect(products.length).to.equal(expectedProducts.length);
     expect(productCount).to.equal(expectedProductCount);

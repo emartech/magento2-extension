@@ -34,43 +34,43 @@ pipeline {
         sh 'docker build -f ./dev/Docker/Dockerfile-node-CI --build-arg NPM_TOKEN=$NPM_TOKEN --build-arg http_proxy=http://webproxy.emarsys.at:3128 --build-arg https_proxy=http://webproxy.emarsys.at:3128 -t mage_node ./dev'
       }
     }
-    stage('Run code style check') {
-      steps {
-        sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
-      }
-    }
-    stage('Run tests on current versions') {
-      parallel {
-        stage('Magento 2.3.3CE: build and run tests') {
-          steps {
-            sh 'VERSION=2.3.3ce sh dev/jenkins/run.sh'
-          }
-        }
-        stage('Magento 2.3.3EE: build and run tests') {
-          steps {
-            sh 'VERSION=2.3.3ee sh dev/jenkins/run.sh'
-          }
-        }
-      }
-    }
-    stage('Deploy to staging') {
-      steps {
-        sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
-        sh 'docker run --name gcloud-auth -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" -v "$(pwd)/ci-account.json:/auth/ci-account.json" emarsys/ems-plugins-gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
-        sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth emarsys/ems-plugins-gke-service kubectl set env deployment web-staging EXTENSION_SHA=$GIT_COMMIT'
-        sh 'docker rm gcloud-auth'
-        sh 'rm ci-account.json'
-      }
-    }
+    // stage('Run code style check') {
+    //   steps {
+    //     sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
+    //   }
+    // }
+    // stage('Run tests on current versions') {
+    //   parallel {
+    //     stage('Magento 2.3.3CE: build and run tests') {
+    //       steps {
+    //         sh 'VERSION=2.3.3ce sh dev/jenkins/run.sh'
+    //       }
+    //     }
+    //     stage('Magento 2.3.3EE: build and run tests') {
+    //       steps {
+    //         sh 'VERSION=2.3.3ee sh dev/jenkins/run.sh'
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('Deploy to staging') {
+    //   steps {
+    //     sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
+    //     sh 'docker run --name gcloud-auth -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" -v "$(pwd)/ci-account.json:/auth/ci-account.json" emarsys/ems-plugins-gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
+    //     sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth emarsys/ems-plugins-gke-service kubectl set env deployment web-staging EXTENSION_SHA=$GIT_COMMIT'
+    //     sh 'docker rm gcloud-auth'
+    //     sh 'rm ci-account.json'
+    //   }
+    // }
     stage('Run tests on older versions') {
       parallel {
         stage('2.3.x') {
           stages {
-            stage('Magento 2.3.2EE: build and run tests') {
-              steps {
-                sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
-              }
-            }
+            // stage('Magento 2.3.2EE: build and run tests') {
+            //   steps {
+            //     sh 'VERSION=2.3.2ee sh dev/jenkins/run.sh'
+            //   }
+            // }
             stage('Magento 2.3.1CE with table prefix: build and run tests') {
               steps {
                 sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run.sh'
@@ -78,20 +78,20 @@ pipeline {
             }
           }
         }
-        stage('2.1.x') {
-          stages {
-            stage('Magento 2.1.9EE: build and run tests') {
-              steps {
-                sh 'VERSION=2.1.9ee sh dev/jenkins/run.sh'
-              }
-            }
-            stage('Magento 2.1.8CE: build and run tests') {
-              steps {
-                sh 'VERSION=2.1.8ce sh dev/jenkins/run.sh'
-              }
-            }
-          }
-        }
+        // stage('2.1.x') {
+        //   stages {
+        //     stage('Magento 2.1.9EE: build and run tests') {
+        //       steps {
+        //         sh 'VERSION=2.1.9ee sh dev/jenkins/run.sh'
+        //       }
+        //     }
+        //     stage('Magento 2.1.8CE: build and run tests') {
+        //       steps {
+        //         sh 'VERSION=2.1.8ce sh dev/jenkins/run.sh'
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
   }
