@@ -9,7 +9,6 @@ const knex = require('knex');
 const DbCleaner = require('./db-cleaner');
 const url = require('url');
 const Magento2ApiClient = require('@emartech/magento2-api');
-const { productFactory } = require('./factories/products');
 const cartItem = require('./fixtures/cart-item');
 const { cacheTablePrefix, getTableName } = require('./helpers/get-table-name');
 
@@ -161,9 +160,6 @@ before(async function() {
 
   await setCurrencyConfig(this.db);
 
-  const tables = await this.db.raw('SHOW TABLES;');
-  const coreConfigData = await this.db.select().from(this.getTableName('core_config_data'));
-
   if (!process.env.QUICK_TEST) {
     this.createCustomer = createCustomer(this.magentoApi, this.db);
     this.createProduct = createProduct(this.magentoApi);
@@ -195,54 +191,8 @@ before(async function() {
     } catch (e) {
       console.log(e.response);
     }
-
-    const { parentIds, childIds } = await createCategories(this.createCategory);
-    this.createdParentCategoryIds = parentIds;
-
-    this.product = await this.createProduct(productFactory({}));
-    this.storedProductsForProductSync = [];
-    const productsForProductSync = [
-      productFactory({
-        sku: 'PRODUCT-SYNC-SKU',
-        name: 'Product For Product Sync',
-        custom_attributes: [
-          {
-            attribute_code: 'description',
-            value: 'Default products description'
-          },
-          {
-            attribute_code: 'category_ids',
-            value: [parentIds[1].toString(), childIds[0].toString()]
-          }
-        ]
-      })
-    ];
-    for (const productForProductSync of productsForProductSync) {
-      const result = await this.createProduct(productForProductSync);
-      this.storedProductsForProductSync.push(result);
-    }
   }
 });
-
-const createCategories = async function(createCategory) {
-  const parent = await createCategory({
-    parent_id: 2,
-    name: 'Parent category',
-    is_active: true
-  });
-  const child = await createCategory({
-    parent_id: parent.id,
-    name: 'Child category',
-    is_active: true
-  });
-  const simple = await createCategory({
-    parent_id: 2,
-    name: 'Simple category',
-    is_active: true
-  });
-
-  return { parentIds: [parent.id, simple.id], childIds: [child.id] };
-};
 
 beforeEach(async function() {
   this.sinon = sinon;

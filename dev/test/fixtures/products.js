@@ -3,7 +3,7 @@
 const getProducts = (hostname, page, limit, magentoVersion, magentoEdition) => {
   return {
     products: products(hostname, page, limit, magentoVersion, magentoEdition, magentoEdition),
-    productCount: magentoEdition === 'Enterprise' ? 2050 : 2048
+    productCount: magentoEdition === 'Enterprise' ? 2048 : 2046
   };
 };
 
