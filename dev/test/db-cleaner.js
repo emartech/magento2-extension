@@ -70,11 +70,6 @@ module.exports = class DbCleaner {
     await this._db.raw('SET FOREIGN_KEY_CHECKS=1');
   }
 
-  async tearDown() {
-    await this.clearCustomers();
-    await this.clearOrders();
-  }
-
   async resetEmarsysEventsData() {
     await this._db.truncate(getTableName('emarsys_events_data'));
   }

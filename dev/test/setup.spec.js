@@ -5,12 +5,12 @@ const chaiString = require('chai-string');
 const chaiSubset = require('chai-subset');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
-const knex = require('knex');
 const DbCleaner = require('./db-cleaner');
 const url = require('url');
 const Magento2ApiClient = require('@emartech/magento2-api');
 const cartItem = require('./fixtures/cart-item');
 const { cacheTablePrefix, getTableName } = require('./helpers/get-table-name');
+const db = require('./helpers/db');
 
 chai.use(chaiString);
 chai.use(chaiSubset);
@@ -29,27 +29,8 @@ const createCustomer = (magentoApi, db) => async (customer, password) => {
   return Object.assign({}, customer, { entityId, password });
 };
 
-const createProduct = magentoApi => async product => {
-  await magentoApi.post({ path: '/index.php/rest/V1/products', payload: { product } });
-  return product;
-};
-
-const deleteProduct = magentoApi => async product => {
-  await magentoApi.delete({ path: `/index.php/rest/V1/products/${product.sku}` });
-  return product;
-};
-
-const createCategory = magentoApi => async category => {
-  try {
-    const response = await magentoApi.post({ path: '/index.php/rest/V1/categories', payload: { category } });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const deleteCategory = magentoApi => async categoryId => {
-  return await magentoApi.delete({ path: `/index.php/rest/V1/categories/${categoryId}` });
+const createProduct = magentoApi => product => {
+  return magentoApi.post({ path: '/index.php/rest/V1/products', payload: { product } });
 };
 
 const setCurrencyConfig = async db => {
@@ -66,8 +47,8 @@ const setCurrencyConfig = async db => {
   });
 };
 
-const setDefaultStoreSettings = magentoApi => async () => {
-  return await magentoApi.execute('config', 'set', {
+const setDefaultStoreSettings = magentoApi => () => {
+  return magentoApi.execute('config', 'set', {
     websiteId: 1,
     config: {
       storeSettings: [
@@ -84,8 +65,8 @@ const setDefaultStoreSettings = magentoApi => async () => {
   });
 };
 
-const clearStoreSettings = magentoApi => async () => {
-  return await magentoApi.execute('config', 'set', {
+const clearStoreSettings = magentoApi => () => {
+  return magentoApi.execute('config', 'set', {
     websiteId: 1,
     config: {
       storeSettings: []
@@ -93,40 +74,13 @@ const clearStoreSettings = magentoApi => async () => {
   });
 };
 
-const getMagentoSystemInfo = async magentoApi => {
-  const result = await magentoApi.execute('systeminfo', 'get');
-  return result;
-};
-
 before(async function() {
   await cacheTablePrefix();
 
   this.getTableName = getTableName;
-
-  console.log(`MAGENTO TABLE PREFIX: ${getTableName('')}`);
-
-  this.db = knex({
-    client: 'mysql',
-    connection: {
-      host: process.env.MYSQL_HOST,
-      user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE
-    }
-  });
+  this.db = db;
 
   this.dbCleaner = DbCleaner.create(this.db);
-
-  const { token } = await this.db
-    .select('token')
-    .from(this.getTableName('integration'))
-    .where({ name: 'Emarsys Integration' })
-    .leftJoin(
-      this.getTableName('oauth_token'),
-      this.getTableName('integration.consumer_id'),
-      this.getTableName('oauth_token.consumer_id')
-    )
-    .first();
 
   const { value: baseUrl } = await this.db
     .select('value')
@@ -134,68 +88,56 @@ before(async function() {
     .where({ path: 'web/unsecure/base_url' })
     .first();
 
-  const hostname = url.parse(baseUrl).host;
-  this.hostname = hostname;
-  this.token = token;
-  console.log('host', hostname);
-  console.log('Token: ' + token);
-
+  this.hostname = url.parse(baseUrl).host;
   this.magentoApi = new Magento2ApiClient({
     baseUrl: `http://${this.hostname}`,
-    token: this.token,
+    token: 'Almafa456',
     platform: 'magento2'
   });
+
   this.setDefaultStoreSettings = setDefaultStoreSettings(this.magentoApi);
   this.clearStoreSettings = clearStoreSettings(this.magentoApi);
-  const magentoSystemInfo = await getMagentoSystemInfo(this.magentoApi);
+
+  const magentoSystemInfo = await this.magentoApi.execute('systeminfo', 'get');
   this.magentoVersion = magentoSystemInfo.magento_version;
   this.magentoEdition = magentoSystemInfo.magento_edition;
 
   console.log('----------------------');
-  console.log(`MAGENTO VERSION IN MOCHA: ${this.magentoVersion} (${this.magentoEdition})`);
+  console.log(`Hostname: ${this.hostname}`);
+  console.log(`Table prefix: ${getTableName('')}`);
+  console.log(`Magento version in mocha: ${this.magentoVersion} (${this.magentoEdition})`);
   console.log('----------------------');
 
-  await this.magentoApi.execute('config', 'setDefault', 1);
   await this.setDefaultStoreSettings();
 
   await setCurrencyConfig(this.db);
 
-  if (!process.env.QUICK_TEST) {
-    this.createCustomer = createCustomer(this.magentoApi, this.db);
-    this.createProduct = createProduct(this.magentoApi);
-    this.deleteProduct = deleteProduct(this.magentoApi);
-    this.createCategory = createCategory(this.magentoApi);
-    this.deleteCategory = deleteCategory(this.magentoApi);
-    this.localCartItem = cartItem.get(this.magentoVersion, this.magentoEdition);
+  this.createCustomer = createCustomer(this.magentoApi, this.db);
+  this.createProduct = createProduct(this.magentoApi);
+  this.localCartItem = cartItem.get(this.magentoVersion, this.magentoEdition);
 
-    try {
-      this.customer = await this.createCustomer(
+  this.customer = await this.createCustomer(
+    {
+      group_id: 0,
+      dob: '1977-11-12',
+      email: 'default@yolo.net',
+      firstname: 'Yolo',
+      lastname: 'Default',
+      store_id: 1,
+      website_id: 1,
+      disable_auto_group_change: 0,
+      custom_attributes: [
         {
-          group_id: 0,
-          dob: '1977-11-12',
-          email: 'default@yolo.net',
-          firstname: 'Yolo',
-          lastname: 'Default',
-          store_id: 1,
-          website_id: 1,
-          disable_auto_group_change: 0,
-          custom_attributes: [
-            {
-              attribute_code: 'emarsys_test_favorite_car',
-              value: 'skoda'
-            }
-          ]
-        },
-        'Password1234'
-      );
-    } catch (e) {
-      console.log(e.response);
-    }
-  }
+          attribute_code: 'emarsys_test_favorite_car',
+          value: 'skoda'
+        }
+      ]
+    },
+    'Password1234'
+  );
 });
 
 beforeEach(async function() {
-  this.sinon = sinon;
   this.sandbox = sinon.createSandbox();
 });
 
