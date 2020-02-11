@@ -47,6 +47,10 @@ mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/url/use_store', '1');"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}oauth_token SET token = 'Almafa456';"
 
+echo "-|| Setting currency configuration"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}directory_currency_rate (currency_from, currency_to, rate) VALUES ('USD', 'UGX', 2);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}core_config_data SET value = 'USD,UGX' WHERE path = 'currency/options/allow';"
+
 echo "-|| Running indexer"
 bin/magento indexer:reindex
 echo "-|| Flushing"

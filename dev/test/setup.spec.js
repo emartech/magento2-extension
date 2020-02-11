@@ -5,12 +5,13 @@ const chaiString = require('chai-string');
 const chaiSubset = require('chai-subset');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
-const DbCleaner = require('./db-cleaner');
 const url = require('url');
 const Magento2ApiClient = require('@emartech/magento2-api');
-const cartItem = require('./fixtures/cart-item');
+
 const { cacheTablePrefix, getTableName } = require('./helpers/get-table-name');
+const cartItem = require('./fixtures/cart-item');
 const db = require('./helpers/db');
+const DbCleaner = require('./db-cleaner');
 
 chai.use(chaiString);
 chai.use(chaiSubset);
@@ -37,14 +38,6 @@ const setCurrencyConfig = async db => {
   await db(getTableName('core_config_data'))
     .where({ path: 'currency/options/default' })
     .update({ value: 'UGX' });
-  await db(getTableName('core_config_data'))
-    .where({ path: 'currency/options/allow' })
-    .update({ value: 'USD,UGX' });
-  await db(getTableName('directory_currency_rate')).insert({
-    currency_from: 'USD',
-    currency_to: 'UGX',
-    rate: '2'
-  });
 };
 
 const setDefaultStoreSettings = magentoApi => () => {
