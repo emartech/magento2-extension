@@ -51,7 +51,14 @@ echo "-|| Setting currency configuration"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}directory_currency_rate (currency_from, currency_to, rate) VALUES ('USD', 'UGX', 2);"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}core_config_data SET value = 'USD,UGX' WHERE path = 'currency/options/allow';"
 
+echo "-|| Flushing cache #1"
+bin/magento cache:flush
+
+echo "-|| Splitting product price tables (supported only after Magento 2.2.6)"
+bin/magento indexer:set-dimensions-mode catalog_product_price website_and_customer_group || echo 'Feature not supported on this Magento version...'
+
 echo "-|| Running indexer"
 bin/magento indexer:reindex
-echo "-|| Flushing"
+
+echo "-|| Flushing cache #2"
 bin/magento cache:flush
