@@ -16,6 +16,9 @@
     <preference for="Emartech\Emarsys\Api\Data\SubscriptionInterface" type="Emartech\Emarsys\Model\Data\Subscription" />
     <preference for="Emartech\Emarsys\Api\Data\StatusResponseInterface" type="Emartech\Emarsys\Model\Data\StatusResponse" />
 
+    <preference for="Emartech\Emarsys\Api\Data\ErrorResponseInterface" type="Emartech\Emarsys\Model\Data\ErrorResponse" />
+    <preference for="Emartech\Emarsys\Api\Data\ErrorResponseItemInterface" type="Emartech\Emarsys\Model\Data\ErrorResponseItem" />
+
     <preference for="Emartech\Emarsys\Api\EventsApiInterface" type="Emartech\Emarsys\Model\Api\EventsApi" />
     <preference for="Emartech\Emarsys\Api\Data\EventsApiResponseInterface" type="Emartech\Emarsys\Model\Data\EventsApiResponse" />
 
@@ -48,6 +51,11 @@
     <preference for="Emartech\Emarsys\Api\EventRepositoryInterface" type="Emartech\Emarsys\Model\EventRepository" />
 
     <preference for="Emartech\Emarsys\Api\Data\ExtraFieldsInterface" type="Emartech\Emarsys\Model\Data\ExtraFields" />
+
+    <!--preference for="Emartech\Emarsys\Api\Data\ProductDeltaInterface" type="Emartech\Emarsys\Model\ProductDelta" />
+    <preference for="Emartech\Emarsys\Api\ProductDeltaRepositoryInterface" type="Emartech\Emarsys\Model\ProductDeltaRepository" />
+    <preference for="Emartech\Emarsys\Api\ProductDeltasApiInterface" type="Emartech\Emarsys\Model\Api\ProductDeltasApi" />
+    <preference for="Emartech\Emarsys\Api\Data\ProductDeltasApiResponseInterface" type="Emartech\Emarsys\Model\Data\ProductDeltasApiResponse" /-->
 
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
