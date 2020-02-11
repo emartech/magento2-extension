@@ -104,7 +104,7 @@ const viewGearCategory = () => {
     store: { merchantId }
   });
 
-  cy.get('#ui-id-6').click();
+  cy.get("[role='menuitem']:contains('Gear')").click();
   cy.wait(2000);
 };
 

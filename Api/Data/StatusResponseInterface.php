@@ -2,9 +2,9 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-interface StatusResponseInterface
+interface StatusResponseInterface extends ErrorResponseInterface
 {
-    const STATUS_KEY   = 'status';
+    const STATUS_KEY = 'status';
 
     /**
      * @return string

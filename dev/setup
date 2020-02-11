@@ -2,12 +2,15 @@
 
 export PATH=/bin:/usr/local/bin:$PATH
 
+TABLE_PREFIX=$(mysql -sN -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "SELECT SUBSTRING_INDEX(TABLE_NAME, 'core_config_data', 1) AS table_prefix FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE '%core_config_data' AND TABLE_SCHEMA = '$MYSQL_DATABASE';")
+echo "The table prefix is: '$TABLE_PREFIX'"
+
 cd /app
 
 echo "-|| Setting base URL"
 echo $MAGENTO_URL
 bin/magento config:set web/unsecure/base_url ${MAGENTO_URL}/ \
-|| mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "update core_config_data set value = '$MAGENTO_URL/' where path = 'web/unsecure/base_url';"
+|| mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "update ${TABLE_PREFIX}core_config_data set value = '$MAGENTO_URL/' where path = 'web/unsecure/base_url';"
 
 
 echo "-|| Configuring Coding Standard"
@@ -31,13 +34,22 @@ echo "-|| Setting EAV field for customer 1"
 bin/magento emartech:customer-attribute:set --customer_id 1 --attribute_name emarsys_test_favorite_car --attribute_value ferrari
 
 echo "-|| Setting website configuration"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store_website (code, name, default_group_id) VALUES ('second','Second Site',2);"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store_group (website_id, root_category_id,name,code) VALUES (2,2,'Second Store','second_store');"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store (code,website_id,group_id,name,is_active) VALUES ('second_storeview',2,2,'Second Store View',1);"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO store (code,website_id,group_id,name,is_active) VALUES ('custom_storeview',1,1,'Custom Store View',1);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}store_website (code, name, default_group_id) VALUES ('second','Second Site',2);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}store_group (website_id, root_category_id,name,code) VALUES (2,2,'Second Store','second_store');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}store (code,website_id,group_id,name,is_active) VALUES ('second_storeview',2,2,'Second Store View',1);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}store (code,website_id,group_id,name,is_active) VALUES ('custom_storeview',1,1,'Custom Store View',1);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}inventory_stock_sales_channel (type, code, stock_id) VALUES ('website','second',1);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}store_group SET default_store_id = (SELECT store_id FROM ${TABLE_PREFIX}store WHERE CODE = 'second_storeview') WHERE name = 'Second Store';"
 echo "-|| Setting admin security configuration"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/session_lifetime', '86400');"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/password_lifetime', '900');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/session_lifetime', '86400');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'admin/security/password_lifetime', '900');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', '{{base_url}}') ON DUPLICATE KEY UPDATE value = '{{base_url}}';"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/url/use_store', '1');"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}oauth_token SET token = 'Almafa456';"
+
+echo "-|| Setting currency configuration"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}directory_currency_rate (currency_from, currency_to, rate) VALUES ('USD', 'UGX', 2);"
+mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}core_config_data SET value = 'USD,UGX' WHERE path = 'currency/options/allow';"
 
 echo "-|| Running indexer"
 bin/magento indexer:reindex

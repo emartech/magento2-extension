@@ -32,7 +32,6 @@ describe('Marketing events: customer', function() {
   afterEach(async function() {
     await this.db.truncate(this.getTableName('password_reset_request_event'));
     await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email = "yolo@yolo.net"`);
-    await this.dbCleaner.resetEmarsysEventsData();
   });
 
   after(async function() {

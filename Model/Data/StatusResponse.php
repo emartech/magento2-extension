@@ -2,11 +2,9 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\StatusResponseInterface;
 
-class StatusResponse extends DataObject implements StatusResponseInterface
+class StatusResponse extends ErrorResponse implements StatusResponseInterface
 {
     /**
      * @return string
