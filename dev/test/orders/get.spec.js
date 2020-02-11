@@ -59,7 +59,7 @@ const createNewCustomerOrder = async (magentoApi, localCartItem) => {
   return { cartId, orderId };
 };
 
-const orderCount = 8;
+const orderCount = 4;
 
 describe('Orders endpoint', function() {
   let localCartItem;
@@ -75,7 +75,7 @@ describe('Orders endpoint', function() {
   });
 
   it('should return orders and paging info according to parameters', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
@@ -94,7 +94,7 @@ describe('Orders endpoint', function() {
   });
 
   it('should handle multiple store IDs', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
@@ -107,7 +107,7 @@ describe('Orders endpoint', function() {
   });
 
   it('should filter for store IDs', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
@@ -120,9 +120,9 @@ describe('Orders endpoint', function() {
   });
 
   it('should filter with sinceId', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 2;
-    const sinceId = 4;
+    const sinceId = 2;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
       limit,
