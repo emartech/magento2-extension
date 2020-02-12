@@ -65,21 +65,14 @@ class ProductDelta extends AbstractDb
             // @codingStandardsIgnoreStart
             return (bool)$this->getConnection()->query(
                 "
-                DELETE pdt1 FROM ? AS pdt1
-                INNER JOIN ? AS pdt2
+                DELETE pdt1 FROM $this->_mainTable AS pdt1
+                INNER JOIN $this->_mainTable AS pdt2
                 WHERE 
-                    pdt1.? < pdt2.? AND 
+                    pdt1.$this->_idFieldName < pdt2.$this->_idFieldName AND 
                     pdt1.sku = pdt2.sku AND 
-                    pdt1.? <= ?
+                    pdt1.$this->_idFieldName <= ?
                 ",
-                [
-                    $this->_mainTable,
-                    $this->_mainTable,
-                    $this->_idFieldName,
-                    $this->_idFieldName,
-                    $this->_idFieldName,
-                    $maxId,
-                ]
+                $maxId
             );
             // @codingStandardsIgnoreEnd
         } catch (Exception $e) {
