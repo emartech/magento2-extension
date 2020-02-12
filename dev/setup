@@ -28,7 +28,7 @@ else
 fi
 
 echo "-|| Updating test helper"
-composer config -unset repositories.test
+composer config --unset repositories.test
 composer require emartech/magento2-test-helper:dev-master
 
 echo "-|| Creating EAV fields"
