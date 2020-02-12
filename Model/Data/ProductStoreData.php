@@ -82,6 +82,22 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * @return float
+     */
+    public function getOriginalWebshopPrice()
+    {
+        return $this->getData(self::ORIGINAL_WEBSHOP_PRICE);
+    }
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayWebshopPrice()
+    {
+        return $this->getData(self::ORIGINAL_DISPLAY_WEBSHOP_PRICE);
+    }
+
+    /**
      * @return int
      */
     public function getStatus()
@@ -217,6 +233,30 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     public function setDisplayWebshopPrice($displayWebShopPrice)
     {
         $this->setData(self::DISPLAY_WEBSHOP_PRICE, $displayWebShopPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $originalWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalWebshopPrice($originalWebshopPrice)
+    {
+        $this->setData(self::ORIGINAL_WEBSHOP_PRICE, $originalWebshopPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $originalDisplayWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice)
+    {
+        $this->setData(self::ORIGINAL_DISPLAY_WEBSHOP_PRICE, $originalDisplayWebshopPrice);
 
         return $this;
     }
