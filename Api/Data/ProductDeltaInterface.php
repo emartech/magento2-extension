@@ -10,8 +10,10 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface ProductDeltaInterface
 {
-    const PRODUCT_DELTA_ID_KEY = 'product_delta_id';
-    const PRODUCT_SKU_KEY      = 'sku';
+    const PRODUCT_DELTA_ID_KEY  = 'product_delta_id';
+    const PRODUCT_SKU_KEY       = 'sku';
+    const PRODUCT_ENTITY_ID_KEY = 'entity_id';
+    const PRODUCT_ROW_ID_KEY    = 'row_id';
 
     /**
      * @return int
@@ -22,6 +24,16 @@ interface ProductDeltaInterface
      * @return string
      */
     public function getSku();
+
+    /**
+     * @return int
+     */
+    public function getEntityId();
+
+    /**
+     * @return int|null
+     */
+    public function getRowId();
 
     /**
      * @param int $productDeltaId
@@ -36,4 +48,18 @@ interface ProductDeltaInterface
      * @return $this
      */
     public function setSku($sku);
+
+    /**
+     * @param int $entityId
+     *
+     * @return $this
+     */
+    public function setEntityId($entityId);
+
+    /**
+     * @param int $rowId
+     *
+     * @return $this
+     */
+    public function setRowId($rowId);
 }

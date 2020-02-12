@@ -58,6 +58,24 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     'nullable' => true,
                 ],
                 'Product SKU'
+            )->addColumn(
+                'entity_id',
+                Table::TYPE_BIGINT,
+                64,
+                [
+                    'default'  => null,
+                    'nullable' => true,
+                ],
+                'Product Entity ID'
+            )->addColumn(
+                'row_id',
+                Table::TYPE_BIGINT,
+                64,
+                [
+                    'default'  => null,
+                    'nullable' => true,
+                ],
+                'Product Row ID'
             );
 
             $setup->getConnection()->createTable($table);

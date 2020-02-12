@@ -22,6 +22,9 @@
         <observer name="emarsysProductSaveObserver" instance="Emartech\Emarsys\Observers\CatalogProductSaveObserver" />
     </event>
     <event name="cataloginventory_stock_item_save_commit_after">
-        <observer name="emarsysProductSaveObserver" instance="Emartech\Emarsys\Observers\InventoryStockSaveObserver" />
+        <observer name="emarsysStockSaveObserver" instance="Emartech\Emarsys\Observers\InventoryStockSaveObserver" />
+    </event>
+    <event name="catalog_product_attribute_update_before">
+        <observer name="emarsysProductsSaveObserver" instance="Emartech\Emarsys\Observers\ProductAttributesUpdateObserver" />
     </event>
 </config>

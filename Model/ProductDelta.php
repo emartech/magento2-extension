@@ -37,6 +37,22 @@ class ProductDelta extends AbstractModel implements ProductDeltaInterface
     /**
      * {@inheritdoc}
      */
+    public function getEntityId()
+    {
+        return $this->getData(self::PRODUCT_ENTITY_ID_KEY);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRowId()
+    {
+        return $this->getData(self::PRODUCT_ROW_ID_KEY);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setId($productDeltaId)
     {
         $this->setData(self::PRODUCT_DELTA_ID_KEY, $productDeltaId);
@@ -50,6 +66,26 @@ class ProductDelta extends AbstractModel implements ProductDeltaInterface
     public function setSku($sku)
     {
         $this->setData(self::PRODUCT_SKU_KEY, $sku);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEntityId($entityId)
+    {
+        $this->setData(self::PRODUCT_ENTITY_ID_KEY, $entityId);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRowId($rowId)
+    {
+        $this->setData(self::PRODUCT_ROW_ID_KEY, $rowId);
 
         return $this;
     }

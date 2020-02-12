@@ -28,11 +28,13 @@ interface ProductDeltaRepositoryInterface
 
     /**
      * @param string $sku
+     * @param int $entityId
+     * @param int $rowId
      *
      * @return \Emartech\Emarsys\Api\Data\ProductDeltaInterface
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    public function create($sku);
+    public function create($sku, $entityId, $rowId);
 
     /**
      * @param string sinceId

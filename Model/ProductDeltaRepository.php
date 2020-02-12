@@ -71,11 +71,15 @@ class ProductDeltaRepository implements ProductDeltaRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create($sku)
+    public function create($sku, $entityId, $rowId)
     {
         /** @var ProductDeltaInterface $productDelta */
         $productDelta = $this->productDeltaFactory->create();
-        $productDelta->setSku($sku);
+
+        $productDelta
+            ->setSku($sku)
+            ->setEntityId($entityId)
+            ->setRowId($rowId);
 
         return $this->save($productDelta);
     }

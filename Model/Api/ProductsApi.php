@@ -9,109 +9,42 @@ namespace Emartech\Emarsys\Model\Api;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\ProductsApiInterface;
-use Emartech\Emarsys\Helper\LinkField;
+use Emartech\Emarsys\Helper\LinkField as LinkFieldHelper;
 use Emartech\Emarsys\Helper\Product as ProductHelper;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection as DataCollection;
-use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Store\Model\StoreManagerInterface;
 
-class ProductsApi implements ProductsApiInterface
+class ProductsApi extends BaseProductsApi implements ProductsApiInterface
 {
-
     /**
      * @var ProductsApiResponseInterfaceFactory
      */
     private $productsApiResponseFactory;
 
     /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * @var int[]
-     */
-    private $storeIds = [];
-
-    /**
-     * @var array
-     */
-    private $websiteIds = [];
-
-    /**
-     * @var int[]
-     */
-    private $customerGroups = [0];
-
-    /**
-     * @var int
-     */
-    private $minId = 0;
-
-    /**
-     * @var int
-     */
-    private $maxId = 0;
-
-    /**
-     * @var int
-     */
-    private $numberOfItems = 0;
-
-    /**
-     * @var string
-     */
-    private $linkField;
-
-    /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
-
-    /**
-     * @var LinkField
-     */
-    private $linkFieldHelper;
-
-    /**
-     * @var ProductHelper
-     */
-    private $productHelper;
-
-    /**
      * ProductsApi constructor.
      *
      * @param StoreManagerInterface               $storeManager
-     * @param ScopeConfigInterface                $scopeConfig
      * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
-     * @param ObjectManagerInterface              $objectManager
-     * @param LinkField                           $linkFieldHelper
+     * @param LinkFieldHelper                     $linkFieldHelper
      * @param ProductHelper                       $productHelper
      */
     public function __construct(
         StoreManagerInterface $storeManager,
-        ScopeConfigInterface $scopeConfig,
         ProductsApiResponseInterfaceFactory $productsApiResponseFactory,
-        ObjectManagerInterface $objectManager,
-        LinkField $linkFieldHelper,
+        LinkFieldHelper $linkFieldHelper,
         ProductHelper $productHelper
     ) {
-        $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
+        parent::__construct(
+            $storeManager,
+            $productHelper,
+            $linkFieldHelper
+        );
+
         $this->productsApiResponseFactory = $productsApiResponseFactory;
-        $this->objectManager = $objectManager;
-        $this->linkFieldHelper = $linkFieldHelper;
-        $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
-        $this->productHelper = $productHelper;
     }
 
     /**
@@ -125,13 +58,7 @@ class ProductsApi implements ProductsApiInterface
     public function get($page, $pageSize, $storeId)
     {
         $this
-            ->initStores($storeId);
-
-        if (!array_key_exists(0, $this->storeIds)) {
-            throw new WebApiException(__('Store ID must contain 0'));
-        }
-
-        $this
+            ->initStores($storeId)
             ->initCollection()
             ->handleIds($page, $pageSize)
             ->getPrices()
@@ -149,38 +76,7 @@ class ProductsApi implements ProductsApiInterface
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
             ->setTotalCount($this->numberOfItems)
-            ->setProducts($this->handleProducts());
-    }
-
-    /**
-     * @param mixed $storeIds
-     *
-     * @return $this
-     */
-    // @codingStandardsIgnoreLine
-    protected function initStores($storeIds)
-    {
-        if (!is_array($storeIds)) {
-            $storeIds = explode(',', $storeIds);
-        }
-
-        $availableStores = $this->storeManager->getStores(true);
-
-        foreach ($availableStores as $availableStore) {
-            $storeId = (int)$availableStore->getId();
-            if (in_array($storeId, $storeIds)) {
-                $this->storeIds[$storeId] = $availableStore;
-                $websiteId = (int)$availableStore->getWebsiteId();
-                if ($websiteId) {
-                    if (!array_key_exists($websiteId, $this->websiteIds)) {
-                        $this->websiteIds[$websiteId] = [];
-                    }
-                    $this->websiteIds[$websiteId][] = $storeId;
-                }
-            }
-        }
-
-        return $this;
+            ->setProducts($this->handleProducts($this->productHelper->getProductCollection()));
     }
 
     /**
@@ -220,7 +116,15 @@ class ProductsApi implements ProductsApiInterface
      */
     protected function getPrices()
     {
-        $this->productHelper->getPrices($this->websiteIds, $this->customerGroups, $this->minId, $this->maxId);
+        $wheres = [
+            ['entity_id >= ?', $this->minId],
+            ['entity_id <= ?', $this->maxId],
+        ];
+        $this->productHelper->getPrices(
+            $this->websiteIds,
+            $this->customerGroups,
+            $wheres
+        );
 
         return $this;
     }
@@ -231,7 +135,10 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleCategoryIds()
     {
-        $this->productHelper->getCategoryIds($this->minId, $this->maxId);
+        $this->productHelper->getCategoryIds([
+            ['product_id >= ?', $this->minId],
+            ['product_id <= ?', $this->maxId],
+        ]);
 
         return $this;
     }
@@ -242,7 +149,10 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleChildrenProductIds()
     {
-        $this->productHelper->getChildrenProductIds($this->minId, $this->maxId);
+        $this->productHelper->getChildrenProductIds([
+            ['parent_id >= ?', $this->minId],
+            ['parent_id <= ?', $this->maxId],
+        ]);
 
         return $this;
     }
@@ -253,7 +163,10 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleStockData()
     {
-        $this->productHelper->getStockData($this->minId, $this->maxId, $this->linkField);
+        $this->productHelper->getStockData([
+            ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+            ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
+        ]);
 
         return $this;
     }
@@ -264,8 +177,10 @@ class ProductsApi implements ProductsApiInterface
     private function handleAttributes()
     {
         $this->productHelper->getAttributeData(
-            $this->minId,
-            $this->maxId,
+            [
+                [$this->linkField . ' >= ?', $this->minId],
+                [$this->linkField . ' <= ?', $this->maxId],
+            ],
             array_keys($this->storeIds)
         );
 
@@ -278,7 +193,8 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function setWhere()
     {
-        $this->productHelper->setWhere($this->linkField, $this->minId, $this->maxId);
+        $this->productHelper->setWhere($this->linkField, $this->minId,
+            $this->maxId);
 
         return $this;
     }
@@ -289,24 +205,9 @@ class ProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function setOrder()
     {
-        $this->productHelper->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
+        $this->productHelper->setOrder($this->linkField,
+            DataCollection::SORT_ORDER_ASC);
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    // @codingStandardsIgnoreLine
-    protected function handleProducts()
-    {
-        $returnArray = [];
-
-        /** @var Product $product */
-        foreach ($this->productHelper->getProductCollection() as $product) {
-            $returnArray[] = $this->productHelper->buildProductObject($product, $this->storeIds, $this->linkField);
-        }
-
-        return $returnArray;
     }
 }

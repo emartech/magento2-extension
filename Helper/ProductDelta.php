@@ -76,7 +76,11 @@ class ProductDelta extends AbstractHelper
             }
 
             if ($canSave) {
-                $this->productDeltaRepository->create($product->getSku());
+                $this->productDeltaRepository->create(
+                    $product->getSku(),
+                    $product->getEntityId(),
+                    $product->getId()
+                );
             }
 
         } catch (Exception $e) {

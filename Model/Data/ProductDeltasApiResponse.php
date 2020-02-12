@@ -16,7 +16,7 @@ class ProductDeltasApiResponse extends ProductsApiResponse implements ProductDel
      */
     public function getMaxId()
     {
-        $this->getData(self::MAX_ID_KEY);
+        return $this->getData(self::MAX_ID_KEY);
     }
 
     /**

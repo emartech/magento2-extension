@@ -7,15 +7,24 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Emartech\Emarsys\Api\Data\ProductDeltasApiResponseInterface;
+use Emartech\Emarsys\Api\Data\ProductDeltasApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\ProductDeltaRepositoryInterface;
 use Emartech\Emarsys\Api\ProductDeltasApiInterface;
+use Emartech\Emarsys\Helper\LinkField as LinkFieldHelper;
+use Emartech\Emarsys\Helper\Product as ProductHelper;
 use Emartech\Emarsys\Model\ResourceModel\ProductDelta\Collection as ProductDeltaCollection;
 use Emartech\Emarsys\Model\ResourceModel\ProductDelta\CollectionFactory as ProductDeltaCollectionFactory;
-use Magento\Framework\Data\Collection as DataCollection;
 use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Store\Model\StoreManagerInterface;
 
-class ProductDeltasApi implements ProductDeltasApiInterface
+class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterface
 {
+    /**
+     * @var ProductDeltasApiResponseInterfaceFactory
+     */
+    private $productDeltasApiResponseFactory;
+
     /**
      * @var ProductDeltaRepositoryInterface
      */
@@ -32,15 +41,35 @@ class ProductDeltasApi implements ProductDeltasApiInterface
     private $productDeltaCollection;
 
     /**
+     * @var null|string
+     */
+    private $mainTable = null;
+
+    /**
      * ProductDeltasApi constructor.
      *
-     * @param ProductDeltaRepositoryInterface $productDeltaRepository
-     * @param ProductDeltaCollectionFactory   $productDeltaCollectionFactory
+     * @param StoreManagerInterface                    $storeManager
+     * @param ProductDeltaRepositoryInterface          $productDeltaRepository
+     * @param ProductDeltaCollectionFactory            $productDeltaCollectionFactory
+     * @param ProductDeltasApiResponseInterfaceFactory $productDeltasApiResponseFactory
+     * @param ProductHelper                            $productHelper
+     * @param LinkFieldHelper                          $linkFieldHelper
      */
     public function __construct(
+        StoreManagerInterface $storeManager,
         ProductDeltaRepositoryInterface $productDeltaRepository,
-        ProductDeltaCollectionFactory $productDeltaCollectionFactory
+        ProductDeltaCollectionFactory $productDeltaCollectionFactory,
+        ProductDeltasApiResponseInterfaceFactory $productDeltasApiResponseFactory,
+        ProductHelper $productHelper,
+        LinkFieldHelper $linkFieldHelper
     ) {
+        parent::__construct(
+            $storeManager,
+            $productHelper,
+            $linkFieldHelper
+        );
+
+        $this->productDeltasApiResponseFactory = $productDeltasApiResponseFactory;
         $this->productDeltaRepository = $productDeltaRepository;
         $this->productDeltaCollectionFactory = $productDeltaCollectionFactory;
     }
@@ -51,21 +80,40 @@ class ProductDeltasApi implements ProductDeltasApiInterface
      */
     public function get($page, $pageSize, $storeId, $sinceId, $maxId = null)
     {
+        $this
+            ->validateSinceId($sinceId)
+            ->initStores($storeId);
+
         if (null === $maxId) {
-            $maxId = $this->initCollection()->getMaxId();
+            $maxId = $this->getMaxId();
         }
 
         $this
-            ->validateSinceId($sinceId)
-            ->initCollection()
             ->removeOldEvents($sinceId)
-            ->initCollection()
-            ->getSkus($sinceId, $maxId)
-            ->setOrder()
-            ->setPageSize($pageSize);
+            ->handleIds($sinceId, $maxId, $page, $pageSize)
+            ->getPrices()
+            ->handleCategoryIds()
+            ->handleChildrenProductIds();
 
-        var_dump($page, $pageSize, $storeId, $sinceId, $maxId);
-        die();
+        return $this->productDeltasApiResponseFactory->create()
+            ->setCurrentPage($page)
+            ->setLastPage(0)
+            ->setPageSize($pageSize)
+            ->setTotalCount(1000)
+            ->setProducts([])
+            ->setMaxId($maxId);
+    }
+
+    /**
+     * @return string
+     */
+    private function getMainTable()
+    {
+        if (null === $this->mainTable) {
+            $this->mainTable = $this->productDeltaCollectionFactory->create()->getMainTable();
+        }
+
+        return $this->mainTable;
     }
 
     /**
@@ -73,7 +121,8 @@ class ProductDeltasApi implements ProductDeltasApiInterface
      */
     private function getMaxId()
     {
-        return (int)$this->productDeltaCollection->getLastItem()->getData('product_delta_id');
+        return $this->productDeltaCollectionFactory->create()
+            ->getLastItem()->getData('product_delta_id');
     }
 
     /**
@@ -86,6 +135,31 @@ class ProductDeltasApi implements ProductDeltasApiInterface
         return $this;
     }
 
+    // @codingStandardsIgnoreLine
+    protected function handleIds($minDeltaId, $maxDeltaId, $page, $pageSize)
+    {
+        $page--;
+        $page *= $pageSize;
+
+        $data = $this->productHelper->handleIds(
+            $page,
+            $pageSize,
+            $this->getMainTable(),
+            'product_delta_id',
+            [
+                ['product_delta_id >= ?', $minDeltaId],
+                ['product_delta_id <= ?', $maxDeltaId],
+            ],
+            'entity_id'
+        );
+
+        $this->numberOfItems = $data['numberOfItems'];
+        $this->minId = $data['minId'];
+        $this->maxId = $data['maxId'];
+
+        return $this;
+    }
+
     /**
      * @param int $beforeId
      *
@@ -93,7 +167,7 @@ class ProductDeltasApi implements ProductDeltasApiInterface
      */
     private function removeOldEvents($beforeId)
     {
-        $oldEvents = $this->productDeltaCollection
+        $oldEvents = $this->productDeltaCollectionFactory->create()
             ->addFieldToFilter('product_delta_id', ['lteq' => $beforeId]);
 
         $oldEvents->walk('delete');
@@ -102,16 +176,20 @@ class ProductDeltasApi implements ProductDeltasApiInterface
     }
 
     /**
-     * @param int $minId
-     * @param int $maxId
-     *
      * @return $this
      */
-    private function getSkus($minId, $maxId)
+    protected function getPrices()
     {
-        $this->productDeltaCollection
-            ->addFieldToFilter('product_delta_id', ['gt' => $minId])
-            ->addFieldToFilter('product_delta_id', ['lteq' => $maxId]);
+        $this->productHelper->getPrices(
+            $this->websiteIds,
+            $this->customerGroups,
+            [],
+            [
+                ['pdt' => $this->getMainTable()],
+                '{TABLE}.entity_id = pdt.entity_id AND pdt.product_delta_id BETWEEN ' . $this->minId . ' AND ' . $this->maxId,
+                [],
+            ]
+        );
 
         return $this;
     }
@@ -119,23 +197,35 @@ class ProductDeltasApi implements ProductDeltasApiInterface
     /**
      * @return $this
      */
-    private function setOrder()
+    // @codingStandardsIgnoreLine
+    protected function handleCategoryIds()
     {
-        $this->productDeltaCollection
-            ->setOrder('event_id', DataCollection::SORT_ORDER_ASC);
+        $this->productHelper->getCategoryIds(
+            [],
+            [
+                ['pdt' => $this->getMainTable()],
+                'product_id = pdt.' . $this->linkField . ' AND pdt.product_delta_id BETWEEN ' . $this->minId . ' AND ' . $this->maxId,
+                [],
+            ]
+        );
 
         return $this;
     }
 
     /**
-     * @param int $pageSize
-     *
      * @return $this
      */
-    private function setPageSize($pageSize)
+    // @codingStandardsIgnoreLine
+    protected function handleChildrenProductIds()
     {
-        $this->productDeltaCollection
-            ->setPageSize($pageSize);
+        $this->productHelper->getChildrenProductIds(
+            [],
+            [
+                ['pdt' => $this->getMainTable()],
+                'parent_id = pdt.' . $this->linkField . ' AND pdt.product_delta_id BETWEEN ' . $this->minId . ' AND ' . $this->maxId,
+                [],
+            ]
+        );
 
         return $this;
     }
