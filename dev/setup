@@ -28,7 +28,8 @@ else
 fi
 
 echo "-|| Updating test helper"
-composer require emartech/attributes-magento2-extension:dev-master
+composer config -unset repositories.test
+composer require emartech/magento2-test-helper:dev-master
 
 echo "-|| Creating EAV fields"
 bin/magento emartech:attribute:create
