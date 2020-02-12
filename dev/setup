@@ -28,6 +28,7 @@ else
 fi
 
 echo "-|| Updating test helper"
+composer remove emartech/attributes-magento2-extension
 composer config --unset repositories.test
 composer require emartech/magento2-test-helper:dev-master
 
