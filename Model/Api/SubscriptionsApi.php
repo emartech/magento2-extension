@@ -322,8 +322,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             if (!is_array($storeId)) {
                 $storeId = explode(',', $storeId);
             }
-            $this->subscriptionCollection->addFieldToFilter('store_id',
-                ['in' => $storeId]);
+            $this->subscriptionCollection->addFieldToFilter('store_id', ['in' => $storeId]);
         }
 
         return $this;
@@ -337,11 +336,9 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     private function filterSubscribed($subscribed = null)
     {
         if ($subscribed === true) {
-            $this->subscriptionCollection->addFieldToFilter('subscriber_status',
-                ['eq' => 1]);
+            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
         } elseif ($subscribed === false) {
-            $this->subscriptionCollection->addFieldToFilter('subscriber_status',
-                ['neq' => 1]);
+            $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
         }
         return $this;
     }
@@ -354,8 +351,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     private function filterCustomers($onlyGuest = null)
     {
         if ((bool)$onlyGuest) {
-            $this->subscriptionCollection->addFieldToFilter('customer_id',
-                ['eq' => 0]);
+            $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => 0]);
         }
         return $this;
     }
@@ -367,8 +363,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      */
     private function filterCustomer($customerId)
     {
-        $this->subscriptionCollection->addFieldToFilter('customer_id',
-            ['eq' => (int)$customerId]);
+        $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => (int)$customerId]);
 
         return $this;
     }
@@ -380,8 +375,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      */
     private function filterEmail($email)
     {
-        $this->subscriptionCollection->addFieldToFilter('subscriber_email',
-            ['eq' => $email]);
+        $this->subscriptionCollection->addFieldToFilter('subscriber_email', ['eq' => $email]);
 
         return $this;
     }

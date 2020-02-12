@@ -4,19 +4,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface ProductStoreDataInterface
 {
-    const NAME_KEY = 'name';
-    const LINK_KEY = 'url_key';
-    const DESCRIPTION_KEY = 'description';
-    const STATUS_KEY = 'status';
-    const STORE_ID_KEY = 'store_id';
-    const CURRENCY_KEY = 'currency';
-    const PRICE_KEY = 'price';
-    const DISPLAY_PRICE_KEY = 'display_price';
-    const ORIGINAL_PRICE_KEY = 'original_price';
-    const ORIGINAL_DISPLAY_PRICE_KEY = 'original_display_price';
-    const WEBSHOP_PRICE = 'webshop_price';
-    const DISPLAY_WEBSHOP_PRICE = 'display_webshop_price';
-    const EXTRA_FIELDS = 'extra_fields';
+    const NAME_KEY                       = 'name';
+    const LINK_KEY                       = 'url_key';
+    const DESCRIPTION_KEY                = 'description';
+    const STATUS_KEY                     = 'status';
+    const STORE_ID_KEY                   = 'store_id';
+    const CURRENCY_KEY                   = 'currency';
+    const PRICE_KEY                      = 'price';
+    const DISPLAY_PRICE_KEY              = 'display_price';
+    const ORIGINAL_PRICE_KEY             = 'original_price';
+    const ORIGINAL_DISPLAY_PRICE_KEY     = 'original_display_price';
+    const WEBSHOP_PRICE                  = 'webshop_price';
+    const DISPLAY_WEBSHOP_PRICE          = 'display_webshop_price';
+    const ORIGINAL_WEBSHOP_PRICE         = 'original_webshop_price';
+    const ORIGINAL_DISPLAY_WEBSHOP_PRICE = 'original_display_webshop_price';
+    const EXTRA_FIELDS                   = 'extra_fields';
 
     /**
      * @return string
@@ -52,6 +54,16 @@ interface ProductStoreDataInterface
      * @return float
      */
     public function getDisplayWebshopPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalWebshopPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayWebshopPrice();
 
     /**
      * @return string
@@ -131,6 +143,20 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setDisplayWebshopPrice($displayWebShopPrice);
+
+    /**
+     * @param float $originalWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalWebshopPrice($originalWebshopPrice);
+
+    /**
+     * @param float $originalDisplayWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice);
 
     /**
      * @param string $link

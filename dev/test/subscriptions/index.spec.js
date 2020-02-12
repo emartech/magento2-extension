@@ -128,7 +128,7 @@ describe('Subscriptions api', function() {
       });
     });
 
-    describe('unsubscribe', function() {
+    context('unsubscribe', function() {
       it('should unsubscribe without customer', async function() {
         await this.db(this.getTableName('newsletter_subscriber')).insert({
           subscriber_email: noCustomerEmail,
@@ -162,6 +162,45 @@ describe('Subscriptions api', function() {
 
         expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
       });
+    });
+
+    it('should catch and return exceptions and continue with the update', async function() {
+      const nonExistingCustomerId = 999;
+      const expectedErrors = [
+        {
+          email: noCustomerEmail,
+          customer_id: nonExistingCustomerId,
+          message: 'No such entity with customerId = 999'
+        }
+      ];
+
+      expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
+      const updateResponse = await this.magentoApi.execute('subscriptions', 'update', {
+        subscriptions: [
+          {
+            subscriber_email: noCustomerEmail,
+            subscriber_status: true,
+            website_id: 1,
+            customer_id: nonExistingCustomerId
+          },
+          { subscriber_email: customerEmail, subscriber_status: true, website_id: 1, customer_id: customerId }
+        ]
+      });
+
+      const subscribers = await this.magentoApi.execute('subscriptions', 'list', {
+        page: 1,
+        limit: 100,
+        onlyGuest: false,
+        websiteId: 1
+      });
+
+      const filteredSubscriptions = subscribers.subscriptions.filter(
+        subscription => subscription.subscriber_email === noCustomerEmail
+      );
+      expect(filteredSubscriptions).to.be.empty;
+      expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.true;
+
+      expect(updateResponse.errors).to.be.eql(expectedErrors);
     });
   });
 
