@@ -80,9 +80,6 @@ class Category extends AbstractEntity
             $categoryQuery->joinInner($joinInner[0], $joinInner[1], $joinInner[2]);
         }
 
-        var_dump($categoryQuery.'');
-        die();
-
         $this->iterator->walk(
             (string)$categoryQuery,
             [[$this, 'handleCategoryId']],

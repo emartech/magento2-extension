@@ -19,10 +19,14 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $tableName = $setup->getTable('emarsys_events_data');
 
             if ($setup->getConnection()->isTableExists($tableName) == true) {
-                $setup->getConnection()->modifyColumn($tableName, 'event_data', 'mediumblob');
+                $setup->getConnection()->modifyColumn(
+                    $tableName,
+                    'event_data',
+                    'mediumblob'
+                );
             }
         }
-        if(version_compare($context->getVersion(), '1.9.1', '<')) {
+        if (version_compare($context->getVersion(), '1.9.1', '<')) {
             $this->createEmarsysProductDeltaTable($setup);
         }
 

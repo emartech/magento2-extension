@@ -7,7 +7,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-
 interface ProductDeltaInterface
 {
     const PRODUCT_DELTA_ID_KEY  = 'product_delta_id';

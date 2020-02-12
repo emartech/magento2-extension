@@ -50,7 +50,9 @@ class ProductDeltaRepository implements ProductDeltaRepositoryInterface
         $productDelta = $this->productDeltaFactory->create();
         $this->productDeltaResourceModel->load($productDelta, $id);
         if (!$productDelta->getId()) {
-            throw new NoSuchEntityException(__('The ProductDelta with the "%1" ID doesn\'t exist.', $id));
+            throw new NoSuchEntityException(
+                __('The ProductDelta with the "%1" ID doesn\'t exist.', $id)
+            );
         }
         return $productDelta;
     }
@@ -91,5 +93,13 @@ class ProductDeltaRepository implements ProductDeltaRepositoryInterface
     {
         return $this->productDeltaResourceModel
             ->isSinceIdIsHigherThanAutoIncrement($sinceId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeDuplicates($maxId)
+    {
+        return $this->productDeltaResourceModel->removeDuplicates($maxId);
     }
 }

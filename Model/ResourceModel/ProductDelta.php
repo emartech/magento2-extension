@@ -25,7 +25,8 @@ class ProductDelta extends AbstractDb
     public function isSinceIdIsHigherThanAutoIncrement($sinceId)
     {
         try {
-            return (bool)$this->getConnection()->fetchOne("
+            return (bool)$this->getConnection()->fetchOne(
+                "
             SELECT
                 (
                     SELECT
@@ -48,6 +49,39 @@ class ProductDelta extends AbstractDb
                     $sinceId,
                 ]
             );
+        } catch (Exception $e) {
+            return true;
+        }
+    }
+
+    /**
+     * @param int $maxId
+     *
+     * @return bool
+     */
+    public function removeDuplicates($maxId)
+    {
+        try {
+            // @codingStandardsIgnoreStart
+            return (bool)$this->getConnection()->query(
+                "
+                DELETE pdt1 FROM ? AS pdt1
+                INNER JOIN ? AS pdt2
+                WHERE 
+                    pdt1.? < pdt2.? AND 
+                    pdt1.sku = pdt2.sku AND 
+                    pdt1.? <= ?
+                ",
+                [
+                    $this->_mainTable,
+                    $this->_mainTable,
+                    $this->_idFieldName,
+                    $this->_idFieldName,
+                    $this->_idFieldName,
+                    $maxId,
+                ]
+            );
+            // @codingStandardsIgnoreEnd
         } catch (Exception $e) {
             return true;
         }

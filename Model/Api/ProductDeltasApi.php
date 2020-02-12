@@ -13,8 +13,8 @@ use Emartech\Emarsys\Api\ProductDeltaRepositoryInterface;
 use Emartech\Emarsys\Api\ProductDeltasApiInterface;
 use Emartech\Emarsys\Helper\LinkField as LinkFieldHelper;
 use Emartech\Emarsys\Helper\Product as ProductHelper;
-use Emartech\Emarsys\Model\ResourceModel\ProductDelta\Collection as ProductDeltaCollection;
 use Emartech\Emarsys\Model\ResourceModel\ProductDelta\CollectionFactory as ProductDeltaCollectionFactory;
+use Magento\Framework\Data\Collection as DataCollection;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -34,11 +34,6 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
      * @var ProductDeltaCollectionFactory
      */
     private $productDeltaCollectionFactory;
-
-    /**
-     * @var ProductDeltaCollection|null
-     */
-    private $productDeltaCollection;
 
     /**
      * @var null|string
@@ -74,7 +69,6 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
         $this->productDeltaCollectionFactory = $productDeltaCollectionFactory;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -89,18 +83,28 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
         }
 
         $this
-            ->removeOldEvents($sinceId)
+            ->removeOldEvents($sinceId, $maxId)
             ->handleIds($sinceId, $maxId, $page, $pageSize)
+            ->initCollection()
             ->getPrices()
             ->handleCategoryIds()
-            ->handleChildrenProductIds();
+            ->handleChildrenProductIds()
+            ->handleStockData()
+            ->handleAttributes()
+            ->setOrder();
+
+        $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
         return $this->productDeltasApiResponseFactory->create()
             ->setCurrentPage($page)
-            ->setLastPage(0)
+            ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
-            ->setTotalCount(1000)
-            ->setProducts([])
+            ->setTotalCount($this->numberOfItems)
+            ->setProducts(
+                $this->handleProducts(
+                    $this->productHelper->getProductCollection()
+                )
+            )
             ->setMaxId($maxId);
     }
 
@@ -110,7 +114,8 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
     private function getMainTable()
     {
         if (null === $this->mainTable) {
-            $this->mainTable = $this->productDeltaCollectionFactory->create()->getMainTable();
+            $this->mainTable = $this->productDeltaCollectionFactory->create()
+                ->getMainTable();
         }
 
         return $this->mainTable;
@@ -128,11 +133,32 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
     /**
      * @return $this
      */
-    private function initCollection()
+    // @codingStandardsIgnoreLine
+    protected function initCollection()
     {
-        $this->productDeltaCollection = $this->productDeltaCollectionFactory->create();
+        $this->productHelper->initCollection();
+
+        $this->productHelper->getProductCollection()->getSelect()->joinInner(
+            ['pdt' => $this->getMainTable()],
+            $this->getCondition('e.' . $this->linkField, $this->linkField),
+            []
+        );
 
         return $this;
+    }
+
+    /**
+     * @param string $mainTableFieldName
+     * @param string $deltaTableFieldName
+     *
+     * @return string
+     */
+    protected function getCondition($mainTableFieldName, $deltaTableFieldName)
+    {
+        $condition = $mainTableFieldName . ' = pdt.' . $deltaTableFieldName;
+        $condition .= ' AND pdt.product_delta_id BETWEEN ' . $this->minId . ' AND ' . $this->maxId;
+
+        return $condition;
     }
 
     // @codingStandardsIgnoreLine
@@ -162,15 +188,18 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
 
     /**
      * @param int $beforeId
+     * @param int $maxId
      *
      * @return $this
      */
-    private function removeOldEvents($beforeId)
+    private function removeOldEvents($beforeId, $maxId)
     {
         $oldEvents = $this->productDeltaCollectionFactory->create()
             ->addFieldToFilter('product_delta_id', ['lteq' => $beforeId]);
 
         $oldEvents->walk('delete');
+
+        $this->productDeltaRepository->removeDuplicates($maxId);
 
         return $this;
     }
@@ -186,7 +215,7 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
             [],
             [
                 ['pdt' => $this->getMainTable()],
-                '{TABLE}.entity_id = pdt.entity_id AND pdt.product_delta_id BETWEEN ' . $this->minId . ' AND ' . $this->maxId,
+                $this->getCondition('{TABLE}.entity_id', 'entity_id'),
                 [],
             ]
         );
@@ -204,7 +233,7 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
             [],
             [
                 ['pdt' => $this->getMainTable()],
-                'product_id = pdt.' . $this->linkField . ' AND pdt.product_delta_id BETWEEN ' . $this->minId . ' AND ' . $this->maxId,
+                $this->getCondition('product_id', $this->linkField),
                 [],
             ]
         );
@@ -222,9 +251,77 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
             [],
             [
                 ['pdt' => $this->getMainTable()],
-                'parent_id = pdt.' . $this->linkField . ' AND pdt.product_delta_id BETWEEN ' . $this->minId . ' AND ' . $this->maxId,
+                $this->getCondition('parent_id', $this->linkField),
                 [],
             ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    // @codingStandardsIgnoreLine
+    protected function handleStockData()
+    {
+        $this->productHelper->getStockData(
+            [],
+            [
+                ['pdt' => $this->getMainTable()],
+                $this->getCondition('product_id', $this->linkField),
+                [],
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function handleAttributes()
+    {
+        $this->productHelper->getAttributeData(
+            [],
+            array_keys($this->storeIds),
+            [
+                ['pdt' => $this->getMainTable()],
+                $this->getCondition(
+                    '{TABLE}.' . $this->linkField,
+                    $this->linkField
+                ),
+                [],
+            ]
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    // @codingStandardsIgnoreLine
+    protected function setWhere()
+    {
+        $this->productHelper->setWhere(
+            $this->linkField,
+            $this->minId,
+            $this->maxId
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    // @codingStandardsIgnoreLine
+    protected function setOrder()
+    {
+        $this->productHelper->setOrder(
+            $this->linkField,
+            DataCollection::SORT_ORDER_ASC
         );
 
         return $this;
@@ -238,7 +335,9 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
      */
     private function validateSinceId($sinceId)
     {
-        if ($this->productDeltaRepository->isSinceIdIsHigherThanAutoIncrement($sinceId)) {
+        if ($this->productDeltaRepository->isSinceIdIsHigherThanAutoIncrement(
+            $sinceId
+        )) {
             throw new WebApiException(
                 __('sinceId is higher than auto-increment'),
                 WebApiException::HTTP_NOT_ACCEPTABLE,

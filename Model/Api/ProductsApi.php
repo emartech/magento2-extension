@@ -76,7 +76,11 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
             ->setTotalCount($this->numberOfItems)
-            ->setProducts($this->handleProducts($this->productHelper->getProductCollection()));
+            ->setProducts(
+                $this->handleProducts(
+                    $this->productHelper->getProductCollection()
+                )
+            );
     }
 
     /**
@@ -135,10 +139,12 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleCategoryIds()
     {
-        $this->productHelper->getCategoryIds([
-            ['product_id >= ?', $this->minId],
-            ['product_id <= ?', $this->maxId],
-        ]);
+        $this->productHelper->getCategoryIds(
+            [
+                ['product_id >= ?', $this->minId],
+                ['product_id <= ?', $this->maxId],
+            ]
+        );
 
         return $this;
     }
@@ -149,10 +155,12 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleChildrenProductIds()
     {
-        $this->productHelper->getChildrenProductIds([
-            ['parent_id >= ?', $this->minId],
-            ['parent_id <= ?', $this->maxId],
-        ]);
+        $this->productHelper->getChildrenProductIds(
+            [
+                ['parent_id >= ?', $this->minId],
+                ['parent_id <= ?', $this->maxId],
+            ]
+        );
 
         return $this;
     }
@@ -163,10 +171,12 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function handleStockData()
     {
-        $this->productHelper->getStockData([
-            ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
-            ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
-        ]);
+        $this->productHelper->getStockData(
+            [
+                ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+                ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
+            ]
+        );
 
         return $this;
     }
@@ -193,8 +203,11 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function setWhere()
     {
-        $this->productHelper->setWhere($this->linkField, $this->minId,
-            $this->maxId);
+        $this->productHelper->setWhere(
+            $this->linkField,
+            $this->minId,
+            $this->maxId
+        );
 
         return $this;
     }
@@ -205,8 +218,10 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     // @codingStandardsIgnoreLine
     protected function setOrder()
     {
-        $this->productHelper->setOrder($this->linkField,
-            DataCollection::SORT_ORDER_ASC);
+        $this->productHelper->setOrder(
+            $this->linkField,
+            DataCollection::SORT_ORDER_ASC
+        );
 
         return $this;
     }

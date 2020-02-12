@@ -8,6 +8,7 @@
 namespace Emartech\Emarsys\Helper;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Api\Data\ProductDeltaInterface;
 use Emartech\Emarsys\Api\ProductDeltaRepositoryInterface;
 use Exception;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -55,6 +56,8 @@ class ProductDelta extends AbstractHelper
 
     /**
      * @param Product|int $product
+     *
+     * @return ProductDeltaInterface|bool
      */
     public function createDelta($product)
     {
@@ -76,7 +79,7 @@ class ProductDelta extends AbstractHelper
             }
 
             if ($canSave) {
-                $this->productDeltaRepository->create(
+                return $this->productDeltaRepository->create(
                     $product->getSku(),
                     $product->getEntityId(),
                     $product->getId()
@@ -84,6 +87,7 @@ class ProductDelta extends AbstractHelper
             }
 
         } catch (Exception $e) {
+            return false;
         }
     }
 }

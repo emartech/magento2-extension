@@ -112,8 +112,11 @@ class InstallSchema implements InstallSchemaInterface
                     ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX]
                 );
             $setup->getConnection()->createTable($table);
-            $setup->getConnection()->modifyColumn($tableName, 'event_data',
-                'mediumblob');
+            $setup->getConnection()->modifyColumn(
+                $tableName,
+                'event_data',
+                'mediumblob'
+            );
         }
     }
 }

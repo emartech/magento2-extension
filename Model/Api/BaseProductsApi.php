@@ -81,7 +81,9 @@ class BaseProductsApi
         $this->storeManager = $storeManager;
         $this->productHelper = $productHelper;
         $this->linkFieldHelper = $linkFieldHelper;
-        $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(
+            ProductInterface::class
+        );
     }
 
     /**
@@ -132,8 +134,11 @@ class BaseProductsApi
 
         /** @var Product $product */
         foreach ($productCollection as $product) {
-            $returnArray[] = $this->productHelper->buildProductObject($product,
-                $this->storeIds, $this->linkField);
+            $returnArray[] = $this->productHelper->buildProductObject(
+                $product,
+                $this->storeIds,
+                $this->linkField
+            );
         }
 
         return $returnArray;

@@ -7,7 +7,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-
 interface ProductDeltasApiResponseInterface extends ProductsApiResponseInterface
 {
     const MAX_ID_KEY = 'max_id';

@@ -42,4 +42,11 @@ interface ProductDeltaRepositoryInterface
      * @return bool
      */
     public function isSinceIdIsHigherThanAutoIncrement($sinceId);
+
+    /**
+     * @param int $maxId
+     *
+     * @return bool
+     */
+    public function removeDuplicates($maxId);
 }
