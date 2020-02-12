@@ -97,7 +97,6 @@ pipeline {
   }
   post {
     always {
-      sh 'docker container rm -f $(docker container ls -aq) || echo \'No leftover containers...\''
       sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
       sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.2ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
