@@ -78,16 +78,16 @@ pipeline {
             }
           }
         }
-        stage('2.1.x') {
+        stage('2.1.x,2.2.x') {
           stages {
             stage('Magento 2.1.9EE: build and run tests') {
               steps {
                 sh 'VERSION=2.1.9ee sh dev/jenkins/run.sh'
               }
             }
-            stage('Magento 2.1.8CE: build and run tests') {
+            stage('Magento 2.2.6CE: build and run tests') {
               steps {
-                sh 'VERSION=2.1.8ce sh dev/jenkins/run.sh'
+                sh 'VERSION=2.2.6ce sh dev/jenkins/run.sh'
               }
             }
           }
