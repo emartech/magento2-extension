@@ -3,7 +3,6 @@
 describe('Marketing Events', function() {
   const changeCredentialsAfterLogin = (customer, { password, email }) => {
     cy.get('.box-information > .box-actions > .edit > span').click();
-    cy.wait(2000);
 
     if (password) {
       cy.get('.page-wrapper #change-password').check();

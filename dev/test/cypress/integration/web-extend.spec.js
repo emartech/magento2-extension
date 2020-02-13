@@ -56,8 +56,6 @@ const loginWithTrackDataExpectation = customer => {
   });
 
   cy.loginWithCustomer({ customer });
-
-  cy.wait(2000);
 };
 
 const visitMainPage = () => {
@@ -71,7 +69,6 @@ const visitMainPage = () => {
   });
 
   cy.visit('/');
-  cy.wait(2000);
 };
 
 const searchForBag = () => {
@@ -88,7 +85,6 @@ const searchForBag = () => {
   });
 
   cy.get('#search').type(searchTerm + '{enter}');
-  cy.wait(2000);
 };
 
 const viewGearCategory = () => {
@@ -105,7 +101,6 @@ const viewGearCategory = () => {
   });
 
   cy.get("[role='menuitem']:contains('Gear')").click();
-  cy.wait(2000);
 };
 
 const viewAndAddFirstItemToCart = () => {
@@ -122,20 +117,17 @@ const viewAndAddFirstItemToCart = () => {
   });
 
   cy.get('.product-items a[title="Fusion Backpack"]')
-    .click({ force: true });
-  cy.wait(2000);
+    .click();
 
   cy.get('#product-addtocart-button').click();
-  cy.wait(10000);
+  cy.get('.counter.qty').contains('1');
   cy.get('#product-addtocart-button').click();
-  cy.wait(2000);
+  cy.get('.counter.qty').contains('2');
 };
 
 const buyItem = () => {
   cy.get('.action.showcart').click();
-  cy.wait(2000);
-  cy.get('#top-cart-btn-checkout').click({ force: true });
-  cy.wait(8000);
+  cy.get('#top-cart-btn-checkout').click();
 
   cy.get('#checkout-step-shipping input.input-text[name="username"]').type('guest@cypress.net');
   cy.get('#checkout-step-shipping input.input-text[name="firstname"]').type('Guest');
@@ -146,9 +138,8 @@ const buyItem = () => {
   cy.get('#checkout-step-shipping input.input-text[name="postcode"]').type('2800');
   cy.get('#checkout-step-shipping input.input-text[name="telephone"]').type('0036905556969');
 
-  cy.wait(2000);
+  cy.get('.table-checkout-shipping-method input[type="radio"][value="flatrate_flatrate"][checked="true"]');
   cy.get('button[data-role="opc-continue"]').click();
-  cy.wait(2000);
 
   expectedTrackDataList.push({
     search: false,
@@ -160,7 +151,7 @@ const buyItem = () => {
   });
 
   cy.get('button[title="Place Order"]').click();
-  cy.wait(8000);
+  cy.get('.checkout-success');
 
   cy.window().then(win => {
     const orderData = win.Emarsys.Magento2.orderData;
@@ -173,15 +164,12 @@ const buyItem = () => {
       }
     ]);
     expect(orderData.email).to.be.equal('guest@cypress.net');
-    console.log('SUCCESSULLY BOUGHT');
   });
 };
 
 const buyItemWithLoggedInUser = customer => {
   cy.get('.action.showcart').click();
-  cy.wait(2000);
-  cy.get('#top-cart-btn-checkout').click({ force: true });
-  cy.wait(8000);
+  cy.get('#top-cart-btn-checkout').click();
 
   cy.get('#checkout-step-shipping input.input-text[name="street[0]"]').type('Cloverfield lane 1');
   cy.get('#checkout-step-shipping input.input-text[name="city"]').type('Nowhere');
@@ -189,9 +177,7 @@ const buyItemWithLoggedInUser = customer => {
   cy.get('#checkout-step-shipping input.input-text[name="postcode"]').type('2800');
   cy.get('#checkout-step-shipping input.input-text[name="telephone"]').type('0036905556969');
 
-  cy.wait(2000);
   cy.get('button[data-role="opc-continue"]').click();
-  cy.wait(2000);
 
   expectedTrackDataList.push({
     search: false,
@@ -203,12 +189,10 @@ const buyItemWithLoggedInUser = customer => {
   });
 
   cy.get('button[title="Place Order"]').click();
-  cy.wait(8000);
+  cy.get('.checkout-success');
 
   cy.window().then(win => {
     const orderData = win.Emarsys.Magento2.orderData;
-    console.log('orderData', JSON.stringify(orderData));
-    console.log('customer', JSON.stringify(customer));
     expect(orderData.orderId).to.be.not.undefined;
     expect(orderData.items).to.be.eql([
       {
@@ -229,11 +213,10 @@ describe('Web extend scripts', function() {
       webTrackingSnippetUrl
     });
     cy.task('flushMagentoCache');
-    cy.wait(1000);
   });
 
   beforeEach(() => {
-    cy.wait(1000);
+
     cy.task('getDefaultCustomer').as('defaultCustomer');
     cy.task('getMagentoVersion').as('magentoVersion');
     clearTrackDataToInclude();
@@ -242,7 +225,9 @@ describe('Web extend scripts', function() {
   it('should send extended customer data', function() {
     addValidationForTrackingData();
 
-    cy.loginWithCustomer({ customer: this.defaultCustomer }).then(() => {
+    cy.loginWithCustomer({ customer: this.defaultCustomer });
+
+    cy.get(':nth-child(3) > .greet > .logged-in').should('contain', 'Cypress Default').then(() => {
       const customerData = JSON.parse(localStorage.getItem('mage-cache-storage'));
       expect(customerData.customer).to.be.not.undefined;
       expect(customerData.customer.id).to.be.not.undefined;

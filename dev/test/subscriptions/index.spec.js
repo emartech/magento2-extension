@@ -170,7 +170,7 @@ describe('Subscriptions api', function() {
         {
           email: noCustomerEmail,
           customer_id: nonExistingCustomerId,
-          message: 'No such entity with customerId = 999'
+          message: `No such entity with customerId = ${nonExistingCustomerId}`
         }
       ];
 

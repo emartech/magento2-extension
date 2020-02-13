@@ -9,6 +9,8 @@ mocha: reset-test-db flush-test run-npmt
 
 run-e2e: reset-test-db flush-test run-docker-e2e
 
+rerun-e2e: reset-test-db run-docker-e2e
+
 run-e2e-debug: reset-test-db run-docker-e2e
 
 open-e2e: reset-test-db set-local-baseurl flush-test open-local-e2e set-docker-baseurl flush-test

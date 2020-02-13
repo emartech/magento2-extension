@@ -3,7 +3,6 @@
 describe('Default behaviour with everything turned off', function() {
   before(() => {
     cy.task('setConfig', {});
-    cy.wait(1000);
   });
 
   beforeEach(() => {
@@ -34,7 +33,6 @@ describe('Default behaviour with everything turned off', function() {
       expectWebExtendFilesNotToBeIncluded();
 
       cy.visit('/');
-      cy.wait(2000);
       cy.task('clearEvents');
     });
   });
@@ -42,7 +40,6 @@ describe('Default behaviour with everything turned off', function() {
   context('MarketingEvents - Customer', function() {
     const changeCredentialsAfterLogin = (customer, { password, email }) => {
       cy.get('.box-information > .box-actions > .edit > span').click();
-      cy.wait(2000);
 
       if (password) {
         cy.get('.page-wrapper #change-password').check();
@@ -69,7 +66,6 @@ describe('Default behaviour with everything turned off', function() {
       changeCredentialsAfterLogin(this.defaultCustomer, { password: newPassword });
 
       cy.shouldNotExistsEvents();
-      cy.wait(1000);
       cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
@@ -85,7 +81,6 @@ describe('Default behaviour with everything turned off', function() {
       changeCredentialsAfterLogin(this.defaultCustomer, { email: newEmail });
 
       cy.shouldNotExistsEvents();
-      cy.wait(1000);
       // cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { email: newEmail });
@@ -102,7 +97,6 @@ describe('Default behaviour with everything turned off', function() {
       changeCredentialsAfterLogin(this.defaultCustomer, { password: newPassword, email: newEmail });
 
       cy.shouldNotExistsEvents();
-      cy.wait(1000);
       cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
@@ -116,20 +110,17 @@ describe('Default behaviour with everything turned off', function() {
     before(() => {
       cy.task('disableEmail');
       cy.task('flushMagentoCache');
-      cy.wait(1000);
     });
 
     after(() => {
       cy.task('enableEmail');
       cy.task('flushMagentoCache');
-      cy.wait(1000);
     });
 
     const unsubscribe = email => {
       cy.task('getSubscription', email).then(subscription => {
         cy.visit(`/newsletter/subscriber/unsubscribe?id=${subscription.subscriber_id}\
           &code=${subscription.subscriber_confirm_code}`);
-        cy.wait(1000);
       });
     };
 
@@ -145,7 +136,6 @@ describe('Default behaviour with everything turned off', function() {
         subscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
-        cy.wait(1000);
         cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail);
 
@@ -160,9 +150,7 @@ describe('Default behaviour with everything turned off', function() {
     context('guest with double optin on', function() {
       before(() => {
         cy.task('setDoubleOptin', true);
-        cy.wait(1000);
         cy.task('flushMagentoCache');
-        cy.wait(1000);
       });
 
       after(() => {
@@ -174,7 +162,6 @@ describe('Default behaviour with everything turned off', function() {
         subscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
-        cy.wait(1000);
         cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail, true);
 

@@ -7,14 +7,6 @@ before(() => {
   Cypress.env('RETRIES', 3);
 });
 
-// afterEach(() => {
-//   cy.log('GLOBAL AFTEREACH START');
-//   console.log('GLOBAL AFTEREACH START');
-
-//   cy.log('GLOBAL AFTEREACH END');
-//   console.log('GLOBAL AFTEREACH END');
-// });
-
 Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars
   console.log('uncaught:exception', err.toString());
   return false;
