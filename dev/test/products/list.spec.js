@@ -139,11 +139,7 @@ describe('Products endpoint', function() {
 
     const extensionAttributes = this.magentoVersion.startsWith('2.1')
       ? {}
-      : {
-          extension_attributes: {
-            website_ids: [1, 2]
-          }
-        };
+      : { extension_attributes: { website_ids: [1, 2] } };
 
     await this.magentoApi.post({
       path: '/rest/default/V1/products',
@@ -187,11 +183,7 @@ describe('Products endpoint', function() {
 
     const extensionAttributes = this.magentoVersion.startsWith('2.1')
       ? {}
-      : {
-          extension_attributes: {
-            website_ids: [1, 2]
-          }
-        };
+      : { extension_attributes: { website_ids: [1, 2] } };
 
     await this.magentoApi.post({
       path: '/rest/second_store/V1/products',
