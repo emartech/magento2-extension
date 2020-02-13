@@ -137,15 +137,21 @@ describe('Products endpoint', function() {
   it('returns different prices for the same product on multiple websites', async function() {
     const sku = '24-MB01';
 
+    const extensionAttributes = this.magentoVersion.startsWith('2.1')
+      ? {}
+      : {
+          extension_attributes: {
+            website_ids: [1, 2]
+          }
+        };
+
     await this.magentoApi.post({
       path: '/rest/default/V1/products',
       payload: {
         product: {
           sku,
           price: 111,
-          extension_attributes: {
-            website_ids: [1, 2]
-          }
+          ...extensionAttributes
         }
       }
     });
@@ -156,9 +162,7 @@ describe('Products endpoint', function() {
         product: {
           sku,
           price: 222,
-          extension_attributes: {
-            website_ids: [1, 2]
-          }
+          ...extensionAttributes
         }
       }
     });
@@ -181,15 +185,21 @@ describe('Products endpoint', function() {
   it('returns different original prices for the same product on multiple websites', async function() {
     const sku = '24-MB04';
 
+    const extensionAttributes = this.magentoVersion.startsWith('2.1')
+      ? {}
+      : {
+          extension_attributes: {
+            website_ids: [1, 2]
+          }
+        };
+
     await this.magentoApi.post({
       path: '/rest/second_store/V1/products',
       payload: {
         product: {
           sku,
           price: 1000,
-          extension_attributes: {
-            website_ids: [1, 2]
-          }
+          ...extensionAttributes
         }
       }
     });
