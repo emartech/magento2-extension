@@ -7,7 +7,7 @@
     "zendframework/zend-uri": "^2.4.6"
   },
   "type": "magento2-module",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "autoload": {
     "files": [
       "registration.php"
