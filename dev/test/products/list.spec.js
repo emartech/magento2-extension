@@ -171,8 +171,38 @@ describe('Products endpoint', function() {
 
     expect(defaultStoreItem.webshop_price).to.eql(111);
     expect(defaultStoreItem.display_webshop_price).to.eql(222);
+    expect(defaultStoreItem.original_display_webshop_price).to.eql(222);
 
     expect(secondStoreItem.webshop_price).to.eql(222);
     expect(secondStoreItem.display_webshop_price).to.eql(444);
+    expect(secondStoreItem.original_display_webshop_price).to.eql(444);
+  });
+
+  it('returns different original prices for the same product on multiple websites', async function() {
+    const sku = '24-MB04';
+
+    await this.magentoApi.post({
+      path: '/rest/second_store/V1/products',
+      payload: {
+        product: {
+          sku,
+          price: 1000,
+          extension_attributes: {
+            website_ids: [1, 2]
+          }
+        }
+      }
+    });
+
+    const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 10, storeIds: [1, 2] });
+
+    const product = products.find(product => product.sku === sku);
+    const defaultStoreItem = product.store_data.find(storeData => storeData.store_id === 1);
+    const secondStoreItem = product.store_data.find(storeData => storeData.store_id === 2);
+
+    expect(defaultStoreItem.display_webshop_price).to.eql(64);
+    expect(defaultStoreItem.original_display_webshop_price).to.eql(64);
+    expect(secondStoreItem.display_webshop_price).to.eql(64);
+    expect(secondStoreItem.original_display_webshop_price).to.eql(2000);
   });
 });
