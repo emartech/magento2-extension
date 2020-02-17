@@ -120,9 +120,9 @@ const viewAndAddFirstItemToCart = () => {
     .click();
 
   cy.get('#product-addtocart-button').click();
-  cy.get('.counter-number').should('contain','1');
+  cy.get('.counter-number').should('contain', '1');
   cy.get('#product-addtocart-button').click();
-  cy.get('.counter-number').should('contain','2');
+  cy.get('.counter-number').should('contain', '2');
 };
 
 const buyItem = () => {
