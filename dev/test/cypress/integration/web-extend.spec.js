@@ -84,7 +84,7 @@ const searchForBag = () => {
     store: { merchantId }
   });
 
-  cy.visit(`/index.php/default/catalogsearch/result/?q=${searchTerm}`);
+  cy.visit(`/catalogsearch/result/?q=${searchTerm}`);
 };
 
 const viewGearCategory = () => {
