@@ -84,7 +84,7 @@ const searchForBag = () => {
     store: { merchantId }
   });
 
-  cy.visit(`index.php/default/catalogsearch/result/?q=${searchTerm}`);
+  cy.visit(`/index.php/default/catalogsearch/result/?q=${searchTerm}`);
 };
 
 const viewGearCategory = () => {
@@ -120,9 +120,9 @@ const viewAndAddFirstItemToCart = () => {
     .click();
 
   cy.get('#product-addtocart-button').click();
-  cy.get('.counter.qty').contains('1');
+  cy.get('.counter-number').should('contain','1');
   cy.get('#product-addtocart-button').click();
-  cy.get('.counter.qty').contains('2');
+  cy.get('.counter-number').should('contain','2');
 };
 
 const buyItem = () => {
