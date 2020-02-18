@@ -108,11 +108,11 @@ describe('Webextend scripts', function() {
 
       expect(
         emarsysSnippets.includes(
-          `<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Middle","Tops"],"ids":${JSON.stringify(
-            categoryIds
-          )}},"localizedCategory":{"names":["Men","Middle","Tops"],"ids":${JSON.stringify(
-            categoryIds
-          )}},"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
+          `<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Middle","Tops"],"ids":${
+            JSON.stringify(categoryIds)
+          }},"localizedCategory":{"names":["Men","Middle","Tops"],"ids":${
+            JSON.stringify(categoryIds)
+          }},"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )
       ).to.be.true;
     });
