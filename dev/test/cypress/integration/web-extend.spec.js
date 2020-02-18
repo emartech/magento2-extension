@@ -227,7 +227,7 @@ describe('Web extend scripts', function() {
 
     cy.loginWithCustomer({ customer: this.defaultCustomer });
 
-    cy.get(':nth-child(3) > .greet > .logged-in').should('contain', 'Cypress Default').then(() => {
+    cy.get('.customer-name').should('contain', 'Cypress Default').then(() => {
       const customerData = JSON.parse(localStorage.getItem('mage-cache-storage'));
       expect(customerData.customer).to.be.not.undefined;
       expect(customerData.customer.id).to.be.not.undefined;
