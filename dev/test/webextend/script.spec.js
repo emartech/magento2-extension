@@ -65,15 +65,15 @@ describe('Webextend scripts', function() {
 
     it('should include category', async function() {
       const emarsysSnippets = await getEmarsysSnippetContents('men/tops-men.html');
-      let categoryIds;
-      if (
-        (this.magentoVersion === '2.3.1' || this.magentoVersion === '2.1.9') &&
-        this.magentoEdition === 'Enterprise'
-      ) {
-        categoryIds = ['12', '13'];
-      } else {
-        categoryIds = ['11', '12'];
+      let parentCategoryId = '11';
+      let childCategoryId = '12';
+
+      if (this.magentoEdition === 'Enterprise' && ['2.3.1', '2.1.9'].includes(this.magentoVersion)) {
+        parentCategoryId = '12';
+        childCategoryId = '13';
       }
+
+      const categoryIds = [parentCategoryId, childCategoryId];
 
       expect(
         emarsysSnippets.includes(
