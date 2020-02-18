@@ -20,6 +20,30 @@ const alterProductVisibility = async (magentoApi, sku) => {
   });
 };
 
+const insertNewCategoryBetween = async (magentoApi, { name, parentId, childId }) => {
+  const response = await magentoApi.post({
+    path: '/rest/V1/categories',
+    payload: {
+      category: {
+        parent_id: parentId,
+        name,
+        is_active: true
+      }
+    }
+  });
+
+  const middleCategoryId = response.data.id;
+
+  await magentoApi.put({
+    path: `/rest/V1/categories/${childId}/move`,
+    payload: {
+      parentId: middleCategoryId
+    }
+  });
+
+  return middleCategoryId;
+};
+
 describe('Webextend scripts', function() {
   describe('enabled', function() {
     beforeEach(async function() {
@@ -63,8 +87,7 @@ describe('Webextend scripts', function() {
       ).to.be.true;
     });
 
-    it('should include category', async function() {
-      const emarsysSnippets = await getEmarsysSnippetContents('men/tops-men.html');
+    it('should include categories in the right order', async function() {
       let parentCategoryId = '11';
       let childCategoryId = '12';
 
@@ -73,13 +96,21 @@ describe('Webextend scripts', function() {
         childCategoryId = '13';
       }
 
-      const categoryIds = [parentCategoryId, childCategoryId];
+      const middleCategoryId = await insertNewCategoryBetween(this.magentoApi, {
+        name: 'Middle',
+        parentId: parentCategoryId,
+        childId: childCategoryId
+      });
+
+      const categoryIds = [parentCategoryId, middleCategoryId.toString(), childCategoryId];
+
+      const emarsysSnippets = await getEmarsysSnippetContents('men/middle/tops-men.html');
 
       expect(
         emarsysSnippets.includes(
-          `<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Tops"],"ids":${JSON.stringify(
+          `<script>Emarsys.Magento2.track({"product":false,"category":{"names":["Men","Middle","Tops"],"ids":${JSON.stringify(
             categoryIds
-          )}},"localizedCategory":{"names":["Men","Tops"],"ids":${JSON.stringify(
+          )}},"localizedCategory":{"names":["Men","Middle","Tops"],"ids":${JSON.stringify(
             categoryIds
           )}},"store":{"merchantId":"abc123"},"search":false,"exchangeRate":2,"slug":"testslug"});</script>`
         )

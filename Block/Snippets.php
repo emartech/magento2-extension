@@ -247,9 +247,12 @@ class Snippets extends Template
                     ->addAttributeToSelect('name')
                     ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
 
-                /** @var Category $category */
-                foreach ($categoryCollection as $categoryItem) {
-                    $categoryList[] = $categoryItem->getName();
+                foreach ($categoryIds as $categoryId) {
+                    foreach ($categoryCollection as $categoryItem) {
+                        if ($categoryItem->getId() == $categoryId) {
+                            $categoryList[] = $categoryItem->getName();
+                        }
+                    }
                 }
 
                 return [
