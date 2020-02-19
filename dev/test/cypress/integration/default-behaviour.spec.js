@@ -10,30 +10,14 @@ describe('Default behaviour with everything turned off', function() {
   });
 
   context('Web extend', function() {
-    const merchantId = 'merchantId123';
-    const webTrackingSnippetUrl = Cypress.env('snippetUrl');
-    const predictUrl = `http://cdn.scarabresearch.com/js/${merchantId}/scarab-v2.js`;
-
-    const expectWebExtendFilesNotToBeIncluded = () => {
-      cy.on('window:load', win => {
-        const scripts = win.document.getElementsByTagName('script');
-        if (scripts.length) {
-          let jsFilesToBeIncluded = [predictUrl, webTrackingSnippetUrl];
-          for (let i = 0; i < scripts.length; i++) {
-            if (jsFilesToBeIncluded.includes(scripts[i].src)) {
-              jsFilesToBeIncluded = jsFilesToBeIncluded.filter(e => e !== scripts[i].src);
-            }
-          }
-          expect(jsFilesToBeIncluded.length).to.be.equal(2);
-        }
-      });
-    };
-
-    it('should not include proper web tracking data', function() {
-      expectWebExtendFilesNotToBeIncluded();
-
+    it('should not include web tracking scripts', function() {
       cy.visit('/');
-      cy.task('clearEvents');
+
+      cy.get('script').then(scripts => {
+        const sources = [...scripts].map(script => script.src);
+        expect(sources).not.to.include('http://cdn.scarabresearch.com/js/merchantId123/scarab-v2.js');
+        expect(sources).not.to.include(Cypress.env('snippetUrl'));
+      });
     });
   });
 
