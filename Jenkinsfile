@@ -46,6 +46,7 @@ pipeline {
             sh 'docker run --rm mage_node sh -c "npm run code-style"'
           }
         }
+      }
     }
     stage('Run tests separately') {
       parallel {
