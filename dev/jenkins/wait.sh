@@ -1,10 +1,12 @@
 #$/usr/bin/env bash
 
+RUNNER=$1
+
 wait_it()
 {
   while :
   do
-    result=$(docker-compose -p "mage_$VERSION" ps | grep magento)
+    result=$(docker-compose -p "mage_$RUNNER_$VERSION" ps | grep magento)
     echo "here"
     echo $result
     if [ ! -z "$result" ]; then

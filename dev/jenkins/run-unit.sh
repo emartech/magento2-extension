@@ -20,7 +20,7 @@ docker pull emarsys/ems-integration-magento-sampledata:$VERSION
 echo "\n|--- Starting containers"
 compose up -d
 echo "\n|--- Waiting for containers to initialize"
-sh ./wait.sh >>/dev/null 2>&1
+sh ./wait.sh unit >>/dev/null 2>&1
 echo "\n|--- Testing Magento DI compilation"
 compose exec -T --user application magento-test bash -c "bin/magento setup:di:compile"
 echo "\n|--- Running backend tests"
