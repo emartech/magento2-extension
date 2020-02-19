@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    label 'magento'
+    label 'jenkins-master01'
   }
 
   environment {
