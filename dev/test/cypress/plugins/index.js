@@ -34,46 +34,23 @@ const getDb = () => {
   return db;
 };
 
-let magentoToken = null;
-const getMagentoToken = async () => {
-  if (!magentoToken) {
-    const { token } = await getDb()
-      .select('token')
-      .from(getTableName('integration'))
-      .where({ name: 'Emarsys Integration' })
-      .leftJoin(
-        getTableName('oauth_token'),
-        getTableName('integration.consumer_id'),
-        getTableName('oauth_token.consumer_id')
-      )
-      .first();
-
-    magentoToken = token;
-
-    console.log('MAGENTO-TOKEN', magentoToken);
-  }
-  return magentoToken;
-};
-
-const getMagentoApi = async () => {
-  const token = await getMagentoToken();
-
+const getMagentoApi = () => {
   return new Magento2ApiClient({
     baseUrl: process.env.CYPRESS_baseUrl || 'http://magento-test.local',
-    token
+    token: 'Almafa456'
   });
 };
 
 let magentoVersion = null;
 const getMagentoVersion = async () => {
-  const magentoApi = await getMagentoApi();
+  const magentoApi = getMagentoApi();
   const result = await magentoApi.execute('systeminfo', 'get');
   magentoVersion = result.magento_version;
 };
 
 let defaultCustomer = null;
 const createCustomer = async (customer, password) => {
-  const magentoApi = await getMagentoApi();
+  const magentoApi = getMagentoApi();
   await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer, password } });
 
   const { entity_id: entityId } = await getDb()
@@ -90,20 +67,13 @@ const clearEvents = async () => {
 };
 
 const flushMagentoCache = async () => {
-  const magentoApi = await getMagentoApi();
+  const magentoApi = getMagentoApi();
   return await magentoApi.get({ path: '/cache-flush.php' });
 };
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-
   on('task', {
-    clearDb: async () => {
-      await clearEvents();
-      return true;
-    },
     clearEvents: async () => {
       await clearEvents();
       return true;
@@ -135,7 +105,7 @@ module.exports = (on, config) => {
       merchantId = null,
       webTrackingSnippetUrl = null
     }) => {
-      const magentoApi = await getMagentoApi();
+      const magentoApi = getMagentoApi();
       const config = {
         websiteId,
         config: {

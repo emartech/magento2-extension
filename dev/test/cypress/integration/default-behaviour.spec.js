@@ -9,18 +9,6 @@ describe('Default behaviour with everything turned off', function() {
     cy.task('getDefaultCustomer').as('defaultCustomer');
   });
 
-  context('Web extend', function() {
-    it('should not include web tracking scripts', function() {
-      cy.visit('/');
-
-      cy.get('script').then(scripts => {
-        const sources = [...scripts].map(script => script.src);
-        expect(sources).not.to.include('http://cdn.scarabresearch.com/js/merchantId123/scarab-v2.js');
-        expect(sources).not.to.include(Cypress.env('snippetUrl'));
-      });
-    });
-  });
-
   context('MarketingEvents - Customer', function() {
     const changeCredentialsAfterLogin = (customer, { password, email }) => {
       cy.get('.box-information > .box-actions > .edit > span').click();
