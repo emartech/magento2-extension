@@ -35,8 +35,30 @@ pipeline {
       }
     }
     stage('Run code style check') {
-      steps {
-        sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
+      parallel {
+        stage('Magento') {
+          steps {
+            sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
+          }
+        }
+        stage('ESLint') {
+          steps {
+            sh 'docker run --rm mage_node sh -c "npm run code-style"'
+          }
+        }
+    }
+    stage('Run tests separately') {
+      parallel {
+        stage('Run unit tests') {
+          steps {
+            sh 'VERSION=2.3.3ce sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests') {
+          steps {
+            sh 'VERSION=2.3.3ce sh dev/jenkins/run-e2e.sh'
+          }
+        }
       }
     }
     stage('Run tests on current versions') {
