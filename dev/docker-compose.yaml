@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   magento-test:
-    image: emarsys/ems-integration-magento-sampledata:2.3.2ce
+    image: emarsys/ems-integration-magento-sampledata:2.3.3ce
     ports:
       - "8889:80"
     links:
@@ -20,7 +20,7 @@ services:
       # - ./dev/Docker/website2.conf:/opt/docker/etc/httpd/vhost.common.d/website2.conf
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   magento-dev:
-    image: emarsys/ems-integration-magento-sampledata:2.3.2ce
+    image: emarsys/ems-integration-magento-sampledata:2.3.3ce
     ports:
       - "8888:80"
     links:
