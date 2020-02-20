@@ -180,10 +180,6 @@ module.exports = (on, config) => {
       }
       return defaultCustomer;
     },
-    log: logObject => {
-      console.log('LOG', logObject);
-      return true;
-    },
     setDefaultCustomerProperty: customerData => {
       defaultCustomer = Object.assign({}, defaultCustomer, customerData);
       return defaultCustomer;

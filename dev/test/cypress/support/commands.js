@@ -43,10 +43,6 @@ Cypress.Commands.add('shouldNotShowErrorMessage', excludeErrorMessage => {
   }
 });
 
-Cypress.Commands.add('clog', logObject => {
-  cy.task('log', logObject);
-});
-
 Cypress.Commands.add('isSubscribed', (email, doubleOptin) => {
   const expectedStatus = doubleOptin ? 2 : 1;
   cy.task('getSubscription', email).then(subscription => {
