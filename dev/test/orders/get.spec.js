@@ -47,16 +47,22 @@ const createNewCustomerOrder = async (magentoApi, localCartItem) => {
       addressInformation: localAddresses
     }
   });
-  const { data: orderId } = await magentoApi.put({
-    path: `/index.php/rest/V1/guest-carts/${cartId}/order`,
-    payload: {
-      paymentMethod: {
-        method: 'checkmo'
-      }
-    }
-  });
 
-  return { cartId, orderId };
+  try {
+    const { data: orderId } = await magentoApi.put({
+      path: `/index.php/rest/V1/guest-carts/${cartId}/order`,
+      payload: {
+        paymentMethod: {
+          method: 'checkmo'
+        }
+      }
+    });
+
+    return { cartId, orderId };
+  } catch (error) {
+    const util = require('util');
+    console.log(`Error during completing ${cartId}, ${error.message}, ${util.inspect(error.response)}`);
+  }
 };
 
 const orderCount = 4;
