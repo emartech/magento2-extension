@@ -75,7 +75,7 @@ describe('Web extend scripts', function() {
   });
 
   it('should include orderData after ordering as a logged in user', function() {
-    cy.loginWithCustomer({ customer: { email: 'roni_cost@example.com', password: 'roni_cost3@example.com' } });
+    cy.loginWithCustomer({ email: 'roni_cost@example.com', password: 'roni_cost3@example.com' });
     cy.visit('/fusion-backpack.html');
 
     cy.get('.loading-mask').should('not.exist');

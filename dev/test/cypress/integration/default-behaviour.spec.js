@@ -10,35 +10,14 @@ describe('Default behaviour with everything turned off', function() {
   });
 
   context('MarketingEvents - Customer', function() {
-    const changeCredentialsAfterLogin = (customer, { password, email }) => {
-      cy.get('.box-information > .box-actions > .edit > span').click();
-
-      if (password) {
-        cy.get('.page-wrapper #change-password').check();
-        cy.get('.page-wrapper #password').type(password);
-        cy.get('.page-wrapper #password-confirmation').type(password);
-      }
-
-      if (email) {
-        cy.get('.page-wrapper #change-email').check();
-        cy.get('.page-wrapper #email')
-          .clear()
-          .type(email);
-      }
-
-      cy.get('.page-wrapper input[name="current_password"]').type(customer.password);
-
-      cy.get('.page-wrapper .action.save.primary').click();
-    };
-
     it('should not create customer_password_reset event', function() {
       const newPassword = 'newPassword1';
 
-      cy.loginWithCustomer({ customer: this.defaultCustomer });
-      changeCredentialsAfterLogin(this.defaultCustomer, { password: newPassword });
+      cy.loginWithCustomer(this.defaultCustomer);
+      cy.changeCredentials(this.defaultCustomer.password, { password: newPassword });
 
-      cy.shouldNotExistsEvents();
       cy.shouldNotShowErrorMessage('Unable to send mail');
+      cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
       cy.task('clearEvents');
@@ -49,11 +28,11 @@ describe('Default behaviour with everything turned off', function() {
     it('should not create customer_email_changed event', function() {
       const newEmail = 'cypress2@default.com';
 
-      cy.loginWithCustomer({ customer: this.defaultCustomer });
-      changeCredentialsAfterLogin(this.defaultCustomer, { email: newEmail });
+      cy.loginWithCustomer(this.defaultCustomer);
+      cy.changeCredentials(this.defaultCustomer.password, { email: newEmail });
 
-      cy.shouldNotExistsEvents();
       // cy.shouldNotShowErrorMessage('Unable to send mail');
+      cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { email: newEmail });
       cy.task('clearEvents');
@@ -65,11 +44,11 @@ describe('Default behaviour with everything turned off', function() {
       const newEmail = 'cypress5@default.com';
       const newPassword = 'newPassword4';
 
-      cy.loginWithCustomer({ customer: this.defaultCustomer });
-      changeCredentialsAfterLogin(this.defaultCustomer, { password: newPassword, email: newEmail });
+      cy.loginWithCustomer(this.defaultCustomer);
+      cy.changeCredentials(this.defaultCustomer.password, { password: newPassword, email: newEmail });
 
-      cy.shouldNotExistsEvents();
       cy.shouldNotShowErrorMessage('Unable to send mail');
+      cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
       cy.task('clearEvents');
