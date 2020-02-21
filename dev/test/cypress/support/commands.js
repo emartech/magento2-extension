@@ -16,12 +16,6 @@ Cypress.Commands.add('shouldNotExistsEvents', () => {
   });
 });
 
-Cypress.Commands.add('getEmarsysEvents', () => {
-  cy.task('getAllEvents').then(events => {
-    expect(events.length).to.be.empty;
-  });
-});
-
 Cypress.Commands.add('loginWithCustomer', ({ email, password }) => {
   cy.visit('/customer/account/login');
 

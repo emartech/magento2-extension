@@ -10,6 +10,11 @@ describe('Default behaviour with everything turned off', function() {
   });
 
   context('MarketingEvents - Customer', function() {
+    afterEach(() => {
+      cy.task('clearEvents');
+      cy.logout();
+    });
+
     it('should not create customer_password_reset event', function() {
       const newPassword = 'newPassword1';
 
@@ -20,9 +25,6 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
-      cy.task('clearEvents');
-
-      cy.logout();
     });
 
     it('should not create customer_email_changed event', function() {
@@ -35,9 +37,6 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { email: newEmail });
-      cy.task('clearEvents');
-
-      cy.logout();
     });
 
     it('should not create customer_email_and_password_changed event', function() {
@@ -51,9 +50,6 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
-      cy.task('clearEvents');
-
-      cy.logout();
     });
   });
 
