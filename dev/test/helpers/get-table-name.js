@@ -12,6 +12,8 @@ const cacheTablePrefix = async () => {
   const { table_name: tableName } = rows[0];
 
   prefix = tableName.split('core_config_data')[0];
+
+  return true;
 };
 
 const getTableName = tableName => {

@@ -2,8 +2,7 @@
 
 const Magento2ApiClient = require('@emartech/magento2-api');
 const db = require('../../helpers/db');
-
-const getTableName = table => `${process.env.TABLE_PREFIX || ''}${table}`;
+const { getTableName, cacheTablePrefix } = require('../../helpers/get-table-name');
 
 const magentoApi = new Magento2ApiClient({
   baseUrl: process.env.CYPRESS_baseUrl || 'http://magento-test.local',
@@ -35,6 +34,7 @@ const clearEvents = () => db.truncate(getTableName('emarsys_events_data'));
 module.exports = (on, config) => {
   on('task', {
     clearEvents,
+    cacheTablePrefix,
     flushMagentoCache: () => magentoApi.get({ path: '/cache-flush.php' }),
     disableEmail: () => {
       return db

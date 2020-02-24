@@ -5,6 +5,7 @@ require('./commands');
 
 before(() => {
   Cypress.env('RETRIES', 3);
+  cy.task('cacheTablePrefix');
 });
 
 Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-unused-vars
