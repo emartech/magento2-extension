@@ -78,11 +78,11 @@ describe('Webextend scripts', function() {
     });
 
     it('should include search term', async function() {
-      const emarsysSnippets = await getEmarsysSnippetContents('catalogsearch/result/?q=magento+is+shit');
+      const emarsysSnippets = await getEmarsysSnippetContents('catalogsearch/result/?q=magento+is+hit');
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          '<script>Emarsys.Magento2.track({"product":false,"category":false,"localizedCategory":false,"store":{"merchantId":"abc123"},"search":{"term":"magento is shit"},"exchangeRate":2,"slug":"testslug"});</script>'
+          '<script>Emarsys.Magento2.track({"product":false,"category":false,"localizedCategory":false,"store":{"merchantId":"abc123"},"search":{"term":"magento is hit"},"exchangeRate":2,"slug":"testslug"});</script>'
         )
       ).to.be.true;
     });

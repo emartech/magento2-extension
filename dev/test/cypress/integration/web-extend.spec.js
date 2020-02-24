@@ -19,6 +19,20 @@ describe('Web extend scripts', function() {
       win.Emarsys = { Magento2: { track() {} } };
       win.Emarsys.Magento2.track = cy.stub().as('track');
     });
+
+    cy.on('window:load', win => {
+      win.customerStub = cy.stub().as('customerStub');
+
+      const testScriptNode = win.document.createElement('script');
+      testScriptNode.text = `window.require(['Magento_Customer/js/customer-data'], function(customerData) {
+        window.customerStub(customerData.get('customer')())
+        customerData.get('customer').subscribe(function(customer) {
+          window.customerStub(customer);
+        });
+      });`;
+      win.document.head.appendChild(testScriptNode);
+    });
+
   });
 
   it('should include web-extend scripts', function() {
@@ -28,6 +42,19 @@ describe('Web extend scripts', function() {
       const sources = [...scripts].map(script => script.src);
       expect(sources).to.include(predictUrl);
       expect(sources).to.include(webTrackingSnippetUrl);
+    });
+  });
+
+  it('should include proper customer data', function() {
+    cy.loginWithCustomer({ email: 'roni_cost@example.com', password: 'roni_cost3@example.com' });
+    cy.visit('/fusion-backpack.html');
+
+    cy.get('@customerStub').should('be.calledWithMatch', {
+      fullname: 'Veronica Costello',
+      firstname: 'Veronica',
+      websiteId: '1',
+      id: '1',
+      email: 'roni_cost@example.com'
     });
   });
 
