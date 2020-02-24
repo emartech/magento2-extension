@@ -1,38 +1,9 @@
 'use strict';
 
-const knex = require('knex');
 const Magento2ApiClient = require('@emartech/magento2-api');
+const db = require('../../helpers/db');
 
 const getTableName = table => `${process.env.TABLE_PREFIX || ''}${table}`;
-
-const getDbConnectionConfig = () => {
-  if (process.env.CYPRESS_baseUrl) {
-    return {
-      host: '127.0.0.1',
-      port: 13306,
-      user: 'magento',
-      password: 'magento',
-      database: 'magento_test'
-    };
-  }
-  return {
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-  };
-};
-
-let db = null;
-const getDb = () => {
-  if (!db) {
-    db = knex({
-      client: 'mysql',
-      connection: getDbConnectionConfig()
-    });
-  }
-  return db;
-};
 
 const magentoApi = new Magento2ApiClient({
   baseUrl: process.env.CYPRESS_baseUrl || 'http://magento-test.local',
@@ -49,7 +20,7 @@ let defaultCustomer = null;
 const createCustomer = async (customer, password) => {
   await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer, password } });
 
-  const { entity_id: entityId } = await getDb()
+  const { entity_id: entityId } = await db
     .select('entity_id')
     .from(getTableName('customer_entity'))
     .where({ email: customer.email })
@@ -58,16 +29,15 @@ const createCustomer = async (customer, password) => {
   return { ...customer, entityId, password };
 };
 
-const clearEvents = () => getDb().truncate(getTableName('emarsys_events_data'));
-const flushMagentoCache = () => magentoApi.get({ path: '/cache-flush.php' });
+const clearEvents = () => db.truncate(getTableName('emarsys_events_data'));
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
   on('task', {
-    flushMagentoCache,
     clearEvents,
+    flushMagentoCache: () => magentoApi.get({ path: '/cache-flush.php' }),
     disableEmail: () => {
-      return getDb()
+      return db
         .insert({
           scope: 'default',
           scope_id: '0',
@@ -77,7 +47,7 @@ module.exports = (on, config) => {
         .into(getTableName('core_config_data'));
     },
     enableEmail: () => {
-      return getDb()(getTableName('core_config_data'))
+      return db(getTableName('core_config_data'))
         .where({ path: 'system/smtp/disable' })
         .delete();
     },
@@ -122,7 +92,7 @@ module.exports = (on, config) => {
       return magentoVersion;
     },
     getEventTypeFromDb: async eventType => {
-      const event = await getDb()
+      const event = await db
         .select()
         .from(getTableName('emarsys_events_data'))
         .where({
@@ -138,9 +108,7 @@ module.exports = (on, config) => {
       return event;
     },
     getAllEvents: () => {
-      return getDb()
-        .select()
-        .from(getTableName('emarsys_events_data'));
+      return db.select().from(getTableName('emarsys_events_data'));
     },
     getDefaultCustomer: async () => {
       if (!defaultCustomer) {
@@ -164,7 +132,7 @@ module.exports = (on, config) => {
       return defaultCustomer;
     },
     getSubscription: email => {
-      return getDb()
+      return db
         .select()
         .from(getTableName('newsletter_subscriber'))
         .where({ subscriber_email: email })
@@ -172,7 +140,7 @@ module.exports = (on, config) => {
     },
     setDoubleOptin: stateOn => {
       if (stateOn) {
-        return getDb()
+        return db
           .insert({
             scope: 'default',
             scope_id: 0,
@@ -181,7 +149,7 @@ module.exports = (on, config) => {
           })
           .into(getTableName('core_config_data'));
       } else {
-        return getDb()(getTableName('core_config_data'))
+        return db(getTableName('core_config_data'))
           .where({ path: 'newsletter/subscription/confirm' })
           .delete();
       }

@@ -49,6 +49,7 @@ Cypress.Commands.add('changeCredentials', (currentPassword, { email, password })
 
 Cypress.Commands.add('logout', () => {
   cy.visit('/customer/account/logout/');
+  cy.clearCookies();
 });
 
 Cypress.Commands.add('shouldNotShowErrorMessage', excludeErrorMessage => {
