@@ -52,7 +52,6 @@ describe('Web extend scripts', function() {
     cy.get('@customerStub').should('be.calledWithMatch', {
       fullname: 'Veronica Costello',
       firstname: 'Veronica',
-      websiteId: '1',
       id: '1',
       email: 'roni_cost@example.com'
     });
