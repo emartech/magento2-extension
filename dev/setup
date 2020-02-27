@@ -12,10 +12,6 @@ echo $MAGENTO_URL
 bin/magento config:set web/unsecure/base_url ${MAGENTO_URL}/ \
 || mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "update ${TABLE_PREFIX}core_config_data set value = '$MAGENTO_URL/' where path = 'web/unsecure/base_url';"
 
-
-echo "-|| Configuring Coding Standard"
-vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/
-
 echo "-|| Install plugin..."
 if [[ ! $(bin/magento module:status | grep Emartech_Emarsys) ]]
 then
@@ -27,38 +23,7 @@ else
   echo "   >> Skipping installation."
 fi
 
-echo "-|| Creating EAV fields"
-bin/magento emartech:attribute:create
-
-echo "-|| Setting EAV field for customer 1"
-bin/magento emartech:customer-attribute:set --customer_id 1 --attribute_name emarsys_test_favorite_car --attribute_value ferrari
-
-echo "-|| Setting website configuration"
-bin/magento emartech:store:create --name Second --code second
-
-echo "-|| Running indexer"
-bin/magento indexer:reindex
-
-echo "-|| Setting website price scope configuration"
-bin/magento emartech:price-scope:change --flag 1
-
-echo "-|| Setting website URL configuration"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/secure/base_url', '{{base_url}}') ON DUPLICATE KEY UPDATE value = '{{base_url}}';"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}core_config_data (scope, scope_id, path, value) VALUES ('default', 0, 'web/url/use_store', '1');"
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}oauth_token SET token = 'Almafa456';"
 
-echo "-|| Setting currency configuration"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "INSERT INTO ${TABLE_PREFIX}directory_currency_rate (currency_from, currency_to, rate) VALUES ('USD', 'UGX', 2);"
-mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}core_config_data SET value = 'USD,UGX' WHERE path = 'currency/options/allow';"
-
-echo "-|| Flushing cache #1"
-bin/magento cache:flush
-
-echo "-|| Splitting product price tables (supported only after Magento 2.2.6)"
-bin/magento indexer:set-dimensions-mode catalog_product_price website_and_customer_group || echo 'Feature not supported on this Magento version...'
-
-echo "-|| Running indexer"
-bin/magento indexer:reindex
-
-echo "-|| Flushing cache #2"
+echo "-|| Flushing cache"
 bin/magento cache:flush
