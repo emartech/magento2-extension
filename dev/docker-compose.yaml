@@ -61,7 +61,6 @@ services:
       - MYSQL_DATABASE=magento_test
       - MAGENTO_URL=magento-test.local
       - CYPRESS_PROJECT_ID=xo2cjm
-      - TABLE_PREFIX=$TABLE_PREFIX
     links:
       - magento-test:magento-test.local
       - db

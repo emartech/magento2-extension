@@ -11,7 +11,6 @@ up: ## Creates containers and starts app
 	cd ./dev/test && npm i
 	@$(COMPOSE) up -d --build
 	sh ./dev/wait.sh
-	# -@$(COMPOSE) run --rm -e "TABLE_PREFIX=$$TABLE_PREFIX" node prepare-environment.js
 	# Creating test db...
 	@$(COMPOSE) exec --user root db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento_test > /opt/magento_test.sql'
 

@@ -9,12 +9,7 @@ alias compose="docker-compose -p mage_unit_$VERSION"
 
 compose down
 
-if [ -z "$TABLE_PREFIX" ]
-then
-  echo "\n|--- Running tests on Magento $VERSION"
-else
-  echo "\n|--- Running tests on Magento $VERSION with table prefix $TABLE_PREFIX"
-fi
+echo "\n|--- Running tests on Magento $VERSION"
 echo "\n|--- Pulling newest image version"
 docker pull emarsys/ems-integration-magento-sampledata:$VERSION
 echo "\n|--- Starting containers"

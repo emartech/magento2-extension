@@ -31,7 +31,6 @@ services:
     environment:
       - NPM_TOKEN=$NPM_TOKEN
       - MAGENTO_URL=magento-test.local
-      - TABLE_PREFIX=$TABLE_PREFIX
     links:
       - magento-test:magento-test.local
       - db

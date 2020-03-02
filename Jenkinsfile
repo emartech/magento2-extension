@@ -103,12 +103,12 @@ pipeline {
       parallel {
         stage('Run unit tests') {
           steps {
-            sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run-unit.sh'
+            sh 'VERSION=2.3.1ce-prefixed sh dev/jenkins/run-unit.sh'
           }
         }
         stage('Run e2e tests') {
           steps {
-            sh 'VERSION=2.3.1ce-prefixed TABLE_PREFIX=ems_ sh dev/jenkins/run-e2e.sh'
+            sh 'VERSION=2.3.1ce-prefixed sh dev/jenkins/run-e2e.sh'
           }
         }
       }
