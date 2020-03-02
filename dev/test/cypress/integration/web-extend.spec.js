@@ -32,7 +32,10 @@ describe('Web extend scripts', function() {
       });`;
       win.document.head.appendChild(testScriptNode);
     });
+  });
 
+  afterEach(() => {
+    cy.logout();
   });
 
   it('should include web-extend scripts', function() {
