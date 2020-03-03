@@ -177,6 +177,26 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * @return string
+     */
+    public function getProductDeltaSync()
+    {
+        return $this->getData(self::PRODUCT_DELTA_SYNC);
+    }
+
+    /**
+     * @param string $productDeltaSync
+     *
+     * @return $this
+     */
+    public function setProductDeltaSync($productDeltaSync)
+    {
+        $this->setData(self::PRODUCT_DELTA_SYNC, $productDeltaSync);
+
+        return $this;
+    }
+
+    /**
      * @param string $xmlPostPath
      * @param string $value
      * @param int    $scopeId

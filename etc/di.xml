@@ -52,10 +52,10 @@
 
     <preference for="Emartech\Emarsys\Api\Data\ExtraFieldsInterface" type="Emartech\Emarsys\Model\Data\ExtraFields" />
 
-    <!--preference for="Emartech\Emarsys\Api\Data\ProductDeltaInterface" type="Emartech\Emarsys\Model\ProductDelta" />
+    <preference for="Emartech\Emarsys\Api\Data\ProductDeltaInterface" type="Emartech\Emarsys\Model\ProductDelta" />
     <preference for="Emartech\Emarsys\Api\ProductDeltaRepositoryInterface" type="Emartech\Emarsys\Model\ProductDeltaRepository" />
     <preference for="Emartech\Emarsys\Api\ProductDeltasApiInterface" type="Emartech\Emarsys\Model\Api\ProductDeltasApi" />
-    <preference for="Emartech\Emarsys\Api\Data\ProductDeltasApiResponseInterface" type="Emartech\Emarsys\Model\Data\ProductDeltasApiResponse" /-->
+    <preference for="Emartech\Emarsys\Api\Data\ProductDeltasApiResponseInterface" type="Emartech\Emarsys\Model\Data\ProductDeltasApiResponse" />
 
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />

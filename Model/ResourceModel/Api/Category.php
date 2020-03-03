@@ -57,19 +57,28 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @param int $minProductId
-     * @param int $maxProductId
+     * @param array      $wheres
+     * @param array|null $joinInner
      *
      * @return array
      */
-    public function getCategoryIds($minProductId, $maxProductId)
+    public function getCategoryIds($wheres, $joinInner = null)
     {
         $this->categoryIds = [];
 
         $categoryQuery = $this->_resource->getConnection()->select()
-            ->from($this->getTable('catalog_category_product'), ['category_id', 'product_id'])
-            ->where('product_id >= ?', $minProductId)
-            ->where('product_id <= ?', $maxProductId);
+            ->from(
+                $this->getTable('catalog_category_product'),
+                ['category_id', 'product_id']
+            );
+
+        foreach ($wheres as $where) {
+            $categoryQuery->where($where[0], $where[1]);
+        }
+
+        if (null !== $joinInner) {
+            $categoryQuery->joinInner($joinInner[0], $joinInner[1], $joinInner[2]);
+        }
 
         $this->iterator->walk(
             (string)$categoryQuery,

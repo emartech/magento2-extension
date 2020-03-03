@@ -3,8 +3,8 @@
 namespace Emartech\Emarsys\Setup;
 
 use Magento\Framework\Setup\InstallSchemaInterface;
-use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
 
 class InstallSchema implements InstallSchemaInterface
 {
@@ -16,8 +16,10 @@ class InstallSchema implements InstallSchemaInterface
      * @throws \Zend_Db_Exception
      */
     // @codingStandardsIgnoreLine
-    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
-    {
+    public function install(
+        SchemaSetupInterface $setup,
+        ModuleContextInterface $context
+    ) {
         $setup->startSetup();
 
         $this->createEmarsysEventsTable($setup);
@@ -41,7 +43,10 @@ class InstallSchema implements InstallSchemaInterface
                     'event_id',
                     \Magento\Framework\DB\Ddl\Table::TYPE_BIGINT,
                     null,
-                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    [
+                        'identity' => true, 'unsigned' => true,
+                        'nullable' => false, 'primary' => true,
+                    ],
                     'Event Id'
                 )
                 ->addColumn(
@@ -82,7 +87,10 @@ class InstallSchema implements InstallSchemaInterface
                     'created_at',
                     \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
                     null,
-                    ['default' => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT, 'nullable' => false],
+                    [
+                        'default'  => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT,
+                        'nullable' => false,
+                    ],
                     'Timestamp'
                 )
                 ->addIndex(
@@ -104,7 +112,11 @@ class InstallSchema implements InstallSchemaInterface
                     ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX]
                 );
             $setup->getConnection()->createTable($table);
-            $setup->getConnection()->modifyColumn($tableName, 'event_data', 'mediumblob');
+            $setup->getConnection()->modifyColumn(
+                $tableName,
+                'event_data',
+                'mediumblob'
+            );
         }
     }
 }
