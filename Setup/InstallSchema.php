@@ -2,6 +2,7 @@
 
 namespace Emartech\Emarsys\Setup;
 
+use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
@@ -24,6 +25,8 @@ class InstallSchema implements InstallSchemaInterface
 
         $this->createEmarsysEventsTable($setup);
 
+        $this->createEmarsysProductDeltaTable($setup);
+
         $setup->endSetup();
     }
 
@@ -41,7 +44,7 @@ class InstallSchema implements InstallSchemaInterface
             )
                 ->addColumn(
                     'event_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_BIGINT,
+                    Table::TYPE_BIGINT,
                     null,
                     [
                         'identity' => true, 'unsigned' => true,
@@ -51,44 +54,44 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->addColumn(
                     'website_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    Table::TYPE_INTEGER,
                     null,
                     ['default' => null, 'nullable' => true],
                     'Website ID'
                 )
                 ->addColumn(
                     'store_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    Table::TYPE_INTEGER,
                     null,
                     ['default' => null, 'nullable' => true],
                     'Store ID'
                 )->addColumn(
                     'entity_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    Table::TYPE_INTEGER,
                     null,
                     ['nullable' => false],
                     'Entity ID'
                 )
                 ->addColumn(
                     'event_type',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    Table::TYPE_TEXT,
                     255,
                     ['default' => null, 'nullable' => false],
                     'Event Type'
                 )
                 ->addColumn(
                     'event_data',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_BLOB,
+                    Table::TYPE_BLOB,
                     null,
                     ['default' => null, 'nullable' => false],
                     'Event Data'
                 )
                 ->addColumn(
                     'created_at',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+                    Table::TYPE_TIMESTAMP,
                     null,
                     [
-                        'default'  => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT,
+                        'default'  => Table::TIMESTAMP_INIT,
                         'nullable' => false,
                     ],
                     'Timestamp'
@@ -117,6 +120,59 @@ class InstallSchema implements InstallSchemaInterface
                 'event_data',
                 'mediumblob'
             );
+        }
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function createEmarsysProductDeltaTable(SchemaSetupInterface $setup)
+    {
+        $tableName = $setup->getTable('emarsys_product_delta');
+        if (!$setup->tableExists($tableName)) {
+            $table = $setup->getConnection()->newTable(
+                $tableName
+            )->addColumn(
+                'product_delta_id',
+                Table::TYPE_BIGINT,
+                null,
+                [
+                    'identity' => true,
+                    'unsigned' => true,
+                    'nullable' => false,
+                    'primary'  => true,
+                ],
+                'Product Delta Id'
+            )->addColumn(
+                'sku',
+                Table::TYPE_TEXT,
+                64,
+                [
+                    'default'  => null,
+                    'nullable' => true,
+                ],
+                'Product SKU'
+            )->addColumn(
+                'entity_id',
+                Table::TYPE_BIGINT,
+                64,
+                [
+                    'default'  => null,
+                    'nullable' => true,
+                ],
+                'Product Entity ID'
+            )->addColumn(
+                'row_id',
+                Table::TYPE_BIGINT,
+                64,
+                [
+                    'default'  => null,
+                    'nullable' => true,
+                ],
+                'Product Row ID'
+            );
+
+            $setup->getConnection()->createTable($table);
         }
     }
 }
