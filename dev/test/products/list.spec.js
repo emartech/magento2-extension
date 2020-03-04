@@ -208,21 +208,37 @@ describe('Products endpoint', function() {
     expect(secondStoreItem.original_display_webshop_price).to.eql(2000);
   });
 
-  it('should return out of stock products', async function() {
+  context('out of stock', function() {
     const sku = '24-MB03';
-    await this.magentoApi.put({
-      path: `/rest/V1/products/${sku}/stockItems/1`,
-      payload: {
-        stockItem: {
-          qty: 0
+    before(async function() {
+      await this.magentoApi.put({
+        path: `/rest/V1/products/${sku}/stockItems/1`,
+        payload: {
+          stockItem: {
+            qty: 0
+          }
         }
-      }
+      });
     });
 
-    const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 3, storeIds: [1, 2] });
-    const product = products.find(product => product.sku === sku);
+    after(async function() {
+      await this.magentoApi.put({
+        path: `/rest/V1/products/${sku}/stockItems/1`,
+        payload: {
+          stockItem: {
+            qty: 100,
+            is_in_stock: true
+          }
+        }
+      });
+    });
 
-    expect(products.length).to.be.equal(3);
-    expect(product).not.to.be.undefined;
+    it('should return out of stock products', async function() {
+      const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 3, storeIds: [1, 2] });
+      const product = products.find(product => product.sku === sku);
+
+      expect(products.length).to.be.equal(3);
+      expect(product).not.to.be.undefined;
+    });
   });
 });
