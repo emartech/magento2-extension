@@ -129,26 +129,34 @@ describe('Product Deltas endpoint', function() {
     const skus = ['24-MB01', '24-MB03', '24-MB04'];
     await insertProductDeltas(this.db, skus);
 
-    const { products: productsOnFirstPage, lastPage: lastPageOnFirstTry } = await this.magentoApi.execute('products', 'getDeltas', {
-      limit: 1,
-      page: 1,
-      storeIds: [1],
-      sinceId: 0,
-      maxId: 3
-    });
+    const { products: productsOnFirstPage, lastPage: lastPageOnFirstTry } = await this.magentoApi.execute(
+      'products',
+      'getDeltas',
+      {
+        limit: 1,
+        page: 1,
+        storeIds: [1],
+        sinceId: 0,
+        maxId: 3
+      }
+    );
 
     expect(productsOnFirstPage.map(product => product.sku)).to.eql(['24-MB01']);
     expect(lastPageOnFirstTry).to.eql(3);
 
     await insertProductDeltas(this.db, ['24-MB01']);
 
-    const { products: productsOnSecondPage, lastPage: lastPageOnSecondTry } = await this.magentoApi.execute('products', 'getDeltas', {
-      limit: 1,
-      page: 2,
-      storeIds: [1],
-      sinceId: 0,
-      maxId: 3
-    });
+    const { products: productsOnSecondPage, lastPage: lastPageOnSecondTry } = await this.magentoApi.execute(
+      'products',
+      'getDeltas',
+      {
+        limit: 1,
+        page: 2,
+        storeIds: [1],
+        sinceId: 0,
+        maxId: 3
+      }
+    );
 
     expect(productsOnSecondPage.map(product => product.sku)).to.eql(['24-MB03']);
     expect(lastPageOnSecondTry).to.eql(3);
