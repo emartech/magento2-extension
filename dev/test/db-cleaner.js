@@ -70,7 +70,11 @@ module.exports = class DbCleaner {
     await this._db.raw('SET FOREIGN_KEY_CHECKS=1');
   }
 
-  async resetEmarsysEventsData() {
-    await this._db.truncate(getTableName('emarsys_events_data'));
+  resetEmarsysEventsData() {
+    return this._db.truncate(getTableName('emarsys_events_data'));
+  }
+
+  resetEmarsysProductDelta() {
+    return this._db.truncate(getTableName('emarsys_product_delta'));
   }
 };

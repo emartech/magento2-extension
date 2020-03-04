@@ -136,5 +136,9 @@ beforeEach(async function() {
 
 afterEach(async function() {
   this.sandbox.restore();
-  await this.dbCleaner.resetEmarsysEventsData();
+
+  await Promise.all([
+    this.dbCleaner.resetEmarsysEventsData(),
+    this.dbCleaner.resetEmarsysProductDelta()
+  ]);
 });
