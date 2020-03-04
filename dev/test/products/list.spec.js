@@ -208,7 +208,7 @@ describe('Products endpoint', function() {
     expect(secondStoreItem.original_display_webshop_price).to.eql(2000);
   });
 
-  it.only('should return out of stock products', async function() {
+  it('should return out of stock products', async function() {
     const sku = '24-MB03';
     await this.magentoApi.put({
       path: `/rest/V1/products/${sku}/stockItems/1`,
