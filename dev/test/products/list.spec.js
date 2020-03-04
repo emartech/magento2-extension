@@ -207,4 +207,22 @@ describe('Products endpoint', function() {
     expect(secondStoreItem.display_webshop_price).to.eql(64);
     expect(secondStoreItem.original_display_webshop_price).to.eql(2000);
   });
+
+  it.only('should return out of stock products', async function() {
+    const sku = '24-MB03';
+    await this.magentoApi.put({
+      path: `/rest/V1/products/${sku}/stockItems/1`,
+      payload: {
+        stockItem: {
+          qty: 0
+        }
+      }
+    });
+
+    const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 3, storeIds: [1, 2] });
+    const product = products.find(product => product.sku === sku);
+
+    expect(products.length).to.be.equal(3);
+    expect(product).not.to.be.undefined;
+  });
 });
