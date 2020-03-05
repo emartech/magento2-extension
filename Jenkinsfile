@@ -50,46 +50,36 @@ pipeline {
     }
     stage('Run tests on recent versions') {
       parallel {
-        stage('Run tests on 2.3.3CE') {
-          parallel {
-            stage('Run unit tests') {
-              steps {
-                sh 'VERSION=2.3.3ce sh dev/jenkins/run-unit.sh'
-              }
-            }
-            stage('Run e2e tests') {
-              steps {
-                sh 'VERSION=2.3.3ce sh dev/jenkins/run-e2e.sh'
-              }
-            }
+        stage('Run unit tests on 2.3.3CE') {
+          steps {
+            sh 'VERSION=2.3.3ce sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run tests on 2.3.3EE') {
-          parallel {
-            stage('Run unit tests') {
-              steps {
-                sh 'VERSION=2.3.3ee sh dev/jenkins/run-unit.sh'
-              }
-            }
-            stage('Run e2e tests') {
-              steps {
-                sh 'VERSION=2.3.3ee sh dev/jenkins/run-e2e.sh'
-              }
-            }
+        stage('Run e2e tests on 2.3.3CE') {
+          steps {
+            sh 'VERSION=2.3.3ce sh dev/jenkins/run-e2e.sh'
           }
         }
-        stage('Run tests on 2.3.2EE') {
-          parallel {
-            stage('Run unit tests') {
-              steps {
-                sh 'VERSION=2.3.2ee sh dev/jenkins/run-unit.sh'
-              }
-            }
-            stage('Run e2e tests') {
-              steps {
-                sh 'VERSION=2.3.2ee sh dev/jenkins/run-e2e.sh'
-              }
-            }
+
+        stage('Run unit tests on 2.3.3EE') {
+          steps {
+            sh 'VERSION=2.3.3ee sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests on 2.3.3EE') {
+          steps {
+            sh 'VERSION=2.3.3ee sh dev/jenkins/run-e2e.sh'
+          }
+        }
+
+        stage('Run unit tests on 2.3.2EE') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests on 2.3.2EE') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run-e2e.sh'
           }
         }
       }
@@ -105,46 +95,36 @@ pipeline {
     }
     stage('Run tests on old version') {
       parallel {
-        stage('Run tests on 2.3.1CE with table prefix') {
-          parallel {
-            stage('Run unit tests') {
-              steps {
-                sh 'VERSION=2.3.1ce-prefixed sh dev/jenkins/run-unit.sh'
-              }
-            }
-            stage('Run e2e tests') {
-              steps {
-                sh 'VERSION=2.3.1ce-prefixed sh dev/jenkins/run-e2e.sh'
-              }
-            }
+        stage('Run unit tests on 2.3.1CE with table prefix') {
+          steps {
+            sh 'VERSION=2.3.1ce-prefixed sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run tests on 2.1.9EE') {
-          parallel {
-            stage('Run unit tests') {
-              steps {
-                sh 'VERSION=2.1.9ee sh dev/jenkins/run-unit.sh'
-              }
-            }
-            stage('Run e2e tests') {
-              steps {
-                sh 'VERSION=2.1.9ee sh dev/jenkins/run-e2e.sh'
-              }
-            }
+        stage('Run e2e tests on 2.3.1CE with table prefix') {
+          steps {
+            sh 'VERSION=2.3.1ce-prefixed sh dev/jenkins/run-e2e.sh'
           }
         }
-        stage('Run tests on 2.2.6CE') {
-          parallel {
-            stage('Run unit tests') {
-              steps {
-                sh 'VERSION=2.2.6ce sh dev/jenkins/run-unit.sh'
-              }
-            }
-            stage('Run e2e tests') {
-              steps {
-                sh 'VERSION=2.2.6ce sh dev/jenkins/run-e2e.sh'
-              }
-            }
+
+        stage('Run unit tests on 2.1.9EE') {
+          steps {
+            sh 'VERSION=2.1.9ee sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests on 2.1.9EE') {
+          steps {
+            sh 'VERSION=2.1.9ee sh dev/jenkins/run-e2e.sh'
+          }
+        }
+
+        stage('Run unit tests on 2.2.6CE') {
+          steps {
+            sh 'VERSION=2.2.6ce sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests on 2.2.6CE') {
+          steps {
+            sh 'VERSION=2.2.6ce sh dev/jenkins/run-e2e.sh'
           }
         }
       }
