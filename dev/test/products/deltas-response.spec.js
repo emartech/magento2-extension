@@ -9,14 +9,14 @@ describe('Product Deltas endpoint', function() {
 
     const { products: productsDeltaReponse } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
-      storeIds: [1],
+      storeIds: [0, 1],
       sinceId: 0
     });
 
     const { products: productsApiResponse } = await this.magentoApi.execute('products', 'get', {
       page: 1,
       limit: 100,
-      storeIds: [1]
+      storeIds: [0, 1]
     });
     const product = productsApiResponse.find(product => product.sku === sku);
 
