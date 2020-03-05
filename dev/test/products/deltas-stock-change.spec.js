@@ -1,76 +1,6 @@
 'use strict';
 
-const localAddresses = {
-  shippingAddress: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.shipping.com',
-    telephone: '512-555-1111'
-  },
-  billingAddress: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.billing.com',
-    telephone: '512-555-1111'
-  },
-  shipping_carrier_code: 'flatrate',
-  shipping_method_code: 'flatrate'
-};
-
-const createNewCustomerOrderAndShip = async (magentoApi, localCartItem) => {
-  const { data: cartId } = await magentoApi.post({
-    path: '/index.php/rest/V1/guest-carts'
-  });
-  await magentoApi.post({
-    path: `/index.php/rest/V1/guest-carts/${cartId}/items`,
-    payload: {
-      cartItem: { ...localCartItem, quote_id: cartId }
-    }
-  });
-  await magentoApi.post({
-    path: `/index.php/rest/V1/guest-carts/${cartId}/shipping-information`,
-    payload: {
-      addressInformation: localAddresses
-    }
-  });
-
-  try {
-    const { data: orderId } = await magentoApi.put({
-      path: `/index.php/rest/V1/guest-carts/${cartId}/order`,
-      payload: {
-        paymentMethod: {
-          method: 'checkmo'
-        }
-      }
-    });
-
-    await magentoApi.post({
-      path: `/index.php/rest/V1/order/${orderId}/ship`,
-      payload: {
-        notify: true
-      }
-    });
-
-    return { cartId, orderId };
-  } catch (error) {
-    const util = require('util');
-    console.log(`Error during completing ${cartId}, ${error.message}, ${util.inspect(error.response)}`);
-  }
-};
+const { shipOrder, createNewGuestOrder } = require('../helpers/orders');
 
 describe('Deltas Stock Change', function() {
   const sku = '24-MB03';
@@ -180,8 +110,8 @@ describe('Deltas Stock Change', function() {
 
   it('should return product with stock change from order', async function() {
     const localCartItem = this.localCartItem;
-
-    await createNewCustomerOrderAndShip(this.magentoApi, localCartItem);
+    const { orderId } = await createNewGuestOrder(this.magentoApi, localCartItem);
+    await shipOrder(this.magentoApi, orderId);
 
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
