@@ -39,8 +39,9 @@ describe('Deltas Catalog Change', function() {
       sinceId: 0
     });
 
-    const nameInStore = productDeltas.find(product => product.sku === sku).store_data
-      .find(data => data.store_id === 1).name;
+    const nameInStore = productDeltas.find(product => product.sku === sku)
+      .store_data.find(data => data.store_id === 1)
+      .name;
 
     expect(productDeltas.length).to.be.equal(1);
     expect(nameInStore).to.be.equal(name);
