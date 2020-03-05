@@ -15,10 +15,6 @@ const insertProductDeltas = async (db, skus) => {
 };
 
 describe('Product Deltas endpoint', function() {
-  before(async function() {});
-
-  after(async function() {});
-
   it('should page through all deltas', async function() {
     const skus = ['24-MB01', '24-MB04', '24-MB03'];
     await insertProductDeltas(this.db, skus);
@@ -174,5 +170,22 @@ describe('Product Deltas endpoint', function() {
     });
 
     expect(lastPage).to.eql(2);
+  });
+
+  it('should respond with 406 if autoincrement is reset', async function() {
+    let errorThrown;
+
+    try {
+      await this.magentoApi.execute('products', 'getDeltas', {
+        limit: 2,
+        page: 1,
+        storeIds: [1],
+        sinceId: 98642343
+      });
+    } catch (error) {
+      errorThrown = error;
+    }
+
+    expect(errorThrown.response.status).to.equal(406);
   });
 });
