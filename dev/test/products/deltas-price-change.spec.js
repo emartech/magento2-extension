@@ -1,6 +1,6 @@
 'use strict';
 
-describe.only('Deltas Price Change', function() {
+describe('Deltas Price Change', function() {
   const sku = '24-MB03';
 
   before(async function() {
