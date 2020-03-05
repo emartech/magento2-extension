@@ -48,16 +48,26 @@ pipeline {
         }
       }
     }
-    stage('Run tests on 2.3.3ce') {
+    stage('Run tests on 2.3.3') {
       parallel {
-        stage('Run unit tests') {
+        stage('Run unit tests on 2.3.3ce') {
           steps {
             sh 'VERSION=2.3.3ce sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run e2e tests') {
+        stage('Run e2e testson 2.3.3ce') {
           steps {
             sh 'VERSION=2.3.3ce sh dev/jenkins/run-e2e.sh'
+          }
+        }
+        stage('Run unit tests on 2.3.3EE') {
+          steps {
+            sh 'VERSION=2.3.3ee sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests on 2.3.3EE') {
+          steps {
+            sh 'VERSION=2.3.3ee sh dev/jenkins/run-e2e.sh'
           }
         }
       }
@@ -69,20 +79,6 @@ pipeline {
         sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth emarsys/ems-plugins-gke-service kubectl set env deployment web-staging EXTENSION_SHA=$GIT_COMMIT'
         sh 'docker rm gcloud-auth'
         sh 'rm ci-account.json'
-      }
-    }
-    stage('Run tests on 2.3.3EE') {
-      parallel {
-        stage('Run unit tests') {
-          steps {
-            sh 'VERSION=2.3.3ee sh dev/jenkins/run-unit.sh'
-          }
-        }
-        stage('Run e2e tests') {
-          steps {
-            sh 'VERSION=2.3.3ee sh dev/jenkins/run-e2e.sh'
-          }
-        }
       }
     }
     stage('Run tests on 2.3.2EE') {
