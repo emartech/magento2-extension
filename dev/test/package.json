@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "postinstall": "if [ \"${CI}\" != \"true\" ] && [ \"${NODE_ENV}\" != \"production\" ]; then npm run copy-git-hooks; fi",
+    "postinstall": "if [ -d \"./../../.git\" ]; then npm run copy-git-hooks; fi",
     "test": "npm run mocha && npm run code-style",
     "e2e": "cypress run --browser chrome",
     "e2e:ci": "cypress run --browser chrome --record --key 80ddf60c-0dca-4075-8074-31207092e038",
