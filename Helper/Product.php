@@ -7,6 +7,7 @@
 
 namespace Emartech\Emarsys\Helper;
 
+use DateTime;
 use Emartech\Emarsys\Api\AttributesApiInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
@@ -26,6 +27,7 @@ use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductColl
 use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Stdlib\DateTime\Filter\DateTime as DateTimeFilter;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
@@ -153,6 +155,11 @@ class Product extends AbstractHelper
     private $priceData = [];
 
     /**
+     * @var DateTimeFilter
+     */
+    private $dateTimeFilter;
+
+    /**
      * Product constructor.
      *
      * @param ConfigInterfaceFactory           $configFactory
@@ -163,6 +170,7 @@ class Product extends AbstractHelper
      * @param ImagesInterfaceFactory           $imagesFactory
      * @param ProductStoreDataInterfaceFactory $productStoreDataFactory
      * @param ExtraFieldsInterfaceFactory      $extraFieldsFactory
+     * @param DateTimeFilter                   $dateTimeFilter
      * @param Context                          $context
      */
     public function __construct(
@@ -174,6 +182,7 @@ class Product extends AbstractHelper
         ImagesInterfaceFactory $imagesFactory,
         ProductStoreDataInterfaceFactory $productStoreDataFactory,
         ExtraFieldsInterfaceFactory $extraFieldsFactory,
+        DateTimeFilter $dateTimeFilter,
         Context $context
     ) {
         $this->configFactory = $configFactory;
@@ -184,6 +193,7 @@ class Product extends AbstractHelper
         $this->imagesFactory = $imagesFactory;
         $this->productStoreDataFactory = $productStoreDataFactory;
         $this->extraFieldsFactory = $extraFieldsFactory;
+        $this->dateTimeFilter = $dateTimeFilter;
 
         parent::__construct(
             $context
@@ -250,8 +260,7 @@ class Product extends AbstractHelper
     public function initCollection()
     {
         /** @var ProductCollection customerCollection */
-        $this->productCollection = $this->productCollectionFactory->create()
-            ->addFinalPrice();
+        $this->productCollection = $this->productCollectionFactory->create();
 
         return $this;
     }
@@ -540,7 +549,9 @@ class Product extends AbstractHelper
     // @codingStandardsIgnoreLine
     protected function handleImages($product, $storeIds, $id)
     {
-        $imagePreUrl = $storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
+        $imagePreUrl = $storeIds[0]->getBaseUrl(
+                UrlInterface::URL_TYPE_MEDIA
+            ) . 'catalog/product';
 
         try {
             $image = $this->getStoreData($id, 0, 'image');
@@ -598,9 +609,9 @@ class Product extends AbstractHelper
         $returnArray = [];
 
         foreach ($storeIds as $storeId => $storeObject) {
-            $price = (float)$product->getFinalPrice();
+            $price = $this->getPrice($productId, $storeId);
             $displayPrice = (float)$this->getDisplayPrice($price, $storeObject);
-            $originalPrice = (float)$product->getPrice();
+            $originalPrice = (float)$this->getStoreData($productId, $storeId, 'price');
             $originalDisplayPrice = (float)$this->getDisplayPrice(
                 $originalPrice,
                 $storeObject
@@ -610,17 +621,33 @@ class Product extends AbstractHelper
                 $storeId,
                 0
             );
+            if (!$webShopPrice) {
+                $webShopPrice = $price;
+            } elseif ($webShopPrice > $price) {
+                $webShopPrice = $price;
+            } elseif ($price > $webShopPrice) {
+                $price = $webShopPrice;
+            }
+
             $displayWebShopPrice = (float)$this->getDisplayPrice(
                 $webShopPrice,
                 $storeObject
             );
-            $originalWebshopPrice = (float)$this->getOriginalWebShopPrice(
+            $originalWebShopPrice = (float)$this->getOriginalWebShopPrice(
                 $productId,
                 $storeId,
                 0
             );
-            $originalDisplayWebshopPrice = (float)$this->getDisplayPrice(
-                $originalWebshopPrice,
+            if (!$originalWebShopPrice) {
+                $originalWebShopPrice = $originalPrice;
+            } elseif ($originalWebShopPrice > $originalPrice) {
+                $originalWebShopPrice = $originalPrice;
+            } elseif ($originalPrice > $originalWebShopPrice) {
+                $originalPrice = $originalWebShopPrice;
+            }
+
+            $originalDisplayWebShopPrice = (float)$this->getDisplayPrice(
+                $originalWebShopPrice,
                 $storeObject
             );
 
@@ -643,8 +670,8 @@ class Product extends AbstractHelper
                 ->setOriginalDisplayPrice($originalDisplayPrice)
                 ->setWebshopPrice($webShopPrice)
                 ->setDisplayWebshopPrice($displayWebShopPrice)
-                ->setOriginalWebshopPrice($originalWebshopPrice)
-                ->setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice)
+                ->setOriginalWebshopPrice($originalWebShopPrice)
+                ->setOriginalDisplayWebshopPrice($originalDisplayWebShopPrice)
                 ->setCurrencyCode($this->getCurrencyCode($storeObject));
 
             if ($this->getProductExtraFields()) {
@@ -673,6 +700,50 @@ class Product extends AbstractHelper
         }
 
         return $returnArray;
+    }
+
+    /**
+     * @param int $productId
+     * @param int $storeId
+     *
+     * @return float
+     */
+    protected function getPrice($productId, $storeId)
+    {
+        $price = $this->getStoreData($productId, $storeId, 'price');
+        $specialPrice = $this->getStoreData(
+            $productId,
+            $storeId,
+            'special_price'
+        );
+        if (null !== $specialPrice) {
+            try {
+                $now = new DateTime('-1 second');
+                $specialFromDate = $this->getStoreData(
+                    $productId,
+                    $storeId,
+                    'special_from_date'
+                );
+                $specialFromDate = $this->dateTimeFilter->filter(
+                    $specialFromDate
+                );
+                $specialFromDate = new DateTime($specialFromDate);
+                $specialToDate = $this->getStoreData(
+                    $productId,
+                    $storeId,
+                    'special_to_date'
+                );
+                $specialToDate = $this->dateTimeFilter->filter($specialToDate);
+                $specialToDate = new DateTime($specialToDate);
+
+                if ($specialFromDate <= $now && $now <= $specialToDate) {
+                    $price = $specialPrice;
+                }
+            } catch (Exception $e) {
+                $specialPrice = null;
+            }
+        }
+        return (float)$price;
     }
 
     /**
@@ -784,7 +855,9 @@ class Product extends AbstractHelper
         $link = $this->getStoreData($productId, $store->getId(), 'url_key');
 
         if ($link) {
-            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
+            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix(
+                    $store->getId()
+                );
         }
 
         return '';
