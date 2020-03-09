@@ -549,9 +549,7 @@ class Product extends AbstractHelper
     // @codingStandardsIgnoreLine
     protected function handleImages($product, $storeIds, $id)
     {
-        $imagePreUrl = $storeIds[0]->getBaseUrl(
-                UrlInterface::URL_TYPE_MEDIA
-            ) . 'catalog/product';
+        $imagePreUrl = $storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         try {
             $image = $this->getStoreData($id, 0, 'image');
@@ -855,9 +853,7 @@ class Product extends AbstractHelper
         $link = $this->getStoreData($productId, $store->getId(), 'url_key');
 
         if ($link) {
-            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix(
-                    $store->getId()
-                );
+            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
         }
 
         return '';
