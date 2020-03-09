@@ -105,7 +105,7 @@ class ProductDeltasApi extends BaseProductsApi implements ProductDeltasApiInterf
                     $this->productHelper->getProductCollection()
                 )
             )
-            ->setMaxId($maxId);
+            ->setMaxId((int)$maxId);
     }
 
     /**

@@ -101,9 +101,9 @@ class BaseProductsApi
 
         $availableStores = $this->storeManager->getStores(true);
 
-        foreach ($availableStores as $availableStore) {
-            $storeId = (int)$availableStore->getId();
-            if (in_array($storeId, $storeIds)) {
+        foreach ($storeIds as $storeId) {
+            if (array_key_exists($storeId, $availableStores)) {
+                $availableStore = $availableStores[$storeId];
                 $this->storeIds[$storeId] = $availableStore;
                 $websiteId = (int)$availableStore->getWebsiteId();
                 if ($websiteId) {
