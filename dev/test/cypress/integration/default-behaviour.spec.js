@@ -21,7 +21,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.loginWithCustomer(this.defaultCustomer);
       cy.changeCredentials(this.defaultCustomer.password, { password: newPassword });
 
-      cy.shouldNotShowErrorMessage('Unable to send mail');
+      cy.shouldNotShowErrorMessage();
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
@@ -33,7 +33,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.loginWithCustomer(this.defaultCustomer);
       cy.changeCredentials(this.defaultCustomer.password, { email: newEmail });
 
-      // cy.shouldNotShowErrorMessage('Unable to send mail');
+      // cy.shouldNotShowErrorMessage();
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { email: newEmail });
@@ -46,7 +46,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.loginWithCustomer(this.defaultCustomer);
       cy.changeCredentials(this.defaultCustomer.password, { password: newPassword, email: newEmail });
 
-      cy.shouldNotShowErrorMessage('Unable to send mail');
+      cy.shouldNotShowErrorMessage();
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
