@@ -17,7 +17,6 @@ services:
       - ./php.ini:/opt/docker/etc/php/php.ini
       - ./cache-flush.php:/app/cache-flush.php
       - ./Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
-      # - ./dev/Docker/website2.conf:/opt/docker/etc/httpd/vhost.common.d/website2.conf
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   magento-dev:
     image: emarsys/ems-integration-magento-sampledata:2.3.3ce
@@ -34,13 +33,10 @@ services:
       - ./..:/app/vendor/emartech/emarsys-magento2-extension
       - ./setup:/opt/emartech/setup
       - ./php.ini:/opt/docker/etc/php/php.ini
-      # - ./Docker/website2.conf:/opt/docker/etc/httpd/conf.d/website2.conf
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   db:
     image: healthcheck/percona
     restart: always
-    # volumes:
-    #   - magento-db:/var/lib/mysql
     ports:
       - "13306:3306"
     env_file:
@@ -64,5 +60,10 @@ services:
     links:
       - magento-test:magento-test.local
       - db
-# volumes:
-#   magento-db:
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    restart: always
+    ports:
+        - 1025:1025
+        - 8025:8025
