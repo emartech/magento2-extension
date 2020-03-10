@@ -34,3 +34,7 @@ services:
     links:
       - magento-test:magento-test.local
       - db
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    restart: always
