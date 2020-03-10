@@ -1,5 +1,7 @@
 'use strict';
 
+const mailhog = require('../helpers/mailhog');
+
 const customer = {
   group_id: 0,
   dob: '1977-11-12',
@@ -46,6 +48,18 @@ describe('Marketing events: customer', function() {
   context('if collectMarketingEvents turned off', function() {
     before(async function() {
       await this.magentoApi.execute('config', 'setDefault', 1);
+    });
+
+    beforeEach(async function() {
+      await mailhog.clearMails();
+    });
+
+    it('should send mail to mailhog', async function() {
+      await this.createCustomer(customer);
+
+      const emailsSentTo = await mailhog.getSentAddresses();
+
+      expect(emailsSentTo).to.include(customer.email);
     });
 
     it('should NOT create customer_new_account_registered_no_password event', async function() {
