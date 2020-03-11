@@ -57,7 +57,7 @@ describe('Products endpoint', function() {
 
     const storeLevelProduct = product.store_data[1];
     ['name', 'display_price', 'original_display_price', 'link', 'status', 'description'].forEach(key => {
-      expect(storeLevelProduct[key]).to.equal(expectedProduct.store_data[0][key]);
+      expect({ key, value: storeLevelProduct[key] }).to.eql({ key, value: expectedProduct.store_data[0][key] });
     });
   });
 
