@@ -716,7 +716,6 @@ class Product extends AbstractHelper
         );
         if (null !== $specialPrice) {
             try {
-                $now = new DateTime('-1 second');
                 $specialFromDate = $this->getStoreData(
                     $productId,
                     $storeId,
@@ -726,6 +725,10 @@ class Product extends AbstractHelper
                     $specialFromDate
                 );
                 $specialFromDate = new DateTime($specialFromDate);
+
+                $now = $this->dateTimeFilter->filter(null);
+                $now = new DateTime($now);
+
                 $specialToDate = $this->getStoreData(
                     $productId,
                     $storeId,
