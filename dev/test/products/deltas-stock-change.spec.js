@@ -49,6 +49,8 @@ describe('Deltas Stock Change', function() {
       }
     });
 
+    await this.reindex();
+
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
       limit: 3,
@@ -73,6 +75,8 @@ describe('Deltas Stock Change', function() {
       }
     });
 
+    await this.reindex();
+
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
       limit: 3,
@@ -96,6 +100,8 @@ describe('Deltas Stock Change', function() {
       }
     });
 
+    await this.reindex();
+
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
       limit: 3,
@@ -109,9 +115,15 @@ describe('Deltas Stock Change', function() {
   });
 
   it('should return product with stock change from order', async function() {
-    const localCartItem = this.localCartItem;
+    const localCartItem = {
+      sku: sku,
+      qty: 1,
+      product_type: 'simple'
+    };
     const { orderId } = await createNewGuestOrder(this.magentoApi, localCartItem);
     await shipOrder(this.magentoApi, orderId);
+
+    await this.reindex();
 
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
@@ -123,5 +135,6 @@ describe('Deltas Stock Change', function() {
 
     expect(productDeltas.length).to.be.equal(1);
     expect(product).not.to.be.undefined;
+    expect(product.qty).to.eql(99);
   });
 });

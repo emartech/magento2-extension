@@ -7,6 +7,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const url = require('url');
 const Magento2ApiClient = require('@emartech/magento2-api');
+const axios = require('axios');
 
 const { cacheTablePrefix, getTableName } = require('./helpers/get-table-name');
 const cartItem = require('./fixtures/cart-item');
@@ -67,6 +68,10 @@ const clearStoreSettings = magentoApi => () => {
   });
 };
 
+const reindex = baseUrl => () => {
+  return axios.get(`${baseUrl}reindex.php`);
+};
+
 before(async function() {
   await cacheTablePrefix();
 
@@ -108,6 +113,7 @@ before(async function() {
   this.createCustomer = createCustomer(this.magentoApi, this.db);
   this.createProduct = createProduct(this.magentoApi);
   this.localCartItem = cartItem.get(this.magentoVersion, this.magentoEdition);
+  this.reindex = reindex(baseUrl);
 
   this.customer = await this.createCustomer(
     {
