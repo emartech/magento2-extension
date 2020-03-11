@@ -7,11 +7,12 @@
 
 namespace Emartech\Emarsys\Model\Indexer;
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Helper\ConfigReader;
 use Magento\Catalog\Model\Product as ProductModel;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\DB\Adapter\AdapterInterface as DBAdapter;
 use Magento\Framework\Indexer\ActionInterface as IndexerActionInterface;
 use Magento\Framework\Mview\ActionInterface as MviewActionInterface;
 use Magento\Framework\Mview\View as ViewModel;
@@ -27,11 +28,6 @@ class DeltaIndexer implements IndexerActionInterface, MviewActionInterface
      * @var ResourceConnection
      */
     private $resourceConnection;
-
-    /**
-     * @var DBAdapter
-     */
-    private $connection;
 
     /**
      * @var LoggerInterface
@@ -54,23 +50,30 @@ class DeltaIndexer implements IndexerActionInterface, MviewActionInterface
     private $viewModel = null;
 
     /**
+     * @var ConfigReader
+     */
+    private $configReader;
+
+    /**
      * DeltaIndexer constructor.
      *
      * @param ResourceConnection       $resourceConnection
      * @param ViewCollectionFactory    $viewCollectionFactory
      * @param ProductCollectionFactory $productCollectionFactory
+     * @param ConfigReader             $configReader
      * @param LoggerInterface          $logger
      */
     public function __construct(
         ResourceConnection $resourceConnection,
         ViewCollectionFactory $viewCollectionFactory,
         ProductCollectionFactory $productCollectionFactory,
+        ConfigReader $configReader,
         LoggerInterface $logger
     ) {
         $this->resourceConnection = $resourceConnection;
-        $this->connection = $resourceConnection->getConnection();
         $this->viewCollectionFactory = $viewCollectionFactory;
         $this->productCollectionFactory = $productCollectionFactory;
+        $this->configReader = $configReader;
         $this->logger = $logger;
     }
 
@@ -151,11 +154,25 @@ class DeltaIndexer implements IndexerActionInterface, MviewActionInterface
         $insertData = [];
         /** @var ProductModel $product */
         foreach ($productCollection as $product) {
-            $insertData[] = [
-                'sku'       => $product->getSku(),
-                'entity_id' => $product->getEntityId(),
-                'row_id'    => $product->getId(),
-            ];
+            $canSave = false;
+
+            foreach ($product->getWebsiteIds() as $websiteId) {
+                if ($this->configReader->isEnabledForWebsite(
+                    ConfigInterface::PRODUCT_DELTA_SYNC,
+                    $websiteId
+                )) {
+                    $canSave = true;
+                    break;
+                }
+            }
+
+            if ($canSave) {
+                $insertData[] = [
+                    'sku'       => $product->getSku(),
+                    'entity_id' => $product->getEntityId(),
+                    'row_id'    => $product->getId(),
+                ];
+            }
         }
 
         if ($insertData) {
@@ -163,12 +180,12 @@ class DeltaIndexer implements IndexerActionInterface, MviewActionInterface
                 ->getTableName('emarsys_product_delta');
             $this->resourceConnection->getConnection()
                 ->insertMultiple($tableName, $insertData);
+        }
 
-            $viewModel = $this->getViewModel();
-            if ($viewModel instanceof ViewModel) {
-                $viewModel->getChangelog()
-                    ->clear($viewModel->getChangelog()->getVersion() + 1);
-            }
+        $viewModel = $this->getViewModel();
+        if ($viewModel instanceof ViewModel) {
+            $viewModel->getChangelog()
+                ->clear($viewModel->getChangelog()->getVersion() + 1);
         }
 
         return true;
