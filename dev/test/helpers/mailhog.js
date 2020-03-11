@@ -8,7 +8,11 @@ const getMails = async () => {
 
 const getSentAddresses = async () => {
   const { data: emails } = await getMails();
-  return emails.map(email => email.Raw.To[0].split('<')[1]);
+  return emails.map(email => {
+    const rawEmailTo = email.Raw.To[0];
+    console.log('getSentAddresses -> rawEmailTo', rawEmailTo);
+    return email.Raw.To[0].split('<')[1];
+  });
 };
 
 const clearMails = async () => {
