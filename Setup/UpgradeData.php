@@ -39,7 +39,6 @@ class UpgradeData implements UpgradeDataInterface
         $this->cacheTypeList = $cacheTypeList;
     }
 
-
     public function upgrade(
         ModuleDataSetupInterface $setup,
         ModuleContextInterface $context
