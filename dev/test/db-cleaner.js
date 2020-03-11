@@ -77,4 +77,8 @@ module.exports = class DbCleaner {
   resetEmarsysProductDelta() {
     return this._db.truncate(getTableName('emarsys_product_delta'));
   }
+
+  resetEmarsysProductDeltaChangelog() {
+    return this._db.truncate(getTableName('emarsys_delta_check_cl'));
+  }
 };

@@ -145,6 +145,7 @@ afterEach(async function() {
 
   await Promise.all([
     this.dbCleaner.resetEmarsysEventsData(),
-    this.dbCleaner.resetEmarsysProductDelta()
+    this.dbCleaner.resetEmarsysProductDelta(),
+    this.dbCleaner.resetEmarsysProductDeltaChangelog()
   ]);
 });
