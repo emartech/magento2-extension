@@ -51,6 +51,8 @@ describe('Deltas EAV Attribute Change', function() {
       }
     });
 
+    await this.reindex();
+
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
       limit: 3,

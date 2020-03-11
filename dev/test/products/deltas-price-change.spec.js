@@ -38,17 +38,20 @@ describe('Deltas Price Change', function() {
       }
     });
 
+    await this.reindex();
+
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
       limit: 3,
       storeIds: [1, 2],
       sinceId: 0
     });
+
     expect(productDeltas.length).to.be.equal(1);
 
     const priceInStore = productDeltas.find(product => product.sku === sku)
       .store_data.find(data => data.store_id === 1)
-      .display_webshop_price;
+      .webshop_price;
     expect(priceInStore).to.be.equal(newPrice);
   });
 
@@ -69,6 +72,8 @@ describe('Deltas Price Change', function() {
       }
     });
 
+    await this.reindex();
+
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
       limit: 3,
@@ -79,8 +84,8 @@ describe('Deltas Price Change', function() {
 
     const productInStore = productDeltas.find(product => product.sku === sku)
       .store_data.find(data => data.store_id === 1);
-    expect(productInStore.display_webshop_price).to.be.equal(newPrice);
-    expect(productInStore.original_display_webshop_price).to.be.equal(currentPrice);
+    expect(productInStore.webshop_price).to.be.equal(newPrice);
+    expect(productInStore.original_webshop_price).to.be.equal(currentPrice);
   });
 
   it('should return price changed product through products endpoint', async function() {
@@ -94,6 +99,8 @@ describe('Deltas Price Change', function() {
       }
     });
 
+    await this.reindex();
+
     const { products: productDeltas } = await this.magentoApi.execute('products', 'getDeltas', {
       page: 1,
       limit: 3,
@@ -104,7 +111,7 @@ describe('Deltas Price Change', function() {
 
     const priceInStore = productDeltas.find(product => product.sku === sku)
       .store_data.find(data => data.store_id === 1)
-      .display_webshop_price;
+      .webshop_price;
     expect(priceInStore).to.be.equal(newPrice);
   });
 });
