@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Indexer/etc/indexer.xsd">
+    <indexer id="emarsys_delta_check" view_id="emarsys_delta_check" class="Emartech\Emarsys\Model\Indexer\DeltaIndexer">
+        <title translate="true">Emarsys Product Delta Indexer</title>
+        <description translate="true">Store Product Delta</description>
+    </indexer>
+</config>

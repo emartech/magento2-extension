@@ -35,6 +35,8 @@ class UpgradeSchema implements UpgradeSchemaInterface
 
     /**
      * @param SchemaSetupInterface $setup
+     *
+     * @throws \Zend_Db_Exception
      */
     private function createEmarsysProductDeltaTable(SchemaSetupInterface $setup)
     {
