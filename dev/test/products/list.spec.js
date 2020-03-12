@@ -48,14 +48,14 @@ describe('Products endpoint', function() {
     expect(productCount).to.equal(expectedProductCount);
 
     ['entity_id', 'type', 'sku', 'qty', 'is_in_stock', 'images'].forEach(key => {
-      expect(product[key]).to.eql(expectedProduct[key]);
+      expect({ key, value: product[key] }).to.eql({ key, value: expectedProduct[key] });
     });
 
     expect(product.children_entity_ids).to.be.an('array');
     expect(product.categories[0]).to.equal(expectedProduct.categories[0]);
     expect(product.categories[1]).to.equal(expectedProduct.categories[1]);
 
-    const storeLevelProduct = product.store_data[1];
+    const storeLevelProduct = product.store_data[0];
     ['name', 'display_price', 'original_display_price', 'link', 'status', 'description'].forEach(key => {
       expect({ key, value: storeLevelProduct[key] }).to.eql({ key, value: expectedProduct.store_data[0][key] });
     });

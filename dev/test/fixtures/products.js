@@ -28,7 +28,7 @@ const products = (hostname, page, limit, magentoVersion, magentoEdition) => {
             name: 'Sprite Foam Yoga Brick',
             display_price: 2,
             original_display_price: 5,
-            link: `http://${hostname}/index.php/admin/sprite-foam-yoga-brick.html`,
+            link: `http://${hostname}/index.php/sprite-foam-yoga-brick.html`,
             status: 1,
             // eslint-disable-next-line
             description: `<p>Our top-selling yoga prop, the 4-inch, high-quality Sprite Foam Yoga Brick is popular among yoga novices and studio professionals alike. An essential yoga accessory, the yoga brick is a critical tool for finding balance and alignment in many common yoga poses. Choose from 5 color options.</p>\n<ul>\n<li>Standard Large Size: 4\" x 6\" x 9\".\n<li>Beveled edges for ideal contour grip.\n<li>Durable and soft, scratch-proof foam.\n<li>Individually wrapped.\n<li>Ten color choices.\n</ul> `
