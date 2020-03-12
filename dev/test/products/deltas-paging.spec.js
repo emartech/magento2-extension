@@ -1,6 +1,7 @@
 'use strict';
 
 const { insertProductDeltas } = require('../helpers/product-deltas');
+const { getTableName } = require('../helpers/get-table-name');
 
 describe('Product Deltas endpoint', function() {
   it('should page through all deltas', async function() {
@@ -38,7 +39,7 @@ describe('Product Deltas endpoint', function() {
       sinceId: 1
     });
 
-    const rows = await this.db('emarsys_product_delta').select('sku');
+    const rows = await this.db(getTableName('emarsys_product_delta')).select('sku');
 
     expect(rows.map(row => row.sku)).not.to.include('24-MB01');
     expect(products.map(product => product.sku)).to.have.members(['24-MB04', '24-MB03']);
@@ -71,7 +72,7 @@ describe('Product Deltas endpoint', function() {
       maxId: 3
     });
 
-    const rows = await this.db('emarsys_product_delta')
+    const rows = await this.db(getTableName('emarsys_product_delta'))
       .select('sku')
       .where('product_delta_id', '>', '3');
     expect(rows.map(row => row.sku)).to.include('24-MB01');
