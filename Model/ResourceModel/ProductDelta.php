@@ -63,10 +63,11 @@ class ProductDelta extends AbstractDb
     {
         try {
             // @codingStandardsIgnoreStart
+            $tableName = $this->getMainTable();
             return (bool)$this->getConnection()->query(
                 "
-                DELETE pdt1 FROM $this->_mainTable AS pdt1
-                INNER JOIN $this->_mainTable AS pdt2
+                DELETE pdt1 FROM $tableName AS pdt1
+                INNER JOIN $tableName AS pdt2
                 WHERE
                     pdt1.$this->_idFieldName < pdt2.$this->_idFieldName AND
                     pdt1.sku = pdt2.sku AND
