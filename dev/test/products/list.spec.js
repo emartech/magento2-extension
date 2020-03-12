@@ -55,8 +55,18 @@ describe('Products endpoint', function() {
     expect(product.categories[0]).to.equal(expectedProduct.categories[0]);
     expect(product.categories[1]).to.equal(expectedProduct.categories[1]);
 
-    const storeLevelProduct = product.store_data[0];
-    ['name', 'display_price', 'original_display_price', 'link', 'status', 'description'].forEach(key => {
+    const storeLevelProduct = product.store_data.find(store => store.store_id === 1);
+    [
+      'name',
+      'price',
+      'webshop_price',
+      'original_webshop_price',
+      'original_display_price',
+      'display_webshop_price',
+      'link',
+      'status',
+      'description'
+    ].forEach(key => {
       expect({ key, value: storeLevelProduct[key] }).to.eql({ key, value: expectedProduct.store_data[0][key] });
     });
   });
