@@ -55,7 +55,7 @@ describe('Deltas Price Change', function() {
     expect(priceInStore).to.be.equal(newPrice);
   });
 
-  it('should return price changed product through special-price endpoint', async function() {
+  it.skip('should return price changed product through special-price endpoint', async function() {
     const { price: currentPrice } = await this.magentoApi.get({ path: `/rest/V1/products/${sku}` });
     const newPrice = currentPrice - 1;
 
