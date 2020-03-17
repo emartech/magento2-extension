@@ -19,6 +19,7 @@ services:
       - MAGENTO_URL=http://magento-test.local
       - MAGENTO_REPO_KEY=$MAGENTO_REPO_KEY
       - MAGENTO_REPO_SECRET=$MAGENTO_REPO_SECRET
+      - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     env_file:
       - .env
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
