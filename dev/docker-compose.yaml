@@ -11,6 +11,7 @@ services:
     environment:
       - MYSQL_DATABASE=magento_test
       - MAGENTO_URL=http://magento-test.local
+      - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     volumes:
       - ./..:/app/vendor/emartech/emarsys-magento2-extension
       - ./setup:/opt/emartech/setup
@@ -30,6 +31,7 @@ services:
     environment:
       - MYSQL_DATABASE=magento_dev
       - MAGENTO_URL=http://magento-dev.local:8888
+      - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     volumes:
       - ./..:/app/vendor/emartech/emarsys-magento2-extension
       - ./setup:/opt/emartech/setup
