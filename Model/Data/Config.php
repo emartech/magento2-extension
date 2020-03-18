@@ -177,6 +177,26 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * @return string
+     */
+    public function getMagentoSendEmail()
+    {
+        return $this->getData(self::MAGENTO_SEND_EMAIL);
+    }
+
+    /**
+     * @param string $magentoSendEmail
+     *
+     * @return $this
+     */
+    public function setMagentoSendEmail($magentoSendEmail)
+    {
+        $this->setData(self::MAGENTO_SEND_EMAIL, $magentoSendEmail);
+
+        return $this;
+    }
+
+    /**
      * @param string $xmlPostPath
      * @param string $value
      * @param int    $scopeId
