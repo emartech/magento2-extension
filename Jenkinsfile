@@ -106,17 +106,6 @@ pipeline {
           }
         }
 
-        stage('Run unit tests on 2.1.9EE') {
-          steps {
-            sh 'VERSION=2.1.9ee sh dev/jenkins/run-unit.sh'
-          }
-        }
-        stage('Run e2e tests on 2.1.9EE') {
-          steps {
-            sh 'VERSION=2.1.9ee sh dev/jenkins/run-e2e.sh'
-          }
-        }
-
         stage('Run unit tests on 2.2.6CE') {
           steps {
             sh 'VERSION=2.2.6ce sh dev/jenkins/run-unit.sh'
