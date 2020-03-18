@@ -73,12 +73,4 @@ module.exports = class DbCleaner {
   resetEmarsysEventsData() {
     return this._db.truncate(getTableName('emarsys_events_data'));
   }
-
-  resetEmarsysProductDelta() {
-    return this._db.truncate(getTableName('emarsys_product_delta'));
-  }
-
-  resetEmarsysProductDeltaChangelog() {
-    return this._db.truncate(getTableName('emarsys_delta_check_cl'));
-  }
 };
