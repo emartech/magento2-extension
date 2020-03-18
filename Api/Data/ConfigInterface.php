@@ -14,7 +14,6 @@ interface ConfigInterface
     const MERCHANT_ID               = 'merchant_id';
     const SNIPPET_URL               = 'web_tracking_snippet_url';
     const STORE_SETTINGS            = 'store_settings';
-    const PRODUCT_DELTA_SYNC        = 'product_delta_sync';
     const SCOPE_TYPE_DEFAULT        = 'websites';
     const XML_PATH_EMARSYS_PRE_TAG  = 'emartech/emarsys/config/';
     const ATTRIBUTE_CONFIG_POST_TAG = '_attributes';
@@ -98,18 +97,6 @@ interface ConfigInterface
      * @return $this
      */
     public function setWebTrackingSnippetUrl($webTrackingSnippetUrl);
-
-    /**
-     * @return string
-     */
-    public function getProductDeltaSync();
-
-    /**
-     * @param string $productDeltaSync
-     *
-     * @return $this
-     */
-    public function setProductDeltaSync($productDeltaSync);
 
     /**
      * @param string $xmlPostPath
