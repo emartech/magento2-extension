@@ -1,72 +1,37 @@
 'use strict';
 
-const defaults = {
-  collectCustomerEvents: 'disabled',
-  collectSalesEvents: 'disabled',
-  collectMarketingEvents: 'disabled',
-  injectSnippet: 'disabled',
-  merchantId: null,
-  webTrackingSnippetUrl: null
-};
-
 const fullConfig = {
   collectCustomerEvents: 'enabled',
   collectSalesEvents: 'enabled',
   collectMarketingEvents: 'enabled',
+  magentoSendEmail: 'enabled',
   injectSnippet: 'enabled',
   merchantId: '1234567',
   webTrackingSnippetUrl: 'https://path/to/snippet'
 };
 
 const dbKeys = {
-  collectCustomerEvents: 'collect_customer_events',
-  collectSalesEvents: 'collect_sales_events',
-  collectMarketingEvents: 'collect_marketing_events',
-  injectSnippet: 'inject_webextend_snippets',
-  merchantId: 'merchant_id',
-  webTrackingSnippetUrl: 'web_tracking_snippet_url'
+  collect_customer_events: 'collectCustomerEvents',
+  collect_sales_events: 'collectSalesEvents',
+  collect_marketing_events: 'collectMarketingEvents',
+  inject_webextend_snippets: 'injectSnippet',
+  merchant_id: 'merchantId',
+  web_tracking_snippet_url: 'webTrackingSnippetUrl',
+  magento_send_email: 'magentoSendEmail'
 };
 
 const websiteId = 1;
 describe('Config endpoint', function() {
+  before(async function() {
+    await this.magentoApi.execute('config', 'setDefault', 1);
+  });
+
   afterEach(async function() {
     await this.magentoApi.execute('config', 'setDefault', 1);
   });
 
   after(async function() {
     await this.setDefaultStoreSettings();
-  });
-
-  describe('setDefaultConfig', function() {
-    it('should create default config for website', async function() {
-      await this.magentoApi.execute('config', 'set', {
-        websiteId,
-        config: fullConfig
-      });
-
-      await this.db
-        .delete()
-        .from(this.getTableName('core_config_data'))
-        .where('path', 'like', 'emartech/emarsys/config/%');
-
-      await this.magentoApi.execute('config', 'setDefault', websiteId);
-
-      const config = await this.db
-        .select()
-        .from(this.getTableName('core_config_data'))
-        .where('scope_id', websiteId)
-        .andWhere('path', 'like', 'emartech/emarsys/config/%');
-
-      for (const key in defaults) {
-        const configItem = config.find(item => {
-          return item.path === `emartech/emarsys/config/${dbKeys[key]}`;
-        });
-
-        if (configItem || defaults[key] !== null) {
-          expect(configItem.value).to.be.equal(defaults[key]);
-        }
-      }
-    });
   });
 
   describe('set', function() {
@@ -76,16 +41,18 @@ describe('Config endpoint', function() {
         config: fullConfig
       });
 
-      const config = await this.db
+      const configsInDB = await this.db
         .select()
         .from(this.getTableName('core_config_data'))
         .where('scope_id', websiteId)
         .andWhere('path', 'like', 'emartech/emarsys/config/%');
 
-      for (const key in fullConfig) {
-        const configItem = config.find(item => item.path === `emartech/emarsys/config/${dbKeys[key]}`);
-        expect(configItem.value).to.be.equal(fullConfig[key]);
-      }
+      const transformedConfigsFromDB = configsInDB.reduce((all, config) => ({
+        ...all,
+        [dbKeys[config.path.replace('emartech/emarsys/config/', '')]]: config.value
+      }));
+
+      expect(transformedConfigsFromDB).to.include(fullConfig);
     });
   });
 });
