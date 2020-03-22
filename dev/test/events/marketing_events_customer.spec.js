@@ -948,7 +948,7 @@ describe('Marketing events: customer', function() {
 
         const emailsSentTo = await mailhog.getSentAddresses();
 
-        expect(emailsSentTo).to.include(customer.email);
+        expect(emailsSentTo).to.include(this.customer.email);
       });
 
       it('should create customer_password_reminder event', async function() {
@@ -979,7 +979,7 @@ describe('Marketing events: customer', function() {
 
         const emailsSentTo = await mailhog.getSentAddresses();
 
-        expect(emailsSentTo).to.include(customer.email);
+        expect(emailsSentTo).to.include(this.customer.email);
       });
 
       context('and if newsletter/subscription/confirm', function() {

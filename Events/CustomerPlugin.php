@@ -104,9 +104,7 @@ class CustomerPlugin
         Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL)) {
-            return $proceed($subscriber);
-        }
+        return $this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL, $proceed);
     }
 
     /**
@@ -119,9 +117,7 @@ class CustomerPlugin
         Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL)) {
-            return $proceed($subscriber);
-        }
+        return $this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL, $proceed);
     }
 
     /**
@@ -134,9 +130,7 @@ class CustomerPlugin
         Subscriber $subscriber,
         callable $proceed
     ) {
-        if (!$this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL)) {
-            return $proceed($subscriber);
-        }
+        return $this->handleConfirmation($subscriber, self::EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL, $proceed);
     }
 
     /**
@@ -166,26 +160,34 @@ class CustomerPlugin
         if (!$storeId) {
             $storeId = $this->getWebsiteStoreId($customer, $senderMailStoreId);
         }
+
         $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
+        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+
+        if ($marketingEventsEnabled) {
+            $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
+
+            if (false !== $customerData) {
+                $this->saveEvent(
+                    $websiteId,
+                    $storeId,
+                    self::EVENT_CUSTOMER_NEW_ACCOUNT . $type,
+                    $customer->getId(),
+                    [
+                        'customer' => $customerData,
+                        'back_url' => $backUrl,
+                        'store'    => $this->storeManager->getStore($storeId)->getData(),
+                    ]
+                );
+            }
+
+            if ($magentoSendEmailEnabled) {
+                return $proceed($customer, $type, $backUrl, $storeId, $senderMailStoreId);
+            }
+        } else {
             return $proceed($customer, $type, $backUrl, $storeId, $senderMailStoreId);
-        }
-
-        $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
-
-        if (false !== $customerData) {
-            $this->saveEvent(
-                $websiteId,
-                $storeId,
-                self::EVENT_CUSTOMER_NEW_ACCOUNT . $type,
-                $customer->getId(),
-                [
-                    'customer' => $customerData,
-                    'back_url' => $backUrl,
-                    'store'    => $this->storeManager->getStore($storeId)->getData(),
-                ]
-            );
         }
     }
 
@@ -211,47 +213,54 @@ class CustomerPlugin
         $websiteId = $savedCustomer->getWebsiteId();
         $storeId = $savedCustomer->getStoreId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
-            return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
-        }
+        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
 
-        $store = $this->storeManager->getStore($savedCustomer->getStoreId());
+        if ($marketingEventsEnabled) {
+            $store = $this->storeManager->getStore($storeId);
 
-        $customerData = $this->customerHelper->getOneCustomer($savedCustomer->getId(), $websiteId, true);
+            $customerData = $this->customerHelper->getOneCustomer($savedCustomer->getId(), $websiteId, true);
 
-        $eventData = [
-            'customer'            => $customerData,
-            'store'               => $store->getData(),
-            'orig_customer_email' => $origCustomerEmail,
-            'new_customer_email'  => $savedCustomer->getEmail(),
-        ];
+            $eventData = [
+                'customer'            => $customerData,
+                'store'               => $store->getData(),
+                'orig_customer_email' => $origCustomerEmail,
+                'new_customer_email'  => $savedCustomer->getEmail(),
+            ];
 
-        if ($origCustomerEmail !== $savedCustomer->getEmail()) {
-            if ($isPasswordChanged) {
+            if ($origCustomerEmail !== $savedCustomer->getEmail()) {
+                if ($isPasswordChanged) {
+                    $this->saveEvent(
+                        $websiteId,
+                        $storeId,
+                        self::EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED,
+                        $savedCustomer->getId(),
+                        $eventData
+                    );
+                } else {
+                    $this->saveEvent(
+                        $websiteId,
+                        $storeId,
+                        self::EVENT_CUSTOMER_EMAIL_CHANGED,
+                        $savedCustomer->getId(),
+                        $eventData
+                    );
+                }
+            } elseif ($isPasswordChanged) {
                 $this->saveEvent(
                     $websiteId,
                     $storeId,
-                    self::EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED,
-                    $savedCustomer->getId(),
-                    $eventData
-                );
-            } else {
-                $this->saveEvent(
-                    $websiteId,
-                    $storeId,
-                    self::EVENT_CUSTOMER_EMAIL_CHANGED,
+                    self::EVENT_CUSTOMER_PASSWORD_RESET,
                     $savedCustomer->getId(),
                     $eventData
                 );
             }
-        } elseif ($isPasswordChanged) {
-            $this->saveEvent(
-                $websiteId,
-                $storeId,
-                self::EVENT_CUSTOMER_PASSWORD_RESET,
-                $savedCustomer->getId(),
-                $eventData
-            );
+
+            if ($magentoSendEmailEnabled) {
+                return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
+            }
+        } else {
+            return $proceed($savedCustomer, $origCustomerEmail, $isPasswordChanged);
         }
     }
 
@@ -273,25 +282,32 @@ class CustomerPlugin
         $websiteId = $customer->getWebsiteId();
         $storeId = $customer->getStoreId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
+        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+
+        if ($marketingEventsEnabled) {
+            $store = $this->storeManager->getStore($storeId);
+
+            $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
+
+            if (false !== $customerData) {
+                $this->saveEvent(
+                    $websiteId,
+                    $storeId,
+                    self::EVENT_CUSTOMER_PASSWORD_REMINDER,
+                    $customer->getId(),
+                    [
+                        'customer' => $customerData,
+                        'store'    => $store->getData(),
+                    ]
+                );
+            }
+
+            if ($magentoSendEmailEnabled) {
+                return $proceed($customer);
+            }
+        } else {
             return $proceed($customer);
-        }
-
-        $store = $this->storeManager->getStore($storeId);
-
-        $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
-
-        if (false !== $customerData) {
-            $this->saveEvent(
-                $websiteId,
-                $storeId,
-                self::EVENT_CUSTOMER_PASSWORD_REMINDER,
-                $customer->getId(),
-                [
-                    'customer' => $customerData,
-                    'store'    => $store->getData(),
-                ]
-            );
         }
     }
 
@@ -313,25 +329,32 @@ class CustomerPlugin
         $websiteId = $customer->getWebsiteId();
         $storeId = $customer->getStoreId();
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
+        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+
+        if ($marketingEventsEnabled) {
+            $store = $this->storeManager->getStore($storeId);
+
+            $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
+
+            if (null !== $customerData) {
+                $this->saveEvent(
+                    $websiteId,
+                    $storeId,
+                    self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION,
+                    $customer->getId(),
+                    [
+                        'customer' => $customerData,
+                        'store'    => $store->getData(),
+                    ]
+                );
+            }
+
+            if ($magentoSendEmailEnabled) {
+                return $proceed($customer);
+            }
+        } else {
             return $proceed($customer);
-        }
-
-        $store = $this->storeManager->getStore($storeId);
-
-        $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
-
-        if (null !== $customerData) {
-            $this->saveEvent(
-                $websiteId,
-                $storeId,
-                self::EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION,
-                $customer->getId(),
-                [
-                    'customer' => $customerData,
-                    'store'    => $store->getData(),
-                ]
-            );
         }
     }
 
@@ -382,32 +405,34 @@ class CustomerPlugin
      *
      * @return bool
      */
-    private function handleConfirmation($subscriber, $type)
+    private function handleConfirmation($subscriber, $type, $proceed)
     {
         $storeId = $subscriber->getStoreId();
+
         try {
             $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-        } catch (\Exception $e) {
-            return false;
-        }
+        } catch (\Exception $e) { } //@codingStandardsIgnoreLine
 
-        if (!$this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId)) {
-            return false;
-        }
+        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
 
-        try {
-            $this->saveEvent(
-                $websiteId,
-                $storeId,
-                $type,
-                $subscriber->getId(),
-                $this->getDataFromSubscription($subscriber, $websiteId)
-            );
-        } catch (\Exception $e) {
-            return false;
-        }
+        if ($marketingEventsEnabled) {
+            try {
+                $this->saveEvent(
+                    $websiteId,
+                    $storeId,
+                    $type,
+                    $subscriber->getId(),
+                    $this->getDataFromSubscription($subscriber, $websiteId)
+                );
+            } catch (\Exception $e) { } //@codingStandardsIgnoreLine
 
-        return true;
+            if ($magentoSendEmailEnabled) {
+                return $proceed($subscriber);
+            }
+        } else {
+            return $proceed($subscriber);
+        }
     }
 
     /**
