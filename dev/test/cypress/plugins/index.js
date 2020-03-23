@@ -3,6 +3,7 @@
 const Magento2ApiClient = require('@emartech/magento2-api');
 const db = require('../../helpers/db');
 const { getTableName, cacheTablePrefix } = require('../../helpers/get-table-name');
+const { getSentAddresses, clearMails } = require('../../helpers/mailhog');
 
 const magentoApi = new Magento2ApiClient({
   baseUrl: process.env.CYPRESS_baseUrl || 'http://magento-test.local',
@@ -35,17 +36,12 @@ module.exports = (on, config) => {
   on('task', {
     clearEvents,
     cacheTablePrefix,
-    flushMagentoCache: () => magentoApi.get({ path: '/cache-flush.php' }),
-    disableEmail: () => {
-      return db
-        .insert({
-          scope: 'default',
-          scope_id: '0',
-          path: 'system/smtp/disable',
-          value: 1
-        })
-        .into(getTableName('core_config_data'));
+    clearMails: async () => {
+      await clearMails();
+      return true;
     },
+    getSentAddresses,
+    flushMagentoCache: () => magentoApi.get({ path: '/cache-flush.php' }),
     enableEmail: () => {
       return db(getTableName('core_config_data'))
         .where({ path: 'system/smtp/disable' })

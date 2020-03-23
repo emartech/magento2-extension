@@ -7,6 +7,11 @@ describe('Default behaviour with everything turned off', function() {
 
   beforeEach(() => {
     cy.task('getDefaultCustomer').as('defaultCustomer');
+    cy.task('clearMails');
+  });
+
+  after(() => {
+    cy.task('clearMails');
   });
 
   context('MarketingEvents - Customer', function() {
@@ -25,18 +30,26 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
+
+      cy.task('getSentAddresses').then(emailAddresses => {
+        expect(emailAddresses).to.be.eql([this.defaultCustomer.email]);
+      });
     });
 
     it('should not create customer_email_changed event', function() {
+      const oldEmail = this.defaultCustomer.email;
       const newEmail = 'cypress2@default.com';
 
       cy.loginWithCustomer(this.defaultCustomer);
       cy.changeCredentials(this.defaultCustomer.password, { email: newEmail });
+      cy.task('setDefaultCustomerProperty', { email: newEmail });
 
-      // cy.shouldNotShowErrorMessage();
+      cy.shouldNotShowErrorMessage();
       cy.shouldNotExistsEvents();
 
-      cy.task('setDefaultCustomerProperty', { email: newEmail });
+      cy.task('getSentAddresses').then(emailAddresses => {
+        expect(emailAddresses).to.be.eql([newEmail, oldEmail]);
+      });
     });
 
     it('should not create customer_email_and_password_changed event', function() {
@@ -50,20 +63,14 @@ describe('Default behaviour with everything turned off', function() {
       cy.shouldNotExistsEvents();
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
+
+      cy.task('getSentAddresses').then(emailAddresses => {
+        expect(emailAddresses).to.be.eql([this.defaultCustomer.email]);
+      });
     });
   });
 
   context('MarketingEvents - Subscription', function() {
-    before(() => {
-      cy.task('disableEmail');
-      cy.task('flushMagentoCache');
-    });
-
-    after(() => {
-      cy.task('enableEmail');
-      cy.task('flushMagentoCache');
-    });
-
     const unsubscribe = email => {
       cy.task('getSubscription', email).then(subscription => {
         cy.visit(`/newsletter/subscriber/unsubscribe?id=${subscription.subscriber_id}\
@@ -86,11 +93,19 @@ describe('Default behaviour with everything turned off', function() {
         cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail);
 
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail]);
+        });
+
         unsubscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
         cy.isNotSubscribed(guestEmail);
         cy.task('clearEvents');
+
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail, guestEmail]);
+        });
       });
     });
 
@@ -112,11 +127,19 @@ describe('Default behaviour with everything turned off', function() {
         cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail, true);
 
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail]);
+        });
+
         unsubscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
         cy.isNotSubscribed(guestEmail);
         cy.task('clearEvents');
+
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail, guestEmail]);
+        });
       });
     });
   });
