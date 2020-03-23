@@ -176,7 +176,7 @@ describe('Webextend scripts', function() {
       });
 
       it('should not be in the HTML', async function() {
-        await this.magentoApi.execute('config', 'setDefault', 1);
+        await this.turnOffEverySetting(1);
         const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
         expect(emarsysSnippets).to.eql('');
       });
@@ -185,7 +185,7 @@ describe('Webextend scripts', function() {
 
   describe('disabled', function() {
     it('should not be in the HTML if injectsnippet setting is disabled', async function() {
-      await this.magentoApi.execute('config', 'setDefault', 1);
+      await this.turnOffEverySetting(1);
       const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
       expect(emarsysSnippets).to.eql('');
     });

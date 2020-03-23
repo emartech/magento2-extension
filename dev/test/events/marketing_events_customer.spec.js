@@ -52,7 +52,7 @@ describe('Marketing events: customer', function() {
 
   context('if collectMarketingEvents turned off', function() {
     before(async function() {
-      await this.magentoApi.execute('config', 'setDefault', 1);
+      await this.turnOffEverySetting(1);
     });
 
     it('should send mail to mailhog', async function() {
@@ -64,7 +64,7 @@ describe('Marketing events: customer', function() {
     });
 
     it('should NOT create customer_new_account_registered_no_password event', async function() {
-      await this.magentoApi.execute('config', 'setDefault', 1);
+      await this.turnOffEverySetting(1);
 
       await this.createCustomer(customer);
 
@@ -81,7 +81,7 @@ describe('Marketing events: customer', function() {
     });
 
     it('should NOT create customer_new_account_registered event', async function() {
-      await this.magentoApi.execute('config', 'setDefault', 1);
+      await this.turnOffEverySetting(1);
 
       await this.createCustomer(customer, 'Password1234');
 
@@ -98,7 +98,7 @@ describe('Marketing events: customer', function() {
     });
 
     it('should NOT create customer_password_reset_confirmation event', async function() {
-      await this.magentoApi.execute('config', 'setDefault', 1);
+      await this.turnOffEverySetting(1);
 
       await this.magentoApi.put({
         path: '/index.php/rest/V1/customers/password',
@@ -122,7 +122,7 @@ describe('Marketing events: customer', function() {
     });
 
     it('should NOT create customer_password_reminder event', async function() {
-      await this.magentoApi.execute('config', 'setDefault', 1);
+      await this.turnOffEverySetting(1);
 
       await this.magentoApi.put({
         path: '/index.php/rest/V1/customers/password',

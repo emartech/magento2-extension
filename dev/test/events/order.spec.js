@@ -140,7 +140,7 @@ describe('Order events', function() {
       });
 
       it('should not create event', async function() {
-        await this.magentoApi.execute('config', 'setDefault', 1);
+        await this.turnOffEverySetting(1);
 
         await createNewOrder(this.magentoApi, this.customer, localCartItem);
         const createEvent = await getLastEvent(this.db);
@@ -152,7 +152,7 @@ describe('Order events', function() {
 
   context('setting disabled', function() {
     it('should not create event', async function() {
-      await this.magentoApi.execute('config', 'setDefault', 1);
+      await this.turnOffEverySetting(1);
       await createNewOrder(this.magentoApi, this.customer, localCartItem);
 
       const createEvent = await getLastEvent(this.db);

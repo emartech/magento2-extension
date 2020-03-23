@@ -23,11 +23,11 @@ const dbKeys = {
 const websiteId = 1;
 describe('Config endpoint', function() {
   before(async function() {
-    await this.magentoApi.execute('config', 'setDefault', 1);
+    await this.turnOffEverySetting(1);
   });
 
   afterEach(async function() {
-    await this.magentoApi.execute('config', 'setDefault', 1);
+    await this.turnOffEverySetting(1);
   });
 
   after(async function() {

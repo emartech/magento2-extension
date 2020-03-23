@@ -28,7 +28,7 @@ describe('Customer events', function() {
 
   afterEach(async function() {
     await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email = "yolo99@yolo.net"`);
-    await this.magentoApi.execute('config', 'setDefault', 1);
+    await this.turnOffEverySetting(1);
   });
 
   after(async function() {
@@ -101,7 +101,7 @@ describe('Customer events', function() {
   });
 
   it('are not saved in DB if collectCustomerEvents is disabled', async function() {
-    await this.magentoApi.execute('config', 'setDefault', 1);
+    await this.turnOffEverySetting(1);
 
     await this.createCustomer(customer);
 

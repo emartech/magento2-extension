@@ -59,6 +59,21 @@ const setDefaultStoreSettings = magentoApi => () => {
   });
 };
 
+const turnOffEverySetting = magentoApi => (websiteId) => {
+  return magentoApi.execute('config', 'set', {
+    websiteId,
+    config: {
+      collectCustomerEvents: 'disabled',
+      collectSalesEvents: 'disabled',
+      collectMarketingEvents: 'disabled',
+      magentoSendEmail: 'disabled',
+      injectSnippet: 'disabled',
+      merchantId: '',
+      webTrackingSnippetUrl: ''
+    }
+  });
+};
+
 const clearStoreSettings = magentoApi => () => {
   return magentoApi.execute('config', 'set', {
     websiteId: 1,
@@ -95,6 +110,7 @@ before(async function() {
 
   this.setDefaultStoreSettings = setDefaultStoreSettings(this.magentoApi);
   this.clearStoreSettings = clearStoreSettings(this.magentoApi);
+  this.turnOffEverySetting = turnOffEverySetting(this.magentoApi);
 
   const magentoSystemInfo = await this.magentoApi.execute('systeminfo', 'get');
   this.magentoVersion = magentoSystemInfo.magento_version;
