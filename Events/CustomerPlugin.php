@@ -163,8 +163,10 @@ class CustomerPlugin
 
         $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
 
-        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
-        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+        $marketingEventsEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
 
         if ($marketingEventsEnabled) {
             $customerData = $this->customerHelper->getOneCustomer($customer->getId(), $websiteId, true);
@@ -213,8 +215,10 @@ class CustomerPlugin
         $websiteId = $savedCustomer->getWebsiteId();
         $storeId = $savedCustomer->getStoreId();
 
-        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
-        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+        $marketingEventsEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
 
         if ($marketingEventsEnabled) {
             $store = $this->storeManager->getStore($storeId);
@@ -282,8 +286,10 @@ class CustomerPlugin
         $websiteId = $customer->getWebsiteId();
         $storeId = $customer->getStoreId();
 
-        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
-        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+        $marketingEventsEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
 
         if ($marketingEventsEnabled) {
             $store = $this->storeManager->getStore($storeId);
@@ -329,8 +335,10 @@ class CustomerPlugin
         $websiteId = $customer->getWebsiteId();
         $storeId = $customer->getStoreId();
 
-        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
-        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+        $marketingEventsEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
 
         if ($marketingEventsEnabled) {
             $store = $this->storeManager->getStore($storeId);
@@ -413,8 +421,10 @@ class CustomerPlugin
             $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
         } catch (\Exception $e) { } //@codingStandardsIgnoreLine
 
-        $marketingEventsEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
-        $magentoSendEmailEnabled = $this->configReader->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
+        $marketingEventsEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
+        $magentoSendEmailEnabled = $this->configReader
+            ->isEnabledForWebsite(ConfigInterface::MAGENTO_SEND_EMAIL, $websiteId);
 
         if ($marketingEventsEnabled) {
             try {
