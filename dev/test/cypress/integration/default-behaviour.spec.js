@@ -96,6 +96,7 @@ describe('Default behaviour with everything turned off', function() {
         cy.task('getSentAddresses').then(emailAddresses => {
           expect(emailAddresses).to.be.eql([guestEmail]);
         });
+        cy.task('clearMails');
 
         unsubscribe(guestEmail);
 
@@ -104,7 +105,7 @@ describe('Default behaviour with everything turned off', function() {
         cy.task('clearEvents');
 
         cy.task('getSentAddresses').then(emailAddresses => {
-          expect(emailAddresses).to.be.eql([guestEmail, guestEmail]);
+          expect(emailAddresses).to.be.eql([guestEmail]);
         });
       });
     });
@@ -130,6 +131,7 @@ describe('Default behaviour with everything turned off', function() {
         cy.task('getSentAddresses').then(emailAddresses => {
           expect(emailAddresses).to.be.eql([guestEmail]);
         });
+        cy.task('clearMails');
 
         unsubscribe(guestEmail);
 
@@ -138,7 +140,7 @@ describe('Default behaviour with everything turned off', function() {
         cy.task('clearEvents');
 
         cy.task('getSentAddresses').then(emailAddresses => {
-          expect(emailAddresses).to.be.eql([guestEmail, guestEmail]);
+          expect(emailAddresses).to.be.eql([guestEmail]);
         });
       });
     });

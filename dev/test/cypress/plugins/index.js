@@ -50,6 +50,7 @@ module.exports = (on, config) => {
     setConfig: async ({
       websiteId = 1,
       collectMarketingEvents = 'disabled',
+      magentoSendEmail = 'disabled',
       injectSnippet = 'disabled',
       merchantId = null,
       webTrackingSnippetUrl = null
@@ -59,6 +60,7 @@ module.exports = (on, config) => {
         config: {
           collectMarketingEvents,
           injectSnippet,
+          magentoSendEmail,
           merchantId,
           webTrackingSnippetUrl,
           storeSettings: [
