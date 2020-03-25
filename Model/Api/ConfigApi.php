@@ -73,32 +73,6 @@ class ConfigApi implements ConfigApiInterface
     }
 
     /**
-     * @param int $websiteId
-     *
-     * @return StatusResponseInterface
-     */
-    public function setDefault($websiteId)
-    {
-        /** @var ConfigInterface $config */
-        $config = $this->configFactory->create();
-
-        $foundDifference = false;
-
-        foreach ($this->defaultConfig as $key => $value) {
-            if ($config->setConfigValue($key, $value, $websiteId)) {
-                $foundDifference = true;
-            }
-        }
-
-        if ($foundDifference) {
-            $config->cleanScope();
-        }
-
-        return $this->statusResponseFactory->create()
-            ->setStatus('ok');
-    }
-
-    /**
      * @param string   $type
      * @param int      $websiteId
      * @param string[] $codes

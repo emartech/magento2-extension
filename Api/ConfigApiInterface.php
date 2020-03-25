@@ -15,13 +15,6 @@ interface ConfigApiInterface
     public function set($websiteId, ConfigInterface $config);
 
     /**
-     * @param int $websiteId
-     *
-     * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
-     */
-    public function setDefault($websiteId);
-
-    /**
      * @param string   $type
      * @param int      $websiteId
      * @param string[] $codes

@@ -30,12 +30,6 @@
             <resource ref="Emartech_Emarsys::api_configs"/>
         </resources>
     </route>
-    <route url="/V1/emarsys/config/setDefault" method="POST">
-        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setDefault"/>
-        <resources>
-            <resource ref="Emartech_Emarsys::api_configs"/>
-        </resources>
-    </route>
     <route url="/V1/emarsys/config/attributes/:type" method="POST">
         <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setAttributes"/>
         <resources>
