@@ -98,7 +98,7 @@ describe('Order events', function() {
     before(async function() {
       await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
-        config: { collectSalesEvents: 'enabled' }
+        config: { collectSalesEvents: 'enabled', collectMarketingEvents: 'disabled', magentoSendEmail: 'disabled' }
       });
     });
 
