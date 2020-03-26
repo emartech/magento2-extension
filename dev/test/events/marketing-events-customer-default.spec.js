@@ -174,7 +174,7 @@ describe('Marketing events: customer', function() {
           await this.magentoApi.execute('config', 'set', {
             websiteId: 1,
             config: {
-              merchantId: 'itsaflush'
+              merchantId: `itsaflush${new Date().getTime()}`
             }
           });
         });
