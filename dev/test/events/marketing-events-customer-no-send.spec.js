@@ -320,7 +320,7 @@ describe('Marketing events: customer', function() {
 
             // this is for invalidating config cache
             await this.magentoApi.execute('config', 'set', {
-              websiteId: 1,
+              websiteId: 0,
               config: {
                 merchantId: 'itsaflush'
               }
@@ -388,6 +388,8 @@ describe('Marketing events: customer', function() {
                 }
               }
             });
+
+            await this.db(this.getTableName('newsletter_subscriber')).update('subscriber_status', 1);
 
             await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
 
