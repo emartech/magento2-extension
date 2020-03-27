@@ -6,14 +6,14 @@
  */
 namespace Emartech\Emarsys\Block;
 
+use Emartech\Emarsys\Helper\Json;
+use Magento\Checkout\Model\Session;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Sales\Model\OrderFactory;
 use Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory as OrderItemCollectionFactory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableProduct;
 use Magento\Bundle\Model\Product\Type as BundleProduct;
 
-/**
- * Class Success
- * @package Emartech\Emarsys\Block
- */
 class Success extends \Magento\Framework\View\Element\Template
 {
     // @codingStandardsIgnoreLine
@@ -29,20 +29,25 @@ class Success extends \Magento\Framework\View\Element\Template
     // @codingStandardsIgnoreLine
     protected $orderItemCollectionFactory;
 
-    // @codingStandardsIgnoreStart
+    /**
+     * @var Json
+     */
+    private $jsonHelper;
+
     public function __construct(
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Sales\Model\OrderFactory $orderFactory,
+        Context $context,
+        Session $checkoutSession,
+        OrderFactory $orderFactory,
         OrderItemCollectionFactory $orderItemCollectionFactory,
-        \Magento\Framework\View\Element\Template\Context $context
+        Json $jsonHelper
     ) {
         $this->_checkoutSession = $checkoutSession;
         $this->_orderFactory = $orderFactory;
         $this->orderItemCollectionFactory = $orderItemCollectionFactory;
         $this->_scopeConfig = $context->getScopeConfig();
+        $this->jsonHelper = $jsonHelper;
         parent::__construct($context);
     }
-    // @codingStandardsIgnoreEnd
 
     private function getOrderId()
     {
@@ -69,7 +74,7 @@ class Success extends \Magento\Framework\View\Element\Template
             if ($this->notBundleProduct($item) && $this->notConfigurableChild($item)) {
                 $qty = (int) $item->getQtyOrdered();
                 $sku = $item->getSku();
-                $price = $item->getBasePrice() - $item->getBaseDiscountAmount();
+                $price = $item->getBaseRowTotal() - $item->getBaseDiscountAmount();
 
                 $items[] = [
                     'item' => $sku,
@@ -82,13 +87,16 @@ class Success extends \Magento\Framework\View\Element\Template
         return $items;
     }
 
+    /**
+     * @return string
+     */
     public function getOrderData()
     {
-        return [
+        return $this->jsonHelper->serialize([
             'orderId' => $this->getOrderId(),
             'items' => $this->getLineItems(),
             'email' => $this->getOrder()->getCustomerEmail()
-        ];
+        ]);
     }
 
     /**

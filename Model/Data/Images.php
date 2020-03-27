@@ -6,10 +6,6 @@ use Magento\Framework\DataObject;
 
 use Emartech\Emarsys\Api\Data\ImagesInterface;
 
-/**
- * Class Images
- * @package Emartech\Emarsys\Model\Data
- */
 class Images extends DataObject implements ImagesInterface
 {
     /**

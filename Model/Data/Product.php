@@ -7,10 +7,6 @@ use Magento\Framework\DataObject;
 use Emartech\Emarsys\Api\Data\ImagesInterface;
 use Emartech\Emarsys\Api\Data\ProductInterface;
 
-/**
- * Class Product
- * @package Emartech\Emarsys\Model\Data
- */
 class Product extends DataObject implements ProductInterface
 {
     /**

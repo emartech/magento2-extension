@@ -7,10 +7,6 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Emartech\Emarsys\Helper\Integration;
 
-/**
- * Class Uninstall
- * @package Emartech\Emarsys\Setup
- */
 class Uninstall implements UninstallInterface
 {
     /**

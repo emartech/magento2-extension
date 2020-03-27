@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface EventsApiResponseInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface EventsApiResponseInterface extends ListApiResponseBaseInterface
 {
     const EVENTS_KEY = 'events';

@@ -4,10 +4,6 @@ namespace Emartech\Emarsys\Model\Data;
 
 use Emartech\Emarsys\Api\Data\EventsApiResponseInterface;
 
-/**
- * Class SubscriptionsApiResponse
- * @package Emartech\Emarsys\Model\Data
- */
 class EventsApiResponse extends ListApiResponseBase implements EventsApiResponseInterface
 {
     /**

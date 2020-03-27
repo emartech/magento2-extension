@@ -201,5 +201,5 @@ git push -f --tags
 * Commit `codeship.env.encrypted` into the repo.
 
 ## Update Cypress
-* Update the vesrion in `package.json`
+* Update the version in `package.json`
 * Run `make build-cypress VERSION=new-version` from project root

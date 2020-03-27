@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface SubscriptionInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface SubscriptionInterface
 {
     const CUSTOMER_ID_KEY   = 'customer_id';

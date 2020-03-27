@@ -9,6 +9,8 @@ mocha: reset-test-db flush-test run-npmt
 
 run-e2e: reset-test-db flush-test run-docker-e2e
 
+rerun-e2e: reset-test-db run-docker-e2e
+
 run-e2e-debug: reset-test-db run-docker-e2e
 
 open-e2e: reset-test-db set-local-baseurl flush-test open-local-e2e set-docker-baseurl flush-test
@@ -34,13 +36,7 @@ run-local-e2e:
 	-CYPRESS_baseUrl=http://magento-test.local:8889 ./dev/test/node_modules/.bin/cypress run --project ./dev/test/
 
 run-npmt:
-	-@$(COMPOSE) run --rm -e "TABLE_PREFIX=$$TABLE_PREFIX" node npm t
-
-quick-test: ## Runs tests
-	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run quick-test
-
-quick-e2e: ## Runs tests
-	-@$(COMPOSE) run --rm -e "QUICK_TEST=true" node npm run e2e
+	-@$(COMPOSE) run --rm node npm t
 
 set-local-baseurl:
 	@$(COMPOSE) exec --user application magento-test bash -c "bin/magento config:set web/unsecure/base_url http://magento-test.local:8889/"
@@ -49,4 +45,4 @@ set-docker-baseurl:
 	@$(COMPOSE) exec --user application magento-test bash -c "bin/magento config:set web/unsecure/base_url http://magento-test.local/"
 
 codesniffer:
-	@$(COMPOSE) exec --user application magento-dev bash -c "sh vendor/emartech/emarsys-magento2-extension/dev/codesniffer.sh"
+	VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh

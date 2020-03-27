@@ -6,28 +6,31 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
-use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
-use Magento\Eav\Model\Entity\Context;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\Factory;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Eav\Model\Entity\Attribute\SetFactory;
-use Magento\Eav\Model\Entity\TypeFactory;
-use Magento\Catalog\Model\Product\Attribute\DefaultAttributes;
-use Magento\Framework\Model\ResourceModel\Iterator;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
 use Emartech\Emarsys\Helper\LinkField;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Factory;
+use Magento\Catalog\Model\Indexer\Product\Price\PriceTableResolver;
+use Magento\Catalog\Model\Product\Attribute\DefaultAttributes;
+use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
+use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
+use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
+use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
+use Magento\Customer\Model\Indexer\CustomerGroupDimensionProvider;
+use Magento\Eav\Model\Entity\Attribute\SetFactory;
+use Magento\Eav\Model\Entity\Context;
+use Magento\Eav\Model\Entity\TypeFactory;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Indexer\Dimension;
+use Magento\Framework\Indexer\DimensionFactory;
+use Magento\Framework\Model\ResourceModel\Iterator;
+use Magento\Store\Model\Indexer\WebsiteDimensionProvider;
+use Magento\Store\Model\StoreManagerInterface;
+use Zend_Db_Select;
+use Magento\Framework\DB\Select as DBSelect;
 
-/**
- * Class Product
- *
- * @package Emartech\Emarsys\Model\ResourceModel\Api
- */
 class Product extends ProductResourceModel
 {
     const PRODUCT_ENTITY_TYPE_ID = 4;
@@ -61,6 +64,21 @@ class Product extends ProductResourceModel
      * @var LinkField
      */
     private $linkFieldHelper;
+
+    /**
+     * @var PriceTableResolver
+     */
+    private $priceTableResolver;
+
+    /**
+     * @var DimensionFactory
+     */
+    private $dimensionFactory;
+
+    /**
+     * @var array
+     */
+    private $priceData = [];
 
     /**
      * @var string
@@ -142,7 +160,19 @@ class Product extends ProductResourceModel
         $this->iterator = $iterator;
         $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
         $this->linkFieldHelper = $linkFieldHelper;
-        $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(
+            ProductInterface::class
+        );
+        if (class_exists(PriceTableResolver::class)) {
+            $this->priceTableResolver = ObjectManager::getInstance()->get(
+                PriceTableResolver::class
+            );
+        }
+        if (class_exists(Dimension::class)) {
+            $this->dimensionFactory = ObjectManager::getInstance()->get(
+                DimensionFactory::class
+            );
+        }
 
         parent::__construct(
             $context,
@@ -159,28 +189,63 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param $page
-     * @param $pageSize
+     * @param int         $page
+     * @param int         $pageSize
+     * @param string|null $table
+     * @param string|null $primaryKey
+     * @param array       $wheres
+     * @param string|null $countField
      *
      * @return array
      */
-    public function handleIds($page, $pageSize)
-    {
-        $productsTable = $this->getTable('catalog_product_entity');
+    public function handleIds(
+        $page,
+        $pageSize,
+        $table = null,
+        $primaryKey = null,
+        $wheres = [],
+        $countField = null
+    ) {
+        if (null === $table) {
+            $table = $this->getTable('catalog_product_entity');
+        }
+        if (null === $primaryKey) {
+            $primaryKey = $this->linkField;
+        }
+        if (null === $countField) {
+            $countField = $primaryKey;
+        }
 
         $itemsCountQuery = $this->_resource
             ->getConnection()
             ->select()
-            ->from($productsTable, ['count' => 'count(' . $this->linkField . ')']);
+            ->from(
+                $table,
+                ['count' => 'count(distinct ' . $countField . ')']
+            );
 
-        $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery);
+        if ($wheres) {
+            foreach ($wheres as $where) {
+                $itemsCountQuery->where($where[0], $where[1]);
+            }
+        }
 
-        $subFields['eid'] = $this->linkField;
+        $numberOfItems = $this->_resource->getConnection()->fetchOne(
+            $itemsCountQuery
+        );
+
+        $subFields['eid'] = $primaryKey;
 
         $subSelect = $this->_resource->getConnection()->select()
-            ->from($productsTable, $subFields)
-            ->order($this->linkField)
+            ->from($table, $subFields)
+            ->order($primaryKey)
             ->limit($pageSize, $page);
+
+        if ($wheres) {
+            foreach ($wheres as $where) {
+                $subSelect->where($where[0], $where[1]);
+            }
+        }
 
         $fields = ['minId' => 'min(tmp.eid)', 'maxId' => 'max(tmp.eid)'];
 
@@ -191,31 +256,39 @@ class Product extends ProductResourceModel
 
         $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery);
 
-        $returnArray = [
+        return [
             'numberOfItems' => (int)$numberOfItems,
             'minId'         => (int)$minMaxValues['minId'],
             'maxId'         => (int)$minMaxValues['maxId'],
         ];
-
-        return $returnArray;
     }
 
     /**
-     * @param int $minProductId
-     * @param int $maxProductId
+     * @param array      $wheres
+     * @param array|null $joinInner
      *
      * @return array
      */
-    public function getChildrenProductIds($minProductId, $maxProductId)
+    public function getChildrenProductIds($wheres, $joinInner = null)
     {
         $this->childrenProductIds = [];
 
         $superLinkTable = $this->getTable('catalog_product_super_link');
 
         $superLinkQuery = $this->_resource->getConnection()->select()
-            ->from($superLinkTable, ['product_id', 'parent_id'])
-            ->where('parent_id >= ?', $minProductId)
-            ->where('parent_id <= ?', $maxProductId);
+            ->from($superLinkTable, ['product_id', 'parent_id']);
+
+        foreach ($wheres as $where) {
+            $superLinkQuery->where($where[0], $where[1]);
+        }
+
+        if (null != $joinInner) {
+            $superLinkQuery->joinInner(
+                $joinInner[0],
+                $joinInner[1],
+                $joinInner[2]
+            );
+        }
 
         $this->iterator->walk(
             (string)$superLinkQuery,
@@ -243,19 +316,30 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param int $minProductId
-     * @param int $maxProductId
+     * @param array      $wheres
+     * @param array|null $joinInner
      *
      * @return array
      */
-    public function getStockData($minProductId, $maxProductId)
+    public function getStockData($wheres, $joinInner = null)
     {
         $this->stockData = [];
+        $stockItemTable = $this->getTable('cataloginventory_stock_item');
         $stockQuery = $this->_resource->getConnection()->select()
-            ->from($this->getTable('cataloginventory_stock_item'), ['is_in_stock', 'qty', 'product_id'])
-            ->where('product_id >= ?', $minProductId)
-            ->where('product_id <= ?', $maxProductId)
-            ->where('stock_id = ?', 1);
+            ->from($stockItemTable, ['is_in_stock', 'qty', 'product_id'])
+            ->joinLeft(
+                ['entity_table' => $this->getTable('catalog_product_entity')],
+                'entity_table.entity_id = ' . $stockItemTable . '.product_id',
+                []
+            )->where('stock_id = ?', 1);
+
+        foreach ($wheres as $where) {
+            $stockQuery->where($where[0], $where[1]);
+        }
+
+        if (null !== $joinInner) {
+            $stockQuery->joinInner($joinInner[0], $joinInner[1], $joinInner[2]);
+        }
 
         $this->iterator->walk(
             (string)$stockQuery,
@@ -285,14 +369,19 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param int   $minProductId
-     * @param int   $maxProductId
-     * @param array $storeIds
+     * @param array      $wheres
+     * @param array      $storeIds
+     * @param string[]   $attributeCodes
+     * @param array|null $joinInner
      *
      * @return array
      */
-    public function getAttributeData($minProductId, $maxProductId, $storeIds)
-    {
+    public function getAttributeData(
+        $wheres,
+        $storeIds,
+        $attributeCodes,
+        $joinInner = null
+    ) {
         $this->mainTable = $this->getEntityTable();
         $this->attributeData = [];
 
@@ -301,15 +390,14 @@ class Product extends ProductResourceModel
         $attributeTables = [];
 
         /** @var ProductAttributeCollection $productAttributeCollection */
-        $productAttributeCollection = $this->productAttributeCollectionFactory->create();
+        $productAttributeCollection = $this->productAttributeCollectionFactory->create(
+        );
         $productAttributeCollection
-            ->addFieldToFilter('entity_type_id', ['eq' => self::PRODUCT_ENTITY_TYPE_ID])
-            ->addFieldToFilter('attribute_code', [
-                'in' => array_values(array_merge(
-                    $this->storeProductAttributeCodes,
-                    $this->globalProductAttributeCodes
-                )),
-            ]);
+            ->addFieldToFilter(
+                'entity_type_id',
+                ['eq' => self::PRODUCT_ENTITY_TYPE_ID]
+            )
+            ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
         /** @var ProductAttribute $productAttribute */
         foreach ($productAttributeCollection as $productAttribute) {
@@ -320,43 +408,73 @@ class Product extends ProductResourceModel
                 if (!in_array($attributeTable, $attributeTables)) {
                     $attributeTables[] = $attributeTable;
                 }
-                $attributeMapper[$productAttribute->getAttributeCode()] = (int)$productAttribute->getId();
+                $attributeMapper[$productAttribute->getAttributeCode(
+                )] = (int)$productAttribute->getId();
             }
         }
 
         $this
-            ->getMainTableFieldItems($mainTableFields, $minProductId, $maxProductId, $storeIds, $attributeMapper)
-            ->getAttributeTableFieldItems($attributeTables, $minProductId, $maxProductId, $storeIds, $attributeMapper);
+            ->getMainTableFieldItems(
+                $mainTableFields,
+                $wheres,
+                $storeIds,
+                $attributeMapper,
+                $joinInner
+            )->getAttributeTableFieldItems(
+                $attributeTables,
+                $wheres,
+                $storeIds,
+                $attributeMapper,
+                $joinInner
+            );
 
         return $this->attributeData;
     }
 
     /**
-     * @param array $mainTableFields
-     * @param int   $minProductId
-     * @param int   $maxProductId
-     * @param array $storeIds
-     * @param array $attributeMapper
+     * @param array      $mainTableFields
+     * @param array      $wheres
+     * @param array      $storeIds
+     * @param array      $attributeMapper
+     * @param array|null $joinInner
      *
      * @return $this
      */
-    private function getMainTableFieldItems($mainTableFields, $minProductId, $maxProductId, $storeIds, $attributeMapper)
-    {
+    private function getMainTableFieldItems(
+        $mainTableFields,
+        $wheres,
+        $storeIds,
+        $attributeMapper,
+        $joinInner = null
+    ) {
         if ($mainTableFields) {
             if (!in_array($this->linkField, $mainTableFields)) {
                 $mainTableFields[] = $this->linkField;
             }
             $attributesQuery = $this->_resource->getConnection()->select()
-                ->from($this->mainTable, $mainTableFields)
-                ->where($this->linkField . ' >= ?', $minProductId)
-                ->where($this->linkField . ' <= ?', $maxProductId);
+                ->from($this->mainTable, $mainTableFields);
+
+            foreach ($wheres as $where) {
+                $attributesQuery->where($where[0], $where[1]);
+            }
+
+            if (null !== $joinInner) {
+                $attributesQuery->joinInner(
+                    $joinInner[0],
+                    str_replace('{TABLE}', $this->mainTable, $joinInner[1]),
+                    $joinInner[2]
+                );
+            }
 
             $this->iterator->walk(
                 (string)$attributesQuery,
                 [[$this, 'handleMainTableAttributeDataTable']],
                 [
                     'storeIds'        => $storeIds,
-                    'fields'          => array_diff($mainTableFields, [$this->linkField]),
+                    'fields'          => array_diff(
+                        $mainTableFields,
+                        [$this->linkField]
+                    ),
                     'attributeMapper' => $attributeMapper,
                 ],
                 $this->_resource->getConnection()
@@ -367,35 +485,54 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param array $attributeTables
-     * @param int   $minProductId
-     * @param int   $maxProductId
-     * @param array $storeIds
-     * @param array $attributeMapper
+     * @param array      $attributeTables
+     * @param array      $wheres
+     * @param array      $storeIds
+     * @param array      $attributeMapper
+     * @param array|null $joinInner
      *
      * @return $this
      */
     private function getAttributeTableFieldItems(
         $attributeTables,
-        $minProductId,
-        $maxProductId,
+        $wheres,
         $storeIds,
-        $attributeMapper
+        $attributeMapper,
+        $joinInner = null
     ) {
         $attributeQueries = [];
 
         foreach ($attributeTables as $attributeTable) {
-            $attributeQueries[] = $this->_resource->getConnection()->select()
-                ->from($attributeTable, ['attribute_id', 'store_id', $this->linkField, 'value'])
-                ->where($this->linkField . ' >= ?', $minProductId)
-                ->where($this->linkField . ' <= ?', $maxProductId)
+            $attributeQuery = $this->_resource->getConnection()->select()
+                ->from(
+                    $attributeTable,
+                    ['attribute_id', 'store_id', $this->linkField, 'value']
+                )
                 ->where('store_id IN (?)', $storeIds)
                 ->where('attribute_id IN (?)', $attributeMapper);
+
+            foreach ($wheres as $where) {
+                $attributeQuery->where($where[0], $where[1]);
+            }
+
+            if (null !== $joinInner) {
+                $attributeQuery->joinInner(
+                    $joinInner[0],
+                    str_replace('{TABLE}', $attributeTable, $joinInner[1]),
+                    $joinInner[2]
+                );
+            }
+
+            $attributeQueries[] = $attributeQuery;
         }
 
         try {
             $unionQuery = $this->_resource->getConnection()->select()
-                ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+                ->union(
+                    $attributeQueries,
+                    Zend_Db_Select::SQL_UNION_ALL
+                ); // @codingStandardsIgnoreLine
+
             $this->iterator->walk(
                 (string)$unionQuery,
                 [[$this, 'handleAttributeDataTable']],
@@ -436,7 +573,10 @@ class Product extends ProductResourceModel
     public function handleAttributeDataTable($args)
     {
         $productId = $args['row'][$this->linkField];
-        $attributeCode = $this->findAttributeCodeById($args['row']['attribute_id'], $args['attributeMapper']);
+        $attributeCode = $this->findAttributeCodeById(
+            $args['row']['attribute_id'],
+            $args['attributeMapper']
+        );
         $storeId = $args['row']['store_id'];
 
         $this->initStoreProductData($productId, $storeId);
@@ -476,5 +616,155 @@ class Product extends ProductResourceModel
         if (!array_key_exists($storeId, $this->attributeData[$productId])) {
             $this->attributeData[$productId][$storeId] = [];
         }
+    }
+
+    /**
+     * @param array $websiteIds
+     * @param int[] $customerGroupIds
+     * @param array $wheres
+     * @param array $joinInner
+     *
+     * @return array
+     */
+    public function getPrices(
+        $websiteIds,
+        $customerGroupIds,
+        $wheres,
+        $joinInner
+    ) {
+        $this->priceData = [];
+
+        if (empty($websiteIds)) {
+            return $this->priceData;
+        }
+
+        $columns = [
+            'entity_id',
+            'website_id',
+            'customer_group_id',
+            'price',
+            'tax_class_id',
+            'final_price',
+            'minimal_price' => $this->_resource->getConnection()->getCheckSql(
+                'tier_price IS NOT NULL',
+                $this->_resource->getConnection()->getLeastSql(
+                    ['min_price', 'tier_price']
+                ),
+                'min_price'
+            ),
+            'min_price',
+            'max_price',
+            'tier_price',
+        ];
+
+        $tables = [];
+        foreach ($websiteIds as $websiteId => $storeIds) {
+            foreach ($customerGroupIds as $customerGroupId) {
+                $table = $this->getPriceIndexTable(
+                    $websiteId,
+                    $customerGroupId
+                );
+                $tables[$table] = $table;
+            }
+        }
+
+        $unionSelects = [];
+        foreach ($tables as $table) {
+            $select = $this->_resource->getConnection()->select()->reset()
+                ->from($table, $columns)
+                ->where('website_id IN (?)', array_keys($websiteIds))
+                ->where('customer_group_id IN (?)', $customerGroupIds);
+
+            foreach ($wheres as $where) {
+                $select->where($where[0], $where[1]);
+            }
+
+            if (null !== $joinInner) {
+                $select->joinInner(
+                    $joinInner[0],
+                    str_replace('{TABLE}', $table, $joinInner[1]),
+                    $joinInner[2]
+                );
+            }
+
+            $unionSelects[] = $select;
+        }
+
+        $unionQuery = $this->_resource->getConnection()->select()
+            ->union(
+                $unionSelects,
+                Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
+            );
+
+        $this->iterator->walk(
+            (string)$unionQuery,
+            [[$this, 'handleProductPriceTable']],
+            [
+                'websiteIds' => $websiteIds,
+            ],
+            $this->_resource->getConnection()
+        );
+
+        return $this->priceData;
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return void
+     */
+    public function handleProductPriceTable($args)
+    {
+        $websiteId = $args['row']['website_id'];
+
+        if (array_key_exists($websiteId, $args['websiteIds'])) {
+            foreach ($args['websiteIds'][$websiteId] as $storeId) {
+                $entityId = $args['row']['entity_id'];
+                $customerGroupId = $args['row']['customer_group_id'];
+
+                if (!array_key_exists($entityId, $this->priceData)) {
+                    $this->priceData[$entityId] = [];
+                }
+                if (!array_key_exists($storeId, $this->priceData[$entityId])) {
+                    $this->priceData[$entityId][$storeId] = [];
+                }
+
+                $this->priceData[$entityId][$storeId][$customerGroupId] = [
+                    'price'         => (float)$args['row']['price'],
+                    'final_price'   => (float)$args['row']['final_price'],
+                    'minimal_price' => (float)$args['row']['minimal_price'],
+                ];
+            }
+        }
+    }
+
+    /**
+     * @param int $websiteId
+     * @param int $customerGroupId
+     *
+     * @return string
+     */
+    private function getPriceIndexTable($websiteId, $customerGroupId)
+    {
+
+        if (!($this->priceTableResolver instanceof PriceTableResolver)) {
+            return $this->_resource->getTableName(
+                'catalog_product_index_price'
+            );
+        }
+
+        return $this->priceTableResolver->resolve(
+            'catalog_product_index_price',
+            [
+                $this->dimensionFactory->create(
+                    WebsiteDimensionProvider::DIMENSION_NAME,
+                    (string)$websiteId
+                ),
+                $this->dimensionFactory->create(
+                    CustomerGroupDimensionProvider::DIMENSION_NAME,
+                    (string)$customerGroupId
+                ),
+            ]
+        );
     }
 }

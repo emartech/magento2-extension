@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface ConfigInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface ConfigInterface
 {
     const CONFIG_ENABLED            = 'enabled';
@@ -18,9 +14,10 @@ interface ConfigInterface
     const MERCHANT_ID               = 'merchant_id';
     const SNIPPET_URL               = 'web_tracking_snippet_url';
     const STORE_SETTINGS            = 'store_settings';
-
-    const SCOPE_TYPE_DEFAULT       = 'websites';
-    const XML_PATH_EMARSYS_PRE_TAG = 'emartech/emarsys/config/';
+    const MAGENTO_SEND_EMAIL        = 'magento_send_email';
+    const SCOPE_TYPE_DEFAULT        = 'websites';
+    const XML_PATH_EMARSYS_PRE_TAG  = 'emartech/emarsys/config/';
+    const ATTRIBUTE_CONFIG_POST_TAG = '_attributes';
 
     /**
      * @param string     $key
@@ -103,6 +100,18 @@ interface ConfigInterface
     public function setWebTrackingSnippetUrl($webTrackingSnippetUrl);
 
     /**
+     * @return string
+     */
+    public function getMagentoSendEmail();
+
+    /**
+     * @param string $magentoSendEmail
+     *
+     * @return $this
+     */
+    public function setMagentoSendEmail($magentoSendEmail);
+
+    /**
      * @param string $xmlPostPath
      * @param string $value
      * @param int    $scopeId
@@ -110,7 +119,12 @@ interface ConfigInterface
      *
      * @return bool
      */
-    public function setConfigValue($xmlPostPath, $value, $scopeId, $scope = self::SCOPE_TYPE_DEFAULT);
+    public function setConfigValue(
+        $xmlPostPath,
+        $value,
+        $scopeId,
+        $scope = self::SCOPE_TYPE_DEFAULT
+    );
 
     /**
      * @return void
@@ -133,7 +147,7 @@ interface ConfigInterface
      * @param string   $key
      * @param null|int $websiteId
      *
-     * @return string
+     * @return string|string[]
      */
     public function getConfigValue($key, $websiteId = null);
 
@@ -152,4 +166,9 @@ interface ConfigInterface
      * @return bool
      */
     public function isEnabledForStore($key, $storeId = null);
+
+    /**
+     * @return \Magento\Store\Api\Data\WebsiteInterface[]
+     */
+    public function getAvailableWebsites();
 }

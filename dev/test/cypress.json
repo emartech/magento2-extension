@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://magento-test.local/",
+  "baseUrl": "http://magento-test.local/index.php/default/",
   "video": false,
   "trashAssetsBeforeRuns": false,
   "requestTimeout": 30000,

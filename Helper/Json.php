@@ -10,10 +10,6 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\ProductMetadataInterface;
 
-/**
- * Class Json
- * @package Emartech\Emarsys\Helper
- */
 class Json extends AbstractHelper
 {
     /**
@@ -46,7 +42,7 @@ class Json extends AbstractHelper
         if (version_compare($this->productMetadata->getVersion(), '2.2.0', '>=')) {
             $objManager = \Magento\Framework\App\ObjectManager::getInstance();
             /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
-            $serializer = $objManager->create('Magento\Framework\Serialize\Serializer\Json');
+            $serializer = $objManager->create(\Magento\Framework\Serialize\Serializer\Json::class);
             return $serializer->serialize($data);
         }
 
@@ -67,7 +63,7 @@ class Json extends AbstractHelper
         if (version_compare($this->productMetadata->getVersion(), '2.2.0', '>=')) {
             $objManager = \Magento\Framework\App\ObjectManager::getInstance();
             /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
-            $serializer = $objManager->create('Magento\Framework\Serialize\Serializer\Json');
+            $serializer = $objManager->create(\Magento\Framework\Serialize\Serializer\Json::class);
             return $serializer->unserialize($string);
         }
 

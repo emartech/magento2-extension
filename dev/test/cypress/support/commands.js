@@ -16,40 +16,51 @@ Cypress.Commands.add('shouldNotExistsEvents', () => {
   });
 });
 
-Cypress.Commands.add('loginWithCustomer', ({ customer }) => {
-  cy.visit('/index.php/customer/account/login');
-  cy.wait(2000);
+Cypress.Commands.add('loginWithCustomer', ({ email, password }) => {
+  cy.visit('/customer/account/login');
 
-  cy.get('input[name="login[username]"]').type(customer.email);
-  cy.get('input[name="login[password]"]').type(customer.password);
+  cy.get('input[name="login[username]"]').type(email);
+  cy.get('input[name="login[password]"]').type(password);
   cy.get('button.login').click();
 
-  cy.wait(3000);
   cy.get('.customer-name').should('be.visible');
 });
 
-Cypress.Commands.add('logout', () => {
-  cy.visit('/');
-  cy.get('.customer-name').click();
+Cypress.Commands.add('changeCredentials', (currentPassword, { email, password }) => {
+  cy.get('.box-information > .box-actions > .edit > span').click();
 
-  cy.contains('Sign Out').click();
+  if (password) {
+    cy.get('.page-wrapper #change-password').check();
+    cy.get('.page-wrapper #password').type(password);
+    cy.get('.page-wrapper #password-confirmation').type(password);
+  }
+
+  if (email) {
+    cy.get('.page-wrapper #change-email').check();
+    cy.get('.page-wrapper #email')
+      .clear()
+      .type(email);
+  }
+
+  cy.get('.page-wrapper input[name="current_password"]').type(currentPassword);
+
+  cy.get('.page-wrapper .action.save.primary').click();
+});
+
+Cypress.Commands.add('logout', () => {
+  cy.visit('/customer/account/logout/');
+  cy.clearCookies();
 });
 
 Cypress.Commands.add('shouldNotShowErrorMessage', excludeErrorMessage => {
   if (excludeErrorMessage) {
-    return cy
-      .get('[data-ui-id="message-error"]')
-      .should(($errorBox) => {
-        const errorMessage = $errorBox.text();
-        expect(errorMessage).to.include(excludeErrorMessage);
-      });
+    return cy.get('[data-ui-id="message-error"]').should($errorBox => {
+      const errorMessage = $errorBox.text();
+      expect(errorMessage).to.include(excludeErrorMessage);
+    });
   } else {
     return cy.get('[data-ui-id="message-error"]').should('not.be.visible');
   }
-});
-
-Cypress.Commands.add('clog', logObject => {
-  cy.task('log', logObject);
 });
 
 Cypress.Commands.add('isSubscribed', (email, doubleOptin) => {

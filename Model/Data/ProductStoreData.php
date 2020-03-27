@@ -2,14 +2,11 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
 use Magento\Framework\DataObject;
 
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterface;
 
-/**
- * Class Product
- * @package Emartech\Emarsys\Model\Data
- */
 class ProductStoreData extends DataObject implements ProductStoreDataInterface
 {
     /**
@@ -44,9 +41,60 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
         return $this->getData(self::PRICE_KEY);
     }
 
+    /**
+     * @return float
+     */
     public function getDisplayPrice()
     {
         return $this->getData(self::DISPLAY_PRICE_KEY);
+    }
+
+    /**
+     * @return float
+     */
+    public function getOriginalPrice()
+    {
+        return $this->getData(self::ORIGINAL_PRICE_KEY);
+    }
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayPrice()
+    {
+        return $this->getData(self::ORIGINAL_DISPLAY_PRICE_KEY);
+    }
+
+    /**
+     * @return float
+     */
+    public function getWebshopPrice()
+    {
+        return $this->getData(self::WEBSHOP_PRICE);
+    }
+
+    /**
+     * @return float
+     */
+    public function getDisplayWebshopPrice()
+    {
+        return $this->getData(self::DISPLAY_WEBSHOP_PRICE);
+    }
+
+    /**
+     * @return float
+     */
+    public function getOriginalWebshopPrice()
+    {
+        return $this->getData(self::ORIGINAL_WEBSHOP_PRICE);
+    }
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayWebshopPrice()
+    {
+        return $this->getData(self::ORIGINAL_DISPLAY_WEBSHOP_PRICE);
     }
 
     /**
@@ -71,6 +119,14 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     public function getCurrencyCode()
     {
         return $this->getData(self::CURRENCY_KEY);
+    }
+
+    /**
+     * @return ExtraFieldsInterface[]
+     */
+    public function getExtraFields()
+    {
+        return $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
@@ -134,6 +190,78 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * @param float $originalPrice
+     *
+     * @return $this
+     */
+    public function setOriginalPrice($originalPrice)
+    {
+        $this->setData(self::ORIGINAL_PRICE_KEY, $originalPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $originalDisplayPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayPrice($originalDisplayPrice)
+    {
+        $this->setData(self::ORIGINAL_DISPLAY_PRICE_KEY, $originalDisplayPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $webShopPrice
+     *
+     * @return $this
+     */
+    public function setWebshopPrice($webShopPrice)
+    {
+        $this->setData(self::WEBSHOP_PRICE, $webShopPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $displayWebShopPrice
+     *
+     * @return $this
+     */
+    public function setDisplayWebshopPrice($displayWebShopPrice)
+    {
+        $this->setData(self::DISPLAY_WEBSHOP_PRICE, $displayWebShopPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $originalWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalWebshopPrice($originalWebshopPrice)
+    {
+        $this->setData(self::ORIGINAL_WEBSHOP_PRICE, $originalWebshopPrice);
+
+        return $this;
+    }
+
+    /**
+     * @param float $originalDisplayWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice)
+    {
+        $this->setData(self::ORIGINAL_DISPLAY_WEBSHOP_PRICE, $originalDisplayWebshopPrice);
+
+        return $this;
+    }
+
+    /**
      * @param int $status
      *
      * @return $this
@@ -166,6 +294,17 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     {
         $this->setData(self::CURRENCY_KEY, $currencyCode);
 
+        return $this;
+    }
+
+    /**
+     * @param ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields)
+    {
+        $this->setData(self::EXTRA_FIELDS, $extraFields);
         return $this;
     }
 }

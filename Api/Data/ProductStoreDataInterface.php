@@ -2,24 +2,23 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface ProductStoreDataInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface ProductStoreDataInterface
 {
-    const NAME_KEY          = 'name';
-    const PRICE_KEY         = 'price';
-    const LINK_KEY          = 'url_key';
-    const DESCRIPTION_KEY   = 'description';
-    const STATUS_KEY        = 'status';
-    const STORE_ID_KEY      = 'store_id';
-    const CURRENCY_KEY      = 'currency';
-    const DISPLAY_PRICE_KEY = 'display_price';
-
-    const SPECIAL_PRICE_KEY     = 'special_price';
-    const SPECIAL_FROM_DATE_KEY = 'special_from_date';
-    const SPECIAL_TO_DATE_KEY   = 'special_to_date';
+    const NAME_KEY                       = 'name';
+    const LINK_KEY                       = 'url_key';
+    const DESCRIPTION_KEY                = 'description';
+    const STATUS_KEY                     = 'status';
+    const STORE_ID_KEY                   = 'store_id';
+    const CURRENCY_KEY                   = 'currency';
+    const PRICE_KEY                      = 'price';
+    const DISPLAY_PRICE_KEY              = 'display_price';
+    const ORIGINAL_PRICE_KEY             = 'original_price';
+    const ORIGINAL_DISPLAY_PRICE_KEY     = 'original_display_price';
+    const WEBSHOP_PRICE                  = 'webshop_price';
+    const DISPLAY_WEBSHOP_PRICE          = 'display_webshop_price';
+    const ORIGINAL_WEBSHOP_PRICE         = 'original_webshop_price';
+    const ORIGINAL_DISPLAY_WEBSHOP_PRICE = 'original_display_webshop_price';
+    const EXTRA_FIELDS                   = 'extra_fields';
 
     /**
      * @return string
@@ -35,6 +34,36 @@ interface ProductStoreDataInterface
      * @return float
      */
     public function getDisplayPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayPrice();
+
+    /**
+     * @return float
+     */
+    public function getWebshopPrice();
+
+    /**
+     * @return float
+     */
+    public function getDisplayWebshopPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalWebshopPrice();
+
+    /**
+     * @return float
+     */
+    public function getOriginalDisplayWebshopPrice();
 
     /**
      * @return string
@@ -62,6 +91,11 @@ interface ProductStoreDataInterface
     public function getCurrencyCode();
 
     /**
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
+     */
+    public function getExtraFields();
+
+    /**
      * @param string $name
      *
      * @return $this
@@ -81,6 +115,48 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setDisplayPrice($displayPrice);
+
+    /**
+     * @param float $originalPrice
+     *
+     * @return $this
+     */
+    public function setOriginalPrice($originalPrice);
+
+    /**
+     * @param float $originalDisplayPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayPrice($originalDisplayPrice);
+
+    /**
+     * @param float $webShopPrice
+     *
+     * @return $this
+     */
+    public function setWebshopPrice($webShopPrice);
+
+    /**
+     * @param float $displayWebShopPrice
+     *
+     * @return $this
+     */
+    public function setDisplayWebshopPrice($displayWebShopPrice);
+
+    /**
+     * @param float $originalWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalWebshopPrice($originalWebshopPrice);
+
+    /**
+     * @param float $originalDisplayWebshopPrice
+     *
+     * @return $this
+     */
+    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice);
 
     /**
      * @param string $link
@@ -116,4 +192,11 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setCurrencyCode($currencyCode);
+
+    /**
+     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields);
 }

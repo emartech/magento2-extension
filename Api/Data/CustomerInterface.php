@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface CustomerInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface CustomerInterface
 {
     const ID_KEY                = 'id';
@@ -27,6 +23,7 @@ interface CustomerInterface
     const ACCEPTS_MARKETING_KEY = 'accepts_marketing';
     const CREATED_AT_KEY        = 'created_at';
     const UPDATED_AT_KEY        = 'updated_at';
+    const EXTRA_FIELDS          = 'extra_fields';
 
     /**
      * @return int
@@ -80,6 +77,11 @@ interface CustomerInterface
      * @return int
      */
     public function getStoreId();
+
+    /**
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
+     */
+    public function getExtraFields();
 
     /**
      * @param int $storeId
@@ -255,4 +257,11 @@ interface CustomerInterface
      * @return $this
      */
     public function setUpdatedAt($updatedAt);
+
+    /**
+     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields);
 }

@@ -3,106 +3,70 @@
 describe('Default behaviour with everything turned off', function() {
   before(() => {
     cy.task('setConfig', {});
-    cy.wait(1000);
   });
 
   beforeEach(() => {
     cy.task('getDefaultCustomer').as('defaultCustomer');
+    cy.task('clearMails');
   });
 
-  context('Web extend', function() {
-    const merchantId = 'merchantId123';
-    const webTrackingSnippetUrl = Cypress.env('snippetUrl');
-    const predictUrl = `http://cdn.scarabresearch.com/js/${merchantId}/scarab-v2.js`;
-
-    const expectWebExtendFilesNotToBeIncluded = () => {
-      cy.on('window:load', win => {
-        const scripts = win.document.getElementsByTagName('script');
-        if (scripts.length) {
-          let jsFilesToBeIncluded = [predictUrl, webTrackingSnippetUrl];
-          for (let i = 0; i < scripts.length; i++) {
-            if (jsFilesToBeIncluded.includes(scripts[i].src)) {
-              jsFilesToBeIncluded = jsFilesToBeIncluded.filter(e => e !== scripts[i].src);
-            }
-          }
-          expect(jsFilesToBeIncluded.length).to.be.equal(2);
-        }
-      });
-    };
-
-    it('should not include proper web tracking data', function() {
-      expectWebExtendFilesNotToBeIncluded();
-
-      cy.visit('/');
-      cy.wait(2000);
-      cy.task('clearEvents');
-    });
+  after(() => {
+    cy.task('clearMails');
   });
 
   context('MarketingEvents - Customer', function() {
-    const changeCredentialsAfterLogin = (customer, { password, email }) => {
-      cy.get('.box-information > .box-actions > .edit > span').click();
-      cy.wait(2000);
-
-      if (password) {
-        cy.get('.page-wrapper #change-password').check();
-        cy.get('.page-wrapper #password').type(password);
-        cy.get('.page-wrapper #password-confirmation').type(password);
-      }
-
-      if (email) {
-        cy.get('.page-wrapper #change-email').check();
-        cy.get('.page-wrapper #email')
-          .clear()
-          .type(email);
-      }
-
-      cy.get('.page-wrapper input[name="current_password"]').type(customer.password);
-
-      cy.get('.page-wrapper .action.save.primary').click();
-    };
+    afterEach(() => {
+      cy.task('clearEvents');
+      cy.logout();
+    });
 
     it('should not create customer_password_reset event', function() {
       const newPassword = 'newPassword1';
 
-      cy.loginWithCustomer({ customer: this.defaultCustomer });
-      changeCredentialsAfterLogin(this.defaultCustomer, { password: newPassword });
+      cy.loginWithCustomer(this.defaultCustomer);
+      cy.changeCredentials(this.defaultCustomer.password, { password: newPassword });
 
+      cy.shouldNotShowErrorMessage();
       cy.shouldNotExistsEvents();
-      cy.wait(1000);
-      cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { password: newPassword });
-      cy.task('clearEvents');
+
+      cy.task('getSentAddresses').then(emailAddresses => {
+        expect(emailAddresses).to.be.eql([this.defaultCustomer.email]);
+      });
     });
 
     it('should not create customer_email_changed event', function() {
+      const oldEmail = this.defaultCustomer.email;
       const newEmail = 'cypress2@default.com';
 
-      cy.loginWithCustomer({ customer: this.defaultCustomer });
-      changeCredentialsAfterLogin(this.defaultCustomer, { email: newEmail });
-
-      cy.shouldNotExistsEvents();
-      cy.wait(1000);
-      cy.shouldNotShowErrorMessage('Unable to send mail');
-
+      cy.loginWithCustomer(this.defaultCustomer);
+      cy.changeCredentials(this.defaultCustomer.password, { email: newEmail });
       cy.task('setDefaultCustomerProperty', { email: newEmail });
-      cy.task('clearEvents');
+
+      cy.shouldNotShowErrorMessage();
+      cy.shouldNotExistsEvents();
+
+      cy.task('getSentAddresses').then(emailAddresses => {
+        expect(emailAddresses).to.be.eql([newEmail, oldEmail]);
+      });
     });
 
     it('should not create customer_email_and_password_changed event', function() {
       const newEmail = 'cypress5@default.com';
       const newPassword = 'newPassword4';
 
-      cy.loginWithCustomer({ customer: this.defaultCustomer });
-      changeCredentialsAfterLogin(this.defaultCustomer, { password: newPassword, email: newEmail });
+      cy.loginWithCustomer(this.defaultCustomer);
+      cy.changeCredentials(this.defaultCustomer.password, { password: newPassword, email: newEmail });
 
+      cy.shouldNotShowErrorMessage();
       cy.shouldNotExistsEvents();
-      cy.wait(1000);
-      cy.shouldNotShowErrorMessage('Unable to send mail');
 
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
-      cy.task('clearEvents');
+
+      cy.task('getSentAddresses').then(emailAddresses => {
+        expect(emailAddresses).to.be.eql([this.defaultCustomer.email]);
+      });
     });
   });
 
@@ -111,7 +75,6 @@ describe('Default behaviour with everything turned off', function() {
       cy.task('getSubscription', email).then(subscription => {
         cy.visit(`/newsletter/subscriber/unsubscribe?id=${subscription.subscriber_id}\
           &code=${subscription.subscriber_confirm_code}`);
-        cy.wait(1000);
       });
     };
 
@@ -127,24 +90,30 @@ describe('Default behaviour with everything turned off', function() {
         subscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
-        cy.wait(1000);
-        cy.shouldNotShowErrorMessage('Something went wrong with the subscription.');
+        cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail);
+
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail]);
+        });
+        cy.task('clearMails');
 
         unsubscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
         cy.isNotSubscribed(guestEmail);
         cy.task('clearEvents');
+
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail]);
+        });
       });
     });
 
     context('guest with double optin on', function() {
       before(() => {
         cy.task('setDoubleOptin', true);
-        cy.wait(1000);
         cy.task('flushMagentoCache');
-        cy.wait(1000);
       });
 
       after(() => {
@@ -156,15 +125,23 @@ describe('Default behaviour with everything turned off', function() {
         subscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
-        cy.wait(1000);
-        cy.shouldNotShowErrorMessage('Something went wrong with the subscription.');
+        cy.shouldNotShowErrorMessage();
         cy.isSubscribed(guestEmail, true);
+
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail]);
+        });
+        cy.task('clearMails');
 
         unsubscribe(guestEmail);
 
         cy.shouldNotExistsEvents();
         cy.isNotSubscribed(guestEmail);
         cy.task('clearEvents');
+
+        cy.task('getSentAddresses').then(emailAddresses => {
+          expect(emailAddresses).to.be.eql([guestEmail]);
+        });
       });
     });
   });

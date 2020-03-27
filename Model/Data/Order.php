@@ -6,10 +6,6 @@ use Magento\Sales\Model\Order as OriginalOrderModel;
 
 use Emartech\Emarsys\Api\Data\OrderInterface;
 
-/**
- * Class Order
- * @package Emartech\Emarsys\Model\Data
- */
 class Order extends OriginalOrderModel implements OrderInterface
 {
 

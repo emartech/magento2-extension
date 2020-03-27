@@ -2,10 +2,10 @@
 
 sniff() {
   /app/vendor/bin/phpcs --colors \
-    --standard=MEQP2 \
-    --ignore=*/vendor/emartech/emarsys-magento2-extension/vendor/*,*/vendor/emartech/emarsys-magento2-extension/dev/* \
+    --standard=Magento2 \
+    --ignore=*/vendor/emartech/emarsys-magento2-extension/vendor/*,*/vendor/emartech/emarsys-magento2-extension/dev/*,*/vendor/emartech/emarsys-magento2-extension/.idea/* \
     /app/vendor/emartech/emarsys-magento2-extension/ \
-    --extensions=php
+    --extensions=php,phtml
 }
 
 echo "\nRunning sniffer..."

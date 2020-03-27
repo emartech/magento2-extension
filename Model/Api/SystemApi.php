@@ -10,10 +10,6 @@ use Emartech\Emarsys\Api\Data\SystemApiResponseInterface;
 use Emartech\Emarsys\Api\Data\SystemApiResponseInterfaceFactory;
 use Emartech\Emarsys\Helper\ConfigReader;
 
-/**
- * Class SystemApi
- * @package Emartech\Emarsys\Model\Api
- */
 class SystemApi implements SystemApiInterface
 {
     /**

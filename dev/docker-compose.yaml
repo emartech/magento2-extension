@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   magento-test:
-    image: emarsys/ems-integration-magento-sampledata:2.3.0ce
+    image: emarsys/ems-integration-magento-sampledata:2.3.3ce
     ports:
       - "8889:80"
     links:
@@ -11,15 +11,17 @@ services:
     environment:
       - MYSQL_DATABASE=magento_test
       - MAGENTO_URL=http://magento-test.local
+      - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     volumes:
       - ./..:/app/vendor/emartech/emarsys-magento2-extension
       - ./setup:/opt/emartech/setup
       - ./php.ini:/opt/docker/etc/php/php.ini
       - ./cache-flush.php:/app/cache-flush.php
+      - ./reindex.php:/app/reindex.php
       - ./Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
   magento-dev:
-    image: emarsys/ems-integration-magento-sampledata:2.3.0ce
+    image: emarsys/ems-integration-magento-sampledata:2.3.3ce
     ports:
       - "8888:80"
     links:
@@ -29,6 +31,7 @@ services:
     environment:
       - MYSQL_DATABASE=magento_dev
       - MAGENTO_URL=http://magento-dev.local:8888
+      - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     volumes:
       - ./..:/app/vendor/emartech/emarsys-magento2-extension
       - ./setup:/opt/emartech/setup
@@ -37,8 +40,6 @@ services:
   db:
     image: healthcheck/percona
     restart: always
-    volumes:
-      - magento-db:/var/lib/mysql
     ports:
       - "13306:3306"
     env_file:
@@ -59,9 +60,12 @@ services:
       - MYSQL_DATABASE=magento_test
       - MAGENTO_URL=magento-test.local
       - CYPRESS_PROJECT_ID=xo2cjm
-      - TABLE_PREFIX=$TABLE_PREFIX
     links:
       - magento-test:magento-test.local
       - db
-volumes:
-  magento-db:
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+        - 1025:1025
+        - 8025:8025

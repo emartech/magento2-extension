@@ -53,7 +53,7 @@ describe('Events API endpoint', function() {
   });
 
   after(async function() {
-    await this.magentoApi.execute('config', 'setDefault', 1);
+    await this.turnOffEverySetting(1);
   });
 
   it('returns number of events defined in page_size and deletes events before since_id', async function() {

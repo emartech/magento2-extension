@@ -10,6 +10,9 @@ default: help
 up: ## Creates containers and starts app
 	cd ./dev/test && npm i
 	@$(COMPOSE) up -d --build
+	sh ./dev/wait.sh
+	# Creating test db...
+	@$(COMPOSE) exec --user root db bash -c 'mysqldump -u root -p${MYSQL_ROOT_PASSWORD} magento_test > /opt/magento_test.sql'
 
 dup: ## Creates containers and starts app
 	cd ./dev/test && npm i
@@ -34,7 +37,7 @@ ssh-root: ## Enters the web container
 	@$(COMPOSE) exec magento-dev bash
 
 ssh-test: ## Enters the web container
-	@$(COMPOSE) exec magento-test bash
+	@$(COMPOSE) exec --user application magento-test bash
 
 ssh-node: ## Enters the web container
 	@$(COMPOSE) run --rm node /bin/sh
@@ -85,6 +88,18 @@ devlog: ## Tail dev conatiner docker logs
 
 testlog: ## Tail test conatiner docker logs
 	@$(COMPOSE) logs -f magento-test
+
+refresh-dev: ## Restart dev conatiner
+	@$(COMPOSE) stop magento-dev
+	@$(COMPOSE) rm -f magento-dev
+	@$(COMPOSE) create magento-dev
+	@$(COMPOSE) start magento-dev
+
+refresh-test: ## Restart dev conatiner
+	@$(COMPOSE) stop magento-test
+	@$(COMPOSE) rm -f magento-test
+	@$(COMPOSE) create magento-test
+	@$(COMPOSE) start magento-test
 
 build-cypress: ## Build Cypress image (usage: make build-cypress VERSION=3.1.4)
 	cd dev/CypressBuild && sh build.sh $(VERSION)

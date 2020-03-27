@@ -25,12 +25,22 @@ const customers = [
 
 describe('Customers endpoint', function() {
   before(async function() {
+    await this.magentoApi.execute('attributes', 'set', {
+      websiteId: 1,
+      type: 'customer',
+      attributeCodes: ['emarsys_test_favorite_car']
+    });
     for (const customer of customers) {
       await this.createCustomer(customer);
     }
   });
 
   after(async function() {
+    await this.magentoApi.execute('attributes', 'set', {
+      websiteId: 1,
+      type: 'customer',
+      attributeCodes: []
+    });
     await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email like "%@customer.net"`);
   });
 
@@ -54,5 +64,16 @@ describe('Customers endpoint', function() {
     expect(customer).to.have.property('accepts_marketing');
     expect(customer).to.have.property('billing_address');
     expect(customer).to.have.property('shipping_address');
+  });
+
+  it('returns extra_fields for customers', async function() {
+    const page = 1;
+    const limit = 1;
+
+    const { customers } = await this.magentoApi.execute('customers', 'getAll', { page, limit, websiteId: 1 });
+    const customer = customers[0];
+
+    expect(customer.extra_fields[0].key).to.be.equal('emarsys_test_favorite_car');
+    expect(customer.extra_fields[0].value).to.be.equal('ferrari');
   });
 });

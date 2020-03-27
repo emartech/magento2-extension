@@ -9,10 +9,11 @@ namespace Emartech\Emarsys\Block;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
+use Emartech\Emarsys\Helper\Json;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
-use Emartech\Emarsys\Helper\Json as JsonSerializer;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
@@ -24,10 +25,6 @@ use Emartech\Emarsys\Model\SettingsFactory;
 use Magento\Directory\Model\CurrencyFactory;
 use Magento\Framework\ObjectManagerInterface;
 
-/**
- * Class Snippets
- * @package Emartech\Emarsys\Block
- */
 class Snippets extends Template
 {
     /**
@@ -56,11 +53,6 @@ class Snippets extends Template
     private $currencyFactory;
 
     /**
-     * @var JsonSerializer
-     */
-    private $jsonSerializer;
-
-    /**
      * @var CategoryCollectionFactory
      */
     private $categoryCollectionFactory;
@@ -69,6 +61,14 @@ class Snippets extends Template
      * @var ObjectManagerInterface
      */
     private $objectManager;
+    /**
+     * @var Configurable
+     */
+    private $configurable;
+    /**
+     * @var Json
+     */
+    private $jsonHelper;
 
     /**
      * Snippets constructor.
@@ -79,7 +79,6 @@ class Snippets extends Template
      * @param Registry                  $registry
      * @param ConfigReader              $configReader
      * @param CurrencyFactory           $currencyFactory
-     * @param JsonSerializer            $jsonSerializer
      * @param CategoryCollectionFactory $categoryCollectionFactory
      * @param ObjectManagerInterface    $objectManager
      * @param array                     $data
@@ -91,9 +90,10 @@ class Snippets extends Template
         Registry $registry,
         ConfigReader $configReader,
         CurrencyFactory $currencyFactory,
-        JsonSerializer $jsonSerializer,
         CategoryCollectionFactory $categoryCollectionFactory,
+        Configurable $configurable,
         ObjectManagerInterface $objectManager,
+        Json $jsonHelper,
         array $data = []
     ) {
         $this->storeManager = $context->getStoreManager();
@@ -102,9 +102,10 @@ class Snippets extends Template
         $this->coreRegistry = $registry;
         $this->configReader = $configReader;
         $this->currencyFactory = $currencyFactory;
-        $this->jsonSerializer = $jsonSerializer;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
+        $this->configurable = $configurable;
         $this->objectManager = $objectManager;
+        $this->jsonHelper = $jsonHelper;
         parent::__construct($context, $data);
     }
 
@@ -116,14 +117,15 @@ class Snippets extends Template
      */
     public function getTrackingData()
     {
-        return [
-            'product'      => $this->getCurrentProduct(),
-            'category'     => $this->getCategory(),
-            'store'        => $this->getStoreData(),
-            'search'       => $this->getSearchData(),
-            'exchangeRate' => $this->getExchangeRate(),
-            'slug'         => $this->getStoreSlug(),
-        ];
+        return $this->jsonHelper->serialize([
+            'product'            => $this->getCurrentProduct(),
+            'category'           => $this->getCategory(0),
+            'localizedCategory' => $this->getCategory(),
+            'store'              => $this->getStoreData(),
+            'search'             => $this->getSearchData(),
+            'exchangeRate'       => $this->getExchangeRate(),
+            'slug'               => $this->getStoreSlug()
+        ]);
     }
 
     /**
@@ -132,12 +134,13 @@ class Snippets extends Template
      */
     public function getStoreSlug()
     {
-        $storeSettings = $this->jsonSerializer
-            ->unserialize($this->configReader->getConfigValue(ConfigInterface::STORE_SETTINGS));
-        $currentStoreId = $this->storeManager->getStore()->getId();
-        foreach ($storeSettings as $store) {
-            if ($store['store_id'] === (int)$currentStoreId) {
-                return $store['slug'];
+        $storeSettings = $this->configReader->getConfigValue(ConfigInterface::STORE_SETTINGS);
+        if (is_array($storeSettings)) {
+            $currentStoreId = $this->storeManager->getStore()->getId();
+            foreach ($storeSettings as $store) {
+                if ($store['store_id'] === (int)$currentStoreId) {
+                    return $store['slug'];
+                }
             }
         }
         return null;
@@ -188,9 +191,11 @@ class Snippets extends Template
         try {
             $product = $this->coreRegistry->registry('current_product');
             if ($product instanceof Product) {
+                $isVisibleChild = $this->isVisibleChild($product);
                 return [
                     'sku' => $product->getSku(),
                     'id'  => $product->getId(),
+                    'isVisibleChild' => $isVisibleChild
                 ];
             }
         } catch (\Exception $e) {
@@ -227,7 +232,7 @@ class Snippets extends Template
      * @return mixed
      * @throws \Exception
      */
-    public function getCategory()
+    public function getCategory($storeId = null)
     {
         try {
             $category = $this->coreRegistry->registry('current_category');
@@ -236,24 +241,18 @@ class Snippets extends Template
 
                 $categoryIds = $this->removeDefaultCategories($category->getPathIds());
 
-                $linkField = 'entity_id';
-                if (class_exists('Magento\Framework\EntityManager\MetadataPool')) {
-                    // @codingStandardsIgnoreLine
-                    $metadataPool = $this->objectManager->create(
-                        'Magento\Framework\EntityManager\MetadataPool'
-                    );
-                    $linkField = $metadataPool->getMetadata(CategoryInterface::class)->getLinkField();
-                }
-
                 /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
                 $categoryCollection = $this->categoryCollectionFactory->create()
-                    ->setStore($this->storeManager->getStore())
+                    ->setStore($this->storeManager->getStore($storeId))
                     ->addAttributeToSelect('name')
-                    ->addFieldToFilter($linkField, ['in' => $categoryIds]);
+                    ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
 
-                /** @var Category $category */
-                foreach ($categoryCollection as $categoryItem) {
-                    $categoryList[] = $categoryItem->getName();
+                foreach ($categoryIds as $categoryId) {
+                    foreach ($categoryCollection as $categoryItem) {
+                        if ($categoryItem->getId() == $categoryId) {
+                            $categoryList[] = $categoryItem->getName();
+                        }
+                    }
                 }
 
                 return [
@@ -317,5 +316,23 @@ class Snippets extends Template
     public function isInjectable()
     {
         return $this->configReader->isEnabledForStore(ConfigInterface::INJECT_WEBEXTEND_SNIPPETS);
+    }
+
+    /**
+     * @param Product $product
+     * @return bool
+     */
+    private function isVisibleChild(Product $product)
+    {
+        $productId = $product->getId();
+        $productVisibility = $product->getVisibility();
+        $visibleInCatalogOrSearch = [2, 4];
+        if ($product->getTypeId() === 'simple' && in_array($productVisibility, $visibleInCatalogOrSearch, false)) {
+            $parentConfigObject = $this->configurable->getParentIdsByChild($productId);
+            if (!empty($parentConfigObject)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

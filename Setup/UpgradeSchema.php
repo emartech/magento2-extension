@@ -2,9 +2,10 @@
 
 namespace Emartech\Emarsys\Setup;
 
-use Magento\Framework\Setup\UpgradeSchemaInterface;
-use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+use Magento\Framework\Setup\UpgradeSchemaInterface;
 
 class UpgradeSchema implements UpgradeSchemaInterface
 {
@@ -18,7 +19,11 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $tableName = $setup->getTable('emarsys_events_data');
 
             if ($setup->getConnection()->isTableExists($tableName) == true) {
-                $setup->getConnection()->modifyColumn($tableName, 'event_data', 'mediumblob');
+                $setup->getConnection()->modifyColumn(
+                    $tableName,
+                    'event_data',
+                    'mediumblob'
+                );
             }
         }
 

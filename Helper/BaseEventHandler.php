@@ -14,10 +14,6 @@ use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Emartech\Emarsys\Model\Event as EventModel;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 
-/**
- * Class BaseEventHandler
- * @package Emartech\Emarsys\Helper
- */
 class BaseEventHandler extends AbstractHelper
 {
     // @codingStandardsIgnoreLine

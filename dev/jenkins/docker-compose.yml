@@ -13,9 +13,13 @@ services:
       - ../setup:/opt/emartech/setup
       - ../php.ini:/opt/docker/etc/php/php.ini
       - ../cache-flush.php:/app/cache-flush.php
+      - ../reindex.php:/app/reindex.php
       - ../Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
     environment:
       - MAGENTO_URL=http://magento-test.local
+      - MAGENTO_REPO_KEY=$MAGENTO_REPO_KEY
+      - MAGENTO_REPO_SECRET=$MAGENTO_REPO_SECRET
+      - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     env_file:
       - .env
     command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
@@ -28,9 +32,10 @@ services:
       - .env
     environment:
       - NPM_TOKEN=$NPM_TOKEN
-      - MYSQL_DATABASE=magento
       - MAGENTO_URL=magento-test.local
-      - TABLE_PREFIX=$TABLE_PREFIX
     links:
       - magento-test:magento-test.local
       - db
+  mailhog:
+    image: mailhog/mailhog
+    restart: always

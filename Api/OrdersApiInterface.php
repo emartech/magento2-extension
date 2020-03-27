@@ -4,10 +4,6 @@ namespace Emartech\Emarsys\Api;
 
 use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 
-/**
- * Interface OrderApiInterface
- * @package Emartech\Emarsys\Api
- */
 interface OrdersApiInterface
 {
     /**

@@ -2,19 +2,14 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Api\Data\StoreConfigInterface;
-use Magento\Framework\DataObject;
-use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Framework\App\Config as ScopeConfig;
 use Emartech\Emarsys\Helper\Json as JsonSerializer;
+use Magento\Framework\App\Config as ScopeConfig;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\DataObject;
 use Magento\Store\Model\StoreManagerInterface;
 
-use Emartech\Emarsys\Api\Data\ConfigInterface;
-
-/**
- * Class Config
- * @package Emartech\Emarsys\Model\Data
- */
 class Config extends DataObject implements ConfigInterface
 {
     /**
@@ -182,6 +177,26 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * @return string
+     */
+    public function getMagentoSendEmail()
+    {
+        return $this->getData(self::MAGENTO_SEND_EMAIL);
+    }
+
+    /**
+     * @param string $magentoSendEmail
+     *
+     * @return $this
+     */
+    public function setMagentoSendEmail($magentoSendEmail)
+    {
+        $this->setData(self::MAGENTO_SEND_EMAIL, $magentoSendEmail);
+
+        return $this;
+    }
+
+    /**
      * @param string $xmlPostPath
      * @param string $value
      * @param int    $scopeId
@@ -221,19 +236,29 @@ class Config extends DataObject implements ConfigInterface
      * @param string   $key
      * @param null|int $websiteId
      *
-     * @return string
+     * @return string|string[]
      */
     public function getConfigValue($key, $websiteId = null)
     {
-        try {
-            if (!$websiteId) {
+        if (null === $websiteId) {
+            try {
                 $websiteId = $this->storeManager->getWebsite()->getId();
+            } catch (\Exception $e) {
+                $websiteId = 0;
             }
-
-            return $this->scopeConfig->getValue('emartech/emarsys/config/' . $key, 'websites', $websiteId);
-        } catch (\Exception $e) {
-            return '';
         }
+
+        $value = $this->scopeConfig->getValue(self::XML_PATH_EMARSYS_PRE_TAG . $key, 'websites', $websiteId);
+
+        try {
+            $returnValue = $this->jsonSerializer->unserialize($value);
+        } catch (\InvalidArgumentException $e) {
+            $returnValue = $value;
+        } catch (\Exception $e) {
+            $returnValue = '';
+        }
+
+        return $returnValue;
     }
 
     /**
@@ -266,11 +291,12 @@ class Config extends DataObject implements ConfigInterface
                 return false;
             }
 
-            $stores = $this->jsonSerializer->unserialize($this->getConfigValue(self::STORE_SETTINGS, $websiteId));
-
-            foreach ($stores as $store) {
-                if ($store[StoreConfigInterface::STORE_ID_KEY] == $storeId) {
-                    return true;
+            $stores = $this->getConfigValue(self::STORE_SETTINGS, $websiteId);
+            if (is_array($stores)) {
+                foreach ($stores as $store) {
+                    if ($store[StoreConfigInterface::STORE_ID_KEY] == $storeId) {
+                        return true;
+                    }
                 }
             }
         } catch (\Exception $e) { //@codingStandardsIgnoreLine
@@ -288,7 +314,7 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
-     * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface[]
+     * @return StoreConfigInterface[]
      */
     public function getStoreSettings()
     {
@@ -296,7 +322,7 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\StoreConfigInterface[] $storeSettings
+     * @param StoreConfigInterface[] $storeSettings
      *
      * @return $this
      */
@@ -305,5 +331,13 @@ class Config extends DataObject implements ConfigInterface
         $this->setData(self::STORE_SETTINGS, $storeSettings);
 
         return $this;
+    }
+
+    /**
+     * @return \Magento\Store\Api\Data\WebsiteInterface[]
+     */
+    public function getAvailableWebsites()
+    {
+        return $this->storeManager->getWebsites();
     }
 }

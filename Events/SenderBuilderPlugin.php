@@ -2,27 +2,23 @@
 
 namespace Emartech\Emarsys\Events;
 
-use Magento\Sales\Model\Order;
-use Magento\Sales\Model\Order\Email\SenderBuilder;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
+use Emartech\Emarsys\Helper\Customer as CustomerHelper;
+use Emartech\Emarsys\Helper\Json;
+use Emartech\Emarsys\Model\Event as EventModel;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Helper\View as CustomerViewHelper;
-use Emartech\Emarsys\Helper\Json;
-use Psr\Log\LoggerInterface;
-use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Sales\Model\Order\Invoice;
-use Magento\Sales\Model\Order\Creditmemo;
-use Emartech\Emarsys\Model\Event as EventModel;
+use Magento\Sales\Model\AbstractModel;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Email\Container\OrderIdentity;
+use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
+use Magento\Sales\Model\Order\Email\SenderBuilder;
+use Psr\Log\LoggerInterface;
 
-/**
- * Class SenderBuilderPlugin
- * @package Emartech\Emarsys\Events
- */
 class SenderBuilderPlugin
 {
     /**
@@ -38,14 +34,6 @@ class SenderBuilderPlugin
      */
     private $eventRepository;
     /**
-     * @var CustomerRepositoryInterface
-     */
-    private $customerRepositoryInterface;
-    /**
-     * @var CustomerViewHelper
-     */
-    private $customerViewHelper;
-    /**
      * @var Json
      */
     private $json;
@@ -53,34 +41,39 @@ class SenderBuilderPlugin
      * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @var int
+     */
+    private $websiteId;
+    /**
+     * @var CustomerHelper
+     */
+    private $customerHelper;
 
     /**
      * SenderBuilderPlugin constructor.
      *
-     * @param ConfigReader                $configReader
-     * @param EmarsysEventFactory         $eventFactory
-     * @param EventRepository             $eventRepository
-     * @param CustomerRepositoryInterface $customerRepositoryInterface
-     * @param CustomerViewHelper          $customerViewHelper
-     * @param Json                        $json
-     * @param LoggerInterface             $logger
+     * @param ConfigReader        $configReader
+     * @param EmarsysEventFactory $eventFactory
+     * @param EventRepository     $eventRepository
+     * @param Json                $json
+     * @param CustomerHelper      $customerHelper
+     * @param LoggerInterface     $logger
      */
     public function __construct(
         ConfigReader $configReader,
         EmarsysEventFactory $eventFactory,
         EventRepository $eventRepository,
-        CustomerRepositoryInterface $customerRepositoryInterface,
-        CustomerViewHelper $customerViewHelper,
         Json $json,
+        CustomerHelper $customerHelper,
         LoggerInterface $logger
     ) {
         $this->configReader = $configReader;
         $this->eventFactory = $eventFactory;
         $this->eventRepository = $eventRepository;
-        $this->customerRepositoryInterface = $customerRepositoryInterface;
-        $this->customerViewHelper = $customerViewHelper;
         $this->json = $json;
         $this->logger = $logger;
+        $this->customerHelper = $customerHelper;
     }
 
     /**
@@ -89,26 +82,32 @@ class SenderBuilderPlugin
      *
      * @return mixed
      */
-    public function aroundSend(
-        SenderBuilder $senderBuilder,
-        callable $proceed
-    ) {
+    public function aroundSend(SenderBuilder $senderBuilder, callable $proceed)
+    {
         //----
         //sales_email/general/async_sending - should be disabled
         //----
         try {
             // @codingStandardsIgnoreLine
             $reflection = new \ReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
-            /** @var \Magento\Sales\Model\Order\Email\Container\OrderIdentity $identityContainer */
+            /** @var OrderIdentity $identityContainer */
             $identityContainer = $reflection->getProperty('identityContainer');
             $identityContainer->setAccessible(true);
             $identityContainer = $identityContainer->getValue($senderBuilder);
             $storeId = $identityContainer->getStore()->getStoreId();
-            $websiteId = $identityContainer->getStore()->getWebsiteId();
+            $this->websiteId = $identityContainer->getStore()->getWebsiteId();
 
-            if (!$this->configReader->isEnabledForStore(ConfigInterface::MARKETING_EVENTS, $storeId)) {
+            if (!$this->configReader->isEnabledForStore(
+                ConfigInterface::MARKETING_EVENTS,
+                $storeId
+            )) {
                 return $proceed();
             }
+
+            $sendMagentoEmail = $this->configReader->isEnabledForStore(
+                ConfigInterface::MAGENTO_SEND_EMAIL,
+                $storeId
+            );
 
             /** @var TemplateContainer $templateContainer */
             $templateContainer = $reflection->getProperty('templateContainer');
@@ -121,7 +120,7 @@ class SenderBuilderPlugin
             $data['emailCopyTo'] = $identityContainer->getEmailCopyTo();
 
             $this->saveEvent(
-                $websiteId,
+                $this->websiteId,
                 $storeId,
                 $templateContainer->getTemplateId(),
                 $data['order']['entity_id'],
@@ -129,6 +128,11 @@ class SenderBuilderPlugin
             );
         } catch (\Exception $e) {
             $this->logger->warning('Emartech\\Emarsys\\Events\\SenderBuilderPlugin: ' . $e->getMessage());
+            $sendMagentoEmail = true;
+        }
+
+        if ($sendMagentoEmail) {
+            return $proceed();
         }
     }
 
@@ -149,10 +153,8 @@ class SenderBuilderPlugin
                     $this->parseOrderVars($key, $value, $returnArray);
                     break;
                 case 'invoice':
-                    $this->parseInvoiceVars($key, $value, $returnArray);
-                    break;
                 case 'creditmemo':
-                    $this->parseCreditmemoVars($key, $value, $returnArray);
+                    $this->parseVars($key, $value, $returnArray);
                     break;
             }
         }
@@ -166,8 +168,6 @@ class SenderBuilderPlugin
      * @param array  $data
      *
      * @return void
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
     private function parseOrderVars($key, $order, &$data)
     {
@@ -185,10 +185,15 @@ class SenderBuilderPlugin
         $data[$key]['addresses']['billing'] = $order->getBillingAddress()->toArray();
         $data['is_guest'] = $order->getCustomerIsGuest();
         if ($order->getCustomerId()) {
-            /** @var \Magento\Customer\Model\Data\Customer $customer */
-            $customer = $this->customerRepositoryInterface->getById($order->getCustomerId());
-            $customer->setData('name', $this->customerViewHelper->getCustomerName($customer));
-            $data['customer'] = $customer->__toArray();
+            $data['customer'] = false;
+            $customerData = $this->customerHelper->getOneCustomer(
+                $order->getCustomerId(),
+                $this->websiteId,
+                true
+            );
+            if (false !== $customerData) {
+                $data['customer'] = $customerData;
+            }
         }
         $data[$key]['payment'] = $order->getPayment()->getData();
 
@@ -214,46 +219,23 @@ class SenderBuilderPlugin
     }
 
     /**
-     * @param string  $key
-     * @param Invoice $invoice
-     * @param array   $data
-     *
-     * @return void
+     * @param string        $key
+     * @param AbstractModel $object
+     * @param array         $data
      */
-    private function parseInvoiceVars($key, $invoice, &$data)
+    private function parseVars($key, $object, &$data)
     {
-        $data[$key] = $invoice->getData();
+        $data[$key] = $object->getData();
         $items = [];
-        foreach ($invoice->getAllItems() as $item) {
+        /** @var AbstractModel $item */
+        foreach ($object->getAllItems() as $item) {
             $items[] = $item->getData();
         }
         $data[$key]['items'] = $items;
 
         $comments = [];
-        foreach ($invoice->getComments() as $comment) {
-            $comments[] = $comment->getData();
-        }
-        $data[$key]['comments'] = $comments;
-    }
-
-    /**
-     * @param string     $key
-     * @param Creditmemo $creditmemo
-     * @param array      $data
-     *
-     * @return void
-     */
-    private function parseCreditmemoVars($key, $creditmemo, &$data)
-    {
-        $data[$key] = $creditmemo->getData();
-        $items = [];
-        foreach ($creditmemo->getAllItems() as $item) {
-            $items[] = $item->getData();
-        }
-        $data[$key]['items'] = $items;
-
-        $comments = [];
-        foreach ($creditmemo->getComments() as $comment) {
+        /** @var AbstractModel $comment */
+        foreach ($object->getComments() as $comment) {
             $comments[] = $comment->getData();
         }
         $data[$key]['comments'] = $comments;
@@ -267,7 +249,7 @@ class SenderBuilderPlugin
      * @param array  $data
      *
      * @return void
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @throws AlreadyExistsException
      */
     private function saveEvent($websiteId, $storeId, $type, $entityId, $data)
     {

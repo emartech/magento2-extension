@@ -2,10 +2,6 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface StoreConfigInterface
- * @package Emartech\Emarsys\Api\Data
- */
 interface StoreConfigInterface
 {
     const STORE_ID_KEY = 'store_id';

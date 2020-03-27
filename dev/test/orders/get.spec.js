@@ -1,68 +1,8 @@
 'use strict';
 
-const localAddresses = {
-  shipping_address: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.shipping.com',
-    telephone: '512-555-1111'
-  },
-  billing_address: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.billing.com',
-    telephone: '512-555-1111'
-  },
-  shipping_carrier_code: 'flatrate',
-  shipping_method_code: 'flatrate'
-};
+const { shipOrder, createNewGuestOrder } = require('../helpers/orders');
 
-const createNewCustomerOrder = async (magentoApi, customer, localCartItem) => {
-  const { data: cartId } = await magentoApi.post({
-    path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/items`,
-    payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
-    }
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/shipping-information`,
-    payload: {
-      addressInformation: localAddresses
-    }
-  });
-
-  const { data: orderId } = await magentoApi.put({
-    path: `/index.php/rest/V1/carts/${cartId}/order`,
-    payload: {
-      paymentMethod: {
-        method: 'checkmo'
-      }
-    }
-  });
-
-  return { cartId, orderId };
-};
-
-const orderCount = 8;
+const orderCount = 4;
 
 describe('Orders endpoint', function() {
   let localCartItem;
@@ -70,8 +10,10 @@ describe('Orders endpoint', function() {
   before(async function() {
     await this.dbCleaner.clearOrders();
     localCartItem = this.localCartItem;
-    for (let orderNumber = 0; orderCount > orderNumber; orderNumber++) {
-      await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
+
+    for (let index = 0; index < orderCount; index++) {
+      const { orderId } = await createNewGuestOrder(this.magentoApi, localCartItem);
+      await shipOrder(this.magentoApi, orderId);
     }
   });
 
@@ -80,7 +22,7 @@ describe('Orders endpoint', function() {
   });
 
   it('should return orders and paging info according to parameters', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
@@ -99,7 +41,7 @@ describe('Orders endpoint', function() {
   });
 
   it('should handle multiple store IDs', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
@@ -112,7 +54,7 @@ describe('Orders endpoint', function() {
   });
 
   it('should filter for store IDs', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
@@ -125,9 +67,9 @@ describe('Orders endpoint', function() {
   });
 
   it('should filter with sinceId', async function() {
-    const limit = 2;
+    const limit = 1;
     const page = 2;
-    const sinceId = 4;
+    const sinceId = 2;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
       page,
       limit,

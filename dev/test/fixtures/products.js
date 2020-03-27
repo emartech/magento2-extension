@@ -3,7 +3,7 @@
 const getProducts = (hostname, page, limit, magentoVersion, magentoEdition) => {
   return {
     products: products(hostname, page, limit, magentoVersion, magentoEdition, magentoEdition),
-    productCount: magentoVersion === '2.3.1' && magentoEdition === 'Enterprise' ? 2050 : 2048
+    productCount: magentoEdition === 'Enterprise' ? 2048 : 2046
   };
 };
 
@@ -26,8 +26,12 @@ const products = (hostname, page, limit, magentoVersion, magentoEdition) => {
         store_data: [
           {
             name: 'Sprite Foam Yoga Brick',
-            price: 5,
-            link: `http://${hostname}/index.php/sprite-foam-yoga-brick.html`,
+            price: 2,
+            webshop_price: 2,
+            original_webshop_price: 5,
+            original_display_price: 10,
+            display_webshop_price: 4,
+            link: `http://${hostname}/index.php/default/sprite-foam-yoga-brick.html`,
             status: 1,
             // eslint-disable-next-line
             description: `<p>Our top-selling yoga prop, the 4-inch, high-quality Sprite Foam Yoga Brick is popular among yoga novices and studio professionals alike. An essential yoga accessory, the yoga brick is a critical tool for finding balance and alignment in many common yoga poses. Choose from 5 color options.</p>\n<ul>\n<li>Standard Large Size: 4\" x 6\" x 9\".\n<li>Beveled edges for ideal contour grip.\n<li>Durable and soft, scratch-proof foam.\n<li>Individually wrapped.\n<li>Ten color choices.\n</ul> `
@@ -60,6 +64,14 @@ const configurable = {
       }
     ]
   },
+  '2.1.9': {
+    Enterprise: [
+      {
+        type: 'configurable',
+        children_entity_ids: [54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+      }
+    ]
+  },
   '2.2.6': {
     Community: [
       {
@@ -87,6 +99,34 @@ const configurable = {
       {
         type: 'configurable',
         children_entity_ids: [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
+      }
+    ]
+  },
+  '2.3.2': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ],
+    Enterprise: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ]
+  },
+  '2.3.3': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ],
+    Enterprise: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
       }
     ]
   }

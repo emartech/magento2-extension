@@ -3,14 +3,10 @@
 namespace Emartech\Emarsys\Model\Data;
 
 use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
+use Emartech\Emarsys\Api\Data\CustomerInterface;
+use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
 use Magento\Framework\DataObject;
 
-use Emartech\Emarsys\Api\Data\CustomerInterface;
-
-/**
- * Class Customer
- * @package Emartech\Emarsys\Model\Data
- */
 class Customer extends DataObject implements CustomerInterface
 {
     /**
@@ -163,6 +159,14 @@ class Customer extends DataObject implements CustomerInterface
     public function getWebsiteId()
     {
         return $this->getData(self::WEBSITE_ID_KEY);
+    }
+
+    /**
+     * @return ExtraFieldsInterface
+     */
+    public function getExtraFields()
+    {
+        return $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
@@ -371,6 +375,17 @@ class Customer extends DataObject implements CustomerInterface
     public function setWebsiteId($websiteId)
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
+        return $this;
+    }
+
+    /**
+     * @param ExtraFieldsInterface[] $extraFields
+     *
+     * @return $this
+     */
+    public function setExtraFields($extraFields)
+    {
+        $this->setData(self::EXTRA_FIELDS, $extraFields);
         return $this;
     }
 }

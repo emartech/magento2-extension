@@ -9,5 +9,5 @@
 <script type="text/javascript">
     window.Emarsys = window.Emarsys || {};
     window.Emarsys.Magento2 = window.Emarsys.Magento2 || {};
-    window.Emarsys.Magento2.orderData = <?php echo json_encode($block->getOrderData()); ?>;
+    window.Emarsys.Magento2.orderData = <?= /* @noEscape */ $block->getOrderData() ?>;
 </script>

@@ -2,59 +2,29 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
-use Magento\Customer\Model\ResourceModel\Customer\Collection;
-use Magento\Customer\Model\Customer;
-
 use Emartech\Emarsys\Api\CustomersApiInterface;
-use Emartech\Emarsys\Api\Data\CustomerInterfaceFactory;
-use Emartech\Emarsys\Api\Data\CustomerInterface;
-use Emartech\Emarsys\Api\Data\CustomerAddressInterfaceFactory;
-use Emartech\Emarsys\Api\Data\CustomerAddressInterface;
-use Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
-use Emartech\Emarsys\Model\ResourceModel\Api\Customer as CustomerResource;
+use Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory;
+use Emartech\Emarsys\Helper\Customer as CustomerHelper;
+use Emartech\Emarsys\Helper\LinkField;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Model\Config\Share as ConfigShare;
+use Magento\Framework\Data\Collection as DataCollection;
+use Magento\Framework\Webapi\Exception as WebApiException;
 
-/**
- * Class CustomersApi
- * @package Emartech\Emarsys\Model\Api
- */
 class CustomersApi implements CustomersApiInterface
 {
+    /**
+     * @var ConfigShare
+     */
+    private $configShare;
 
     /**
-     * @var array
+     * @var bool|int
      */
-    private $addressFields = [
-        'prefix',
-        'firstname',
-        'middlename',
-        'lastname',
-        'suffix',
-        'company',
-        'street',
-        'city',
-        'country_id',
-        'region',
-        'postcode',
-        'telephone',
-        'fax',
-    ];
-
-    /**
-     * @var CollectionFactory
-     */
-    private $collectionFactory;
-
-    /**
-     * @var CustomerInterfaceFactory
-     */
-    private $customerFactory;
-
-    /**
-     * @var CustomerAddressInterfaceFactory
-     */
-    private $customerAddressFactory;
+    private $websiteId = false;
 
     /**
      * @var CustomersApiResponseInterfaceFactory
@@ -62,40 +32,62 @@ class CustomersApi implements CustomersApiInterface
     private $customersResponseFactory;
 
     /**
-     * @var Collection
+     * @var ConfigInterfaceFactory
      */
-    private $customerCollection;
+    private $configFactory;
+
+    /**
+     * @var int
+     */
+    private $minId = 0;
+
+    /**
+     * @var int
+     */
+    private $maxId = 0;
+
+    /**
+     * @var int
+     */
+    private $numberOfItems = 0;
 
     /**
      * @var string
      */
-    private $customerAddressEntityTable;
+    private $linkField;
 
     /**
-     * @var CustomerResource
+     * @var LinkField
      */
-    private $customerResource;
+    private $linkFieldHelper;
+
+    /**
+     * @var CustomerHelper
+     */
+    private $customerHelper;
 
     /**
      * CustomersApi constructor.
      *
-     * @param CollectionFactory                    $collectionFactory
-     * @param CustomerInterfaceFactory             $customerFactory
-     * @param CustomerAddressInterfaceFactory      $customerAddressFactory
      * @param CustomersApiResponseInterfaceFactory $customersResponseFactory
+     * @param ConfigInterfaceFactory               $configFactory
+     * @param ConfigShare                          $configShare
+     * @param LinkField                            $linkFieldHelper
+     * @param CustomerHelper                       $customerHelper
      */
     public function __construct(
-        CollectionFactory $collectionFactory,
-        CustomerInterfaceFactory $customerFactory,
-        CustomerAddressInterfaceFactory $customerAddressFactory,
         CustomersApiResponseInterfaceFactory $customersResponseFactory,
-        CustomerResource $customerResource
+        ConfigInterfaceFactory $configFactory,
+        ConfigShare $configShare,
+        LinkField $linkFieldHelper,
+        CustomerHelper $customerHelper
     ) {
-        $this->collectionFactory = $collectionFactory;
-        $this->customerFactory = $customerFactory;
-        $this->customerAddressFactory = $customerAddressFactory;
+        $this->configShare = $configShare;
         $this->customersResponseFactory = $customersResponseFactory;
-        $this->customerResource = $customerResource;
+        $this->configFactory = $configFactory;
+        $this->linkFieldHelper = $linkFieldHelper;
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(CustomerInterface::class);
+        $this->customerHelper = $customerHelper;
     }
 
     /**
@@ -103,27 +95,52 @@ class CustomersApi implements CustomersApiInterface
      * @param int         $pageSize
      * @param string|null $websiteId
      * @param string|null $storeId
+     * @param bool|null   $onlyReg
      *
      * @return CustomersApiResponseInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws WebApiException
      */
-    public function get($page, $pageSize, $websiteId = null, $storeId = null)
+    public function get($page, $pageSize, $websiteId = null, $storeId = null, $onlyReg = null)
     {
+        /** @var ConfigInterface $config */
+        $config = $this->configFactory->create();
+
+        if (!array_key_exists($websiteId, $config->getAvailableWebsites())) {
+            throw new WebApiException(__('Invalid Website'));
+        }
+
         $this
+            ->handleWebsiteId($websiteId, $onlyReg)
             ->initCollection()
-            ->filterMixedParam($websiteId, 'website_id')
-            ->filterMixedParam($storeId, 'store_id')
-            ->joinAddress('billing')
-            ->joinAddress('shipping')
-            ->joinSubscriptionStatus()
-            ->setPage($page, $pageSize);
+            ->handleIds($page, $pageSize)
+            ->handleAttributeData()
+            ->handleAddressesAttributeData()
+            ->joinSubscriptionStatus($websiteId)
+            ->setWhere()
+            ->setOrder();
+
+        $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
         return $this->customersResponseFactory->create()
-            ->setCurrentPage($this->customerCollection->getCurPage())
-            ->setLastPage($this->customerCollection->getLastPageNumber())
-            ->setPageSize($this->customerCollection->getPageSize())
-            ->setTotalCount($this->customerCollection->getSize())
+            ->setCurrentPage($page)
+            ->setLastPage($lastPageNumber)
+            ->setPageSize($pageSize)
+            ->setTotalCount($this->numberOfItems)
             ->setCustomers($this->handleCustomers());
+    }
+
+    /**
+     * @param string|null $websiteId
+     * @param bool        $onlyReg
+     *
+     * @return $this
+     */
+    private function handleWebsiteId($websiteId = null, $onlyReg = false)
+    {
+        if ($onlyReg || $this->configShare->isWebsiteScope()) {
+            $this->websiteId = $websiteId;
+        }
+        return $this;
     }
 
     /**
@@ -131,9 +148,7 @@ class CustomersApi implements CustomersApiInterface
      */
     private function initCollection()
     {
-        $this->customerCollection = $this->collectionFactory->create();
-        $this->customerAddressEntityTable = $this->customerCollection->getResource()
-            ->getTable('customer_address_entity');
+        $this->customerHelper->initCollection($this->websiteId);
 
         return $this;
     }
@@ -144,27 +159,65 @@ class CustomersApi implements CustomersApiInterface
      *
      * @return $this
      */
-    private function setPage($page, $pageSize)
+    private function handleIds($page, $pageSize)
     {
-        $this->customerCollection->setPage($page, $pageSize);
+        $page--;
+        $page *= $pageSize;
+
+        $data = $this->customerHelper->handleIds($page, $pageSize, $this->websiteId);
+
+        $this->numberOfItems = $data['numberOfItems'];
+        $this->minId = $data['minId'];
+        $this->maxId = $data['maxId'];
+
         return $this;
     }
 
     /**
-     * @param mixed  $param
-     * @param string $type
-     *
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function filterMixedParam($param, $type)
+    private function handleAttributeData()
     {
-        if ($param) {
-            if (!is_array($param)) {
-                $param = explode(',', $param);
-            }
-            $this->customerCollection->addAttributeToFilter($type, ['in' => $param]);
-        }
+        $this->customerHelper->getCustomersAttributeData(
+            $this->minId,
+            $this->maxId,
+            $this->websiteId
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function handleAddressesAttributeData()
+    {
+        $this->customerHelper->getCustomersAddressesAttributeData(
+            $this->minId,
+            $this->maxId,
+            $this->websiteId
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function setWhere()
+    {
+        $this->customerHelper->setWhere($this->linkField, $this->minId, $this->maxId);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function setOrder()
+    {
+        $this->customerHelper->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
+
         return $this;
     }
 
@@ -174,88 +227,21 @@ class CustomersApi implements CustomersApiInterface
     private function handleCustomers()
     {
         $customerArray = [];
-        foreach ($this->customerCollection as $customer) {
-            $customerArray[] = $this->parseCustomer($customer);
+        foreach ($this->customerHelper->getCustomerCollection() as $customer) {
+            $customerArray[] = $this->customerHelper->buildCustomerObject($customer, $this->websiteId);
         }
 
         return $customerArray;
     }
 
     /**
-     * @param Customer $customer
-     *
-     * @return CustomerInterface
-     */
-    private function parseCustomer($customer)
-    {
-        /** @var CustomerInterface $customerItem */
-        $customerItem = $this->customerFactory->create()
-            ->setId($customer->getId())
-            ->setBillingAddress($this->getAddressFromCustomer($customer, 'billing'))
-            ->setShippingAddress($this->getAddressFromCustomer($customer, 'shipping'));
-
-        foreach ($customer->getData() as $key => $value) {
-            $customerItem->setData($key, $value);
-        }
-
-        return $customerItem;
-    }
-
-    /**
-     * @param Customer $customer
-     * @param string   $addressType
-     *
-     * @return CustomerAddressInterface
-     */
-    private function getAddressFromCustomer($customer, $addressType = 'billing')
-    {
-        /** @var CustomerAddressInterface $address */
-        $address = $this->customerAddressFactory->create();
-
-        foreach ($customer->getData() as $key => $value) {
-            if (strpos($key, $addressType) === 0) {
-                $key = explode('.', $key);
-                $key = array_pop($key);
-
-                $address->setData($key, $value);
-            }
-        }
-
-        return $address;
-    }
-
-    /**
-     * @return $this
-     */
-    private function joinSubscriptionStatus()
-    {
-        $this->customerResource->joinSubscriptionStatus($this->customerCollection);
-
-        return $this;
-    }
-
-    /**
-     * @param string $addressType
+     * @param int $websiteId
      *
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    private function joinAddress($addressType = 'billing')
+    private function joinSubscriptionStatus($websiteId)
     {
-        $tableAlias = $addressType . '_address';
-
-        $attributes = [];
-        foreach ($this->addressFields as $addressConstantKey => $addressField) {
-            $attributes[$addressType . '.' . $addressField] = $addressField;
-        }
-
-        $this->customerCollection->joinTable(
-            [$tableAlias => $this->customerAddressEntityTable],
-            'entity_id = default_' . $addressType,
-            $attributes,
-            null,
-            'left'
-        );
+        $this->customerHelper->joinSubscriptionStatus($websiteId);
 
         return $this;
     }

@@ -4,10 +4,6 @@ namespace Emartech\Emarsys\Model\Data;
 
 use Emartech\Emarsys\Api\Data\ProductsApiResponseInterface;
 
-/**
- * Class ProductsApiResponse
- * @package Emartech\Emarsys\Model\Data
- */
 class ProductsApiResponse extends ListApiResponseBase implements ProductsApiResponseInterface
 {
     /**

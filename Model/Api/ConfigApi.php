@@ -2,16 +2,14 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Emartech\Emarsys\Api\AttributesApiInterface;
 use Emartech\Emarsys\Api\ConfigApiInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
-use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\StatusResponseInterface;
+use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
+use Magento\Framework\Webapi\Exception as WebApiException;
 
-/**
- * Class ConfigApi
- * @package Emartech\Emarsys\Model\Api
- */
 class ConfigApi implements ConfigApiInterface
 {
     /**
@@ -75,24 +73,27 @@ class ConfigApi implements ConfigApiInterface
     }
 
     /**
-     * @param int $websiteId
+     * @param string   $type
+     * @param int      $websiteId
+     * @param string[] $codes
      *
      * @return StatusResponseInterface
+     * @throws WebApiException
      */
-    public function setDefault($websiteId)
+    public function setAttributes($type, $websiteId, $codes)
     {
+        if (!in_array($type, AttributesApiInterface::TYPES)) {
+            throw new WebApiException(__('Invalid Type'));
+        }
+
         /** @var ConfigInterface $config */
         $config = $this->configFactory->create();
 
-        $foundDifference = false;
-
-        foreach ($this->defaultConfig as $key => $value) {
-            if ($config->setConfigValue($key, $value, $websiteId)) {
-                $foundDifference = true;
-            }
+        if (0 !== $websiteId && !array_key_exists($websiteId, $config->getAvailableWebsites())) {
+            throw new WebApiException(__('Invalid Website'));
         }
 
-        if ($foundDifference) {
+        if ($config->setConfigValue($type . ConfigInterface::ATTRIBUTE_CONFIG_POST_TAG, $codes, $websiteId)) {
             $config->cleanScope();
         }
 

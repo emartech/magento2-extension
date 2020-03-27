@@ -9,10 +9,6 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class CustomerAccountObserver
- * @package Emartech\Emarsys\Observers
- */
 class CustomerAccountObserver implements ObserverInterface
 {
     /**
@@ -24,8 +20,16 @@ class CustomerAccountObserver implements ObserverInterface
      */
     private $logger;
 
-    public function __construct(CustomerEventHandler $customerEventHandler, LoggerInterface $logger)
-    {
+    /**
+     * CustomerAccountObserver constructor.
+     *
+     * @param CustomerEventHandler $customerEventHandler
+     * @param LoggerInterface      $logger
+     */
+    public function __construct(
+        CustomerEventHandler $customerEventHandler,
+        LoggerInterface $logger
+    ) {
         $this->customerEventHandler = $customerEventHandler;
         $this->logger = $logger;
     }

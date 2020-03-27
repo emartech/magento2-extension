@@ -1,126 +1,66 @@
 'use strict';
 
-const knex = require('knex');
 const Magento2ApiClient = require('@emartech/magento2-api');
+const db = require('../../helpers/db');
+const { getTableName, cacheTablePrefix } = require('../../helpers/get-table-name');
+const { getSentAddresses, clearMails } = require('../../helpers/mailhog');
 
-const getTableName = table => `${process.env.TABLE_PREFIX}${table}`;
-
-const getDbConnectionConfig = () => {
-  if (process.env.CYPRESS_baseUrl) {
-    return {
-      host: '127.0.0.1',
-      port: 13306,
-      user: 'magento',
-      password: 'magento',
-      database: 'magento_test'
-    };
-  }
-  return {
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-  };
-};
-
-let db = null;
-const getDb = () => {
-  if (!db) {
-    db = knex({
-      client: 'mysql',
-      connection: getDbConnectionConfig()
-    });
-  }
-  return db;
-};
-
-let magentoToken = null;
-const getMagentoToken = async () => {
-  if (!magentoToken) {
-    const { token } = await getDb()
-      .select('token')
-      .from(getTableName('integration'))
-      .where({ name: 'Emarsys Integration' })
-      .leftJoin(
-        getTableName('oauth_token'),
-        getTableName('integration.consumer_id'),
-        getTableName('oauth_token.consumer_id')
-      )
-      .first();
-
-    magentoToken = token;
-
-    console.log('MAGENTO-TOKEN', magentoToken);
-  }
-  return magentoToken;
-};
-
-const getMagentoApi = async () => {
-  const token = await getMagentoToken();
-
-  return new Magento2ApiClient({
-    baseUrl: process.env.CYPRESS_baseUrl || 'http://magento-test.local',
-    token
-  });
-};
+const magentoApi = new Magento2ApiClient({
+  baseUrl: process.env.CYPRESS_baseUrl || 'http://magento-test.local',
+  token: 'Almafa456'
+});
 
 let magentoVersion = null;
 const getMagentoVersion = async () => {
-  const magentoApi = await getMagentoApi();
   const result = await magentoApi.execute('systeminfo', 'get');
   magentoVersion = result.magento_version;
 };
 
 let defaultCustomer = null;
 const createCustomer = async (customer, password) => {
-  const magentoApi = await getMagentoApi();
   await magentoApi.post({ path: '/index.php/rest/V1/customers', payload: { customer, password } });
 
-  const { entity_id: entityId } = await getDb()
+  const { entity_id: entityId } = await db
     .select('entity_id')
     .from(getTableName('customer_entity'))
     .where({ email: customer.email })
     .first();
 
-  return Object.assign({}, customer, { entityId, password });
+  return { ...customer, entityId, password };
 };
 
-const clearEvents = async () => {
-  return await getDb().truncate(getTableName('emarsys_events_data'));
-};
-
-const flushMagentoCache = async () => {
-  const magentoApi = await getMagentoApi();
-  return await magentoApi.get({ path: '/cache-flush.php' });
-};
+const clearEvents = () => db.truncate(getTableName('emarsys_events_data'));
 
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-
   on('task', {
-    clearDb: async () => {
-      await clearEvents();
+    clearEvents,
+    cacheTablePrefix,
+    clearMails: async () => {
+      await clearMails();
       return true;
     },
-    clearEvents: async () => {
-      await clearEvents();
-      return true;
+    getSentAddresses,
+    flushMagentoCache: () => magentoApi.get({ path: '/cache-flush.php' }),
+    enableEmail: () => {
+      return db(getTableName('core_config_data'))
+        .where({ path: 'system/smtp/disable' })
+        .delete();
     },
     setConfig: async ({
       websiteId = 1,
       collectMarketingEvents = 'disabled',
+      magentoSendEmail = 'disabled',
       injectSnippet = 'disabled',
       merchantId = null,
       webTrackingSnippetUrl = null
     }) => {
-      const magentoApi = await getMagentoApi();
       const config = {
         websiteId,
         config: {
           collectMarketingEvents,
           injectSnippet,
+          magentoSendEmail,
           merchantId,
           webTrackingSnippetUrl,
           storeSettings: [
@@ -150,7 +90,7 @@ module.exports = (on, config) => {
       return magentoVersion;
     },
     getEventTypeFromDb: async eventType => {
-      const event = await getDb()
+      const event = await db
         .select()
         .from(getTableName('emarsys_events_data'))
         .where({
@@ -165,13 +105,8 @@ module.exports = (on, config) => {
       event.event_data = JSON.parse(event.event_data);
       return event;
     },
-    getAllEvents: async () => {
-      return await getDb()
-        .select()
-        .from(getTableName('emarsys_events_data'));
-    },
-    createCustomer: async ({ customer }) => {
-      return await createCustomer(customer, 'Password1234');
+    getAllEvents: () => {
+      return db.select().from(getTableName('emarsys_events_data'));
     },
     getDefaultCustomer: async () => {
       if (!defaultCustomer) {
@@ -190,24 +125,20 @@ module.exports = (on, config) => {
       }
       return defaultCustomer;
     },
-    log: logObject => {
-      console.log('LOG', logObject);
-      return true;
-    },
     setDefaultCustomerProperty: customerData => {
-      defaultCustomer = Object.assign({}, defaultCustomer, customerData);
+      defaultCustomer = { ...defaultCustomer, ...customerData };
       return defaultCustomer;
     },
-    getSubscription: async email => {
-      return await getDb()
+    getSubscription: email => {
+      return db
         .select()
         .from(getTableName('newsletter_subscriber'))
         .where({ subscriber_email: email })
         .first();
     },
-    setDoubleOptin: async stateOn => {
+    setDoubleOptin: stateOn => {
       if (stateOn) {
-        return await getDb()
+        return db
           .insert({
             scope: 'default',
             scope_id: 0,
@@ -216,13 +147,10 @@ module.exports = (on, config) => {
           })
           .into(getTableName('core_config_data'));
       } else {
-        return await getDb()(getTableName('core_config_data'))
+        return db(getTableName('core_config_data'))
           .where({ path: 'newsletter/subscription/confirm' })
           .delete();
       }
-    },
-    flushMagentoCache: async () => {
-      return await flushMagentoCache();
     }
   });
 };

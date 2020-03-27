@@ -10,7 +10,8 @@ use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
 use Magento\Setup\Exception as SetupException;
-use Zend\Uri\Http;
+use Zend\Uri\Uri;
+use Zend\Uri\UriFactory;
 
 class Integration extends AbstractHelper
 {
@@ -38,10 +39,6 @@ class Integration extends AbstractHelper
         'endpoint'   => 'https://localhost',
         'setup_type' => '0'
     ];
-    /**
-     * @var \Zend\Uri\Http
-     */
-    private $http;
 
     /**
      * @var Context
@@ -55,7 +52,6 @@ class Integration extends AbstractHelper
      * @param Context $context
      * @param IntegrationService $integrationService
      * @param AuthorizationService $authorizationService
-     * @param Http $http
      * @param Json $json
      * @param Token $token
      * @param Provider $tokenProvider
@@ -65,7 +61,6 @@ class Integration extends AbstractHelper
         Context $context,
         IntegrationService $integrationService,
         AuthorizationService $authorizationService,
-        Http $http,
         Json $json,
         Token $token,
         Provider $tokenProvider,
@@ -79,7 +74,6 @@ class Integration extends AbstractHelper
         $this->tokenProvider = $tokenProvider;
         $this->configWriter = $configWriter;
         $this->json = $json;
-        $this->http = $http;
     }
 
     /**
@@ -138,7 +132,7 @@ class Integration extends AbstractHelper
     }
 
     /**
-     * @return Http
+     * @return Uri
      * @throws SetupException
      */
     private function getBaseUrl()
@@ -149,9 +143,7 @@ class Integration extends AbstractHelper
             throw new SetupException('Missing base_url setting. Set web/unsecure/base_url.');
         }
 
-        $parsedUrl = $this->http->parse($baseUrl);
-
-        return $parsedUrl;
+        return UriFactory::factory($baseUrl);
     }
 
     /**

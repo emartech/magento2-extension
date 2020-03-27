@@ -2,14 +2,11 @@
 
 namespace Emartech\Emarsys\Setup;
 
+use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
-use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
 
-/**
- * Class InstallSchema
- * @package Emartech\Emarsys\Setup
- */
 class InstallSchema implements InstallSchemaInterface
 {
     /**
@@ -20,8 +17,10 @@ class InstallSchema implements InstallSchemaInterface
      * @throws \Zend_Db_Exception
      */
     // @codingStandardsIgnoreLine
-    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
-    {
+    public function install(
+        SchemaSetupInterface $setup,
+        ModuleContextInterface $context
+    ) {
         $setup->startSetup();
 
         $this->createEmarsysEventsTable($setup);
@@ -43,50 +42,56 @@ class InstallSchema implements InstallSchemaInterface
             )
                 ->addColumn(
                     'event_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_BIGINT,
+                    Table::TYPE_BIGINT,
                     null,
-                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    [
+                        'identity' => true, 'unsigned' => true,
+                        'nullable' => false, 'primary' => true,
+                    ],
                     'Event Id'
                 )
                 ->addColumn(
                     'website_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    Table::TYPE_INTEGER,
                     null,
                     ['default' => null, 'nullable' => true],
                     'Website ID'
                 )
                 ->addColumn(
                     'store_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    Table::TYPE_INTEGER,
                     null,
                     ['default' => null, 'nullable' => true],
                     'Store ID'
                 )->addColumn(
                     'entity_id',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    Table::TYPE_INTEGER,
                     null,
                     ['nullable' => false],
                     'Entity ID'
                 )
                 ->addColumn(
                     'event_type',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    Table::TYPE_TEXT,
                     255,
                     ['default' => null, 'nullable' => false],
                     'Event Type'
                 )
                 ->addColumn(
                     'event_data',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_BLOB,
+                    Table::TYPE_BLOB,
                     null,
                     ['default' => null, 'nullable' => false],
                     'Event Data'
                 )
                 ->addColumn(
                     'created_at',
-                    \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+                    Table::TYPE_TIMESTAMP,
                     null,
-                    ['default' => \Magento\Framework\DB\Ddl\Table::TIMESTAMP_INIT, 'nullable' => false],
+                    [
+                        'default'  => Table::TIMESTAMP_INIT,
+                        'nullable' => false,
+                    ],
                     'Timestamp'
                 )
                 ->addIndex(
@@ -108,7 +113,11 @@ class InstallSchema implements InstallSchemaInterface
                     ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX]
                 );
             $setup->getConnection()->createTable($table);
-            $setup->getConnection()->modifyColumn($tableName, 'event_data', 'mediumblob');
+            $setup->getConnection()->modifyColumn(
+                $tableName,
+                'event_data',
+                'mediumblob'
+            );
         }
     }
 }

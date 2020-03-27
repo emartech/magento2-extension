@@ -10,10 +10,6 @@ use Magento\Newsletter\Model\Subscriber;
 use Psr\Log\LoggerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Class SubscriptionObserver
- * @package Emartech\Emarsys\Observers
- */
 class SubscriptionObserver implements ObserverInterface
 {
     /**
