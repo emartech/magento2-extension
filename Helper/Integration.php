@@ -100,15 +100,15 @@ class Integration extends AbstractHelper
     public function generateConnectToken()
     {
         $token = $this->getToken()['token'];
-        $parsedUrl = $this->getBaseUrl();
-        $hostname = $parsedUrl->getHost();
-        $port = $parsedUrl->getPort();
+        $base_url = $this->getBaseUrl();
+        $hostname = $this->getHostFromUrl($base_url);
+        $port = $this->getPortFromUrl($base_url);
         if ($port && $port !== 80) {
             $hostname .= ':' . $port;
         }
         $magento_version = self::MAGENTO_VERSION;
 
-        $connectJson = $this->json->serialize(compact('hostname', 'token', 'magento_version'));
+        $connectJson = $this->json->serialize(compact('hostname', 'token', 'magento_version', 'base_url'));
 
         return base64_encode($connectJson);
     }
@@ -132,7 +132,7 @@ class Integration extends AbstractHelper
     }
 
     /**
-     * @return Uri
+     * @return string
      * @throws SetupException
      */
     private function getBaseUrl()
@@ -143,7 +143,25 @@ class Integration extends AbstractHelper
             throw new SetupException('Missing base_url setting. Set web/unsecure/base_url.');
         }
 
-        return UriFactory::factory($baseUrl);
+        return $baseUrl;
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    private function getHostFromUrl($url)
+    {
+        return UriFactory::factory($url)->getHost();
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    private function getPortFromUrl($url)
+    {
+        return UriFactory::factory($url)->getPort();
     }
 
     /**
