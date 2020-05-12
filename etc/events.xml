@@ -15,6 +15,9 @@
     <event name="sales_order_save_after">
         <observer name="orderObserver" instance="Emartech\Emarsys\Observers\SalesOrderObserver" />
     </event>
+    <event name="sales_order_creditmemo_save_after">
+        <observer name="creditmemoObserver" instance="Emartech\Emarsys\Observers\CreditmemoObserver" />
+    </event>
     <event name="customer_delete_after">
         <observer name="customerDeleteObserver" instance="Emartech\Emarsys\Observers\CustomerDeleteObserver" />
     </event>

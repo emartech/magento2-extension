@@ -60,6 +60,12 @@
             <resource ref="Emartech_Emarsys::api_orders"/>
         </resources>
     </route>
+    <route url="/V1/emarsys/refunds" method="GET">
+        <service class="Emartech\Emarsys\Api\RefundsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_refunds"/>
+        </resources>
+    </route>
     <route url="/V1/emarsys/attributes/:type" method="GET">
         <service class="Emartech\Emarsys\Api\AttributesApiInterface" method="get"/>
         <resources>
