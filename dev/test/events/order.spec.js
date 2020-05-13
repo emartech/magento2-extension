@@ -168,9 +168,14 @@ describe('Order events', function () {
       await refundFirstItemFromOrder(this.magentoApi, orderId);
 
       const events = await getAllEvents(this.db);
-      const fulfilledOrders = events.filter((event) => event.event_type === 'orders/fulfilled');
 
+      const fulfilledOrders = events.filter((event) => event.event_type === 'orders/fulfilled');
       expect(fulfilledOrders.length).to.be.equal(0);
+
+      const refundEvents = events.filter((event) => event.event_type === 'refunds/fulfilled');
+      expect(refundEvents.length).to.be.equal(1);
+      const refundData = JSON.parse(refundEvents[0].event_data);
+      expect(refundData.order_id).to.be.equal(orderId);
     });
 
     context('store is not enabled', function () {
