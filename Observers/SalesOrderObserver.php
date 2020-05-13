@@ -43,12 +43,15 @@ class SalesOrderObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         /** @var Order $order */
+        /** @noinspection PhpUndefinedMethodInspection */
         $order = $observer->getEvent()->getOrder();
 
-        try {
-            $this->salesEventHandler->store($order);
-        } catch (\Exception $e) {
-            $this->logger->warning('Emartech\\Emarsys\\Observers\\SalesOrderObserver: ' . $e->getMessage());
+        if ($order->getState() != $order->getOrigData(Order::STATE) && $order->getState() == Order::STATE_COMPLETE) {
+            try {
+                $this->salesEventHandler->store($order);
+            } catch (\Exception $e) {
+                $this->logger->warning('Emartech\\Emarsys\\Observers\\SalesOrderObserver: ' . $e->getMessage());
+            }
         }
     }
 }
