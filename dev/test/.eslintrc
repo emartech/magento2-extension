@@ -30,6 +30,7 @@
     "security/detect-child-process": 0,
     "security/detect-non-literal-fs-filename": 0,
     "security/detect-non-literal-require": 0,
-    "security/detect-object-injection": 0
+    "security/detect-object-injection": 0,
+    "space-before-function-paren": 0
   }
 }
