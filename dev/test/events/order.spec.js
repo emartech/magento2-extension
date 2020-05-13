@@ -92,6 +92,24 @@ const changeOrderStatus = async (magentoApi, orderId, orderStatus, orderState) =
   });
 };
 
+const refundFirstItemFromOrder = async (magentoApi, orderId) => {
+  const { items } = await magentoApi.get({ path: `/index.php/rest/V1/orders/${orderId}` });
+  const itemId = items[0].item_id;
+
+  await magentoApi.post({
+    path: `/index.php/rest/V1/order/${orderId}/refund`,
+    payload: {
+      items: [
+        {
+          order_item_id: itemId,
+          qty: 1
+        }
+      ],
+      notify: false
+    }
+  });
+};
+
 let tablePrefix;
 
 describe('Order events', function () {
@@ -139,6 +157,20 @@ describe('Order events', function () {
 
       const eventData = JSON.parse(fulfilledOrders[0].event_data);
       expect(eventData.status).to.be.equal('complete');
+    });
+
+    it('should not log orders/fulfilled when a partial refund occurs', async function () {
+      const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
+      await fulfillOrder(this.magentoApi, orderId);
+
+      await this.dbCleaner.resetEmarsysEventsData();
+
+      await refundFirstItemFromOrder(this.magentoApi, orderId);
+
+      const events = await getAllEvents(this.db);
+      const fulfilledOrders = events.filter((event) => event.event_type === 'orders/fulfilled');
+
+      expect(fulfilledOrders.length).to.be.equal(0);
     });
 
     context('store is not enabled', function () {
