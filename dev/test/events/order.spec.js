@@ -178,7 +178,7 @@ describe('Order events', function () {
       expect(refundData.order_id).to.be.equal(orderId);
     });
 
-    it('should not log orders/fulfilled when a partial refund occurs', async function () {
+    it('should not group refunds/fulfilled events', async function () {
       const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
       await fulfillOrder(this.magentoApi, orderId);
 
