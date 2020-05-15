@@ -85,7 +85,7 @@ const cartItem = (magentoVersion, magentoEdition) => {
 
   return {
     sku: 'WS03',
-    qty: 1,
+    qty: 2,
     product_type: 'configurable',
     product_option: {
       extension_attributes: {

@@ -39,6 +39,9 @@
     <preference for="Emartech\Emarsys\Api\OrdersApiInterface" type="Emartech\Emarsys\Model\Api\OrdersApi" />
     <preference for="Emartech\Emarsys\Api\Data\OrdersApiResponseInterface" type="Emartech\Emarsys\Model\Data\OrdersApiResponse" />
 
+    <preference for="Emartech\Emarsys\Api\RefundsApiInterface" type="Emartech\Emarsys\Model\Api\RefundsApi" />
+    <preference for="Emartech\Emarsys\Api\Data\RefundsApiResponseInterface" type="Emartech\Emarsys\Model\Data\RefundsApiResponse" />
+
     <preference for="Emartech\Emarsys\Api\Data\AttributeInterface" type="Emartech\Emarsys\Model\Data\Attribute" />
     <preference for="Emartech\Emarsys\Api\AttributesApiInterface" type="Emartech\Emarsys\Model\Api\AttributesApi" />
     <preference for="Emartech\Emarsys\Api\Data\AttributesApiResponseInterface" type="Emartech\Emarsys\Model\Data\AttributesApiResponse" />
