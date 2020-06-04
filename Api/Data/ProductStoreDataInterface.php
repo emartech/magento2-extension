@@ -19,6 +19,7 @@ interface ProductStoreDataInterface
     const ORIGINAL_WEBSHOP_PRICE         = 'original_webshop_price';
     const ORIGINAL_DISPLAY_WEBSHOP_PRICE = 'original_display_webshop_price';
     const EXTRA_FIELDS                   = 'extra_fields';
+    const IMAGES_KEY                     = 'images';
 
     /**
      * @return string
@@ -96,6 +97,11 @@ interface ProductStoreDataInterface
     public function getExtraFields();
 
     /**
+     * @return \Emartech\Emarsys\Api\Data\ImagesInterface
+     */
+    public function getImages();
+
+    /**
      * @param string $name
      *
      * @return $this
@@ -156,7 +162,8 @@ interface ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice);
+    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice
+    );
 
     /**
      * @param string $link
@@ -199,4 +206,11 @@ interface ProductStoreDataInterface
      * @return $this
      */
     public function setExtraFields($extraFields);
+
+    /**
+     * @param \Emartech\Emarsys\Api\Data\ImagesInterface $images
+     *
+     * @return $this
+     */
+    public function setImages($images);
 }

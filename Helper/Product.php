@@ -46,10 +46,7 @@ class Product extends AbstractHelper
         'images',
         'qty',
         'is_in_stock',
-        'stores',
-        'image',
-        'small_image',
-        'thumbnail',
+        'stores'
     ];
 
     /**
@@ -72,6 +69,9 @@ class Product extends AbstractHelper
         'special_price',
         'special_from_date',
         'special_to_date',
+        'image',
+        'small_image',
+        'thumbnail',
     ];
 
     /**
@@ -433,7 +433,7 @@ class Product extends AbstractHelper
             ->setIsInStock($this->handleStock($productEntityId))
             ->setQty($this->handleQty($productEntityId))
             ->setSku($product->getSku())
-            ->setImages($this->handleImages($product, $storeIds, $productId))
+            ->setImages($this->handleImages($storeIds[0], $productId))
             ->setStoreData(
                 $this->handleProductStoreData(
                     $product,
@@ -540,45 +540,35 @@ class Product extends AbstractHelper
     }
 
     /**
-     * @param ProductModel $product
-     * @param array        $storeIds
+     * @param Store        $store
      * @param int          $id
      *
      * @return ImagesInterface
      */
     // @codingStandardsIgnoreLine
-    protected function handleImages($product, $storeIds, $id)
+    protected function handleImages($store, $id)
     {
-        $imagePreUrl = $storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
+        $imagePreUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         try {
-            $image = $this->getStoreData($id, 0, 'image');
+            $image = $this->getStoreData($id, $store->getId(), 'image');
+            $image = $imagePreUrl . $image;
         } catch (Exception $e) {
             $image = null;
         }
 
-        if ($image) {
-            $image = $imagePreUrl . $image;
-        }
-
         try {
-            $smallImage = $this->getStoreData($id, 0, 'small_image');
+            $smallImage = $this->getStoreData($id, $store->getId(), 'small_image');
+            $smallImage = $imagePreUrl . $smallImage;
         } catch (Exception $e) {
             $smallImage = null;
         }
 
-        if ($smallImage) {
-            $smallImage = $imagePreUrl . $smallImage;
-        }
-
         try {
-            $thumbnail = $this->getStoreData($id, 0, 'thumbnail');
+            $thumbnail = $this->getStoreData($id, $store->getId(), 'thumbnail');
+            $thumbnail = $imagePreUrl . $thumbnail;
         } catch (Exception $e) {
             $thumbnail = null;
-        }
-
-        if ($thumbnail) {
-            $thumbnail = $imagePreUrl . $thumbnail;
         }
 
         return $this->imagesFactory->create()
@@ -670,7 +660,8 @@ class Product extends AbstractHelper
                 ->setDisplayWebshopPrice($displayWebShopPrice)
                 ->setOriginalWebshopPrice($originalWebShopPrice)
                 ->setOriginalDisplayWebshopPrice($originalDisplayWebShopPrice)
-                ->setCurrencyCode($this->getCurrencyCode($storeObject));
+                ->setCurrencyCode($this->getCurrencyCode($storeObject))
+                ->setImages($this->handleImages($storeObject, $productId));
 
             if ($this->getProductExtraFields()) {
                 $extraFields = [];
