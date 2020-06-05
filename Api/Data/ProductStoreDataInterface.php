@@ -162,8 +162,7 @@ interface ProductStoreDataInterface
      *
      * @return $this
      */
-    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice
-    );
+    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice);
 
     /**
      * @param string $link

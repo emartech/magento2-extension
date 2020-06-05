@@ -221,6 +221,9 @@ describe('Products endpoint', function () {
   it('returns product images for stores', async function () {
     const sku = '24-MB04';
 
+    const timestamp = new Date() * 1;
+    const fileName = `my_custom_pic_${timestamp}.gif`;
+
     await this.magentoApi.post({
       path: `/rest/second_store/V1/products/${sku}/media`,
       payload: {
@@ -233,7 +236,7 @@ describe('Products endpoint', function () {
           content: {
             base64_encoded_data: 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
             type: 'image/gif',
-            name: 'my_custom_pic.gif'
+            name: fileName
           }
         }
       }
@@ -255,9 +258,9 @@ describe('Products endpoint', function () {
     expect(product.images).to.eql(expectedDefaultImages);
     expect(defaultStore.images).to.eql(expectedDefaultImages);
     expect(secondStore.images).to.eql({
-      image: 'http://magento-test.local/pub/media/catalog/product/m/b/my_custom_pic.gif',
-      small_image: 'http://magento-test.local/pub/media/catalog/product/m/b/my_custom_pic.gif',
-      thumbnail: 'http://magento-test.local/pub/media/catalog/product/m/b/my_custom_pic.gif'
+      image: `http://magento-test.local/pub/media/catalog/product/m/y/${fileName}`,
+      small_image: `http://magento-test.local/pub/media/catalog/product/m/y/${fileName}`,
+      thumbnail: `http://magento-test.local/pub/media/catalog/product/m/y/${fileName}`
     });
   });
 
