@@ -712,20 +712,15 @@ class Product extends AbstractHelper
                     $storeId,
                     'special_from_date'
                 );
-                $specialFromDate = $this->dateTimeFilter->filter(
-                    $specialFromDate
-                );
                 $specialFromDate = new DateTime($specialFromDate);
 
-                $now = $this->dateTimeFilter->filter(null);
-                $now = new DateTime($now);
+                $now = new DateTime();
 
                 $specialToDate = $this->getStoreData(
                     $productId,
                     $storeId,
                     'special_to_date'
                 );
-                $specialToDate = $this->dateTimeFilter->filter($specialToDate);
                 $specialToDate = new DateTime($specialToDate);
 
                 if ($specialFromDate <= $now && $now <= $specialToDate) {
