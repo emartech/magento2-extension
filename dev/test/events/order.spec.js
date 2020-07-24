@@ -129,15 +129,6 @@ describe('Order events', function () {
     it('should create orders/new event and an orders/fulfilled', async function () {
       const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
 
-      const { event_type: createEventType, event_data: createEventPayload } = await getLastEvent(this.db);
-      const createdEventData = JSON.parse(createEventPayload);
-      const simpleItem = createdEventData.items[1];
-
-      expect(createEventType).to.be.equal('orders/create');
-      expect(simpleItem.parent_item).not.to.be.empty;
-      expect(createdEventData.addresses).to.have.property('shipping');
-      expect(createdEventData.addresses).to.have.property('billing');
-
       await fulfillOrder(this.magentoApi, orderId);
 
       const { event_type: fulfillEventType } = await getLastEvent(this.db);

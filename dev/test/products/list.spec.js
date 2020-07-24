@@ -2,8 +2,8 @@
 
 const { getProducts } = require('../fixtures/products');
 
-describe('Products endpoint', function() {
-  before(async function() {
+describe('Products endpoint', function () {
+  before(async function () {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 0,
       type: 'product',
@@ -11,7 +11,7 @@ describe('Products endpoint', function() {
     });
   });
 
-  after(async function() {
+  after(async function () {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 0,
       type: 'product',
@@ -19,7 +19,7 @@ describe('Products endpoint', function() {
     });
   });
 
-  it('returns product count and products according to page and page_size', async function() {
+  it('returns product count and products according to page and page_size', async function () {
     const page = 3;
     const limit = 10;
 
@@ -47,7 +47,7 @@ describe('Products endpoint', function() {
     expect(products.length).to.equal(expectedProducts.length);
     expect(productCount).to.equal(expectedProductCount);
 
-    ['entity_id', 'type', 'sku', 'qty', 'is_in_stock', 'images'].forEach(key => {
+    ['entity_id', 'type', 'sku', 'qty', 'is_in_stock', 'images'].forEach((key) => {
       expect({ key, value: product[key] }).to.eql({ key, value: expectedProduct[key] });
     });
 
@@ -55,7 +55,7 @@ describe('Products endpoint', function() {
     expect(product.categories[0]).to.equal(expectedProduct.categories[0]);
     expect(product.categories[1]).to.equal(expectedProduct.categories[1]);
 
-    const storeLevelProduct = product.store_data.find(store => store.store_id === 1);
+    const storeLevelProduct = product.store_data.find((store) => store.store_id === 1);
     [
       'name',
       'price',
@@ -66,12 +66,12 @@ describe('Products endpoint', function() {
       'link',
       'status',
       'description'
-    ].forEach(key => {
+    ].forEach((key) => {
       expect({ key, value: storeLevelProduct[key] }).to.eql({ key, value: expectedProduct.store_data[0][key] });
     });
   });
 
-  it('returns child entities for configurable products', async function() {
+  it('returns child entities for configurable products', async function () {
     let page;
     switch (this.magentoVersion) {
       case '2.3.0':
@@ -106,12 +106,12 @@ describe('Products endpoint', function() {
     const product = products[0];
     const expectedProduct = expectedProducts[0];
 
-    ['type', 'children_entity_ids'].forEach(key => {
+    ['type', 'children_entity_ids'].forEach((key) => {
       expect(product[key]).to.eql(expectedProduct[key]);
     });
   });
 
-  it('returns extra_fields for products', async function() {
+  it('returns extra_fields for products', async function () {
     const { products: originalProducts } = await this.magentoApi.execute('products', 'get', {
       page: 1,
       limit: 1,
@@ -144,7 +144,7 @@ describe('Products endpoint', function() {
     expect(updatedProduct.store_data[0].extra_fields.length).to.be.equal(1);
   });
 
-  it('returns different prices for the same product on multiple websites', async function() {
+  it('returns different prices for the same product on multiple websites', async function () {
     const sku = '24-MB01';
 
     const extensionAttributes = this.magentoVersion.startsWith('2.1')
@@ -175,9 +175,9 @@ describe('Products endpoint', function() {
 
     const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 10, storeIds: [1, 2] });
 
-    const product = products.find(product => product.sku === sku);
-    const defaultStoreItem = product.store_data.find(storeData => storeData.store_id === 1);
-    const secondStoreItem = product.store_data.find(storeData => storeData.store_id === 2);
+    const product = products.find((product) => product.sku === sku);
+    const defaultStoreItem = product.store_data.find((storeData) => storeData.store_id === 1);
+    const secondStoreItem = product.store_data.find((storeData) => storeData.store_id === 2);
 
     expect(defaultStoreItem.webshop_price).to.eql(111);
     expect(defaultStoreItem.display_webshop_price).to.eql(222);
@@ -188,7 +188,7 @@ describe('Products endpoint', function() {
     expect(secondStoreItem.original_display_webshop_price).to.eql(444);
   });
 
-  it('returns different original prices for the same product on multiple websites', async function() {
+  it('returns different original prices for the same product on multiple websites', async function () {
     const sku = '24-MB04';
 
     const extensionAttributes = this.magentoVersion.startsWith('2.1')
@@ -208,9 +208,9 @@ describe('Products endpoint', function() {
 
     const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 10, storeIds: [1, 2] });
 
-    const product = products.find(product => product.sku === sku);
-    const defaultStoreItem = product.store_data.find(storeData => storeData.store_id === 1);
-    const secondStoreItem = product.store_data.find(storeData => storeData.store_id === 2);
+    const product = products.find((product) => product.sku === sku);
+    const defaultStoreItem = product.store_data.find((storeData) => storeData.store_id === 1);
+    const secondStoreItem = product.store_data.find((storeData) => storeData.store_id === 2);
 
     expect(defaultStoreItem.display_webshop_price).to.eql(64);
     expect(defaultStoreItem.original_display_webshop_price).to.eql(64);
@@ -218,9 +218,55 @@ describe('Products endpoint', function() {
     expect(secondStoreItem.original_display_webshop_price).to.eql(2000);
   });
 
-  context('out of stock', function() {
+  it('returns product images for stores', async function () {
+    const sku = '24-MB04';
+
+    const timestamp = new Date() * 1;
+    const fileName = `my_custom_pic_${timestamp}.gif`;
+
+    await this.magentoApi.post({
+      path: `/rest/second_store/V1/products/${sku}/media`,
+      payload: {
+        entry: {
+          media_type: 'image',
+          label: 'Image',
+          position: 100,
+          disabled: false,
+          types: ['image', 'small_image', 'thumbnail'],
+          content: {
+            base64_encoded_data: 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+            type: 'image/gif',
+            name: fileName
+          }
+        }
+      }
+    });
+
+    const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 10, storeIds: [1, 2] });
+
+    const product = products.find((product) => product.sku === sku);
+
+    const defaultStore = product.store_data.find(store => store.store_id === 1);
+    const secondStore = product.store_data.find(store => store.store_id === 2);
+
+    const expectedDefaultImages = {
+      image: 'http://magento-test.local/pub/media/catalog/product/m/b/mb04-black-0.jpg',
+      small_image: 'http://magento-test.local/pub/media/catalog/product/m/b/mb04-black-0.jpg',
+      thumbnail: 'http://magento-test.local/pub/media/catalog/product/m/b/mb04-black-0.jpg'
+    };
+
+    expect(product.images).to.eql(expectedDefaultImages);
+    expect(defaultStore.images).to.eql(expectedDefaultImages);
+    expect(secondStore.images).to.eql({
+      image: `http://magento-test.local/pub/media/catalog/product/m/y/${fileName}`,
+      small_image: `http://magento-test.local/pub/media/catalog/product/m/y/${fileName}`,
+      thumbnail: `http://magento-test.local/pub/media/catalog/product/m/y/${fileName}`
+    });
+  });
+
+  context('out of stock', function () {
     const sku = '24-MB03';
-    before(async function() {
+    before(async function () {
       await this.magentoApi.put({
         path: `/rest/V1/products/${sku}/stockItems/1`,
         payload: {
@@ -231,7 +277,7 @@ describe('Products endpoint', function() {
       });
     });
 
-    after(async function() {
+    after(async function () {
       await this.magentoApi.put({
         path: `/rest/V1/products/${sku}/stockItems/1`,
         payload: {
@@ -243,9 +289,9 @@ describe('Products endpoint', function() {
       });
     });
 
-    it('should return out of stock products', async function() {
+    it('should return out of stock products', async function () {
       const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 3, storeIds: [1, 2] });
-      const product = products.find(product => product.sku === sku);
+      const product = products.find((product) => product.sku === sku);
 
       expect(products.length).to.be.equal(3);
       expect(product).not.to.be.undefined;

@@ -55,13 +55,24 @@ class RefundEventHandler extends BaseEventHandler
             return false;
         }
 
+        $order = $creditmemo->getOrder();
         $refundData = $creditmemo->getData();
         $refundData['id'] = $creditmemo->getId();
+        $refundData['customer_is_guest'] = $order->getCustomerIsGuest();
+        $refundData['customer_email'] = $order->getCustomerEmail();
+
         $refundData['items'] = [];
         $refundData['addresses'] = [];
 
         foreach ($creditmemo->getAllItems() as $item) {
-            $refundData['items'][] = $item->toArray();
+            $itemArray = $item->toArray();
+            $itemArray['product_type'] = $item->getOrderItem()->getProductType();
+
+            if ($parentItem = $this->getParentItem($creditmemo, $item)) {
+                $itemArray['parent_item'] = $parentItem;
+            }
+
+            $refundData['items'][] = $itemArray;
         }
 
         if ($creditmemo->getShippingAddress()) {
@@ -98,5 +109,25 @@ class RefundEventHandler extends BaseEventHandler
             default:
                 return 'refunds/' . $state;
         }
+    }
+
+    /**
+     * @param Creditmemo $creditmemo
+     * @param Creditmemo\Item $item
+     * @return bool|array
+     */
+    private function getParentItem($creditmemo, $item)
+    {
+        $orderItem = $item->getOrderItem();
+        if ($orderItem->getParentItemId()) {
+            foreach ($creditmemo->getAllItems() as $creditmemoItem) {
+                if ($creditmemoItem->getOrderItemId() == $orderItem->getParentItemId()) {
+                    $result = $creditmemoItem->getData();
+                    $result['product_type'] = $creditmemoItem->getOrderItem()->getProductType();
+                    return $result;
+                }
+            }
+        }
+        return false;
     }
 }

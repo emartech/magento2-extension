@@ -390,8 +390,7 @@ class Product extends ProductResourceModel
         $attributeTables = [];
 
         /** @var ProductAttributeCollection $productAttributeCollection */
-        $productAttributeCollection = $this->productAttributeCollectionFactory->create(
-        );
+        $productAttributeCollection = $this->productAttributeCollectionFactory->create();
         $productAttributeCollection
             ->addFieldToFilter(
                 'entity_type_id',

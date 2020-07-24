@@ -3,9 +3,9 @@
 namespace Emartech\Emarsys\Model\Data;
 
 use Emartech\Emarsys\Api\Data\ExtraFieldsInterface;
-use Magento\Framework\DataObject;
-
+use Emartech\Emarsys\Api\Data\ImagesInterface;
 use Emartech\Emarsys\Api\Data\ProductStoreDataInterface;
+use Magento\Framework\DataObject;
 
 class ProductStoreData extends DataObject implements ProductStoreDataInterface
 {
@@ -127,6 +127,14 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     public function getExtraFields()
     {
         return $this->getData(self::EXTRA_FIELDS);
+    }
+
+    /**
+     * @return ImagesInterface
+     */
+    public function getImages()
+    {
+        return $this->getData(self::IMAGES_KEY);
     }
 
     /**
@@ -305,6 +313,17 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     public function setExtraFields($extraFields)
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
+        return $this;
+    }
+
+    /**
+     * @param ImagesInterface $images
+     *
+     * @return $this
+     */
+    public function setImages($images)
+    {
+        $this->setData(self::IMAGES_KEY, $images);
         return $this;
     }
 }
