@@ -92,6 +92,9 @@ describe('Products endpoint', function () {
       case '2.3.4':
         page = 68;
         break;
+      case '2.3.5':
+        page = 68;
+        break;
       default:
         page = 67;
     }

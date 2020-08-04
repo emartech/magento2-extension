@@ -43,6 +43,16 @@ const cartItem = (magentoVersion, magentoEdition) => {
           option_id: 152,
           option_value: 5593
         }
+      ],
+      '2.3.5': [
+        {
+          option_id: 93,
+          option_value: 5477
+        },
+        {
+          option_id: 145,
+          option_value: 5593
+        }
       ]
     },
     Enterprise: {
