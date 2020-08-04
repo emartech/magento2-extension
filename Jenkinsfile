@@ -50,14 +50,14 @@ pipeline {
     }
     stage('Run tests on recent versions') {
       parallel {
-        stage('Run unit tests on 2.3.3CE') {
+        stage('Run unit tests on 2.3.4CE') {
           steps {
-            sh 'VERSION=2.3.3ce sh dev/jenkins/run-unit.sh'
+            sh 'VERSION=2.3.4ce sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run e2e tests on 2.3.3CE') {
+        stage('Run e2e tests on 2.3.4CE') {
           steps {
-            sh 'VERSION=2.3.3ce sh dev/jenkins/run-e2e.sh'
+            sh 'VERSION=2.3.4ce sh dev/jenkins/run-e2e.sh'
           }
         }
 
@@ -72,14 +72,14 @@ pipeline {
           }
         }
 
-        stage('Run unit tests on 2.3.2EE') {
+        stage('Run unit tests on 2.3.5CE') {
           steps {
-            sh 'VERSION=2.3.2ee sh dev/jenkins/run-unit.sh'
+            sh 'VERSION=2.3.5ce sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run e2e tests on 2.3.2EE') {
+        stage('Run e2e tests on 2.3.5CE') {
           steps {
-            sh 'VERSION=2.3.2ee sh dev/jenkins/run-e2e.sh'
+            sh 'VERSION=2.3.5ce sh dev/jenkins/run-e2e.sh'
           }
         }
       }
@@ -114,6 +114,17 @@ pipeline {
         stage('Run e2e tests on 2.2.6CE') {
           steps {
             sh 'VERSION=2.2.6ce sh dev/jenkins/run-e2e.sh'
+          }
+        }
+
+        stage('Run unit tests on 2.3.2EE') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests on 2.3.2EE') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run-e2e.sh'
           }
         }
       }
