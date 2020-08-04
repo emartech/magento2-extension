@@ -87,7 +87,10 @@ describe('Products endpoint', function () {
         page = 68; //this.magentoEdition === 'Enterprise' ? 70 : 68;
         break;
       case '2.3.3':
-        page = 68; //this.magentoEdition === 'Enterprise' ? 70 : 68;
+        page = 68;
+        break;
+      case '2.3.4':
+        page = 68;
         break;
       default:
         page = 67;
