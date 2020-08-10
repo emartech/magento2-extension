@@ -87,6 +87,10 @@ const reindex = baseUrl => () => {
   return axios.get(`${baseUrl}reindex.php`);
 };
 
+const cacheFlush = baseUrl => () => {
+  return axios.get(`${baseUrl}cache-flush.php`);
+};
+
 before(async function() {
   await cacheTablePrefix();
 
@@ -130,6 +134,7 @@ before(async function() {
   this.createProduct = createProduct(this.magentoApi);
   this.localCartItem = cartItem.get(this.magentoVersion, this.magentoEdition);
   this.reindex = reindex(baseUrl);
+  this.cacheFlush = cacheFlush(baseUrl);
 
   this.customer = await this.createCustomer(
     {
