@@ -41,6 +41,14 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     }
 
     /**
+     * @return bool
+     */
+    public function getIsWebsiteScope()
+    {
+        return $this->getData(self::IS_WEBSITE_SCOPE_KEY);
+    }
+
+    /**
      * @param string $magentoVersion
      *
      * @return $this
@@ -84,6 +92,18 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     public function setMagentoEdition($magentoEdition)
     {
         $this->setData(self::MAGENTO_EDITION_KEY, $magentoEdition);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $isWebsiteScope
+     *
+     * @return $this
+     */
+    public function setIsWebsiteScope($isWebsiteScope)
+    {
+        $this->setData(self::IS_WEBSITE_SCOPE_KEY, $isWebsiteScope);
 
         return $this;
     }
