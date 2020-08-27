@@ -19,6 +19,7 @@ use Magento\Framework\Stdlib\DateTime;
 use Magento\Framework\Validator\Factory;
 use Magento\Store\Model\ResourceModel\Store\CollectionFactory as StoreCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
+use Emartech\Emarsys\Helper\DataSource as DataSourceHelper;
 
 class Customer extends CustomerResourceModel
 {
@@ -59,18 +60,25 @@ class Customer extends CustomerResourceModel
     private $storeCollectionFactory;
 
     /**
+     * @var DataSourceHelper
+     */
+    private $dataSourceHelper;
+
+    /**
      * Customer constructor.
      *
      * @param CustomerAttributeCollectionFactory $customerAttributeCollectionFactory
-     * @param Iterator $iterator
-     * @param Context $context
-     * @param Snapshot $entitySnapshot
-     * @param RelationComposite $entityRelationComposite
-     * @param ScopeConfigInterface $scopeConfig
-     * @param Factory $validatorFactory
-     * @param DateTime $dateTime
-     * @param StoreManagerInterface $storeManager
-     * @param array $data
+     * @param Iterator                           $iterator
+     * @param Context                            $context
+     * @param Snapshot                           $entitySnapshot
+     * @param RelationComposite                  $entityRelationComposite
+     * @param ScopeConfigInterface               $scopeConfig
+     * @param Factory                            $validatorFactory
+     * @param DateTime                           $dateTime
+     * @param StoreManagerInterface              $storeManager
+     * @param StoreCollectionFactory             $storeCollectionFactory
+     * @param DataSourceHelper                   $dataSourceHelper
+     * @param array                              $data
      */
     public function __construct(
         CustomerAttributeCollectionFactory $customerAttributeCollectionFactory,
@@ -83,11 +91,13 @@ class Customer extends CustomerResourceModel
         DateTime $dateTime,
         StoreManagerInterface $storeManager,
         StoreCollectionFactory $storeCollectionFactory,
+        DataSourceHelper $dataSourceHelper,
         $data = []
     ) {
         $this->customerAttributeCollectionFactory = $customerAttributeCollectionFactory;
         $this->iterator = $iterator;
         $this->storeCollectionFactory = $storeCollectionFactory;
+        $this->dataSourceHelper = $dataSourceHelper;
 
         parent::__construct(
             $context,
@@ -103,7 +113,7 @@ class Customer extends CustomerResourceModel
 
     /**
      * @param Collection $collection
-     * @param int $websiteId
+     * @param int        $websiteId
      *
      * @return void
      */
@@ -111,21 +121,29 @@ class Customer extends CustomerResourceModel
     {
         $storeIds = $this->getStoreIdsFromWebsite($websiteId);
 
-        $subSelect = $this->_resource->getConnection()->select()
-            ->from($this->getTable('newsletter_subscriber'), ['subscriber_status'])
+        $subSelect = $this->_resource
+            ->getConnection()->select()
+            ->from(
+                $this->getTable(
+                    'newsletter_subscriber'
+                ),
+                ['subscriber_status']
+            )
             ->where('customer_id = e.entity_id')
             ->where('store_id IN (?)', $storeIds)
             ->order('subscriber_id DESC')
             ->limit(1, 0);
 
-        $collection->getSelect()->columns([
-            'accepts_marketing' => $subSelect,
-        ]);
+        $collection->getSelect()->columns(
+            [
+                'accepts_marketing' => $subSelect,
+            ]
+        );
     }
 
     /**
-     * @param int $page
-     * @param int $pageSize
+     * @param int       $page
+     * @param int       $pageSize
      * @param int|false $websiteId
      *
      * @return array
@@ -137,7 +155,10 @@ class Customer extends CustomerResourceModel
         $itemsCountQuery = $this->_resource
             ->getConnection()
             ->select()
-            ->from($customerTable, ['count' => 'count(' . $this->linkField . ')']);
+            ->from(
+                $customerTable,
+                ['count' => 'count(' . $this->linkField . ')']
+            );
 
         $bind = [];
         if ($websiteId) {
@@ -145,12 +166,15 @@ class Customer extends CustomerResourceModel
             $bind['website_id'] = $websiteId;
         }
 
-        $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery, $bind);
+        $numberOfItems = $this->_resource->getConnection()->fetchOne(
+            $itemsCountQuery,
+            $bind
+        );
 
         $subFields['eid'] = $this->linkField;
 
         $subSelect = $this->_resource->getConnection()->select()
-            ->from($customerTable, $subFields);
+                                     ->from($customerTable, $subFields);
 
         if ($websiteId) {
             $subSelect->where('website_id = :website_id');
@@ -167,40 +191,59 @@ class Customer extends CustomerResourceModel
             ->select()
             ->from(['tmp' => $subSelect], $fields);
 
-        $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery, $bind);
+        $minMaxValues = $this->_resource->getConnection()->fetchRow(
+            $idQuery,
+            $bind
+        );
 
         $returnArray = [
             'numberOfItems' => (int)$numberOfItems,
-            'minId' => (int)$minMaxValues['minId'],
-            'maxId' => (int)$minMaxValues['maxId'],
+            'minId'         => (int)$minMaxValues['minId'],
+            'maxId'         => (int)$minMaxValues['maxId'],
         ];
 
         return $returnArray;
     }
 
     /**
-     * @param int $minCustomerId
-     * @param int $maxCustomerId
+     * @param int      $minCustomerId
+     * @param int      $maxCustomerId
      * @param string[] $attributeCodes
      *
      * @return array
      */
-    public function getAttributeData($minCustomerId, $maxCustomerId, $attributeCodes)
-    {
+    public function getAttributeData(
+        $minCustomerId,
+        $maxCustomerId,
+        $attributeCodes
+    ) {
         $this->mainTable = $this->getEntityTable();
         $this->attributeData = [];
 
         $attributeMapper = [];
         $mainTableFields = [];
         $attributeTables = [];
+        $sourceModels = [];
 
-        $customerAttributeCollection = $this->customerAttributeCollectionFactory->create();
+        $customerAttributeCollection =
+            $this->customerAttributeCollectionFactory->create();
         $customerAttributeCollection
-            ->addFieldToFilter('entity_type_id', ['eq' => self::CUSTOMER_ENTITY_TYPE_ID])
+            ->addFieldToFilter(
+                'entity_type_id',
+                ['eq' => self::CUSTOMER_ENTITY_TYPE_ID]
+            )
             ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
         /** @var Attribute $customerAttribute */
         foreach ($customerAttributeCollection as $customerAttribute) {
+            if ($sourceModel = $customerAttribute->getSourceModel()) {
+                try {
+                    $sourceModels[$customerAttribute->getAttributeCode()] =
+                        $customerAttribute->getSource();
+                } catch (\Exception $e) {
+                }
+            }
+
             $attributeTable = $customerAttribute->getBackendTable();
             if ($this->mainTable === $attributeTable) {
                 $mainTableFields[] = $customerAttribute->getAttributeCode();
@@ -208,19 +251,39 @@ class Customer extends CustomerResourceModel
                 if (!in_array($attributeTable, $attributeTables)) {
                     $attributeTables[] = $attributeTable;
                 }
-                $attributeMapper[$customerAttribute->getAttributeCode()] = (int)$customerAttribute->getId();
+                $attributeMapper[$customerAttribute->getAttributeCode(
+                )] = (int)$customerAttribute->getId();
             }
         }
 
         $this
-            ->getMainTableFieldItems($mainTableFields, $minCustomerId, $maxCustomerId, $attributeMapper)
-            ->getAttributeTableFieldItems($attributeTables, $minCustomerId, $maxCustomerId, $attributeMapper);
+            ->getMainTableFieldItems(
+                $mainTableFields,
+                $minCustomerId,
+                $maxCustomerId,
+                $attributeMapper
+            )
+            ->getAttributeTableFieldItems(
+                $attributeTables,
+                $minCustomerId,
+                $maxCustomerId,
+                $attributeMapper
+            );
 
-        return $this->attributeData;
+        $attributeValues = $this->dataSourceHelper->getAllOptions(
+            $sourceModels,
+            [0]
+        );
+
+        return [
+            'attribute_data'   => $this->attributeData,
+            'attribute_values' => $attributeValues,
+        ];
     }
 
     /**
      * @param int $websiteId
+     *
      * @return int[]
      */
     private function getStoreIdsFromWebsite($websiteId)
@@ -237,28 +300,44 @@ class Customer extends CustomerResourceModel
 
     /**
      * @param string[] $mainTableFields
-     * @param int $minCustomerId
-     * @param int $maxCustomerId
+     * @param int      $minCustomerId
+     * @param int      $maxCustomerId
      * @param string[] $attributeMapper
      *
      * @return $this
      */
-    private function getMainTableFieldItems($mainTableFields, $minCustomerId, $maxCustomerId, $attributeMapper)
-    {
+    private function getMainTableFieldItems(
+        $mainTableFields,
+        $minCustomerId,
+        $maxCustomerId,
+        $attributeMapper
+    ) {
         if ($mainTableFields) {
             if (!in_array($this->linkField, $mainTableFields)) {
                 $mainTableFields[] = $this->linkField;
             }
             $attributesQuery = $this->_resource->getConnection()->select()
-                ->from($this->mainTable, $mainTableFields)
-                ->where($this->linkField . ' >= ?', $minCustomerId)
-                ->where($this->linkField . ' <= ?', $maxCustomerId);
+                                               ->from(
+                                                   $this->mainTable,
+                                                   $mainTableFields
+                                               )
+                                               ->where(
+                                                   $this->linkField . ' >= ?',
+                                                   $minCustomerId
+                                               )
+                                               ->where(
+                                                   $this->linkField . ' <= ?',
+                                                   $maxCustomerId
+                                               );
 
             $this->iterator->walk(
                 (string)$attributesQuery,
                 [[$this, 'handleMainTableAttributeDataTable']],
                 [
-                    'fields' => array_diff($mainTableFields, [$this->linkField]),
+                    'fields'          => array_diff(
+                        $mainTableFields,
+                        [$this->linkField]
+                    ),
                     'attributeMapper' => $attributeMapper,
                 ],
                 $this->_resource->getConnection()
@@ -270,27 +349,50 @@ class Customer extends CustomerResourceModel
 
     /**
      * @param array $attributeTables
-     * @param int $minCustomerId
-     * @param int $maxCustomerId
+     * @param int   $minCustomerId
+     * @param int   $maxCustomerId
      * @param array $attributeMapper
      *
      * @return $this
      */
-    private function getAttributeTableFieldItems($attributeTables, $minCustomerId, $maxCustomerId, $attributeMapper)
-    {
+    private function getAttributeTableFieldItems(
+        $attributeTables,
+        $minCustomerId,
+        $maxCustomerId,
+        $attributeMapper
+    ) {
         $attributeQueries = [];
 
         foreach ($attributeTables as $attributeTable) {
             $attributeQueries[] = $this->_resource->getConnection()->select()
-                ->from($attributeTable, ['attribute_id', $this->linkField, 'value'])
-                ->where($this->linkField . ' >= ?', $minCustomerId)
-                ->where($this->linkField . ' <= ?', $maxCustomerId)
-                ->where('attribute_id IN (?)', $attributeMapper);
+                                                  ->from(
+                                                      $attributeTable,
+                                                      [
+                                                          'attribute_id',
+                                                          $this->linkField,
+                                                          'value',
+                                                      ]
+                                                  )
+                                                  ->where(
+                                                      $this->linkField . ' >= ?',
+                                                      $minCustomerId
+                                                  )
+                                                  ->where(
+                                                      $this->linkField . ' <= ?',
+                                                      $maxCustomerId
+                                                  )
+                                                  ->where(
+                                                      'attribute_id IN (?)',
+                                                      $attributeMapper
+                                                  );
         }
 
         try {
             $unionQuery = $this->_resource->getConnection()->select()
-                ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+                                          ->union(
+                                              $attributeQueries,
+                                              \Zend_Db_Select::SQL_UNION_ALL
+                                          ); // @codingStandardsIgnoreLine
             $this->iterator->walk(
                 (string)$unionQuery,
                 [[$this, 'handleAttributeDataTable']],
@@ -327,7 +429,10 @@ class Customer extends CustomerResourceModel
     public function handleAttributeDataTable($args)
     {
         $customerId = $args['row'][$this->linkField];
-        $attributeCode = $this->findAttributeCodeById($args['row']['attribute_id'], $args['attributeMapper']);
+        $attributeCode = $this->findAttributeCodeById(
+            $args['row']['attribute_id'],
+            $args['attributeMapper']
+        );
 
         if (!array_key_exists($customerId, $this->attributeData)) {
             $this->attributeData[$customerId] = [];
@@ -337,7 +442,7 @@ class Customer extends CustomerResourceModel
     }
 
     /**
-     * @param int $attributeId
+     * @param int   $attributeId
      * @param array $attributeMapper
      *
      * @return string

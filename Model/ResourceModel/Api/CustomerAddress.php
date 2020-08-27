@@ -18,6 +18,7 @@ use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Framework\Validator\Factory;
+use Emartech\Emarsys\Helper\DataSource as DataSourceHelper;
 
 class CustomerAddress extends CustomerAddressResourceModel
 {
@@ -53,16 +54,22 @@ class CustomerAddress extends CustomerAddressResourceModel
     private $customerResourceModel;
 
     /**
+     * @var DataSourceHelper
+     */
+    private $dataSourceHelper;
+
+    /**
      * CustomerAddress constructor.
      *
      * @param CustomerAddressAttributeCollectionFactory $customerAddressAttributeCollectionFactory
      * @param Iterator                                  $iterator
-     * @param CustomerResourceModel                     $customerResourceModel
+     * @param Customer                                  $customerResourceModel
      * @param Context                                   $context
      * @param Snapshot                                  $entitySnapshot
      * @param RelationComposite                         $entityRelationComposite
      * @param Factory                                   $validatorFactory
      * @param CustomerRepositoryInterface               $customerRepository
+     * @param DataSourceHelper                          $dataSourceHelper
      * @param array                                     $data
      */
     public function __construct(
@@ -74,11 +81,13 @@ class CustomerAddress extends CustomerAddressResourceModel
         RelationComposite $entityRelationComposite,
         Factory $validatorFactory,
         CustomerRepositoryInterface $customerRepository,
+        DataSourceHelper $dataSourceHelper,
         $data = []
     ) {
         $this->customerAddressAttributeCollectionFactory = $customerAddressAttributeCollectionFactory;
         $this->iterator = $iterator;
         $this->customerResourceModel = $customerResourceModel;
+        $this->dataSourceHelper = $dataSourceHelper;
 
         parent::__construct(
             $context,
@@ -106,6 +115,7 @@ class CustomerAddress extends CustomerAddressResourceModel
         $attributeMapper = [];
         $mainTableFields = [];
         $attributeTables = [];
+        $sourceModels = [];
 
         $customerAddressAttributeCollection = $this->customerAddressAttributeCollectionFactory->create();
         $customerAddressAttributeCollection
@@ -114,6 +124,14 @@ class CustomerAddress extends CustomerAddressResourceModel
 
         /** @var Attribute $customerAddressAttribute */
         foreach ($customerAddressAttributeCollection as $customerAddressAttribute) {
+            if ($sourceModel = $customerAddressAttribute->getSourceModel()) {
+                try {
+                    $sourceModels[$customerAddressAttribute->getAttributeCode()] =
+                        $customerAddressAttribute->getSource();
+                } catch (\Exception $e) {
+                }
+            }
+
             $attributeTable = $customerAddressAttribute->getBackendTable();
             if ($this->mainTable === $attributeTable) {
                 $mainTableFields[] = $customerAddressAttribute->getAttributeCode();
@@ -130,7 +148,15 @@ class CustomerAddress extends CustomerAddressResourceModel
             ->getMainTableFieldItems($mainTableFields, $minCustomerId, $maxCustomerId, $attributeMapper)
             ->getAttributeTableFieldItems($attributeTables, $minCustomerId, $maxCustomerId, $attributeMapper);
 
-        return $this->attributeData;
+        $attributeValues = $this->dataSourceHelper->getAllOptions(
+            $sourceModels,
+            [0]
+        );
+
+        return [
+            'attribute_data'   => $this->attributeData,
+            'attribute_values' => $attributeValues,
+        ];
     }
 
     /**

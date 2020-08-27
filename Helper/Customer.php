@@ -107,7 +107,17 @@ class Customer extends AbstractHelper
     /**
      * @var array
      */
+    private $customerAttributeValues = [];
+
+    /**
+     * @var array
+     */
     private $customerAddressAttributeData = [];
+
+    /**
+     * @var array
+     */
+    private $customerAddressAttributeValues = [];
 
     /**
      * @var CustomerAddressInterfaceFactory
@@ -164,6 +174,7 @@ class Customer extends AbstractHelper
 
     /**
      * @param int $websiteId
+     *
      * @return $this
      */
     public function initCollection($websiteId)
@@ -172,7 +183,10 @@ class Customer extends AbstractHelper
         $this->customerCollection = $this->customerCollectionFactory->create();
 
         if ($websiteId) {
-            $this->customerCollection->addFieldToFilter('website_id', ['eq' => $websiteId]);
+            $this->customerCollection->addFieldToFilter(
+                'website_id',
+                ['eq' => $websiteId]
+            );
         }
 
         return $this;
@@ -230,7 +244,10 @@ class Customer extends AbstractHelper
      */
     public function joinSubscriptionStatus($websiteId)
     {
-        $this->customerResource->joinSubscriptionStatus($this->customerCollection, $websiteId);
+        $this->customerResource->joinSubscriptionStatus(
+            $this->customerCollection,
+            $websiteId
+        );
 
         return $this;
     }
@@ -296,7 +313,8 @@ class Customer extends AbstractHelper
             );
 
             if (is_array($customerAttributes)) {
-                $this->extraFields = array_diff($customerAttributes, $this->getCustomerFields());
+                //$this->extraFields = array_diff($customerAttributes, $this->getCustomerFields());
+                $this->extraFields = $customerAttributes;
             }
         }
 
@@ -330,7 +348,11 @@ class Customer extends AbstractHelper
             );
 
             if (is_array($customerAddressAttributes)) {
-                $this->extraAddressFields = array_diff($customerAddressAttributes, $this->getCustomerAddressFields());
+                /*$this->extraAddressFields = array_diff(
+                    $customerAddressAttributes,
+                    $this->getCustomerAddressFields()
+                );*/
+                $this->extraAddressFields = $customerAddressAttributes;
             }
         }
 
@@ -345,13 +367,31 @@ class Customer extends AbstractHelper
      *
      * @return $this
      */
-    public function getCustomersAttributeData($minId, $maxId, $websiteId, $fields = null)
-    {
+    public function getCustomersAttributeData(
+        $minId,
+        $maxId,
+        $websiteId,
+        $fields = null
+    ) {
         if (!$fields) {
-            $fields = array_merge($this->getCustomerFields(), $this->getCustomerExtraFields($websiteId));
+            $fields = array_merge(
+                $this->getCustomerFields(),
+                $this->getCustomerExtraFields($websiteId)
+            );
         }
 
-        $this->customerAttributeData = $this->customerResource->getAttributeData($minId, $maxId, $fields);
+        $data = $this->customerResource->getAttributeData(
+            $minId,
+            $maxId,
+            $fields
+        );
+
+        if (isset($data['attribute_data'])) {
+            $this->customerAttributeData = $data['attribute_data'];
+        }
+        if (isset($data['attribute_values'])) {
+            $this->customerAttributeValues = $data['attribute_values'];
+        }
 
         return $this;
     }
@@ -364,13 +404,33 @@ class Customer extends AbstractHelper
      *
      * @return $this
      */
-    public function getCustomersAddressesAttributeData($minId, $maxId, $websiteId, $fields = null)
-    {
+    public function getCustomersAddressesAttributeData(
+        $minId,
+        $maxId,
+        $websiteId,
+        $fields = null
+    ) {
         if (!$fields) {
-            $fields = array_merge($this->getCustomerAddressFields(), $this->getCustomerAddressExtraFields($websiteId));
+            $fields = array_merge(
+                $this->getCustomerAddressFields(),
+                $this->getCustomerAddressExtraFields(
+                    $websiteId
+                )
+            );
         }
 
-        $this->customerAddressAttributeData = $this->customerAddressResource->getAttributeData($minId, $maxId, $fields);
+        $data = $this->customerAddressResource->getAttributeData(
+            $minId,
+            $maxId,
+            $fields
+        );
+
+        if (isset($data['attribute_data'])) {
+            $this->customerAddressAttributeData = $data['attribute_data'];
+        }
+        if (isset($data['attribute_values'])) {
+            $this->customerAddressAttributeValues = $data['attribute_values'];
+        }
 
         return $this;
     }
@@ -384,9 +444,30 @@ class Customer extends AbstractHelper
     private function handleWebsiteData($customerId, $attributeCode)
     {
         if (array_key_exists($customerId, $this->customerAttributeData)
-            && array_key_exists($attributeCode, $this->customerAttributeData[$customerId])
+            && array_key_exists(
+                $attributeCode,
+                $this->customerAttributeData[$customerId]
+            )
         ) {
             return $this->customerAttributeData[$customerId][$attributeCode];
+        }
+
+        return null;
+    }
+
+    private function getAttributeValue($attributeCode, $value, $storeId = 0)
+    {
+        if (array_key_exists($storeId, $this->customerAttributeValues) &&
+            array_key_exists(
+                $attributeCode,
+                $this->customerAttributeValues[$storeId]
+            ) &&
+            array_key_exists(
+                $value,
+                $this->customerAttributeValues[$storeId][$attributeCode]
+            )
+        ) {
+            return $this->customerAttributeValues[$storeId][$attributeCode][$value];
         }
 
         return null;
@@ -399,13 +480,50 @@ class Customer extends AbstractHelper
      *
      * @return string|null
      */
-    private function handleAddressWebsiteData($customerId, $addressId, $attributeCode)
-    {
+    private function handleAddressWebsiteData(
+        $customerId,
+        $addressId,
+        $attributeCode
+    ) {
         if (array_key_exists($customerId, $this->customerAddressAttributeData)
-            && array_key_exists($addressId, $this->customerAddressAttributeData[$customerId])
-            && array_key_exists($attributeCode, $this->customerAddressAttributeData[$customerId][$addressId])
+            && array_key_exists(
+                $addressId,
+                $this->customerAddressAttributeData[$customerId]
+            )
+            && array_key_exists(
+                $attributeCode,
+                $this->customerAddressAttributeData[$customerId][$addressId]
+            )
         ) {
             return $this->customerAddressAttributeData[$customerId][$addressId][$attributeCode];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $attributeCode
+     * @param string $value
+     * @param int    $storeId
+     *
+     * @return mixed|null
+     */
+    private function getAddressAttributeValue(
+        $attributeCode,
+        $value,
+        $storeId = 0
+    ) {
+        if (array_key_exists($storeId, $this->customerAddressAttributeValues) &&
+            array_key_exists(
+                $attributeCode,
+                $this->customerAddressAttributeValues[$storeId]
+            ) &&
+            array_key_exists(
+                $value,
+                $this->customerAddressAttributeValues[$storeId][$attributeCode]
+            )
+        ) {
+            return $this->customerAddressAttributeValues[$storeId][$attributeCode][$value];
         }
 
         return null;
@@ -440,7 +558,8 @@ class Customer extends AbstractHelper
         }
 
         /** @var CustomerInterface $customerItem */
-        $customerItem = $this->customerFactory->create()
+        $customerItem = $this->customerFactory
+            ->create()
             ->setId($customer->getId())
             ->setRpToken($customer->getRpToken())
             ->setRpTokenCreatedAt($customer->getRpTokenCreatedAt())
@@ -466,9 +585,14 @@ class Customer extends AbstractHelper
         if ($this->getCustomerExtraFields($websiteId)) {
             $extraFields = [];
             foreach ($this->getCustomerExtraFields($websiteId) as $field) {
+                $value = $this->handleWebsiteData($customer->getId(), $field);
+                $textValue = $this->getAttributeValue($field, $value);
                 $extraField = $this->extraFieldsFactory->create()
-                    ->setKey($field)
-                    ->setValue($this->handleWebsiteData($customer->getId(), $field));
+                                                       ->setKey($field)
+                                                       ->setValue($value)
+                                                       ->setTextValue(
+                                                           $textValue
+                                                       );
 
                 if ($toArray) {
                     $extraField = $extraField->getData();
@@ -494,30 +618,123 @@ class Customer extends AbstractHelper
      *
      * @return CustomerAddressInterface
      */
-    private function getAddressFromCustomer($customerId, $addressId, $websiteId, $toArray = false)
-    {
+    private function getAddressFromCustomer(
+        $customerId,
+        $addressId,
+        $websiteId,
+        $toArray = false
+    ) {
         /** @var CustomerAddressInterface $address */
-        $addressItem = $this->customerAddressFactory->create()
-            ->setFirstname($this->handleAddressWebsiteData($customerId, $addressId, 'firstname'))
-            ->setSuffix($this->handleAddressWebsiteData($customerId, $addressId, 'suffix'))
-            ->setMiddlename($this->handleAddressWebsiteData($customerId, $addressId, 'middlename'))
-            ->setLastname($this->handleAddressWebsiteData($customerId, $addressId, 'lastname'))
-            ->setPrefix($this->handleAddressWebsiteData($customerId, $addressId, 'prefix'))
-            ->setCity($this->handleAddressWebsiteData($customerId, $addressId, 'city'))
-            ->setCompany($this->handleAddressWebsiteData($customerId, $addressId, 'company'))
-            ->setCountryId($this->handleAddressWebsiteData($customerId, $addressId, 'country_id'))
-            ->setFax($this->handleAddressWebsiteData($customerId, $addressId, 'fax'))
-            ->setPostcode($this->handleAddressWebsiteData($customerId, $addressId, 'postcode'))
-            ->setRegion($this->handleAddressWebsiteData($customerId, $addressId, 'region'))
-            ->setStreet($this->handleAddressWebsiteData($customerId, $addressId, 'street'))
-            ->setTelephone($this->handleAddressWebsiteData($customerId, $addressId, 'telephone'));
+        $addressItem = $this->customerAddressFactory
+            ->create()
+            ->setFirstname(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'firstname'
+                )
+            )
+            ->setSuffix(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'suffix'
+                )
+            )
+            ->setMiddlename(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'middlename'
+                )
+            )
+            ->setLastname(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'lastname'
+                )
+            )
+            ->setPrefix(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'prefix'
+                )
+            )
+            ->setCity(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'city'
+                )
+            )
+            ->setCompany(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'company'
+                )
+            )
+            ->setCountryId(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'country_id'
+                )
+            )
+            ->setFax(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'fax'
+                )
+            )
+            ->setPostcode(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'postcode'
+                )
+            )
+            ->setRegion(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'region'
+                )
+            )
+            ->setStreet(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'street'
+                )
+            )
+            ->setTelephone(
+                $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    'telephone'
+                )
+            );
 
         if ($this->getCustomerAddressExtraFields($websiteId)) {
             $extraFields = [];
-            foreach ($this->getCustomerAddressExtraFields($websiteId) as $field) {
-                $extraField = $this->extraFieldsFactory->create()
+            foreach ($this->getCustomerAddressExtraFields(
+                $websiteId
+            ) as $field) {
+                $value = $this->handleAddressWebsiteData(
+                    $customerId,
+                    $addressId,
+                    $field
+                );
+                $textValue = $this->getAddressAttributeValue($field, $value);
+                $extraField = $this->extraFieldsFactory
+                    ->create()
                     ->setKey($field)
-                    ->setValue($this->handleAddressWebsiteData($customerId, $addressId, $field));
+                    ->setValue($value)
+                    ->setTextValue($textValue);
 
                 if ($toArray) {
                     $extraField = $extraField->getData();

@@ -46,7 +46,7 @@ class Product extends AbstractHelper
         'images',
         'qty',
         'is_in_stock',
-        'stores'
+        'stores',
     ];
 
     /**
@@ -108,6 +108,11 @@ class Product extends AbstractHelper
      * @var array
      */
     private $productAttributeData;
+
+    /**
+     * @var array
+     */
+    private $productAttributeValues;
 
     /**
      * @var ProductInterfaceFactory
@@ -244,10 +249,8 @@ class Product extends AbstractHelper
             );
 
             if (is_array($productAttributes)) {
-                $this->extraFields = array_diff(
-                    $productAttributes,
-                    $this->getProductFields()
-                );
+                //$this->extraFields = array_diff($productAttributes, $this->getProductFields());
+                $this->extraFields = $productAttributes;
             }
         }
 
@@ -360,12 +363,18 @@ class Product extends AbstractHelper
             );
         }
 
-        $this->productAttributeData = $this->productResource->getAttributeData(
+        $data = $this->productResource->getAttributeData(
             $wheres,
             $storeIds,
             $fields,
             $joinInner
         );
+        if (isset($data['attribute_data'])) {
+            $this->productAttributeData = $data['attribute_data'];
+        }
+        if (isset($data['attribute_values'])) {
+            $this->productAttributeValues = $data['attribute_values'];
+        }
     }
 
     /**
@@ -426,22 +435,43 @@ class Product extends AbstractHelper
 
         /** @var ProductInterface $productItem */
         $productItem = $this->productFactory->create()
-            ->setType($product->getTypeId())
-            ->setCategories($this->handleCategories($productEntityId))
-            ->setChildrenEntityIds($this->handleChildrenEntityIds($productId))
-            ->setEntityId($productEntityId)
-            ->setIsInStock($this->handleStock($productEntityId))
-            ->setQty($this->handleQty($productEntityId))
-            ->setSku($product->getSku())
-            ->setImages($this->handleImages($storeIds[0], $productId))
-            ->setStoreData(
-                $this->handleProductStoreData(
-                    $product,
-                    $storeIds,
-                    $productId,
-                    $toArray
-                )
-            );
+                                            ->setType($product->getTypeId())
+                                            ->setCategories(
+                                                $this->handleCategories(
+                                                    $productEntityId
+                                                )
+                                            )
+                                            ->setChildrenEntityIds(
+                                                $this->handleChildrenEntityIds(
+                                                    $productId
+                                                )
+                                            )
+                                            ->setEntityId($productEntityId)
+                                            ->setIsInStock(
+                                                $this->handleStock(
+                                                    $productEntityId
+                                                )
+                                            )
+                                            ->setQty(
+                                                $this->handleQty(
+                                                    $productEntityId
+                                                )
+                                            )
+                                            ->setSku($product->getSku())
+                                            ->setImages(
+                                                $this->handleImages(
+                                                    $storeIds[0],
+                                                    $productId
+                                                )
+                                            )
+                                            ->setStoreData(
+                                                $this->handleProductStoreData(
+                                                    $product,
+                                                    $storeIds,
+                                                    $productId,
+                                                    $toArray
+                                                )
+                                            );
 
         if ($toArray) {
             $productItem = $productItem->getData();
@@ -540,15 +570,43 @@ class Product extends AbstractHelper
     }
 
     /**
-     * @param Store        $store
-     * @param int          $id
+     * @param int    $storeId
+     * @param string $field
+     * @param string $value
+     *
+     * @return string
+     */
+    private function getStoreAttributeValue($storeId, $field, $value)
+    {
+        if (array_key_exists($storeId, $this->productAttributeValues) &&
+            array_key_exists($field, $this->productAttributeValues[$storeId]) &&
+            array_key_exists(
+                $value,
+                $this->productAttributeValues[$storeId][$field]
+            )
+        ) {
+            return $this->productAttributeValues[$storeId][$field][$value];
+        }
+
+        if ($storeId != 0) {
+            return $this->getStoreAttributeValue(0, $field, $value);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Store $store
+     * @param int   $id
      *
      * @return ImagesInterface
      */
     // @codingStandardsIgnoreLine
     protected function handleImages($store, $id)
     {
-        $imagePreUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
+        $imagePreUrl = $store->getBaseUrl(
+                UrlInterface::URL_TYPE_MEDIA
+            ) . 'catalog/product';
 
         try {
             $image = $this->getStoreData($id, $store->getId(), 'image');
@@ -558,7 +616,11 @@ class Product extends AbstractHelper
         }
 
         try {
-            $smallImage = $this->getStoreData($id, $store->getId(), 'small_image');
+            $smallImage = $this->getStoreData(
+                $id,
+                $store->getId(),
+                'small_image'
+            );
             $smallImage = $imagePreUrl . $smallImage;
         } catch (Exception $e) {
             $smallImage = null;
@@ -572,9 +634,9 @@ class Product extends AbstractHelper
         }
 
         return $this->imagesFactory->create()
-            ->setImage($image)
-            ->setSmallImage($smallImage)
-            ->setThumbnail($thumbnail);
+                                   ->setImage($image)
+                                   ->setSmallImage($smallImage)
+                                   ->setThumbnail($thumbnail);
     }
 
     /**
@@ -599,7 +661,11 @@ class Product extends AbstractHelper
         foreach ($storeIds as $storeId => $storeObject) {
             $price = $this->getPrice($productId, $storeId);
             $displayPrice = (float)$this->getDisplayPrice($price, $storeObject);
-            $originalPrice = (float)$this->getStoreData($productId, $storeId, 'price');
+            $originalPrice = (float)$this->getStoreData(
+                $productId,
+                $storeId,
+                'price'
+            );
             $originalDisplayPrice = (float)$this->getDisplayPrice(
                 $originalPrice,
                 $storeObject
@@ -640,41 +706,46 @@ class Product extends AbstractHelper
             );
 
             /** @var ProductStoreDataInterface $productStoreData */
-            $productStoreData = $this->productStoreDataFactory->create()
-                ->setStoreId($storeId)
-                ->setStatus($this->getStoreData($productId, $storeId, 'status'))
-                ->setDescription(
-                    $this->getStoreData(
-                        $productId,
-                        $storeId,
-                        'description'
+            $productStoreData =
+                $this->productStoreDataFactory
+                    ->create()
+                    ->setStoreId($storeId)
+                    ->setStatus(
+                        $this->getStoreData($productId, $storeId, 'status')
                     )
-                )
-                ->setLink($this->handleLink($storeObject, $productId))
-                ->setName($this->getStoreData($productId, $storeId, 'name'))
-                ->setPrice($price)
-                ->setDisplayPrice($displayPrice)
-                ->setOriginalPrice($originalPrice)
-                ->setOriginalDisplayPrice($originalDisplayPrice)
-                ->setWebshopPrice($webShopPrice)
-                ->setDisplayWebshopPrice($displayWebShopPrice)
-                ->setOriginalWebshopPrice($originalWebShopPrice)
-                ->setOriginalDisplayWebshopPrice($originalDisplayWebShopPrice)
-                ->setCurrencyCode($this->getCurrencyCode($storeObject))
-                ->setImages($this->handleImages($storeObject, $productId));
+                    ->setDescription(
+                        $this->getStoreData($productId, $storeId, 'description')
+                    )
+                    ->setLink($this->handleLink($storeObject, $productId))
+                    ->setName($this->getStoreData($productId, $storeId, 'name'))
+                    ->setPrice($price)
+                    ->setDisplayPrice($displayPrice)
+                    ->setOriginalPrice($originalPrice)
+                    ->setOriginalDisplayPrice($originalDisplayPrice)
+                    ->setWebshopPrice($webShopPrice)
+                    ->setDisplayWebshopPrice($displayWebShopPrice)
+                    ->setOriginalWebshopPrice($originalWebShopPrice)
+                    ->setOriginalDisplayWebshopPrice(
+                        $originalDisplayWebShopPrice
+                    )
+                    ->setCurrencyCode($this->getCurrencyCode($storeObject))
+                    ->setImages($this->handleImages($storeObject, $productId));
 
             if ($this->getProductExtraFields()) {
                 $extraFields = [];
                 foreach ($this->getProductExtraFields() as $field) {
-                    $extraField = $this->extraFieldsFactory->create()
-                        ->setKey($field)
-                        ->setValue(
-                            $this->getStoreData(
-                                $productId,
-                                $storeId,
-                                $field
-                            )
-                        );
+                    $value = $this->getStoreData($productId, $storeId, $field);
+                    $textValue = $this->getStoreAttributeValue(
+                        $storeId,
+                        $field,
+                        $value
+                    );
+                    $extraField =
+                        $this->extraFieldsFactory
+                            ->create()
+                            ->setKey($field)
+                            ->setValue($value)
+                            ->setTextValue($textValue);
 
                     if ($toArray) {
                         $extraField = $extraField->getData();
@@ -842,7 +913,9 @@ class Product extends AbstractHelper
         $link = $this->getStoreData($productId, $store->getId(), 'url_key');
 
         if ($link) {
-            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
+            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix(
+                    $store->getId()
+                );
         }
 
         return '';

@@ -29,7 +29,8 @@ use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Store\Model\Indexer\WebsiteDimensionProvider;
 use Magento\Store\Model\StoreManagerInterface;
 use Zend_Db_Select;
-use Magento\Framework\DB\Select as DBSelect;
+use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
+use Emartech\Emarsys\Helper\DataSource as DataSourceHelper;
 
 class Product extends ProductResourceModel
 {
@@ -74,6 +75,11 @@ class Product extends ProductResourceModel
      * @var DimensionFactory
      */
     private $dimensionFactory;
+
+    /**
+     * @var DataSourceHelper
+     */
+    private $dataSourceHelper;
 
     /**
      * @var array
@@ -140,6 +146,7 @@ class Product extends ProductResourceModel
      * @param ProductAttributeCollectionFactory $productAttributeCollectionFactory
      * @param Iterator                          $iterator
      * @param LinkField                         $linkFieldHelper
+     * @param DataSourceHelper                  $dataSourceHelper
      * @param array                             $data
      */
     public function __construct(
@@ -155,6 +162,7 @@ class Product extends ProductResourceModel
         ProductAttributeCollectionFactory $productAttributeCollectionFactory,
         Iterator $iterator,
         LinkField $linkFieldHelper,
+        DataSourceHelper $dataSourceHelper,
         array $data = []
     ) {
         $this->iterator = $iterator;
@@ -163,6 +171,9 @@ class Product extends ProductResourceModel
         $this->linkField = $this->linkFieldHelper->getEntityLinkField(
             ProductInterface::class
         );
+
+        $this->dataSourceHelper = $dataSourceHelper;
+
         if (class_exists(PriceTableResolver::class)) {
             $this->priceTableResolver = ObjectManager::getInstance()->get(
                 PriceTableResolver::class
@@ -237,9 +248,9 @@ class Product extends ProductResourceModel
         $subFields['eid'] = $primaryKey;
 
         $subSelect = $this->_resource->getConnection()->select()
-            ->from($table, $subFields)
-            ->order($primaryKey)
-            ->limit($pageSize, $page);
+                                     ->from($table, $subFields)
+                                     ->order($primaryKey)
+                                     ->limit($pageSize, $page);
 
         if ($wheres) {
             foreach ($wheres as $where) {
@@ -276,7 +287,10 @@ class Product extends ProductResourceModel
         $superLinkTable = $this->getTable('catalog_product_super_link');
 
         $superLinkQuery = $this->_resource->getConnection()->select()
-            ->from($superLinkTable, ['product_id', 'parent_id']);
+                                          ->from(
+                                              $superLinkTable,
+                                              ['product_id', 'parent_id']
+                                          );
 
         foreach ($wheres as $where) {
             $superLinkQuery->where($where[0], $where[1]);
@@ -326,12 +340,22 @@ class Product extends ProductResourceModel
         $this->stockData = [];
         $stockItemTable = $this->getTable('cataloginventory_stock_item');
         $stockQuery = $this->_resource->getConnection()->select()
-            ->from($stockItemTable, ['is_in_stock', 'qty', 'product_id'])
-            ->joinLeft(
-                ['entity_table' => $this->getTable('catalog_product_entity')],
-                'entity_table.entity_id = ' . $stockItemTable . '.product_id',
-                []
-            )->where('stock_id = ?', 1);
+                                      ->from(
+                                          $stockItemTable,
+                                          [
+                                              'is_in_stock', 'qty',
+                                              'product_id',
+                                          ]
+                                      )
+                                      ->joinLeft(
+                                          [
+                                              'entity_table' => $this->getTable(
+                                                  'catalog_product_entity'
+                                              ),
+                                          ],
+                                          'entity_table.entity_id = ' . $stockItemTable . '.product_id',
+                                          []
+                                      )->where('stock_id = ?', 1);
 
         foreach ($wheres as $where) {
             $stockQuery->where($where[0], $where[1]);
@@ -388,9 +412,11 @@ class Product extends ProductResourceModel
         $attributeMapper = [];
         $mainTableFields = [];
         $attributeTables = [];
+        $sourceModels = [];
 
         /** @var ProductAttributeCollection $productAttributeCollection */
-        $productAttributeCollection = $this->productAttributeCollectionFactory->create();
+        $productAttributeCollection =
+            $this->productAttributeCollectionFactory->create();
         $productAttributeCollection
             ->addFieldToFilter(
                 'entity_type_id',
@@ -400,6 +426,14 @@ class Product extends ProductResourceModel
 
         /** @var ProductAttribute $productAttribute */
         foreach ($productAttributeCollection as $productAttribute) {
+            if ($sourceModel = $productAttribute->getSourceModel()) {
+                try {
+                    $sourceModels[$productAttribute->getAttributeCode()] =
+                        $productAttribute->getSource();
+                } catch (\Exception $e) {
+                }
+            }
+
             $attributeTable = $productAttribute->getBackendTable();
             if ($this->mainTable === $attributeTable) {
                 $mainTableFields[] = $productAttribute->getAttributeCode();
@@ -407,8 +441,8 @@ class Product extends ProductResourceModel
                 if (!in_array($attributeTable, $attributeTables)) {
                     $attributeTables[] = $attributeTable;
                 }
-                $attributeMapper[$productAttribute->getAttributeCode(
-                )] = (int)$productAttribute->getId();
+                $attributeMapper[$productAttribute->getAttributeCode()] =
+                    (int)$productAttribute->getId();
             }
         }
 
@@ -427,7 +461,15 @@ class Product extends ProductResourceModel
                 $joinInner
             );
 
-        return $this->attributeData;
+        $attributeValues = $this->dataSourceHelper->getAllOptions(
+            $sourceModels,
+            $storeIds
+        );
+
+        return [
+            'attribute_data'   => $this->attributeData,
+            'attribute_values' => $attributeValues,
+        ];
     }
 
     /**
@@ -451,7 +493,10 @@ class Product extends ProductResourceModel
                 $mainTableFields[] = $this->linkField;
             }
             $attributesQuery = $this->_resource->getConnection()->select()
-                ->from($this->mainTable, $mainTableFields);
+                                               ->from(
+                                                   $this->mainTable,
+                                                   $mainTableFields
+                                               );
 
             foreach ($wheres as $where) {
                 $attributesQuery->where($where[0], $where[1]);
@@ -503,12 +548,22 @@ class Product extends ProductResourceModel
 
         foreach ($attributeTables as $attributeTable) {
             $attributeQuery = $this->_resource->getConnection()->select()
-                ->from(
-                    $attributeTable,
-                    ['attribute_id', 'store_id', $this->linkField, 'value']
-                )
-                ->where('store_id IN (?)', $storeIds)
-                ->where('attribute_id IN (?)', $attributeMapper);
+                                              ->from(
+                                                  $attributeTable,
+                                                  [
+                                                      'attribute_id',
+                                                      'store_id',
+                                                      $this->linkField, 'value',
+                                                  ]
+                                              )
+                                              ->where(
+                                                  'store_id IN (?)',
+                                                  $storeIds
+                                              )
+                                              ->where(
+                                                  'attribute_id IN (?)',
+                                                  $attributeMapper
+                                              );
 
             foreach ($wheres as $where) {
                 $attributeQuery->where($where[0], $where[1]);
@@ -527,10 +582,10 @@ class Product extends ProductResourceModel
 
         try {
             $unionQuery = $this->_resource->getConnection()->select()
-                ->union(
-                    $attributeQueries,
-                    Zend_Db_Select::SQL_UNION_ALL
-                ); // @codingStandardsIgnoreLine
+                                          ->union(
+                                              $attributeQueries,
+                                              Zend_Db_Select::SQL_UNION_ALL
+                                          ); // @codingStandardsIgnoreLine
 
             $this->iterator->walk(
                 (string)$unionQuery,
@@ -581,6 +636,23 @@ class Product extends ProductResourceModel
         $this->initStoreProductData($productId, $storeId);
 
         $this->attributeData[$productId][$storeId][$attributeCode] = $args['row']['value'];
+    }
+
+    private function getSourceModelOptions($sourceModels, $storeIds)
+    {
+        foreach ($storeIds as $storeId) {
+
+        }
+
+        var_dump($storeIds);
+        die();
+        foreach ($sourceModels as $sourceModel) {
+            if ($sourceModel instanceof AbstractSource) {
+                var_dump($sourceModel->getAllOptions());
+            }
+        }
+        var_dump($sourceModels, $storeIds);
+        die();
     }
 
     /**
@@ -670,9 +742,15 @@ class Product extends ProductResourceModel
         $unionSelects = [];
         foreach ($tables as $table) {
             $select = $this->_resource->getConnection()->select()->reset()
-                ->from($table, $columns)
-                ->where('website_id IN (?)', array_keys($websiteIds))
-                ->where('customer_group_id IN (?)', $customerGroupIds);
+                                      ->from($table, $columns)
+                                      ->where(
+                                          'website_id IN (?)',
+                                          array_keys($websiteIds)
+                                      )
+                                      ->where(
+                                          'customer_group_id IN (?)',
+                                          $customerGroupIds
+                                      );
 
             foreach ($wheres as $where) {
                 $select->where($where[0], $where[1]);
@@ -690,10 +768,10 @@ class Product extends ProductResourceModel
         }
 
         $unionQuery = $this->_resource->getConnection()->select()
-            ->union(
-                $unionSelects,
-                Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
-            );
+                                      ->union(
+                                          $unionSelects,
+                                          Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
+                                      );
 
         $this->iterator->walk(
             (string)$unionQuery,
