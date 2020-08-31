@@ -910,9 +910,7 @@ class Product extends AbstractHelper
         $link = $this->getStoreData($productId, $store->getId(), 'url_key');
 
         if ($link) {
-            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix(
-                    $store->getId()
-                );
+            return $store->getBaseUrl() . $link . $this->getProductUrlSuffix($store->getId());
         }
 
         return '';
