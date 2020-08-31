@@ -601,12 +601,9 @@ class Product extends AbstractHelper
      *
      * @return ImagesInterface
      */
-    // @codingStandardsIgnoreLine
     protected function handleImages($store, $id)
     {
-        $imagePreUrl = $store->getBaseUrl(
-                UrlInterface::URL_TYPE_MEDIA
-            ) . 'catalog/product';
+        $imagePreUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
         try {
             $image = $this->getStoreData($id, $store->getId(), 'image');

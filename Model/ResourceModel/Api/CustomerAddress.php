@@ -128,8 +128,7 @@ class CustomerAddress extends CustomerAddressResourceModel
                 try {
                     $sourceModels[$customerAddressAttribute->getAttributeCode()] =
                         $customerAddressAttribute->getSource();
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) { } // @codingStandardsIgnoreLine
             }
 
             $attributeTable = $customerAddressAttribute->getBackendTable();

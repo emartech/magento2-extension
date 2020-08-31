@@ -240,8 +240,7 @@ class Customer extends CustomerResourceModel
                 try {
                     $sourceModels[$customerAttribute->getAttributeCode()] =
                         $customerAttribute->getSource();
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) { } // @codingStandardsIgnoreLine
             }
 
             $attributeTable = $customerAttribute->getBackendTable();

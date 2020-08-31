@@ -430,8 +430,7 @@ class Product extends ProductResourceModel
                 try {
                     $sourceModels[$productAttribute->getAttributeCode()] =
                         $productAttribute->getSource();
-                } catch (\Exception $e) {
-                }
+                } catch (\Exception $e) { } // @codingStandardsIgnoreLine
             }
 
             $attributeTable = $productAttribute->getBackendTable();
@@ -636,23 +635,6 @@ class Product extends ProductResourceModel
         $this->initStoreProductData($productId, $storeId);
 
         $this->attributeData[$productId][$storeId][$attributeCode] = $args['row']['value'];
-    }
-
-    private function getSourceModelOptions($sourceModels, $storeIds)
-    {
-        foreach ($storeIds as $storeId) {
-
-        }
-
-        var_dump($storeIds);
-        die();
-        foreach ($sourceModels as $sourceModel) {
-            if ($sourceModel instanceof AbstractSource) {
-                var_dump($sourceModel->getAllOptions());
-            }
-        }
-        var_dump($sourceModels, $storeIds);
-        die();
     }
 
     /**

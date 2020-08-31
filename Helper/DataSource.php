@@ -7,7 +7,6 @@
 
 namespace Emartech\Emarsys\Helper;
 
-
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 use Magento\Store\Model\App\Emulation;
 use Magento\Framework\App\Area;
