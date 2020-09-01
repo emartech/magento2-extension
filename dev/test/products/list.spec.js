@@ -7,7 +7,7 @@ describe('Products endpoint', function () {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 0,
       type: 'product',
-      attributeCodes: ['emarsys_test_fuel_type']
+      attributeCodes: ['emarsys_test_fuel_type', 'country_of_manufacture']
     });
   });
 
@@ -136,6 +136,10 @@ describe('Products endpoint', function () {
             {
               attribute_code: 'emarsys_test_number_of_seats',
               value: 6
+            },
+            {
+              attribute_code: 'country_of_manufacture',
+              value: 'AZ'
             }
           ]
         }
@@ -147,7 +151,11 @@ describe('Products endpoint', function () {
 
     expect(updatedProduct.store_data[0].extra_fields[0].key).to.be.equal('emarsys_test_fuel_type');
     expect(updatedProduct.store_data[0].extra_fields[0].value).to.be.equal('gasoline');
-    expect(updatedProduct.store_data[0].extra_fields.length).to.be.equal(1);
+
+    expect(updatedProduct.store_data[0].extra_fields[1].key).to.be.equal('country_of_manufacture');
+    expect(updatedProduct.store_data[0].extra_fields[1].value).to.be.equal('AZ');
+    expect(updatedProduct.store_data[0].extra_fields[1].text_value).to.be.equal('Azerbaijan');
+    expect(updatedProduct.store_data[0].extra_fields.length).to.be.equal(2);
   });
 
   it('returns different prices for the same product on multiple websites', async function () {
@@ -252,8 +260,8 @@ describe('Products endpoint', function () {
 
     const product = products.find((product) => product.sku === sku);
 
-    const defaultStore = product.store_data.find(store => store.store_id === 1);
-    const secondStore = product.store_data.find(store => store.store_id === 2);
+    const defaultStore = product.store_data.find((store) => store.store_id === 1);
+    const secondStore = product.store_data.find((store) => store.store_id === 2);
 
     const expectedDefaultImages = {
       image: 'http://magento-test.local/pub/media/catalog/product/m/b/mb04-black-0.jpg',
