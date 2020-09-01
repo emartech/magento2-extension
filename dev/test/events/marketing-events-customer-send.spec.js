@@ -10,11 +10,27 @@ const customer = {
   lastname: 'World',
   store_id: 1,
   website_id: 1,
+  gender: 1,
   disable_auto_group_change: 0,
   custom_attributes: [
     {
       attribute_code: 'emarsys_test_favorite_car',
       value: 'skoda'
+    }
+  ],
+  addresses: [
+    {
+      region_id: 32,
+      country_id: 'US',
+      street: ['123 Main Street', 'PO Box 321'],
+      firstname: 'John',
+      lastname: 'Doe',
+      company: 'ABC Manufacturing',
+      telephone: '555-555-5555',
+      city: 'Boston',
+      postcode: '02115',
+      default_shipping: true,
+      default_billing: true
     }
   ]
 };
@@ -30,17 +46,17 @@ const newsletterCustomer = {
   disable_auto_group_change: 0
 };
 
-describe('Marketing events: customer', function() {
-  beforeEach(async function() {
+describe('Marketing events: customer', function () {
+  beforeEach(async function () {
     await mailhog.clearMails();
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     await this.db.truncate(this.getTableName('password_reset_request_event'));
     await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email = "yolo@yolo.net"`);
   });
 
-  after(async function() {
+  after(async function () {
     await this.db.raw(`DELETE FROM ${this.getTableName('newsletter_subscriber')}`);
     await this.db.raw(
       `DELETE FROM ${this.getTableName(
@@ -50,32 +66,44 @@ describe('Marketing events: customer', function() {
     await mailhog.clearMails();
   });
 
-  context('if collectMarketingEvents turned on', function() {
-    before(async function() {
+  context('if collectMarketingEvents turned on', function () {
+    before(async function () {
       await this.magentoApi.execute('attributes', 'set', {
         websiteId: 1,
         type: 'customer',
-        attributeCodes: ['emarsys_test_favorite_car']
+        attributeCodes: ['emarsys_test_favorite_car', 'gender']
+      });
+
+      await this.magentoApi.execute('attributes', 'set', {
+        websiteId: 1,
+        type: 'customer_address',
+        attributeCodes: ['region_id']
       });
     });
 
-    after(async function() {
+    after(async function () {
       await this.magentoApi.execute('attributes', 'set', {
         websiteId: 1,
         type: 'customer',
         attributeCodes: []
       });
+
+      await this.magentoApi.execute('attributes', 'set', {
+        websiteId: 1,
+        type: 'customer_address',
+        attributeCodes: []
+      });
     });
 
-    context('magentoSendEmails config is enabled', function() {
-      before(async function() {
+    context('magentoSendEmails config is enabled', function () {
+      before(async function () {
         await this.magentoApi.execute('config', 'set', {
           websiteId: 1,
           config: { collectMarketingEvents: 'enabled', magentoSendEmail: 'enabled' }
         });
       });
 
-      it('should create customer_new_account_registered_no_password event', async function() {
+      it('should create customer_new_account_registered_no_password event', async function () {
         await this.createCustomer(customer);
 
         const events = await this.db.select().from(this.getTableName('emarsys_events_data'));
@@ -88,7 +116,14 @@ describe('Marketing events: customer', function() {
         const eventData = JSON.parse(event.event_data);
         expect(eventData.customer.email).to.eql(customer.email);
         expect(eventData.customer.extra_fields).to.eql([
-          { key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null }
+          { key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null },
+          { key: 'gender', value: '1', text_value: 'Male' }
+        ]);
+        expect(eventData.customer.billing_address.extra_fields).to.eql([
+          { key: 'region_id', value: '32', text_value: 'Massachusetts' }
+        ]);
+        expect(eventData.customer.shipping_address.extra_fields).to.eql([
+          { key: 'region_id', value: '32', text_value: 'Massachusetts' }
         ]);
         expect(event.website_id).to.equal(1);
         expect(event.store_id).to.equal(1);
@@ -98,7 +133,7 @@ describe('Marketing events: customer', function() {
         expect(emailsSentTo).to.include(customer.email);
       });
 
-      it('should create customer_new_account_registered event', async function() {
+      it('should create customer_new_account_registered event', async function () {
         await this.createCustomer(customer, 'Password1234');
 
         const events = await this.db.select().from(this.getTableName('emarsys_events_data'));
@@ -111,7 +146,14 @@ describe('Marketing events: customer', function() {
         const eventData = JSON.parse(event.event_data);
         expect(eventData.customer.email).to.eql(customer.email);
         expect(eventData.customer.extra_fields).to.eql([
-          { key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null }
+          { key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null },
+          { key: 'gender', value: '1', text_value: 'Male' }
+        ]);
+        expect(eventData.customer.billing_address.extra_fields).to.eql([
+          { key: 'region_id', value: '32', text_value: 'Massachusetts' }
+        ]);
+        expect(eventData.customer.shipping_address.extra_fields).to.eql([
+          { key: 'region_id', value: '32', text_value: 'Massachusetts' }
         ]);
         expect(event.website_id).to.equal(1);
         expect(event.store_id).to.equal(1);
@@ -121,7 +163,7 @@ describe('Marketing events: customer', function() {
         expect(emailsSentTo).to.include(customer.email);
       });
 
-      it('should create customer_password_reset_confirmation event', async function() {
+      it('should create customer_password_reset_confirmation event', async function () {
         await this.magentoApi.put({
           path: '/index.php/rest/V1/customers/password',
           payload: {
@@ -141,9 +183,6 @@ describe('Marketing events: customer', function() {
 
         const eventData = JSON.parse(event.event_data);
         expect(eventData.customer.email).to.equal(this.customer.email);
-        expect(eventData.customer.extra_fields).to.eql([
-          { key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null }
-        ]);
         expect(eventData.customer.rp_token).not.to.be.undefined;
         expect(eventData.customer.rp_token_created_at).not.to.be.undefined;
         expect(event.website_id).to.equal(1);
@@ -154,7 +193,7 @@ describe('Marketing events: customer', function() {
         expect(emailsSentTo).to.include(this.customer.email);
       });
 
-      it('should create customer_password_reminder event', async function() {
+      it('should create customer_password_reminder event', async function () {
         await this.magentoApi.put({
           path: '/index.php/rest/V1/customers/password',
           payload: {
@@ -174,9 +213,6 @@ describe('Marketing events: customer', function() {
 
         const eventData = JSON.parse(event.event_data);
         expect(eventData.customer.email).to.equal(this.customer.email);
-        expect(eventData.customer.extra_fields).to.eql([
-          { key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null }
-        ]);
         expect(eventData.customer.rp_token).not.to.be.undefined;
         expect(eventData.customer.rp_token_created_at).not.to.be.undefined;
         expect(event.website_id).to.equal(1);
@@ -187,19 +223,19 @@ describe('Marketing events: customer', function() {
         expect(emailsSentTo).to.include(this.customer.email);
       });
 
-      context('and if newsletter/subscription/confirm', function() {
+      context('and if newsletter/subscription/confirm', function () {
         let subscriber;
 
-        before(async function() {
+        before(async function () {
           subscriber = await this.createCustomer(newsletterCustomer, 'abcD1234');
         });
 
-        beforeEach(async function() {
+        beforeEach(async function () {
           await this.db.raw(`DELETE FROM ${this.getTableName('newsletter_subscriber')}`);
           await this.db.raw(`DELETE FROM ${this.getTableName('emarsys_events_data')}`);
         });
 
-        after(async function() {
+        after(async function () {
           await this.db.raw(
             `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
           );
@@ -207,8 +243,8 @@ describe('Marketing events: customer', function() {
           await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} WHERE email="yolo@newsletter.net"`);
         });
 
-        context('is disabled', function() {
-          before(async function() {
+        context('is disabled', function () {
+          before(async function () {
             await this.db.raw(
               `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
             );
@@ -221,7 +257,7 @@ describe('Marketing events: customer', function() {
             });
           });
 
-          it('should create newsletter_send_confirmation_success_email event', async function() {
+          it('should create newsletter_send_confirmation_success_email event', async function () {
             await this.magentoApi.put({
               path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
               payload: {
@@ -239,10 +275,7 @@ describe('Marketing events: customer', function() {
               }
             });
 
-            const event = await this.db
-              .select()
-              .from(this.getTableName('emarsys_events_data'))
-              .first();
+            const event = await this.db.select().from(this.getTableName('emarsys_events_data')).first();
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('newsletter_send_confirmation_success_email');
@@ -260,7 +293,7 @@ describe('Marketing events: customer', function() {
             expect(emailsSentTo).to.include(subscriber.email);
           });
 
-          it('should create newsletter_send_unsubscription_email event', async function() {
+          it('should create newsletter_send_unsubscription_email event', async function () {
             await this.magentoApi.put({
               path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
               payload: {
@@ -297,10 +330,7 @@ describe('Marketing events: customer', function() {
               }
             });
 
-            const event = await this.db
-              .select()
-              .from(this.getTableName('emarsys_events_data'))
-              .first();
+            const event = await this.db.select().from(this.getTableName('emarsys_events_data')).first();
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('newsletter_send_unsubscription_email');
@@ -319,8 +349,8 @@ describe('Marketing events: customer', function() {
           });
         });
 
-        context('is enabled', function() {
-          before(async function() {
+        context('is enabled', function () {
+          before(async function () {
             await this.db
               .insert({ scope: 'default', scope_id: 0, path: 'newsletter/subscription/confirm', value: 1 })
               .into(this.getTableName('core_config_data'));
@@ -334,13 +364,13 @@ describe('Marketing events: customer', function() {
             });
           });
 
-          after(async function() {
+          after(async function () {
             await this.db.raw(
               `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="newsletter/subscription/confirm"`
             );
           });
 
-          it('should create newsletter_send_confirmation_request_email event', async function() {
+          it('should create newsletter_send_confirmation_request_email event', async function () {
             await this.magentoApi.put({
               path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
               payload: {
@@ -358,10 +388,7 @@ describe('Marketing events: customer', function() {
               }
             });
 
-            const event = await this.db
-              .select()
-              .from(this.getTableName('emarsys_events_data'))
-              .first();
+            const event = await this.db.select().from(this.getTableName('emarsys_events_data')).first();
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('newsletter_send_confirmation_request_email');
@@ -379,7 +406,7 @@ describe('Marketing events: customer', function() {
           });
 
           // bug: sends newsletter_send_confirmation_request_email on unsubscribe
-          it('should create newsletter_send_unsubscription_email event', async function() {
+          it('should create newsletter_send_unsubscription_email event', async function () {
             await this.magentoApi.put({
               path: `/index.php/rest/V1/customers/${subscriber.entityId}`,
               payload: {
@@ -418,10 +445,7 @@ describe('Marketing events: customer', function() {
               }
             });
 
-            const event = await this.db
-              .select()
-              .from(this.getTableName('emarsys_events_data'))
-              .first();
+            const event = await this.db.select().from(this.getTableName('emarsys_events_data')).first();
             const createdEventData = JSON.parse(event.event_data);
 
             expect(event.event_type).to.equal('newsletter_send_unsubscription_email');
