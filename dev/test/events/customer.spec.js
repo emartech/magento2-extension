@@ -51,7 +51,7 @@ describe('Customer events', function() {
 
     const eventData = JSON.parse(event.event_data);
     expect(eventData.email).to.eql(customer.email);
-    expect(eventData.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
+    expect(eventData.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null }]);
     expect(event.website_id).to.equal(1);
     expect(event.store_id).to.equal(1);
   });
@@ -78,7 +78,7 @@ describe('Customer events', function() {
 
     const eventData = JSON.parse(event.event_data);
     expect(eventData.email).to.eql('yolo100@yolo.net');
-    expect(eventData.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda' }]);
+    expect(eventData.extra_fields).to.eql([{ key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null }]);
     expect(event.website_id).to.equal(1);
     expect(event.store_id).to.equal(1);
   });

@@ -313,7 +313,6 @@ class Customer extends AbstractHelper
             );
 
             if (is_array($customerAttributes)) {
-                //$this->extraFields = array_diff($customerAttributes, $this->getCustomerFields());
                 $this->extraFields = $customerAttributes;
             }
         }
@@ -348,10 +347,6 @@ class Customer extends AbstractHelper
             );
 
             if (is_array($customerAddressAttributes)) {
-                /*$this->extraAddressFields = array_diff(
-                    $customerAddressAttributes,
-                    $this->getCustomerAddressFields()
-                );*/
                 $this->extraAddressFields = $customerAddressAttributes;
             }
         }

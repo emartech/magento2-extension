@@ -249,7 +249,6 @@ class Product extends AbstractHelper
             );
 
             if (is_array($productAttributes)) {
-                //$this->extraFields = array_diff($productAttributes, $this->getProductFields());
                 $this->extraFields = $productAttributes;
             }
         }
