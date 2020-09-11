@@ -50,14 +50,14 @@ pipeline {
     }
     stage('Run tests on recent versions') {
       parallel {
-        stage('Run unit tests on 2.3.4CE') {
+        stage('Run unit tests on 2.4.0CE') {
           steps {
-            sh 'VERSION=2.3.4ce sh dev/jenkins/run-unit.sh'
+            sh 'VERSION=2.4.0ce sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run e2e tests on 2.3.4CE') {
+        stage('Run e2e tests on 2.4.0CE') {
           steps {
-            sh 'VERSION=2.3.4ce sh dev/jenkins/run-e2e.sh'
+            sh 'VERSION=2.4.0ce sh dev/jenkins/run-e2e.sh'
           }
         }
 
@@ -134,13 +134,15 @@ pipeline {
     always {
       sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
       sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.2ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
       sh 'VERSION=2.2.6ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
       sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
       sh 'VERSION=2.1.9ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
       sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.3ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.4.0ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.3.5ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")

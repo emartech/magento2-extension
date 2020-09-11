@@ -5,7 +5,14 @@ set -e
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
-alias compose="docker-compose -p mage_unit_$VERSION"
+if [[ $version =~ ^2\.4 ]]
+then
+  composefile="docker-compose-elastic.yml"
+else
+  composefile="docker-compose.yml"
+fi
+
+alias compose="docker-compose -p mage_unit_$VERSION -f $composefile"
 
 compose down
 
