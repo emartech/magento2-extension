@@ -57,7 +57,7 @@ pipeline {
         sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.1ce sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
-        sh 'docker ps --filter name=mage_* -aq | xargs docker rm -f'
+        sh 'sh dev/jenkins/killal.sh'
       }
     }
     stage('Run tests on recent versions') {
@@ -152,7 +152,7 @@ pipeline {
       sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.1ce sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
-      sh 'docker ps --filter name=mage_* -aq | xargs docker rm -f'
+      sh 'sh dev/jenkins/killal.sh'
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")
