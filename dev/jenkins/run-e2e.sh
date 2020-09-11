@@ -12,7 +12,7 @@ else
   composefile="docker-compose.yml"
 fi
 
-alias compose="docker-compose -p mage_unit_$VERSION -f $composefile"
+alias compose="docker-compose -p mage_e2e_$VERSION -f $composefile"
 
 compose down
 
