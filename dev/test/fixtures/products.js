@@ -157,6 +157,20 @@ const configurable = {
         children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
       }
     ]
+  },
+  '2.4.0': {
+    Community: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ],
+    Enterprise: [
+      {
+        type: 'configurable',
+        children_entity_ids: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]
+      }
+    ]
   }
 };
 

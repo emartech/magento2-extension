@@ -152,6 +152,9 @@ describe('Webextend scripts', function() {
         case '2.3.5Community':
           productId = 730;
           break;
+        case '2.4.0Community':
+          productId = 730;
+          break;
         default:
           productId = 729;
       }

@@ -35,9 +35,12 @@ describe('Products endpoint', function () {
 
     await this.createProduct({
       sku: expectedProduct.sku,
-      custom_attributes: {
-        special_price: 2
-      }
+      custom_attributes: [
+        {
+          attribute_code: 'special_price',
+          value: 2
+        }
+      ]
     });
 
     const { products, productCount } = await this.magentoApi.execute('products', 'get', { page, limit, storeIds: [1] });
@@ -93,6 +96,9 @@ describe('Products endpoint', function () {
         page = 68;
         break;
       case '2.3.5':
+        page = 68;
+        break;
+      case '2.4.0':
         page = 68;
         break;
       default:
