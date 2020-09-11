@@ -2,4 +2,5 @@
 
 set -e
 
-docker ps --filter name=mage_* -aq | xargs docker rm -f
+containers=$(docker ps --filter name=mage_* -aq)
+docker rm -f $containers || echo 'No containers found'
