@@ -27,5 +27,5 @@ echo "\n|--- Testing Magento DI compilation"
 compose exec -T --user application magento-test bash -c "bin/magento setup:di:compile"
 echo "\n|--- Running backend tests"
 compose run --rm node sh -c "npm run mocha"
-echo "\n\n|--- Restarting containers"
+echo "\n\n|--- Stopping containers"
 compose down

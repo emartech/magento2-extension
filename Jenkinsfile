@@ -48,6 +48,17 @@ pipeline {
         }
       }
     }
+    stage('Destroy all') {
+      steps {
+        sh 'VERSION=2.4.0ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.3ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.1ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
+      }
+    }
     stage('Run tests on recent versions') {
       parallel {
         stage('Run unit tests on 2.4.0CE') {
@@ -133,16 +144,13 @@ pipeline {
   post {
     always {
       sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
-      sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.2ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.2.6ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.1.9ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.4.0ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.5ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.4.0ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.3ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.1ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")
