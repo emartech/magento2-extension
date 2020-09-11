@@ -5,7 +5,7 @@ set -e
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
-if [[ $version =~ ^2\.4 ]]
+if [[ $VERSION =~ ^2\.4 ]]
 then
   composefile="docker-compose-elastic.yml"
 else
