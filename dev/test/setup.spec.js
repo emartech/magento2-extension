@@ -31,17 +31,15 @@ const createCustomer = (magentoApi, db) => async (customer, password) => {
   return Object.assign({}, customer, { entityId, password });
 };
 
-const createProduct = magentoApi => product => {
+const createProduct = (magentoApi) => (product) => {
   return magentoApi.post({ path: '/index.php/rest/V1/products', payload: { product } });
 };
 
-const setCurrencyConfig = async db => {
-  await db(getTableName('core_config_data'))
-    .where({ path: 'currency/options/default' })
-    .update({ value: 'UGX' });
+const setCurrencyConfig = async (db) => {
+  await db(getTableName('core_config_data')).where({ path: 'currency/options/default' }).update({ value: 'UGX' });
 };
 
-const setDefaultStoreSettings = magentoApi => () => {
+const setDefaultStoreSettings = (magentoApi) => () => {
   return magentoApi.execute('config', 'set', {
     websiteId: 1,
     config: {
@@ -59,7 +57,7 @@ const setDefaultStoreSettings = magentoApi => () => {
   });
 };
 
-const turnOffEverySetting = magentoApi => (websiteId) => {
+const turnOffEverySetting = (magentoApi) => (websiteId) => {
   return magentoApi.execute('config', 'set', {
     websiteId,
     config: {
@@ -74,7 +72,7 @@ const turnOffEverySetting = magentoApi => (websiteId) => {
   });
 };
 
-const clearStoreSettings = magentoApi => () => {
+const clearStoreSettings = (magentoApi) => () => {
   return magentoApi.execute('config', 'set', {
     websiteId: 1,
     config: {
@@ -83,15 +81,15 @@ const clearStoreSettings = magentoApi => () => {
   });
 };
 
-const reindex = baseUrl => () => {
+const reindex = (baseUrl) => () => {
   return axios.get(`${baseUrl}reindex.php`);
 };
 
-const cacheFlush = baseUrl => () => {
+const cacheFlush = (baseUrl) => () => {
   return axios.get(`${baseUrl}cache-flush.php`);
 };
 
-before(async function() {
+before(async function () {
   await cacheTablePrefix();
 
   this.getTableName = getTableName;
@@ -132,9 +130,10 @@ before(async function() {
 
   this.createCustomer = createCustomer(this.magentoApi, this.db);
   this.createProduct = createProduct(this.magentoApi);
-  this.localCartItem = cartItem.get(this.magentoVersion, this.magentoEdition);
   this.reindex = reindex(baseUrl);
   this.cacheFlush = cacheFlush(baseUrl);
+
+  this.localCartItem = await cartItem.get(this.magentoApi);
 
   this.customer = await this.createCustomer(
     {
@@ -157,14 +156,12 @@ before(async function() {
   );
 });
 
-beforeEach(async function() {
+beforeEach(async function () {
   this.sandbox = sinon.createSandbox();
 });
 
-afterEach(async function() {
+afterEach(async function () {
   this.sandbox.restore();
 
-  await Promise.all([
-    this.dbCleaner.resetEmarsysEventsData()
-  ]);
+  await Promise.all([this.dbCleaner.resetEmarsysEventsData()]);
 });

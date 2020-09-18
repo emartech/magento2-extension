@@ -1,147 +1,19 @@
 'use strict';
 
-const getLastEvent = async db =>
-  await db
-    .select()
-    .from(`${tablePrefix}emarsys_events_data`)
-    .orderBy('event_id', 'desc')
-    .first();
+const {
+  createNewCustomerOrder,
+  createNewGuestOrder,
+  invoiceOrder,
+  localAddresses,
+  shipOrder,
+  commentOrder,
+  refundOrder
+} = require('../helpers/orders');
 
-const localAddresses = {
-  shipping_address: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.shipping.com',
-    telephone: '512-555-1111'
-  },
-  billing_address: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.billing.com',
-    telephone: '512-555-1111'
-  },
-  shipping_carrier_code: 'flatrate',
-  shipping_method_code: 'flatrate'
-};
+const getLastEvent = async (db) =>
+  await db.select().from(`${tablePrefix}emarsys_events_data`).orderBy('event_id', 'desc').first();
 
-const createNewCustomerOrder = async (magentoApi, customer, localCartItem) => {
-  const { data: cartId } = await magentoApi.post({
-    path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/items`,
-    payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
-    }
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/shipping-information`,
-    payload: {
-      addressInformation: localAddresses
-    }
-  });
-
-  const { data: orderId } = await magentoApi.put({
-    path: `/index.php/rest/V1/carts/${cartId}/order`,
-    payload: {
-      paymentMethod: {
-        method: 'checkmo'
-      }
-    }
-  });
-
-  return { cartId, orderId };
-};
-
-const createNewGuestOrder = async (magentoApi, localCartItem) => {
-  const { data: cartId } = await magentoApi.post({
-    path: '/index.php/rest/V1/guest-carts'
-  });
-
-  const { data: item } = await magentoApi.post({
-    path: `/index.php/rest/V1/guest-carts/${cartId}/items`,
-    payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
-    }
-  });
-  const quoteId = item.quote_id;
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${quoteId}/shipping-information`,
-    payload: {
-      addressInformation: localAddresses
-    }
-  });
-
-  const { data: orderId } = await magentoApi.put({
-    path: `/index.php/rest/V1/guest-carts/${cartId}/order`,
-    payload: {
-      paymentMethod: {
-        method: 'checkmo'
-      }
-    }
-  });
-
-  return { cartId, orderId };
-};
-
-const invoiceOrder = async (magentoApi, orderId) => {
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/invoice`,
-    payload: {
-      capture: true,
-      notify: true
-    }
-  });
-};
-
-const shipOrder = async (magentoApi, orderId) => {
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/ship`,
-    payload: {
-      notify: true
-    }
-  });
-};
-
-const commentOrder = async (magentoApi, orderId) => {
-  await magentoApi.post({
-    path: `/index.php/rest/V1/orders/${orderId}/comments`,
-    payload: {
-      statusHistory: {
-        comment: 'Comment on order',
-        is_customer_notified: 1
-      }
-    }
-  });
-};
-
-const refundOrder = async (magentoApi, orderId) => {
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/refund`,
-    payload: {
-      notify: true
-    }
-  });
-};
-
-const expectCustomerMatches = function(createdEventData, customer) {
+const expectCustomerMatches = function (createdEventData, customer) {
   expect(createdEventData.customer).to.containSubset({
     email: customer.email,
     firstname: customer.firstname,
@@ -156,28 +28,28 @@ const expectCustomerMatches = function(createdEventData, customer) {
   });
 };
 
-const expectOrderMatches = function(createdEventData, localCartItem) {
+const expectOrderMatches = function (createdEventData, localCartItem) {
   const orderItem = createdEventData.order.items[0];
   expect(orderItem.sku).to.contain(localCartItem.sku);
   expect(createdEventData.order.addresses).to.have.property('shipping');
   expect(createdEventData.order.addresses).to.have.property('billing');
 };
 
-const expectCustomerAndOrderMatches = function(createdEventData, customer, localCartItem) {
+const expectCustomerAndOrderMatches = function (createdEventData, customer, localCartItem) {
   expectCustomerMatches(createdEventData, customer);
   expectOrderMatches(createdEventData, localCartItem);
 };
 
 let tablePrefix;
 
-describe('Marketing events: sales', function() {
+describe('Marketing events: sales', function () {
   let localCartItem;
-  before(function() {
+  before(function () {
     tablePrefix = this.getTableName('');
     localCartItem = this.localCartItem;
   });
 
-  after(async function() {
+  after(async function () {
     await this.magentoApi.execute('config', 'set', {
       websiteId: 1,
       config: { collectMarketingEvents: 'disabled' }
@@ -190,8 +62,8 @@ describe('Marketing events: sales', function() {
     await this.db.truncate(this.getTableName('emarsys_events_data'));
   });
 
-  describe('If config collectMarketingEvents is disabled', function() {
-    before(async function() {
+  describe('If config collectMarketingEvents is disabled', function () {
+    before(async function () {
       await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: {
@@ -202,7 +74,7 @@ describe('Marketing events: sales', function() {
       });
     });
 
-    it('should not create event', async function() {
+    it('should not create event', async function () {
       await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
 
       const createdEvent = await getLastEvent(this.db);
@@ -211,8 +83,8 @@ describe('Marketing events: sales', function() {
     });
   });
 
-  describe('If config collectMarketingEvents is enabled', function() {
-    before(async function() {
+  describe('If config collectMarketingEvents is enabled', function () {
+    before(async function () {
       await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: { collectMarketingEvents: 'enabled' }
@@ -224,15 +96,15 @@ describe('Marketing events: sales', function() {
       });
     });
 
-    describe('when customer', function() {
+    describe('when customer', function () {
       let orderId;
-      before(async function() {
+      before(async function () {
         const order = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
         orderId = order.orderId;
       });
 
-      describe('submits order', function() {
-        it('should create sales_email_order_template event', async function() {
+      describe('submits order', function () {
+        it('should create sales_email_order_template event', async function () {
           const event = await getLastEvent(this.db);
           const createdEventData = JSON.parse(event.event_data);
 
@@ -245,8 +117,8 @@ describe('Marketing events: sales', function() {
         });
       });
 
-      describe('order is invoiced', function() {
-        it('should create sales_email_invoice_template event', async function() {
+      describe('order is invoiced', function () {
+        it('should create sales_email_invoice_template event', async function () {
           await invoiceOrder(this.magentoApi, orderId);
 
           const event = await getLastEvent(this.db);
@@ -259,8 +131,8 @@ describe('Marketing events: sales', function() {
         });
       });
 
-      describe('order is shipped', function() {
-        it('should create sales_email_shipment_template event', async function() {
+      describe('order is shipped', function () {
+        it('should create sales_email_shipment_template event', async function () {
           await shipOrder(this.magentoApi, orderId);
 
           const event = await getLastEvent(this.db);
@@ -274,15 +146,15 @@ describe('Marketing events: sales', function() {
         });
       });
 
-      describe('order is', function() {
+      describe('order is', function () {
         let orderId;
 
-        before(async function() {
+        before(async function () {
           const order = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
           orderId = order.orderId;
         });
-        describe('commented', function() {
-          it('should create sales_email_order_comment_template event', async function() {
+        describe('commented', function () {
+          it('should create sales_email_order_comment_template event', async function () {
             await commentOrder(this.magentoApi, orderId);
 
             const event = await getLastEvent(this.db);
@@ -295,8 +167,8 @@ describe('Marketing events: sales', function() {
             expect(event.store_id).to.equal(1);
           });
         });
-        describe('refunded', function() {
-          it('should create sales_email_creditmemo_template event', async function() {
+        describe('refunded', function () {
+          it('should create sales_email_creditmemo_template event', async function () {
             await invoiceOrder(this.magentoApi, orderId);
             await refundOrder(this.magentoApi, orderId);
 
@@ -312,17 +184,17 @@ describe('Marketing events: sales', function() {
         });
       });
 
-      describe('store is not enabled', function() {
-        before(async function() {
+      describe('store is not enabled', function () {
+        before(async function () {
           await this.clearStoreSettings();
           await this.db.truncate(this.getTableName('emarsys_events_data'));
         });
 
-        after(async function() {
+        after(async function () {
           await this.setDefaultStoreSettings();
         });
 
-        it('should not create event', async function() {
+        it('should not create event', async function () {
           await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
 
           const createdEvent = await getLastEvent(this.db);
@@ -332,28 +204,30 @@ describe('Marketing events: sales', function() {
       });
     });
 
-    describe('when guest', function() {
+    describe('when guest', function () {
       let orderId;
-      before(async function() {
+      before(async function () {
         const order = await createNewGuestOrder(this.magentoApi, localCartItem);
         orderId = order.orderId;
       });
 
-      describe('submits order', function() {
-        it('should create sales_email_order_guest_template event', async function() {
+      describe('submits order', function () {
+        it('should create sales_email_order_guest_template event', async function () {
           const event = await getLastEvent(this.db);
           const createdEventData = JSON.parse(event.event_data);
 
           expect(event.event_type).to.equal('sales_email_order_guest_template');
           expectOrderMatches(createdEventData, localCartItem);
-          expect(createdEventData.order.addresses.billing.email).to.equal(localAddresses.billing_address.email);
+          expect(createdEventData.order.addresses.billing.email).to.equal(
+            localAddresses.billing_address.email
+          );
           expect(event.website_id).to.equal(1);
           expect(event.store_id).to.equal(1);
         });
       });
 
-      describe('order is invoiced', function() {
-        it('should create sales_email_invoice_guest_template event', async function() {
+      describe('order is invoiced', function () {
+        it('should create sales_email_invoice_guest_template event', async function () {
           await invoiceOrder(this.magentoApi, orderId);
 
           const event = await getLastEvent(this.db);
@@ -368,8 +242,8 @@ describe('Marketing events: sales', function() {
         });
       });
 
-      describe('order is shipped', function() {
-        it('should create sales_email_shipment_guest_template event', async function() {
+      describe('order is shipped', function () {
+        it('should create sales_email_shipment_guest_template event', async function () {
           await shipOrder(this.magentoApi, orderId);
 
           const event = await getLastEvent(this.db);
@@ -383,15 +257,15 @@ describe('Marketing events: sales', function() {
         });
       });
 
-      describe('order is', function() {
+      describe('order is', function () {
         let orderId;
-        before(async function() {
+        before(async function () {
           const order = await createNewGuestOrder(this.magentoApi, localCartItem);
           orderId = order.orderId;
         });
 
-        describe('commented', function() {
-          it('should create sales_email_order_comment_guest_template event', async function() {
+        describe('commented', function () {
+          it('should create sales_email_order_comment_guest_template event', async function () {
             await commentOrder(this.magentoApi, orderId);
 
             const event = await getLastEvent(this.db);
@@ -404,8 +278,8 @@ describe('Marketing events: sales', function() {
             expect(event.store_id).to.equal(1);
           });
         });
-        describe('refunded', function() {
-          it('should create sales_email_creditmemo_guest_template event', async function() {
+        describe('refunded', function () {
+          it('should create sales_email_creditmemo_guest_template event', async function () {
             await invoiceOrder(this.magentoApi, orderId);
             await refundOrder(this.magentoApi, orderId);
 

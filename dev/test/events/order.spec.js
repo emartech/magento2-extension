@@ -1,114 +1,17 @@
 'use strict';
 
+const {
+  createNewCustomerOrder,
+  refundOnePieceFromFirstItemOfOrder,
+  fulfillOrder,
+  changeOrderStatus
+} = require('../helpers/orders');
+
 const getLastEvent = async (db) =>
   await db.select().from(`${tablePrefix}emarsys_events_data`).orderBy('event_id', 'desc').first();
 
 const getAllEvents = async (db) =>
   await db.select().from(`${tablePrefix}emarsys_events_data`).orderBy('event_id', 'desc');
-
-const createNewOrder = async (magentoApi, customer, localCartItem) => {
-  const { data: cartId } = await magentoApi.post({
-    path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/items`,
-    payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
-    }
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/shipping-information`,
-    payload: {
-      addressInformation: {
-        shipping_address: {
-          region: 'New York',
-          region_id: 43,
-          region_code: 'NY',
-          country_id: 'US',
-          street: ['123 Oak Ave'],
-          postcode: '10577',
-          city: 'Purchase',
-          firstname: 'Jane',
-          lastname: 'Doe',
-          email: 'jdoe@example.com',
-          telephone: '512-555-1111'
-        },
-        billing_address: {
-          region: 'New York',
-          region_id: 43,
-          region_code: 'NY',
-          country_id: 'US',
-          street: ['123 Oak Ave'],
-          postcode: '10577',
-          city: 'Purchase',
-          firstname: 'Jane',
-          lastname: 'Doe',
-          email: 'jdoe@example.com',
-          telephone: '512-555-1111'
-        },
-        shipping_carrier_code: 'flatrate',
-        shipping_method_code: 'flatrate'
-      }
-    }
-  });
-
-  const { data: orderId } = await magentoApi.put({
-    path: `/index.php/rest/V1/carts/${cartId}/order`,
-    payload: {
-      paymentMethod: {
-        method: 'checkmo'
-      }
-    }
-  });
-
-  return { cartId, orderId };
-};
-
-const fulfillOrder = async (magentoApi, orderId) => {
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/invoice`,
-    payload: {
-      capture: true
-    }
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/ship`
-  });
-};
-
-const changeOrderStatus = async (magentoApi, orderId, orderStatus, orderState) => {
-  await magentoApi.post({
-    path: '/index.php/rest/V1/orders',
-    payload: {
-      entity: {
-        entity_id: orderId,
-        status: orderStatus,
-        state: orderState
-      }
-    }
-  });
-};
-
-const refundOnePieceFromFirstItemOfOrder = async (magentoApi, orderId) => {
-  const { items } = await magentoApi.get({ path: `/index.php/rest/V1/orders/${orderId}` });
-  const itemId = items[0].item_id;
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/refund`,
-    payload: {
-      items: [
-        {
-          order_item_id: itemId,
-          qty: 1
-        }
-      ],
-      notify: false
-    }
-  });
-};
 
 let tablePrefix;
 
@@ -127,7 +30,7 @@ describe('Order events', function () {
     });
 
     it('should create orders/new event and an orders/fulfilled', async function () {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
+      const { orderId } = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
 
       await fulfillOrder(this.magentoApi, orderId);
 
@@ -137,7 +40,7 @@ describe('Order events', function () {
     });
 
     it('should not log orders/fulfilled when an order re-enters the complete state', async function () {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
+      const { orderId } = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
       await fulfillOrder(this.magentoApi, orderId);
       await changeOrderStatus(this.magentoApi, orderId, 'test_status', 'complete');
 
@@ -151,7 +54,7 @@ describe('Order events', function () {
     });
 
     it('should not log orders/fulfilled when a partial refund occurs', async function () {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
+      const { orderId } = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
       await fulfillOrder(this.magentoApi, orderId);
 
       await this.dbCleaner.resetEmarsysEventsData();
@@ -170,7 +73,7 @@ describe('Order events', function () {
     });
 
     it('should not group refunds/fulfilled events', async function () {
-      const { orderId } = await createNewOrder(this.magentoApi, this.customer, localCartItem);
+      const { orderId } = await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
       await fulfillOrder(this.magentoApi, orderId);
 
       await refundOnePieceFromFirstItemOfOrder(this.magentoApi, orderId);
@@ -194,7 +97,7 @@ describe('Order events', function () {
       it('should not create event', async function () {
         await this.turnOffEverySetting(1);
 
-        await createNewOrder(this.magentoApi, this.customer, localCartItem);
+        await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
         const createEvent = await getLastEvent(this.db);
 
         expect(createEvent).to.be.undefined;
@@ -205,7 +108,7 @@ describe('Order events', function () {
   context('setting disabled', function () {
     it('should not create event', async function () {
       await this.turnOffEverySetting(1);
-      await createNewOrder(this.magentoApi, this.customer, localCartItem);
+      await createNewCustomerOrder(this.magentoApi, this.customer, localCartItem);
 
       const createEvent = await getLastEvent(this.db);
 

@@ -1,132 +1,15 @@
 'use strict';
 
-const localAddresses = {
-  shipping_address: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.shipping.com',
-    telephone: '512-555-1111'
-  },
-  billing_address: {
-    region: 'New York',
-    region_id: 43,
-    region_code: 'NY',
-    country_id: 'US',
-    street: ['123 Oak Ave'],
-    postcode: '10577',
-    city: 'Purchase',
-    firstname: 'Jane',
-    lastname: 'Doe',
-    email: 'jdoe@example.billing.com',
-    telephone: '512-555-1111'
-  },
-  shipping_carrier_code: 'flatrate',
-  shipping_method_code: 'flatrate'
-};
+const {
+  createNewCustomerOrder,
+  createNewGuestOrder,
+  invoiceOrder,
+  localAddresses,
+  refundOnePieceFromFirstItemOfOrder
+} = require('../helpers/orders');
 
 const getLastEvent = async (db) =>
   await db.select().from(`${tablePrefix}emarsys_events_data`).orderBy('event_id', 'desc').first();
-
-const createNewCustomerOrder = async (magentoApi, customer, localCartItem) => {
-  const { data: cartId } = await magentoApi.post({
-    path: `/index.php/rest/V1/customers/${customer.entityId}/carts`
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/items`,
-    payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
-    }
-  });
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${cartId}/shipping-information`,
-    payload: {
-      addressInformation: localAddresses
-    }
-  });
-
-  const { data: orderId } = await magentoApi.put({
-    path: `/index.php/rest/V1/carts/${cartId}/order`,
-    payload: {
-      paymentMethod: {
-        method: 'checkmo'
-      }
-    }
-  });
-
-  return { cartId, orderId };
-};
-
-const createNewGuestOrder = async (magentoApi, localCartItem) => {
-  const { data: cartId } = await magentoApi.post({
-    path: '/index.php/rest/V1/guest-carts'
-  });
-
-  const { data: item } = await magentoApi.post({
-    path: `/index.php/rest/V1/guest-carts/${cartId}/items`,
-    payload: {
-      cartItem: Object.assign(localCartItem, { quote_id: cartId })
-    }
-  });
-  const quoteId = item.quote_id;
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/carts/${quoteId}/shipping-information`,
-    payload: {
-      addressInformation: localAddresses
-    }
-  });
-
-  const { data: orderId } = await magentoApi.put({
-    path: `/index.php/rest/V1/guest-carts/${cartId}/order`,
-    payload: {
-      paymentMethod: {
-        method: 'checkmo'
-      }
-    }
-  });
-
-  return { cartId, orderId };
-};
-
-const invoiceOrder = async (magentoApi, orderId) => {
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/invoice`,
-    payload: {
-      capture: true,
-      notify: true
-    }
-  });
-};
-
-const refundOnePieceFromFirstItemOfOrder = async (magentoApi, orderId) => {
-  const { items } = await magentoApi.get({ path: `/index.php/rest/V1/orders/${orderId}` });
-  const itemId = items[0].item_id;
-  const refundedSku = items[0].sku;
-
-  await magentoApi.post({
-    path: `/index.php/rest/V1/order/${orderId}/refund`,
-    payload: {
-      items: [
-        {
-          order_item_id: itemId,
-          qty: 1
-        }
-      ],
-      notify: false
-    }
-  });
-
-  return refundedSku;
-};
 
 const expectEventDataWithCustomer = (eventData, customer) => {
   expect(eventData.customer_id).to.contain(customer.entityId);
@@ -143,9 +26,7 @@ const expectEventDataWithOneItemRefund = (eventData, refundedSku) => {
   const orderItems = eventData.items.filter((item) => item.product_type === 'configurable' && item.sku === refundedSku);
   expect(orderItems.length).to.be.equal(1);
 
-  const notRefundedOrderItems = eventData.items.filter(
-    (item) => item.sku !== refundedSku
-  );
+  const notRefundedOrderItems = eventData.items.filter((item) => item.sku !== refundedSku);
   expect(notRefundedOrderItems.length).to.be.equal(0);
 
   const orderItem = orderItems[0];
@@ -231,8 +112,8 @@ describe('Refund events', function () {
       const createdEventData = JSON.parse(event.event_data);
       expect(createdEventData.items.length).to.be.equal(2);
 
-      const simpleItem = createdEventData.items.find(item => item.product_type === 'simple');
-      const configurableItem = createdEventData.items.find(item => item.product_type === 'configurable');
+      const simpleItem = createdEventData.items.find((item) => item.product_type === 'simple');
+      const configurableItem = createdEventData.items.find((item) => item.product_type === 'configurable');
 
       expect(simpleItem.parent_item.order_item_id).to.be.equal(configurableItem.order_item_id);
     });
