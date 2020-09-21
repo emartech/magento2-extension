@@ -129,7 +129,7 @@ class CreateCustomEvent implements ObserverInterface
         $errors = [];
 
         foreach ($this->requireAttributes as $requireAttribute) {
-            if (!($data = $event->getData($requireAttribute))){
+            if (!($data = $event->getData($requireAttribute))) {
                 $errors[] = $requireAttribute;
             }
         }
