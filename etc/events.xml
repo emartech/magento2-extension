@@ -21,4 +21,10 @@
     <event name="customer_delete_after">
         <observer name="customerDeleteObserver" instance="Emartech\Emarsys\Observers\CustomerDeleteObserver" />
     </event>
+
+    <!-- CUSTOM EVENT MANAGER -->
+    <event name="emarsys_create_custom_event">
+        <observer name="emarsysCreateCustomEvent" instance="Emartech\Emarsys\Observers\CreateCustomEvent" />
+    </event>
+    <!-- CUSTOM EVENT MANAGER -->
 </config>
