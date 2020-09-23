@@ -55,7 +55,7 @@ pipeline {
         sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
-        sh 'VERSION=2.3.1ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.1ce-prefixed sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
         sh 'sh ./dev/jenkins/killall.sh'
       }
@@ -150,7 +150,7 @@ pipeline {
       sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
-      sh 'VERSION=2.3.1ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.1ce-prefixed sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
       sh 'sh ./dev/jenkins/killall.sh'
     }
