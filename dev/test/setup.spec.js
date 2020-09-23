@@ -81,8 +81,17 @@ const clearStoreSettings = (magentoApi) => () => {
   });
 };
 
-const reindex = (baseUrl) => () => {
-  return axios.get(`${baseUrl}reindex.php`);
+const triggerCustomEvent = (baseUrl) => ({ eventId, eventData, storeId }) => {
+  const payload = {
+    id: eventId,
+    data: eventData
+  };
+
+  if (storeId) {
+    payload.store_id = storeId;
+  }
+
+  return axios.post(`${baseUrl}trigger_event.php`, payload);
 };
 
 const cacheFlush = (baseUrl) => () => {
@@ -130,7 +139,7 @@ before(async function () {
 
   this.createCustomer = createCustomer(this.magentoApi, this.db);
   this.createProduct = createProduct(this.magentoApi);
-  this.reindex = reindex(baseUrl);
+  this.triggerCustomEvent = triggerCustomEvent(baseUrl);
   this.cacheFlush = cacheFlush(baseUrl);
 
   this.localCartItem = await cartItem.get(this.magentoApi);
