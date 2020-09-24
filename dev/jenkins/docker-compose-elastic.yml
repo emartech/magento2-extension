@@ -13,7 +13,7 @@ services:
       - ../setup:/opt/emartech/setup
       - ../php.ini:/opt/docker/etc/php/php.ini
       - ../cache-flush.php:/app/cache-flush.php
-      - ../reindex.php:/app/reindex.php
+      - ../trigger_event.php:/app/trigger_event.php
       - ../Magento/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
     environment:
       - MAGENTO_URL=http://magento-test.local
@@ -22,15 +22,23 @@ services:
       - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     env_file:
       - .env
-    command: ["/opt/emartech/wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "/opt/emartech/init"]
+    command:
+      [
+        "/opt/emartech/wait-for-it.sh",
+        "db:3306",
+        "--timeout=30",
+        "--strict",
+        "--",
+        "/opt/emartech/init",
+      ]
     links:
       - db
       - elastic
   elastic:
-      image: elasticsearch:7.6.2
-      environment:
-        - "discovery.type=single-node"
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    image: elasticsearch:7.6.2
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
   node:
     image: mage_node
     ipc: host
