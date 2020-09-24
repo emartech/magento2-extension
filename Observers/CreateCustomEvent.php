@@ -7,6 +7,8 @@
 
 namespace Emartech\Emarsys\Observers;
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Helper\ConfigReader as HelperConfigReader;
 use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -17,6 +19,7 @@ use Emartech\Emarsys\Model\Event as EventModel;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
 use Magento\Store\Model\StoreManagerInterface;
+use Emartech\Emarsys\Helper\ConfigReader;
 
 class CreateCustomEvent implements ObserverInterface
 {
@@ -51,6 +54,11 @@ class CreateCustomEvent implements ObserverInterface
     private $storeManager;
 
     /**
+     * @var ConfigReader
+     */
+    private $configReader;
+
+    /**
      * CreateCustomEvent constructor.
      *
      * @param Json $json
@@ -61,12 +69,14 @@ class CreateCustomEvent implements ObserverInterface
         Json $json,
         EmarsysEventFactory $eventFactory,
         EventRepository $eventRepository,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        ConfigReader $configReader
     ) {
         $this->json = $json;
         $this->eventFactory = $eventFactory;
         $this->eventRepository = $eventRepository;
         $this->storeManager = $storeManager;
+        $this->configReader = $configReader;
     }
 
     /**
@@ -89,14 +99,21 @@ class CreateCustomEvent implements ObserverInterface
             $store = $this->storeManager->getStore($storeId);
         }
 
+        if (!$this->configReader->isEnabledForStore(ConfigInterface::MARKETING_EVENTS, $storeId)) {
+            throw new LocalizedException(
+                __('marketing events are not enabled for store (ID: ' . $storeId . ')')
+            );
+            return false;
+        }
+
         /** Need to validate the data */
         if (is_string($data)) {
             $data = $this->json->unserialize($data);
         }
 
-        if (empty($data['customer_email'])) {
+        if (empty($data['customerEmail'])) {
             throw new LocalizedException(
-                __('customer_email is required in event_data')
+                __('customerEmail is required in event_data')
             );
         }
 

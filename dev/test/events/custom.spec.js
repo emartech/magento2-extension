@@ -13,12 +13,28 @@ describe('Custom events', function () {
     tablePrefix = this.getTableName('');
   });
 
+  afterEach(async function () {
+    await this.db.truncate(this.getTableName('emarsys_events_data'));
+  });
+
+  after(async function() {
+    await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'disabled' } });
+
+    await this.magentoApi.execute('config', 'set', {
+      websiteId: 2,
+      config: {
+        collectMarketingEvents: 'disabled',
+        storeSettings: []
+      }
+    });
+  });
+
   it('should save custom event', async function () {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
 
     const eventId = 12345;
     const eventData = {
-      customer_email: 'hello@yolo.hu',
+      customerEmail: 'hello@yolo.hu',
       whatever: 'yes'
     };
 
@@ -35,12 +51,21 @@ describe('Custom events', function () {
   });
 
   it('should save custom event for specific website and store', async function () {
-    await this.magentoApi.execute('config', 'set', { websiteId: 2, config: { collectMarketingEvents: 'enabled' } });
+    await this.magentoApi.execute('config', 'set', {
+      websiteId: 2,
+      config: {
+        collectMarketingEvents: 'enabled',
+        storeSettings: [
+          { store_id: 0, slug: 'testadminslug' },
+          { store_id: 2, slug: 'test2slug' }
+        ]
+      }
+    });
 
     const eventId = 12345;
     const storeId = 2;
     const eventData = {
-      customer_email: 'hello@yolo.hu',
+      customerEmail: 'hello@yolo.hu',
       whatever: 'yes'
     };
 
@@ -58,12 +83,21 @@ describe('Custom events', function () {
   });
 
   it('should NOT save custom event if not enabled for website', async function () {
-    await this.magentoApi.execute('config', 'set', { websiteId: 2, config: { collectMarketingEvents: 'disabled' } });
+    await this.magentoApi.execute('config', 'set', {
+      websiteId: 2,
+      config: {
+        collectMarketingEvents: 'disabled',
+        storeSettings: [
+          { store_id: 0, slug: 'testadminslug' },
+          { store_id: 2, slug: 'test2slug' }
+        ]
+      }
+    });
 
     const eventId = 12345;
     const storeId = 2;
     const eventData = {
-      customer_email: 'hello@yolo.hu',
+      customerEmail: 'hello@yolo.hu',
       whatever: 'yes'
     };
 
@@ -75,7 +109,8 @@ describe('Custom events', function () {
 
     const eventInDb = await getLastEvent(this.db);
 
-    expect(result.data.status).to.equal(0);
+    expect(result.data.status).to.equal(1);
+    expect(result.data.error[4]).to.equal('  marketing events are not enabled for store (ID: 2)');
     expect(eventInDb).to.be.undefined;
   });
 
@@ -84,7 +119,7 @@ describe('Custom events', function () {
 
     const eventId = 12345;
     const eventData = {
-      customer_email: 'hello@yolo.hu',
+      customerEmail: 'hello@yolo.hu',
       whatever: 'yes'
     };
 
@@ -107,7 +142,7 @@ describe('Custom events', function () {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
 
     const eventData = {
-      customer_email: 'hello@yolo.hu',
+      customerEmail: 'hello@yolo.hu',
       whatever: 'yes'
     };
 
@@ -120,7 +155,7 @@ describe('Custom events', function () {
     expect(result.data.error[2]).to.equal('  The "--id" option requires a value.');
   });
 
-  it('should throw error if customer_email is missing from event_data', async function () {
+  it('should throw error if customerEmail is missing from event_data', async function () {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
 
     const eventId = 12345;
@@ -134,6 +169,6 @@ describe('Custom events', function () {
     });
 
     expect(result.data.status).to.equal(1);
-    expect(result.data.error[4]).to.equal('  customer_email is required in event_data');
+    expect(result.data.error[4]).to.equal('  customerEmail is required in event_data');
   });
 });
