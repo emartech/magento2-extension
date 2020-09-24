@@ -17,7 +17,7 @@ describe('Custom events', function () {
     await this.db.truncate(this.getTableName('emarsys_events_data'));
   });
 
-  after(async function() {
+  after(async function () {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'disabled' } });
 
     await this.magentoApi.execute('config', 'set', {
@@ -110,8 +110,10 @@ describe('Custom events', function () {
     const eventInDb = await getLastEvent(this.db);
 
     expect(result.data.status).to.equal(1);
-    expect(result.data.error[4]).to.equal('  marketing events are not enabled for store (ID: 2)');
-    expect(eventInDb).to.be.undefined;
+    if (!this.magentoVersion.startsWith('2.2')) {
+      expect(result.data.error[4]).to.equal('  marketing events are not enabled for store (ID: 2)');
+      expect(eventInDb).to.be.undefined;
+    }
   });
 
   it('should save custom events with unique entity_id', async function () {
@@ -152,7 +154,9 @@ describe('Custom events', function () {
     });
 
     expect(result.data.status).to.equal(1);
-    expect(result.data.error[2]).to.equal('  The "--id" option requires a value.');
+    if (!this.magentoVersion.startsWith('2.2')) {
+      expect(result.data.error[2]).to.equal('  The "--id" option requires a value.');
+    }
   });
 
   it('should throw error if customerEmail is missing from event_data', async function () {
@@ -169,6 +173,8 @@ describe('Custom events', function () {
     });
 
     expect(result.data.status).to.equal(1);
-    expect(result.data.error[4]).to.equal('  customerEmail is required in event_data');
+    if (!this.magentoVersion.startsWith('2.2')) {
+      expect(result.data.error[4]).to.equal('  customerEmail is required in event_data');
+    }
   });
 });
