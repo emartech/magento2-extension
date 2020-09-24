@@ -103,7 +103,6 @@ class CreateCustomEvent implements ObserverInterface
             throw new LocalizedException(
                 __('marketing events are not enabled for store (ID: ' . $storeId . ')')
             );
-            return false;
         }
 
         /** Need to validate the data */
