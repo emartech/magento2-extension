@@ -116,7 +116,7 @@ describe('Custom events', function () {
     }
   });
 
-  it('should save custom events with unique entity_id', async function () {
+  it('should not merge custom events', async function () {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectMarketingEvents: 'enabled' } });
 
     const eventId = 12345;
@@ -137,7 +137,7 @@ describe('Custom events', function () {
 
     const eventsInDb = await getAllEvents(this.db);
 
-    expect(eventsInDb[0].entity_id !== eventsInDb[1].entity_id).to.be.true;
+    expect(eventsInDb.length).to.equal(2);
   });
 
   it('should throw error if event_id is missing', async function () {

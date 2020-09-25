@@ -119,13 +119,10 @@ class CreateCustomEvent implements ObserverInterface
         $data = $this->json->serialize($data);
         $type = self::EVENT_TYPE_PREFIX . $eventId;
 
-        $entityId = (string)time() . (string)strlen($data);
-        $entityId = substr($entityId, -10);
-
         /** @var EventModel $eventModel */
         $eventModel = $this->eventFactory
             ->create()
-            ->setEntityId($entityId)
+            ->setEntityId(0)
             ->setWebsiteId($store->getWebsiteId())
             ->setStoreId($store->getId())
             ->setEventType($type)
