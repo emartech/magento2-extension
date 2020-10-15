@@ -153,10 +153,10 @@ describe('Custom events', function () {
       eventId: null
     });
 
+    const errorMessage = this.magentoVersion.startsWith('2.2') ? result.data.error[3] : result.data.error[2];
+
     expect(result.data.status).to.equal(1);
-    if (!this.magentoVersion.startsWith('2.2')) {
-      expect(result.data.error[2]).to.equal('  The "--id" option requires a value.');
-    }
+    expect(errorMessage).to.equal('  The "--id" option requires a value.');
   });
 
   it('should throw error if customerEmail is missing from event_data', async function () {
@@ -171,10 +171,7 @@ describe('Custom events', function () {
       eventData,
       eventId
     });
-
     expect(result.data.status).to.equal(1);
-    if (!this.magentoVersion.startsWith('2.2')) {
-      expect(result.data.error[4]).to.equal('  customerEmail is required in event_data');
-    }
+    expect(result.data.error[4]).to.equal('  customerEmail is required in event_data');
   });
 });
