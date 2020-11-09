@@ -9,6 +9,7 @@ use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
 use Emartech\Emarsys\Api\Data\StatusResponseInterface;
 use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
 use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
 
 class ConfigApi implements ConfigApiInterface
 {
@@ -35,17 +36,25 @@ class ConfigApi implements ConfigApiInterface
     private $statusResponseFactory;
 
     /**
+     * @var CacheTypeList
+     */
+    private $cacheTypeList;
+
+    /**
      * ConfigApi constructor.
      *
      * @param ConfigInterfaceFactory         $configFactory
      * @param StatusResponseInterfaceFactory $statusResponseFactory
+     * @param CacheTypeList                  $cacheTypeList
      */
     public function __construct(
         ConfigInterfaceFactory $configFactory,
-        StatusResponseInterfaceFactory $statusResponseFactory
+        StatusResponseInterfaceFactory $statusResponseFactory,
+        CacheTypeList $cacheTypeList
     ) {
         $this->configFactory = $configFactory;
         $this->statusResponseFactory = $statusResponseFactory;
+        $this->cacheTypeList = $cacheTypeList;
     }
 
     /**
@@ -66,6 +75,7 @@ class ConfigApi implements ConfigApiInterface
 
         if ($foundDifference) {
             $config->cleanScope();
+            $this->cacheTypeList->cleanType('full_page');
         }
 
         return $this->statusResponseFactory->create()
