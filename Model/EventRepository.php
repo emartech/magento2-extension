@@ -87,7 +87,9 @@ class EventRepository implements EventRepositoryInterface
         return (bool)$this->eventResourceModel->getConnection()->fetchOne(
             sprintf(
                 "SELECT (SELECT COALESCE(MAX(event_id), %d) FROM %s) < %d;",
-                (int)$sinceId, $eventsTableName, (int)$sinceId
+                (int)$sinceId,
+                $eventsTableName,
+                (int)$sinceId
             )
         );
     }
