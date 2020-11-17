@@ -77,7 +77,7 @@ describe('Events API endpoint', function() {
     expect(firstEvent.store_id).to.equal(1);
   });
 
-  it('returns 406 status if sinceId is higher than events table auto-increment id', async function() {
+  it('returns 406 status if sinceId is higher than max event ID in the events table', async function() {
     let status;
 
     try {
@@ -91,5 +91,13 @@ describe('Events API endpoint', function() {
     const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize: 10 });
 
     expect(eventsResponse.events.length).to.equal(3);
+    console.log(eventsResponse.events);
+  });
+
+  it('does not return 406 status if sinceId is equal to the maximal event ID in the table', async function() {
+    const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 6, pageSize: 10 });
+
+    console.log(eventsResponse.events);
+    expect(eventsResponse.events.length).to.equal(0);
   });
 });
