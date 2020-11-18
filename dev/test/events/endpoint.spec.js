@@ -38,12 +38,6 @@ describe('Events API endpoint', function() {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
   });
 
-  beforeEach(async function() {
-    for (const customer of customers) {
-      await this.createCustomer(customer);
-    }
-  });
-
   afterEach(async function() {
     await this.db.raw(
       `DELETE FROM ${this.getTableName(
@@ -57,6 +51,10 @@ describe('Events API endpoint', function() {
   });
 
   it('returns number of events defined in page_size and deletes events before since_id', async function() {
+    for (const customer of customers) {
+      await this.createCustomer(customer);
+    }
+
     const pageSize = 1;
 
     const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize });
@@ -78,6 +76,10 @@ describe('Events API endpoint', function() {
   });
 
   it('returns 406 status if sinceId is higher than max event ID in the events table', async function() {
+    for (const customer of customers) {
+      await this.createCustomer(customer);
+    }
+
     let status;
 
     try {
@@ -91,13 +93,21 @@ describe('Events API endpoint', function() {
     const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 0, pageSize: 10 });
 
     expect(eventsResponse.events.length).to.equal(3);
-    console.log(eventsResponse.events);
   });
 
   it('does not return 406 status if sinceId is equal to the maximal event ID in the table', async function() {
+    for (const customer of customers) {
+      await this.createCustomer(customer);
+    }
+
     const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 6, pageSize: 10 });
 
-    console.log(eventsResponse.events);
+    expect(eventsResponse.events.length).to.equal(0);
+  });
+
+  it('does not return 406 status if there are no entries in the events table', async function() {
+    const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 1, pageSize: 10 });
+
     expect(eventsResponse.events.length).to.equal(0);
   });
 });
