@@ -163,6 +163,58 @@ describe('Marketing events: customer', function () {
         expect(emailsSentTo).to.eql([]);
       });
 
+      context('with email confirmation needed', function () {
+        before(async function () {
+          await this.db
+            .insert({ scope: 'default', scope_id: 0, path: 'customer/create_account/confirm', value: 1 })
+            .into(this.getTableName('core_config_data'));
+
+          // this is for invalidating config cache
+          await this.magentoApi.execute('config', 'set', {
+            websiteId: 0,
+            config: {
+              merchantId: `itsaflush${new Date().getTime()}`
+            }
+          });
+        });
+
+        after(async function () {
+          await this.db.raw(
+            `DELETE FROM ${this.getTableName('core_config_data')} WHERE path="customer/create_account/confirm"`
+          );
+        });
+
+        it('should create customer_new_account_confirmation event', async function () {
+          await this.createCustomer(customer, 'Password1234');
+
+          const events = await this.db.select().from(this.getTableName('emarsys_events_data'));
+
+          expect(events.length).to.be.equal(1);
+
+          const event = events[0];
+          expect(event.event_type).to.be.equal('customer_new_account_confirmation');
+
+          const eventData = JSON.parse(event.event_data);
+          expect(eventData.customer.email).to.eql(customer.email);
+          expect(eventData.customer.extra_fields).to.eql([
+            { key: 'emarsys_test_favorite_car', value: 'skoda', text_value: null },
+            { key: 'gender', value: '1', text_value: 'Male' }
+          ]);
+          expect(eventData.customer.billing_address.extra_fields).to.eql([
+            { key: 'region_id', value: '32', text_value: 'Massachusetts' }
+          ]);
+          expect(eventData.customer.shipping_address.extra_fields).to.eql([
+            { key: 'region_id', value: '32', text_value: 'Massachusetts' }
+          ]);
+          expect(event.website_id).to.equal(1);
+          expect(event.store_id).to.equal(1);
+
+          const emailsSentTo = await mailhog.getSentAddresses();
+
+          expect(emailsSentTo).to.eql([]);
+        });
+      });
+
       it('should create customer_password_reset_confirmation event', async function () {
         await this.magentoApi.put({
           path: '/index.php/rest/V1/customers/password',

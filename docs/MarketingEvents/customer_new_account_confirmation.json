@@ -1,0 +1,70 @@
+{
+  "store": {
+    "code": "default",
+    "name": "Default Store View",
+    "group_id": "1",
+    "store_id": "1",
+    "is_active": "1",
+    "sort_order": "0",
+    "website_id": "1"
+  },
+  "back_url": null,
+  "customer": {
+    "id": "11",
+    "dob": null,
+    "email": "test.fest@test.com",
+    "gender": null,
+    "prefix": null,
+    "suffix": null,
+    "taxvat": null,
+    "group_id": "1",
+    "lastname": "fest",
+    "rp_token": "35sZiMQynek52LRC4gCEAeUg8SxwDgPl",
+    "store_id": "1",
+    "firstname": "test",
+    "is_active": "1",
+    "created_at": "2010-12-01 10:45:45",
+    "middlename": null,
+    "updated_at": "2010-12-01 10:45:46",
+    "website_id": "1",
+    "extra_fields": [
+      {
+        "key": "emarsys_test_favorite_sport",
+        "value": null,
+        "text_value": null
+      }
+    ],
+    "billing_address": {
+      "fax": null,
+      "city": null,
+      "prefix": null,
+      "region": null,
+      "street": null,
+      "suffix": null,
+      "company": null,
+      "lastname": null,
+      "postcode": null,
+      "firstname": null,
+      "telephone": null,
+      "country_id": null,
+      "middlename": null
+    },
+    "shipping_address": {
+      "fax": null,
+      "city": null,
+      "prefix": null,
+      "region": null,
+      "street": null,
+      "suffix": null,
+      "company": null,
+      "lastname": null,
+      "postcode": null,
+      "firstname": null,
+      "telephone": null,
+      "country_id": null,
+      "middlename": null
+    },
+    "accepts_marketing": null,
+    "rp_token_created_at": "2010-12-01 10:45:46"
+  }
+}
