@@ -433,44 +433,45 @@ class Product extends AbstractHelper
         $productId = $product->getData($linkField);
 
         /** @var ProductInterface $productItem */
-        $productItem = $this->productFactory->create()
-                                            ->setType($product->getTypeId())
-                                            ->setCategories(
-                                                $this->handleCategories(
-                                                    $productEntityId
-                                                )
-                                            )
-                                            ->setChildrenEntityIds(
-                                                $this->handleChildrenEntityIds(
-                                                    $productId
-                                                )
-                                            )
-                                            ->setEntityId($productEntityId)
-                                            ->setIsInStock(
-                                                $this->handleStock(
-                                                    $productEntityId
-                                                )
-                                            )
-                                            ->setQty(
-                                                $this->handleQty(
-                                                    $productEntityId
-                                                )
-                                            )
-                                            ->setSku($product->getSku())
-                                            ->setImages(
-                                                $this->handleImages(
-                                                    $storeIds[0],
-                                                    $productId
-                                                )
-                                            )
-                                            ->setStoreData(
-                                                $this->handleProductStoreData(
-                                                    $product,
-                                                    $storeIds,
-                                                    $productId,
-                                                    $toArray
-                                                )
-                                            );
+        $productItem = $this->productFactory
+            ->create()
+            ->setType($product->getTypeId())
+            ->setCategories(
+                $this->handleCategories(
+                    $productEntityId
+                )
+            )
+            ->setChildrenEntityIds(
+                $this->handleChildrenEntityIds(
+                    $productId
+                )
+            )
+            ->setEntityId($productEntityId)
+            ->setIsInStock(
+                $this->handleStock(
+                    $productEntityId
+                )
+            )
+            ->setQty(
+                $this->handleQty(
+                    $productEntityId
+                )
+            )
+            ->setSku($product->getSku())
+            ->setImages(
+                $this->handleImages(
+                    $storeIds[0],
+                    $productId
+                )
+            )
+            ->setStoreData(
+                $this->handleProductStoreData(
+                    $product,
+                    $storeIds,
+                    $productId,
+                    $toArray
+                )
+            );
 
         if ($toArray) {
             $productItem = $productItem->getData();
@@ -630,9 +631,9 @@ class Product extends AbstractHelper
         }
 
         return $this->imagesFactory->create()
-                                   ->setImage($image)
-                                   ->setSmallImage($smallImage)
-                                   ->setThumbnail($thumbnail);
+            ->setImage($image)
+            ->setSmallImage($smallImage)
+            ->setThumbnail($thumbnail);
     }
 
     /**
@@ -656,16 +657,7 @@ class Product extends AbstractHelper
 
         foreach ($storeIds as $storeId => $storeObject) {
             $price = $this->getPrice($productId, $storeId);
-            $displayPrice = (float)$this->getDisplayPrice($price, $storeObject);
-            $originalPrice = (float)$this->getStoreData(
-                $productId,
-                $storeId,
-                'price'
-            );
-            $originalDisplayPrice = (float)$this->getDisplayPrice(
-                $originalPrice,
-                $storeObject
-            );
+
             $webShopPrice = (float)$this->getWebShopPrice(
                 $productId,
                 $storeId,
@@ -673,15 +665,22 @@ class Product extends AbstractHelper
             );
             if (!$webShopPrice) {
                 $webShopPrice = $price;
-            } elseif ($webShopPrice > $price) {
-                $webShopPrice = $price;
-            } elseif ($price > $webShopPrice) {
+            }elseif ($price > 0) {
+                if ($webShopPrice > $price) {
+                    $webShopPrice = $price;
+                } else {
+                    $price = $webShopPrice;
+                }
+            } else {
                 $price = $webShopPrice;
             }
 
-            $displayWebShopPrice = (float)$this->getDisplayPrice(
-                $webShopPrice,
-                $storeObject
+            $displayPrice = (float)$this->getDisplayPrice($price, $storeObject);
+
+            $originalPrice = (float)$this->getStoreData(
+                $productId,
+                $storeId,
+                'price'
             );
             $originalWebShopPrice = (float)$this->getOriginalWebShopPrice(
                 $productId,
@@ -690,11 +689,25 @@ class Product extends AbstractHelper
             );
             if (!$originalWebShopPrice) {
                 $originalWebShopPrice = $originalPrice;
-            } elseif ($originalWebShopPrice > $originalPrice) {
-                $originalWebShopPrice = $originalPrice;
-            } elseif ($originalPrice > $originalWebShopPrice) {
+            }elseif ($originalPrice > 0) {
+                if ($originalWebShopPrice > $originalPrice) {
+                    $originalWebShopPrice = $originalPrice;
+                } else {
+                    $originalPrice = $originalWebShopPrice;
+                }
+            } else {
                 $originalPrice = $originalWebShopPrice;
             }
+
+            $originalDisplayPrice = (float)$this->getDisplayPrice(
+                $originalPrice,
+                $storeObject
+            );
+
+            $displayWebShopPrice = (float)$this->getDisplayPrice(
+                $webShopPrice,
+                $storeObject
+            );
 
             $originalDisplayWebShopPrice = (float)$this->getDisplayPrice(
                 $originalWebShopPrice,
@@ -797,6 +810,7 @@ class Product extends AbstractHelper
                 $specialPrice = null;
             }
         }
+
         return (float)$price;
     }
 
@@ -822,7 +836,6 @@ class Product extends AbstractHelper
                 'final_price',
                 $this->priceData[$productId][$storeId][$customerGroupId]
             )
-
         ) {
             return $this->priceData[$productId][$storeId][$customerGroupId]['final_price'];
         }
@@ -852,7 +865,6 @@ class Product extends AbstractHelper
                 'price',
                 $this->priceData[$productId][$storeId][$customerGroupId]
             )
-
         ) {
             return $this->priceData[$productId][$storeId][$customerGroupId]['price'];
         }

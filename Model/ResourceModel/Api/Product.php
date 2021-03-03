@@ -788,10 +788,20 @@ class Product extends ProductResourceModel
                     $this->priceData[$entityId][$storeId] = [];
                 }
 
+                $minPrice = (float)$args['row']['minimal_price'];
+                $price = (float)$args['row']['price'];
+                if (!$price) {
+                    $price = $minPrice;
+                }
+                $finalPrice = (float)$args['row']['final_price'];
+                if (!$finalPrice) {
+                    $finalPrice = $minPrice;
+                }
+
                 $this->priceData[$entityId][$storeId][$customerGroupId] = [
-                    'price'         => (float)$args['row']['price'],
-                    'final_price'   => (float)$args['row']['final_price'],
-                    'minimal_price' => (float)$args['row']['minimal_price'],
+                    'price'         => $price,
+                    'final_price'   => $finalPrice,
+                    'minimal_price' => $minPrice,
                 ];
             }
         }
