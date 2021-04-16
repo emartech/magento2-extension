@@ -21,6 +21,8 @@ dup: ## Creates containers and starts app
 down: ## Destorys containers
 	@$(COMPOSE) down
 
+restart: down up
+
 start: ## Starts existing containers
 	@$(COMPOSE) start
 

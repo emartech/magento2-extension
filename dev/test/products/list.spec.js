@@ -2,6 +2,10 @@
 
 const { getProducts } = require('../fixtures/products');
 
+const setPriceForEntityId = (entityId, value, db) => {
+  return db('catalog_product_entity_decimal').where({ entity_id: entityId }).update({ value });
+};
+
 describe('Products endpoint', function () {
   before(async function () {
     await this.magentoApi.execute('attributes', 'set', {
@@ -315,6 +319,34 @@ describe('Products endpoint', function () {
 
       expect(products.length).to.be.equal(3);
       expect(product).not.to.be.undefined;
+    });
+  });
+
+  context('configurable price should not be 0', function () {
+    const requestParams = { page: 1, limit: 100, storeIds: [1, 2] };
+    let entityIdUsed;
+    let originalPrice;
+
+    before(async function () {
+      const { products } = await this.magentoApi.execute('products', 'get', requestParams);
+      const configurableProduct = products.find((product) => product.type === 'configurable');
+      entityIdUsed = configurableProduct.entity_id;
+      originalPrice = configurableProduct.store_data.find((data) => data.store_id !== 0).price;
+
+      await setPriceForEntityId(entityIdUsed, 0, this.db);
+      await this.reindex();
+    });
+
+    after(async function () {
+      await setPriceForEntityId(entityIdUsed, originalPrice, this.db);
+      await this.reindex();
+    });
+    it('returns configurable product min price if price or final price is 0', async function () {
+      const { products } = await this.magentoApi.execute('products', 'get', requestParams);
+      const configurableProduct = products.find((product) => product.entity_id === entityIdUsed);
+      const notAdminStoreData = configurableProduct.store_data.find((data) => data.store_id !== 0);
+
+      expect(notAdminStoreData.price).to.equal(originalPrice);
     });
   });
 });
