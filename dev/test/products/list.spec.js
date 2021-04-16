@@ -3,7 +3,7 @@
 const { getProducts } = require('../fixtures/products');
 
 const setPriceForEntityId = (entityId, value, db) => {
-  const query = this.magentoEdition === 'Enterprise' ? { entity_id: entityId } : { row_id: entityId };
+  const query = this.magentoEdition === 'Enterprise' ? { row_id: entityId } : { entity_id: entityId };
   return db('catalog_product_entity_decimal').where(query).update({ value });
 };
 
