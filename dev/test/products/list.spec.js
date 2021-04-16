@@ -2,8 +2,8 @@
 
 const { getProducts } = require('../fixtures/products');
 
-const setPriceForEntityId = (entityId, value, db) => {
-  const query = this.magentoEdition === 'Enterprise' ? { row_id: entityId } : { entity_id: entityId };
+const setPriceForEntityId = (entityId, value, db, magentoEdition) => {
+  const query = magentoEdition === 'Enterprise' ? { row_id: entityId } : { entity_id: entityId };
   return db('catalog_product_entity_decimal').where(query).update({ value });
 };
 
@@ -334,12 +334,12 @@ describe('Products endpoint', function () {
       entityIdUsed = configurableProduct.entity_id;
       originalPrice = configurableProduct.store_data.find((data) => data.store_id !== 0).price;
 
-      await setPriceForEntityId(entityIdUsed, 0, this.db);
+      await setPriceForEntityId(entityIdUsed, 0, this.db, this.magentoEdition);
       await this.reindex();
     });
 
     after(async function () {
-      await setPriceForEntityId(entityIdUsed, originalPrice, this.db);
+      await setPriceForEntityId(entityIdUsed, originalPrice, this.db, this.magentoEdition);
       await this.reindex();
     });
     it('returns configurable product min price if price or final price is 0', async function () {
