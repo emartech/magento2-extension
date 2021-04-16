@@ -665,7 +665,7 @@ class Product extends AbstractHelper
             );
             if (!$webShopPrice) {
                 $webShopPrice = $price;
-            }elseif ($price > 0) {
+            } elseif ($price > 0) {
                 if ($webShopPrice > $price) {
                     $webShopPrice = $price;
                 } else {
@@ -689,7 +689,7 @@ class Product extends AbstractHelper
             );
             if (!$originalWebShopPrice) {
                 $originalWebShopPrice = $originalPrice;
-            }elseif ($originalPrice > 0) {
+            } elseif ($originalPrice > 0) {
                 if ($originalWebShopPrice > $originalPrice) {
                     $originalWebShopPrice = $originalPrice;
                 } else {
