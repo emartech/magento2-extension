@@ -3,8 +3,15 @@
     <policies>
         <policy id="script-src">
             <values>
-                <value id="webextend-js" type="host">https://d22q3dafggn5rg.cloudfront.net</value>
-                <value id="scarab-js" type="host">https://cdn.scarabresearch.com</value>
+                <value id="webextend-js-production" type="host">d22q3dafggn5rg.cloudfront.net</value>
+                <value id="webextend-js-staging" type="host">d2m6szj5j4oe74.cloudfront.net</value>
+                <value id="scarab-cdn" type="host">*.scarabresearch.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="scarab-recommender" type="host">*.scarabresearch.com</value>
+                <value id="webchannel" type="host">*.eservice.emarsys.net</value>
             </values>
         </policy>
     </policies>
