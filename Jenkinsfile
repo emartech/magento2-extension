@@ -96,15 +96,6 @@ pipeline {
         }
       }
     }
-    stage('Deploy to staging') {
-      steps {
-        sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
-        sh 'docker run --name gcloud-auth -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" -v "$(pwd)/ci-account.json:/auth/ci-account.json" emarsys/ems-plugins-gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
-        sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth emarsys/ems-plugins-gke-service kubectl set env deployment web-staging EXTENSION_SHA=$GIT_COMMIT'
-        sh 'docker rm gcloud-auth'
-        sh 'rm ci-account.json'
-      }
-    }
     stage('Run tests on old version') {
       parallel {
         stage('Run unit tests on 2.3.1CE with table prefix') {
