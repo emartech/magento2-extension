@@ -2,11 +2,6 @@
 
 const { getProducts } = require('../fixtures/products');
 
-const setPriceForEntityId = (entityId, value, db, magentoEdition) => {
-  const query = magentoEdition === 'Enterprise' ? { row_id: entityId } : { entity_id: entityId };
-  return db('catalog_product_entity_decimal').where(query).update({ value });
-};
-
 describe('Products endpoint', function () {
   before(async function () {
     await this.magentoApi.execute('attributes', 'set', {
@@ -328,7 +323,16 @@ describe('Products endpoint', function () {
     let entityIdUsed;
     let originalPrice;
 
+    let priceTableName = '';
+
+    const setPriceForEntityId = (entityId, value, db, magentoEdition) => {
+      const query = magentoEdition === 'Enterprise' ? { row_id: entityId } : { entity_id: entityId };
+      return db(priceTableName).where(query).update({ value });
+    };
+
     before(async function () {
+      priceTableName = this.getTableName('catalog_product_entity_decimal');
+
       const { products } = await this.magentoApi.execute('products', 'get', requestParams);
       const configurableProduct = products.find((product) => product.type === 'configurable');
       entityIdUsed = configurableProduct.entity_id;
