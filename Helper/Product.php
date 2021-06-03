@@ -469,6 +469,7 @@ class Product extends AbstractHelper
                     $product,
                     $storeIds,
                     $productId,
+                    $productEntityId,
                     $toArray
                 )
             );
@@ -640,6 +641,7 @@ class Product extends AbstractHelper
      * @param ProductModel $product
      * @param array        $storeIds
      * @param int          $productId
+     * @param int          $productEntityId
      * @param bool         $toArray
      *
      * @return ProductStoreDataInterface[]
@@ -649,6 +651,7 @@ class Product extends AbstractHelper
         $product,
         $storeIds,
         $productId,
+        $productEntityId,
         $toArray = false
     ) {
         $product->setPriceCalculation(false);
@@ -659,7 +662,7 @@ class Product extends AbstractHelper
             $price = $this->getPrice($productId, $storeId);
 
             $webShopPrice = (float)$this->getWebShopPrice(
-                $productId,
+                $productEntityId,
                 $storeId,
                 0
             );
@@ -683,7 +686,7 @@ class Product extends AbstractHelper
                 'price'
             );
             $originalWebShopPrice = (float)$this->getOriginalWebShopPrice(
-                $productId,
+                $productEntityId,
                 $storeId,
                 0
             );
@@ -815,58 +818,58 @@ class Product extends AbstractHelper
     }
 
     /**
-     * @param int $productId
+     * @param int $productEntityId
      * @param int $storeId
      * @param int $customerGroupId
      *
      * @return float
      */
     protected function getWebShopPrice(
-        $productId,
+        $productEntityId,
         $storeId,
         $customerGroupId = 0
     ) {
-        if (array_key_exists($productId, $this->priceData)
-            && array_key_exists($storeId, $this->priceData[$productId])
+        if (array_key_exists($productEntityId, $this->priceData)
+            && array_key_exists($storeId, $this->priceData[$productEntityId])
             && array_key_exists(
                 $customerGroupId,
-                $this->priceData[$productId][$storeId]
+                $this->priceData[$productEntityId][$storeId]
             )
             && array_key_exists(
                 'final_price',
-                $this->priceData[$productId][$storeId][$customerGroupId]
+                $this->priceData[$productEntityId][$storeId][$customerGroupId]
             )
         ) {
-            return $this->priceData[$productId][$storeId][$customerGroupId]['final_price'];
+            return $this->priceData[$productEntityId][$storeId][$customerGroupId]['final_price'];
         }
 
         return 0;
     }
 
     /**
-     * @param int $productId
+     * @param int $productEntityId
      * @param int $storeId
      * @param int $customerGroupId
      *
      * @return float
      */
     protected function getOriginalWebShopPrice(
-        $productId,
+        $productEntityId,
         $storeId,
         $customerGroupId = 0
     ) {
-        if (array_key_exists($productId, $this->priceData)
-            && array_key_exists($storeId, $this->priceData[$productId])
+        if (array_key_exists($productEntityId, $this->priceData)
+            && array_key_exists($storeId, $this->priceData[$productEntityId])
             && array_key_exists(
                 $customerGroupId,
-                $this->priceData[$productId][$storeId]
+                $this->priceData[$productEntityId][$storeId]
             )
             && array_key_exists(
                 'price',
-                $this->priceData[$productId][$storeId][$customerGroupId]
+                $this->priceData[$productEntityId][$storeId][$customerGroupId]
             )
         ) {
-            return $this->priceData[$productId][$storeId][$customerGroupId]['price'];
+            return $this->priceData[$productEntityId][$storeId][$customerGroupId]['price'];
         }
 
         return 0;
