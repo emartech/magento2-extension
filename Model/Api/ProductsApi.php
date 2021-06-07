@@ -121,8 +121,8 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     protected function getPrices()
     {
         $wheres = [
-            ['entity_id >= ?', $this->minId],
-            ['entity_id <= ?', $this->maxId],
+            ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+            ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
         ];
         $this->productHelper->getPrices(
             $this->websiteIds,

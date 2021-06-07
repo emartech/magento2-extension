@@ -724,15 +724,24 @@ class Product extends ProductResourceModel
         $unionSelects = [];
         foreach ($tables as $table) {
             $select = $this->_resource->getConnection()->select()->reset()
-                                      ->from($table, $columns)
-                                      ->where(
-                                          'website_id IN (?)',
-                                          array_keys($websiteIds)
-                                      )
-                                      ->where(
-                                          'customer_group_id IN (?)',
-                                          $customerGroupIds
-                                      );
+                ->from($table, $columns)
+                ->joinLeft(
+                    [
+                        'entity_table' => $this->getTable(
+                            'catalog_product_entity'
+                        ),
+                    ],
+                    'entity_table.entity_id = ' . $table . '.entity_id',
+                    []
+                )
+                ->where(
+                    'website_id IN (?)',
+                    array_keys($websiteIds)
+                )
+                ->where(
+                    'customer_group_id IN (?)',
+                    $customerGroupIds
+                );
 
             foreach ($wheres as $where) {
                 $select->where($where[0], $where[1]);
@@ -750,10 +759,10 @@ class Product extends ProductResourceModel
         }
 
         $unionQuery = $this->_resource->getConnection()->select()
-                                      ->union(
-                                          $unionSelects,
-                                          Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
-                                      );
+            ->union(
+                $unionSelects,
+                Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
+            );
 
         $this->iterator->walk(
             (string)$unionQuery,
