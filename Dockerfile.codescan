@@ -1,0 +1,8 @@
+FROM composer:1.10.22
+
+COPY install-for-codescan.sh /tmp/
+RUN chmod +x /tmp/install-for-codescan.sh
+
+WORKDIR /workspace/source
+
+ENTRYPOINT [ "/bin/sh", "/tmp/install-for-codescan.sh" ]
