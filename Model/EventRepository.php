@@ -93,4 +93,22 @@ class EventRepository implements EventRepositoryInterface
             [$sinceId, $sinceId]
         );
     }
+
+    /**
+     * @param string sinceId
+     *
+     * @return void
+     */
+    public function deleteUntilSinceId($sinceId)
+    {
+        $eventsTableName = $this->eventResourceModel->getTable('emarsys_events_data');
+        $query = sprintf(
+            "DELETE FROM %s WHERE event_id <= ?;",
+            $eventsTableName
+        );
+        $this->eventResourceModel->getConnection()->query(
+            $query,
+            [$sinceId]
+        );
+    }
 }
