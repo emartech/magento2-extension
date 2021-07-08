@@ -137,6 +137,11 @@ class Product extends AbstractHelper
     /**
      * @var array
      */
+    private $statusData = [];
+
+    /**
+     * @var array
+     */
     private $productUrlSuffix = [];
 
     /**
@@ -336,6 +341,16 @@ class Product extends AbstractHelper
     public function getStockData($wheres, $joinInner = null)
     {
         $this->stockData = $this->productResource->getStockData(
+            $wheres,
+            $joinInner
+        );
+
+        return $this;
+    }
+
+    public function getStatusData($wheres, $joinInner = null)
+    {
+        $this->statusData = $this->productResource->getStatusData(
             $wheres,
             $joinInner
         );
@@ -717,14 +732,18 @@ class Product extends AbstractHelper
                 $storeObject
             );
 
+            if (!$this->productEnableInWebsite($productEntityId, $storeObject->getWebsiteId())){
+                $status = 0;
+            } else {
+                $status = $this->getStoreData($productId, $storeId, 'status');
+            }
+
             /** @var ProductStoreDataInterface $productStoreData */
             $productStoreData =
                 $this->productStoreDataFactory
                     ->create()
                     ->setStoreId($storeId)
-                    ->setStatus(
-                        $this->getStoreData($productId, $storeId, 'status')
-                    )
+                    ->setStatus($status)
                     ->setDescription(
                         $this->getStoreData($productId, $storeId, 'description')
                     )
@@ -772,6 +791,24 @@ class Product extends AbstractHelper
         }
 
         return $returnArray;
+    }
+
+    /**
+     * @param int $productId
+     * @param int $websiteId
+     * @return bool
+     */
+    protected function productEnableInWebsite($productId, $websiteId): bool
+    {
+        // 0 store handle
+        if ($websiteId == 0) {
+            return true;
+        }
+        if (isset($this->statusData[$productId]) && is_array($this->statusData[$productId])) {
+            return in_array($websiteId, $this->statusData[$productId]);
+        }
+
+        return false;
     }
 
     /**

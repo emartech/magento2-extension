@@ -65,6 +65,7 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
             ->handleCategoryIds()
             ->handleChildrenProductIds()
             ->handleStockData()
+            ->handleStatusData()
             ->handleAttributes()
             ->setWhere()
             ->setOrder();
@@ -172,6 +173,18 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     protected function handleStockData()
     {
         $this->productHelper->getStockData(
+            [
+                ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+                ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
+            ]
+        );
+
+        return $this;
+    }
+
+    protected function handleStatusData()
+    {
+        $this->productHelper->getStatusData(
             [
                 ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
                 ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],

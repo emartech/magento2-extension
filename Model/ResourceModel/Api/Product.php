@@ -54,6 +54,11 @@ class Product extends ProductResourceModel
     /**
      * @var array
      */
+    private $statusData = [];
+
+    /**
+     * @var array
+     */
     private $attributeData = [];
 
     /**
@@ -390,6 +395,68 @@ class Product extends ProductResourceModel
             'is_in_stock' => $isInStock,
             'qty'         => $qty,
         ];
+    }
+
+    /**
+     * @param array      $wheres
+     * @param array|null $joinInner
+     * @return array
+     */
+    public function getStatusData($wheres, $joinInner = null)
+    {
+        $this->statusData = [];
+        $productWebsiteTable = $this->getTable('catalog_product_website');
+        $productWebsiteQuery = $this->_resource->getConnection()->select()
+            ->from(
+                $productWebsiteTable,
+                [
+                    'product_id',
+                    'website_id'
+                ]
+            )
+            ->joinLeft(
+                [
+                    'entity_table' => $this->getTable(
+                        'catalog_product_entity'
+                    ),
+                ],
+                'entity_table.entity_id = ' . $productWebsiteTable . '.product_id',
+                []
+            );
+
+        foreach ($wheres as $where) {
+            $productWebsiteQuery->where($where[0], $where[1]);
+        }
+
+        if (null !== $joinInner) {
+            $productWebsiteQuery->joinInner($joinInner[0], $joinInner[1], $joinInner[2]);
+        }
+
+        $this->iterator->walk(
+            (string)$productWebsiteQuery,
+            [[$this, 'handleStatusItem']],
+            [],
+            $this->_resource->getConnection()
+        );
+
+        return $this->statusData;
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return void
+     */
+    public function handleStatusItem($args)
+    {
+        $productId = $args['row']['product_id'];
+        $websiteId = $args['row']['website_id'];
+
+        if (!isset($this->statusData[$productId])) {
+            $this->statusData[$productId] = [];
+        }
+
+        $this->statusData[$productId][] = (int)$websiteId;
     }
 
     /**
