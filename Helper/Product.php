@@ -732,7 +732,7 @@ class Product extends AbstractHelper
                 $storeObject
             );
 
-            if (!$this->productEnableInWebsite($productEntityId, $storeObject->getWebsiteId())){
+            if (!$this->productEnableInWebsite($productEntityId, $storeObject->getWebsiteId())) {
                 $status = 0;
             } else {
                 $status = $this->getStoreData($productId, $storeId, 'status');
