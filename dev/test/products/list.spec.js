@@ -238,6 +238,33 @@ describe('Products endpoint', function () {
     expect(secondStoreItem.original_display_webshop_price).to.eql(2000);
   });
 
+  it('returns product with status 0 if its not assigned to a website', async function () {
+    const sku = '24-MB01';
+
+    await this.magentoApi.delete({
+      path: `/rest/default/V1/products/${sku}/websites/2`
+    });
+
+    const { products } = await this.magentoApi.execute('products', 'get', { page: 1, limit: 10, storeIds: [1, 2] });
+
+    const product = products.find((product) => product.sku === sku);
+    const defaultStoreItem = product.store_data.find((storeData) => storeData.store_id === 1);
+    const secondStoreItem = product.store_data.find((storeData) => storeData.store_id === 2);
+
+    expect(defaultStoreItem.status).to.eql(1);
+    expect(secondStoreItem.status).to.eql(0);
+
+    await this.magentoApi.post({
+      path: `/rest/default/V1/products/${sku}/websites/`,
+      payload: {
+        productWebsiteLink: {
+          sku,
+          website_id: 2
+        }
+      }
+    });
+  });
+
   it('returns product images for stores', async function () {
     const sku = '24-MB04';
 
