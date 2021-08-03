@@ -22,6 +22,7 @@ use Magento\Customer\Model\ResourceModel\Customer\Collection as CustomerCollecti
 use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory as CustomerCollectionFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\DB\Select;
 
 class Customer extends AbstractHelper
 {
@@ -203,15 +204,17 @@ class Customer extends AbstractHelper
     {
         $this
             ->initCollection($websiteId)
-            ->setWhere('entity_id', $customerId, $customerId)
+            ->setWhere('entity_id', $customerId, $customerId, null)
             ->joinSubscriptionStatus($websiteId)
             ->getCustomersAttributeData(
                 $customerId,
                 $customerId,
+                null,
                 $websiteId
             )->getCustomersAddressesAttributeData(
                 $customerId,
                 $customerId,
+                null,
                 $websiteId
             );
 
@@ -253,17 +256,21 @@ class Customer extends AbstractHelper
     }
 
     /**
-     * @param string $linkField
-     * @param int    $min
-     * @param int    $max
+     * @param string    $linkField
+     * @param int       $min
+     * @param int       $max
+     * @param int|false $websiteId
      *
      * @return $this
      */
-    public function setWhere($linkField, $min, $max)
+    public function setWhere($linkField, $min, $max, $websiteId)
     {
         $this->customerCollection
             ->addFieldToFilter($linkField, ['from' => $min])
             ->addFieldToFilter($linkField, ['to' => $max]);
+        if ($websiteId) {
+            $this->customerCollection->addFieldToFilter('website_id', ['eq' => $websiteId]);
+        }
 
         return $this;
     }
@@ -378,6 +385,7 @@ class Customer extends AbstractHelper
         $data = $this->customerResource->getAttributeData(
             $minId,
             $maxId,
+            $websiteId,
             $fields
         );
 
@@ -417,6 +425,7 @@ class Customer extends AbstractHelper
         $data = $this->customerAddressResource->getAttributeData(
             $minId,
             $maxId,
+            $websiteId,
             $fields
         );
 
@@ -583,11 +592,11 @@ class Customer extends AbstractHelper
                 $value = $this->handleWebsiteData($customer->getId(), $field);
                 $textValue = $this->getAttributeValue($field, $value);
                 $extraField = $this->extraFieldsFactory->create()
-                                                       ->setKey($field)
-                                                       ->setValue($value)
-                                                       ->setTextValue(
-                                                           $textValue
-                                                       );
+                    ->setKey($field)
+                    ->setValue($value)
+                    ->setTextValue(
+                        $textValue
+                    );
 
                 if ($toArray) {
                     $extraField = $extraField->getData();
