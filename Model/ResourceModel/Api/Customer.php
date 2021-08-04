@@ -234,8 +234,7 @@ class Customer extends CustomerResourceModel
                 try {
                     $sourceModels[$customerAttribute->getAttributeCode()] =
                         $customerAttribute->getSource();
-                } catch (\Exception $e) {
-                } // @codingStandardsIgnoreLine
+                } catch (\Exception $e) {} // @codingStandardsIgnoreLine
             }
 
             $attributeTable = $customerAttribute->getBackendTable();
@@ -403,8 +402,7 @@ class Customer extends CustomerResourceModel
                 ],
                 $this->_resource->getConnection()
             );
-        } catch (\Exception $e) { // @codingStandardsIgnoreLine
-        }
+        } catch (\Exception $e) {} // @codingStandardsIgnoreLine
 
         return $this;
     }

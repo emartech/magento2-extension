@@ -11,7 +11,7 @@ use Emartech\Emarsys\Helper\DataSource as DataSourceHelper;
 use Emartech\Emarsys\Model\ResourceModel\Api\Customer as CustomerResourceModel;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\ResourceModel\Address as CustomerAddressResourceModel;
-use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory as CustomerAddressAttributeCollectionFactory;
+use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory as CustomerAddressAttributeCollectionFactory; // @codingStandardsIgnoreLine
 use Magento\Eav\Model\Entity\Attribute;
 use Magento\Eav\Model\Entity\Context;
 use Magento\Framework\DB\Select;
@@ -129,8 +129,7 @@ class CustomerAddress extends CustomerAddressResourceModel
                 try {
                     $sourceModels[$customerAddressAttribute->getAttributeCode()] =
                         $customerAddressAttribute->getSource();
-                } catch (\Exception $e) {
-                } // @codingStandardsIgnoreLine
+                } catch (\Exception $e) {} // @codingStandardsIgnoreLine
             }
 
             $attributeTable = $customerAddressAttribute->getBackendTable();
@@ -293,8 +292,7 @@ class CustomerAddress extends CustomerAddressResourceModel
                 ],
                 $this->_resource->getConnection()
             );
-        } catch (\Exception $e) { // @codingStandardsIgnoreLine
-        }
+        } catch (\Exception $e) {} // @codingStandardsIgnoreLine
 
         return $this;
     }
