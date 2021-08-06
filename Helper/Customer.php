@@ -209,12 +209,10 @@ class Customer extends AbstractHelper
             ->getCustomersAttributeData(
                 $customerId,
                 $customerId,
-                null,
                 $websiteId
             )->getCustomersAddressesAttributeData(
                 $customerId,
                 $customerId,
-                null,
                 $websiteId
             );
 
