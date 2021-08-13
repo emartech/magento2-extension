@@ -23,8 +23,13 @@ echo "\n|--- Starting containers"
 compose up -d
 echo "\n|--- Waiting for containers to initialize"
 sh ./wait.sh unit >>/dev/null 2>&1
-echo "\n|--- Testing Magento DI compilation"
-compose exec -T --user application magento-test bash -c "bin/magento setup:di:compile"
+
+if ![[ $VERSION =~ ^2\.3\.3 ]]
+then
+  echo "\n|--- Testing Magento DI compilation"
+  compose exec -T --user application magento-test bash -c "bin/magento setup:di:compile"
+fi
+
 echo "\n|--- Running backend tests"
 compose run --rm node sh -c "npm run mocha"
 echo "\n\n|--- Stopping containers"
