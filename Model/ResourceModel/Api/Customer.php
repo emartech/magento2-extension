@@ -377,7 +377,7 @@ class Customer extends CustomerResourceModel
 
             if ($websiteId) {
                 $attributeQuery->joinInner(
-                    ['ce' => $this->_resource->getConnection()->getTableName('customer_entity')],
+                    ['ce' => $this->_resource->getTableName('customer_entity')],
                     'at.' . $this->linkField . ' = ce.' . $this->linkField,
                     ['website_id']
                 );
