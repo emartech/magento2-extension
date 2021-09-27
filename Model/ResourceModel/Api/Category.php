@@ -66,10 +66,20 @@ class Category extends AbstractEntity
     {
         $this->categoryIds = [];
 
+        $categoryTable = $this->getTable('catalog_category_product');
+
         $categoryQuery = $this->_resource->getConnection()->select()
             ->from(
-                $this->getTable('catalog_category_product'),
+                $categoryTable,
                 ['category_id', 'product_id']
+            )->joinLeft(
+                [
+                    'entity_table' => $this->getTable(
+                        'catalog_product_entity'
+                    ),
+                ],
+                'entity_table.entity_id = ' . $categoryTable . '.product_id',
+                []
             );
 
         foreach ($wheres as $where) {

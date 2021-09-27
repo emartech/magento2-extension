@@ -142,8 +142,8 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     {
         $this->productHelper->getCategoryIds(
             [
-                ['product_id >= ?', $this->minId],
-                ['product_id <= ?', $this->maxId],
+                ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+                ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
             ]
         );
 
