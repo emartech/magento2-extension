@@ -24,6 +24,14 @@ class ExtraFields extends DataObject implements ExtraFieldsInterface
     }
 
     /**
+     * @return string
+     */
+    public function getTextValue()
+    {
+        return $this->getData(self::TEXT_VALUE_KEY);
+    }
+
+    /**
      * @param string $key
      *
      * @return $this
@@ -43,6 +51,18 @@ class ExtraFields extends DataObject implements ExtraFieldsInterface
     public function setValue($value)
     {
         $this->setData(self::VALUE_KEY, $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string $textValue
+     *
+     * @return $this
+     */
+    public function setTextValue($textValue)
+    {
+        $this->setData(self::TEXT_VALUE_KEY, $textValue);
 
         return $this;
     }

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="webextend-js" type="host">*.plugins.emarsys.net</value>
+                <value id="scarab-cdn" type="host">*.scarabresearch.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="scarab-recommender" type="host">*.scarabresearch.com</value>
+                <value id="webchannel" type="host">*.eservice.emarsys.net</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

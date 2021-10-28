@@ -48,16 +48,28 @@ pipeline {
         }
       }
     }
+    stage('Destroy all') {
+      steps {
+        sh 'VERSION=2.4.0ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.3ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.1ce-prefixed sh ./dev/jenkins/destroy.sh'
+        sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
+        sh 'sh ./dev/jenkins/killall.sh'
+      }
+    }
     stage('Run tests on recent versions') {
       parallel {
-        stage('Run unit tests on 2.3.3CE') {
+        stage('Run unit tests on 2.4.0CE') {
           steps {
-            sh 'VERSION=2.3.3ce sh dev/jenkins/run-unit.sh'
+            sh 'VERSION=2.4.0ce sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run e2e tests on 2.3.3CE') {
+        stage('Run e2e tests on 2.4.0CE') {
           steps {
-            sh 'VERSION=2.3.3ce sh dev/jenkins/run-e2e.sh'
+            sh 'VERSION=2.4.0ce sh dev/jenkins/run-e2e.sh'
           }
         }
 
@@ -72,25 +84,16 @@ pipeline {
           }
         }
 
-        stage('Run unit tests on 2.3.2EE') {
+        stage('Run unit tests on 2.3.5CE') {
           steps {
-            sh 'VERSION=2.3.2ee sh dev/jenkins/run-unit.sh'
+            sh 'VERSION=2.3.5ce sh dev/jenkins/run-unit.sh'
           }
         }
-        stage('Run e2e tests on 2.3.2EE') {
+        stage('Run e2e tests on 2.3.5CE') {
           steps {
-            sh 'VERSION=2.3.2ee sh dev/jenkins/run-e2e.sh'
+            sh 'VERSION=2.3.5ce sh dev/jenkins/run-e2e.sh'
           }
         }
-      }
-    }
-    stage('Deploy to staging') {
-      steps {
-        sh 'echo "$GCP_SERVICE_ACCOUNT" > ci-account.json'
-        sh 'docker run --name gcloud-auth -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" -v "$(pwd)/ci-account.json:/auth/ci-account.json" emarsys/ems-plugins-gke-service /bin/bash -c "gcloud auth activate-service-account ci-service@ems-plugins.iam.gserviceaccount.com --key-file=/auth/ci-account.json && gcloud container clusters get-credentials cluster-1 --region europe-west2 --project ems-plugins"'
-        sh 'docker run --rm -e HTTP_PROXY="http://webproxy.emarsys.at:3128" -e HTTPS_PROXY="http://webproxy.emarsys.at:3128" --volumes-from gcloud-auth emarsys/ems-plugins-gke-service kubectl set env deployment web-staging EXTENSION_SHA=$GIT_COMMIT'
-        sh 'docker rm gcloud-auth'
-        sh 'rm ci-account.json'
       }
     }
     stage('Run tests on old version') {
@@ -116,20 +119,31 @@ pipeline {
             sh 'VERSION=2.2.6ce sh dev/jenkins/run-e2e.sh'
           }
         }
+
+        stage('Run unit tests on 2.3.2EE') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run-unit.sh'
+          }
+        }
+        stage('Run e2e tests on 2.3.2EE') {
+          steps {
+            sh 'VERSION=2.3.2ee sh dev/jenkins/run-e2e.sh'
+          }
+        }
       }
     }
   }
   post {
     always {
       sh 'docker rmi mage_node || echo \'Mage Node could not be removed...\''
-      sh 'VERSION=2.3.3ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.2ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.2.6ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.1.8ce docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.1.9ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.1ce-prefixed docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.2ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
-      sh 'VERSION=2.3.3ee docker-compose -f ./dev/jenkins/docker-compose.yml down -v || echo \'Could not stop Docker...\''
+      sh 'VERSION=2.4.0ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.3ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.1ce-prefixed sh ./dev/jenkins/destroy.sh'
+      sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
+      sh 'sh ./dev/jenkins/killall.sh'
     }
     success {
       slackSend(tokenCredentialId: '	slack-jenkins-shopify', color: 'good', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} SUCCESS after ${currentBuild.durationString} (<${env.BUILD_URL}|Open>)")

@@ -1,5 +1,0 @@
-FROM google/cloud-sdk:alpine
-RUN gcloud components install kubectl
-
-RUN mkdir -p /root/.kube && touch /root/.kube/config
-VOLUME ["/root/.kube/"]

@@ -65,6 +65,7 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
             ->handleCategoryIds()
             ->handleChildrenProductIds()
             ->handleStockData()
+            ->handleStatusData()
             ->handleAttributes()
             ->setWhere()
             ->setOrder();
@@ -121,8 +122,8 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     protected function getPrices()
     {
         $wheres = [
-            ['entity_id >= ?', $this->minId],
-            ['entity_id <= ?', $this->maxId],
+            ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+            ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
         ];
         $this->productHelper->getPrices(
             $this->websiteIds,
@@ -141,8 +142,8 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     {
         $this->productHelper->getCategoryIds(
             [
-                ['product_id >= ?', $this->minId],
-                ['product_id <= ?', $this->maxId],
+                ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+                ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
             ]
         );
 
@@ -172,6 +173,18 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     protected function handleStockData()
     {
         $this->productHelper->getStockData(
+            [
+                ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
+                ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
+            ]
+        );
+
+        return $this;
+    }
+
+    protected function handleStatusData()
+    {
+        $this->productHelper->getStatusData(
             [
                 ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
                 ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],

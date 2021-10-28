@@ -25,4 +25,10 @@ interface EventRepositoryInterface
      * @return bool
      */
     public function isSinceIdIsHigherThanAutoIncrement($sinceId);
+
+    /**
+     * @param string sinceId
+     * @return void
+     */
+    public function deleteUntilSinceId($sinceId);
 }

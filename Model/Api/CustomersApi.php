@@ -206,7 +206,7 @@ class CustomersApi implements CustomersApiInterface
      */
     protected function setWhere()
     {
-        $this->customerHelper->setWhere($this->linkField, $this->minId, $this->maxId);
+        $this->customerHelper->setWhere($this->linkField, $this->minId, $this->maxId, $this->websiteId);
 
         return $this;
     }

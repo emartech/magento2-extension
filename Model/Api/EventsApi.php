@@ -62,7 +62,6 @@ class EventsApi implements EventsApiInterface
         $this->validateSinceId($sinceId);
 
         $this
-            ->initCollection()
             ->removeOldEvents($sinceId)
             ->initCollection()
             ->getEvents($sinceId)
@@ -146,10 +145,7 @@ class EventsApi implements EventsApiInterface
      */
     private function removeOldEvents($beforeId)
     {
-        $oldEvents = $this->eventCollection
-            ->addFieldToFilter('event_id', ['lteq' => $beforeId]);
-
-        $oldEvents->walk('delete');
+        $this->eventRepository->deleteUntilSinceId($beforeId);
 
         return $this;
     }

@@ -84,23 +84,31 @@ class EventRepository implements EventRepositoryInterface
     public function isSinceIdIsHigherThanAutoIncrement($sinceId)
     {
         $eventsTableName = $this->eventResourceModel->getTable('emarsys_events_data');
-        return (bool) $this->eventResourceModel->getConnection()->fetchOne("
-            SELECT
-                (
-                    SELECT
-                        `AUTO_INCREMENT`
-                    FROM
-                        INFORMATION_SCHEMA.TABLES
-                    WHERE
-                        TABLE_SCHEMA = (
-                            SELECT
-                                database()
-                        )
-                        AND TABLE_NAME = ?
-                ) <= (
-                    SELECT
-                        CAST(? AS UNSIGNED)
-                );
-        ", [$eventsTableName, $sinceId]);
+        $query = sprintf(
+            "SELECT (SELECT COALESCE(MAX(event_id), CAST(? AS UNSIGNED)) FROM %s) < CAST(? AS UNSIGNED);",
+            $eventsTableName
+        );
+        return (bool)$this->eventResourceModel->getConnection()->fetchOne(
+            $query,
+            [$sinceId, $sinceId]
+        );
+    }
+
+    /**
+     * @param string sinceId
+     *
+     * @return void
+     */
+    public function deleteUntilSinceId($sinceId)
+    {
+        $eventsTableName = $this->eventResourceModel->getTable('emarsys_events_data');
+        $query = sprintf(
+            "DELETE FROM %s WHERE event_id <= ?;",
+            $eventsTableName
+        );
+        $this->eventResourceModel->getConnection()->query(
+            $query,
+            [$sinceId]
+        );
     }
 }

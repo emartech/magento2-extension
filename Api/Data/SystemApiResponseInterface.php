@@ -8,6 +8,7 @@ interface SystemApiResponseInterface
     const PHP_VERSION_KEY     = 'php_version';
     const MODULE_VERSION_KEY  = 'module_version';
     const MAGENTO_EDITION_KEY  = 'magento_edition';
+    const IS_WEBSITE_SCOPE_KEY  = 'is_website_scope';
 
     /**
      * @return string
@@ -28,6 +29,11 @@ interface SystemApiResponseInterface
      * @return string
      */
     public function getMagentoEdition();
+
+    /**
+     * @return bool
+     */
+    public function getIsWebsiteScope();
     
     /**
      * @param string $magentoVersion
@@ -56,4 +62,11 @@ interface SystemApiResponseInterface
      * @return $this
      */
     public function setMagentoEdition($magentoEdition);
+
+    /**
+     * @param bool $isWebsiteScope
+     *
+     * @return $this
+     */
+    public function setIsWebsiteScope($isWebsiteScope);
 }

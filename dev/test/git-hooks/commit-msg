@@ -1,7 +1,0 @@
-#!/bin/sh
-
-test "" = "$(grep '\(CDP\|CDPIP\)-\(\d\+\|OPS\|CHORE\)\|SUITEDEV-\d\+\|DOCLOC-\d\+' "$1")" && {
-   echo >&2 "Missing Ticket ID in Commit Message!"
-   exit 1
-}
-exit 0

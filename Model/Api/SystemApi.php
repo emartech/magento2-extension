@@ -9,6 +9,7 @@ use Emartech\Emarsys\Api\SystemApiInterface;
 use Emartech\Emarsys\Api\Data\SystemApiResponseInterface;
 use Emartech\Emarsys\Api\Data\SystemApiResponseInterfaceFactory;
 use Emartech\Emarsys\Helper\ConfigReader;
+use Magento\Customer\Model\Config\Share as ConfigShare;
 
 class SystemApi implements SystemApiInterface
 {
@@ -33,23 +34,31 @@ class SystemApi implements SystemApiInterface
     private $configReader;
 
     /**
+     * @var ConfigShare
+     */
+    private $configShare;
+
+    /**
      * SystemApi constructor.
      *
      * @param ProductMetadataInterface          $productMetadata
      * @param SystemApiResponseInterfaceFactory $systemApiResponseFactory
      * @param ModuleListInterface               $moduleList
      * @param ConfigReader                      $configReader
+     * @param ConfigShare                       $configShare
      */
     public function __construct(
         ProductMetadataInterface $productMetadata,
         SystemApiResponseInterfaceFactory $systemApiResponseFactory,
         ModuleListInterface $moduleList,
-        ConfigReader $configReader
+        ConfigReader $configReader,
+        ConfigShare $configShare
     ) {
         $this->productMetadata = $productMetadata;
         $this->systemApiResponseFactory = $systemApiResponseFactory;
         $this->moduleList = $moduleList;
         $this->configReader = $configReader;
+        $this->configShare = $configShare;
     }
 
     /**
@@ -61,7 +70,8 @@ class SystemApi implements SystemApiInterface
             ->setMagentoVersion($this->getMagentoVersion())
             ->setMagentoEdition($this->getMagentoEdition())
             ->setPhpVersion($this->getPhpVersion())
-            ->setModuleVersion($this->getModuleVersion());
+            ->setModuleVersion($this->getModuleVersion())
+            ->setIsWebsiteScope($this->configShare->isWebsiteScope());
     }
 
     /**
