@@ -7,7 +7,6 @@ interface SubscriptionInterface
     const CUSTOMER_ID_KEY   = 'customer_id';
     const STORE_ID_KEY      = 'store_id';
     const WEBSITE_ID_KEY    = 'website_id';
-    const SUBSCRIBER_ID     = 'subscriber_id';
     const SUBSCRIBER_EMAIL  = 'subscriber_email';
     const SUBSCRIBER_STATUS = 'subscriber_status';
 
@@ -22,18 +21,6 @@ interface SubscriptionInterface
      * @return $this
      */
     public function setCustomerId($customerId);
-
-    /**
-     * @return int|null
-     */
-    public function getSubscriberId();
-
-    /**
-     * @param int $subscriberId
-     *
-     * @return $this
-     */
-    public function setSubscriberId($subscriberId);
 
     /**
      * @return int|null
