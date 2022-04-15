@@ -93,6 +93,7 @@ class CustomerEventHandler extends BaseEventHandler
         }
 
         $customerData = $this->customerHelper->getOneCustomer($customerId, $websiteId, true);
+        $customerData = $this->cleanEmptyCustomerData($customerData);
 
         if (false !== $customerData) {
             $this->saveEvent(
@@ -131,5 +132,32 @@ class CustomerEventHandler extends BaseEventHandler
         );
 
         return true;
+    }
+
+    private function cleanEmptyCustomerData($customerData): array
+    {
+        $customerData = $this->cleanEmptyValues($customerData);
+        $keysToClean = [\Emartech\Emarsys\Api\Data\CustomerInterface::BILLING_ADDRESS_KEY, \Emartech\Emarsys\Api\Data\CustomerInterface::SHIPPING_ADDRESS_KEY];
+        foreach($keysToClean as $keyToClean){
+            if(isset($customerData[$keyToClean])){
+                $customerData[$keyToClean] = $this->cleanEmptyValues($customerData[$keyToClean]);
+                if(empty($customerData[$keyToClean])){
+                    unset($customerData[$keyToClean]);
+                }
+            }
+        }
+
+        return $customerData;
+    }
+
+    private function cleanEmptyValues(array $array): array
+    {
+        return array_filter($array, function($value){
+            if ($value === null) {
+                return false;
+            }
+
+            return true;
+        });
     }
 }
