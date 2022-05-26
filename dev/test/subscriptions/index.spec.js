@@ -1,16 +1,12 @@
 'use strict';
 
 const createSubscriptionGetter = (db, tablePrefix) => {
-  return async email => {
-    return await db
-      .select()
-      .from(`${tablePrefix}newsletter_subscriber`)
-      .where({ subscriber_email: email })
-      .first();
+  return async (email) => {
+    return await db.select().from(`${tablePrefix}newsletter_subscriber`).where({ subscriber_email: email }).first();
   };
 };
 
-const isSubscribed = subscription => {
+const isSubscribed = (subscription) => {
   return subscription !== undefined && parseInt(subscription.subscriber_status) === 1;
 };
 
@@ -21,21 +17,21 @@ const customerId = 1;
 const websiteId = 1;
 const storeId = 1;
 
-describe('Subscriptions api', function() {
+describe('Subscriptions api', function () {
   let subscriptionFor;
 
-  before(function() {
+  before(function () {
     subscriptionFor = createSubscriptionGetter(this.db, this.getTableName(''));
   });
 
-  describe('update', function() {
-    afterEach(async function() {
+  describe('update', function () {
+    afterEach(async function () {
       await this.db(this.getTableName('newsletter_subscriber'))
         .whereIn('subscriber_email', [noCustomerEmail, noCustomerEmail2, customerEmail])
         .delete();
     });
 
-    it('should handle multiple subscriptions at once and create only for customers', async function() {
+    it('should handle multiple subscriptions at once and create only for customers', async function () {
       try {
         await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [
@@ -61,7 +57,7 @@ describe('Subscriptions api', function() {
       expect(await subscriptionFor(noCustomerEmail)).to.be.undefined;
     });
 
-    it('should handle multiple subscription updates at once and update only for existing', async function() {
+    it('should handle multiple subscription updates at once and update only for existing', async function () {
       await this.db(this.getTableName('newsletter_subscriber')).insert([
         { subscriber_email: customerEmail, subscriber_status: 3, store_id: 1, customer_id: customerId },
         { subscriber_email: noCustomerEmail, subscriber_status: 3, store_id: 1, customer_id: 0 },
@@ -97,8 +93,8 @@ describe('Subscriptions api', function() {
       expect(noCustomer2.website_id).to.equal(1);
     });
 
-    context('subscribe', function() {
-      it('should set subscription without customer', async function() {
+    context('subscribe', function () {
+      it('should set subscription without customer', async function () {
         await this.db(this.getTableName('newsletter_subscriber')).insert({
           subscriber_email: noCustomerEmail,
           subscriber_status: 3,
@@ -115,7 +111,7 @@ describe('Subscriptions api', function() {
         expect(isSubscribed(await subscriptionFor(noCustomerEmail))).to.be.true;
       });
 
-      it('should set subscription with customer', async function() {
+      it('should set subscription with customer', async function () {
         expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.false;
 
         await this.magentoApi.execute('subscriptions', 'update', {
@@ -128,8 +124,8 @@ describe('Subscriptions api', function() {
       });
     });
 
-    context('unsubscribe', function() {
-      it('should unsubscribe without customer', async function() {
+    context('unsubscribe', function () {
+      it('should unsubscribe without customer', async function () {
         await this.db(this.getTableName('newsletter_subscriber')).insert({
           subscriber_email: noCustomerEmail,
           subscriber_status: 1,
@@ -148,7 +144,7 @@ describe('Subscriptions api', function() {
         expect(isSubscribed(subscriber)).to.be.false;
       });
 
-      it('should unsubscribe with customer', async function() {
+      it('should unsubscribe with customer', async function () {
         await this.magentoApi.execute('subscriptions', 'update', {
           subscriptions: [
             { subscriber_email: customerEmail, subscriber_status: true, website_id: 1, customer_id: customerId }
@@ -164,7 +160,7 @@ describe('Subscriptions api', function() {
       });
     });
 
-    it('should catch and return exceptions and continue with the update', async function() {
+    it('should catch and return exceptions and continue with the update', async function () {
       const nonExistingCustomerId = 999;
       const expectedErrors = [
         {
@@ -195,7 +191,7 @@ describe('Subscriptions api', function() {
       });
 
       const filteredSubscriptions = subscribers.subscriptions.filter(
-        subscription => subscription.subscriber_email === noCustomerEmail
+        (subscription) => subscription.subscriber_email === noCustomerEmail
       );
       expect(filteredSubscriptions).to.be.empty;
       expect(isSubscribed(await subscriptionFor(customerEmail))).to.be.true;
@@ -204,11 +200,11 @@ describe('Subscriptions api', function() {
     });
   });
 
-  describe('get', function() {
+  describe('get', function () {
     let customerEmail2;
     let customerId2;
 
-    before(async function() {
+    before(async function () {
       customerEmail2 = this.customer.email;
       customerId2 = this.customer.entityId;
 
@@ -227,7 +223,7 @@ describe('Subscriptions api', function() {
         .into(this.getTableName('newsletter_subscriber'));
     });
 
-    it('should list all subscriber without filters', async function() {
+    it('should list all subscriber without filters', async function () {
       const expectedSubscriptions = {
         subscriptions: [
           {
@@ -268,7 +264,12 @@ describe('Subscriptions api', function() {
       expect(actualSubscriptions.subscriptions).to.containSubset(expectedSubscriptions.subscriptions);
     });
 
-    it('should filter with subscribed status true', async function() {
+    it('should filter with subscribed status true', async function () {
+      const subscriberIds = await this.db(this.getTableName('newsletter_subscriber')).whereIn('subscriber_email', [
+        noCustomerEmail,
+        customerEmail
+      ]);
+
       const expectedSubscriptions = {
         subscriptions: [
           {
@@ -276,14 +277,16 @@ describe('Subscriptions api', function() {
             store_id: storeId,
             subscriber_email: noCustomerEmail,
             subscriber_status: '1',
-            website_id: websiteId
+            website_id: websiteId,
+            subscriber_id: subscriberIds.find((s) => s.subscriber_email === noCustomerEmail).subscriber_id
           },
           {
             customer_id: customerId,
             store_id: storeId,
             subscriber_email: customerEmail,
             subscriber_status: '1',
-            website_id: websiteId
+            website_id: websiteId,
+            subscriber_id: subscriberIds.find((s) => s.subscriber_email === customerEmail).subscriber_id
           }
         ],
         total_count: 2,
@@ -300,7 +303,12 @@ describe('Subscriptions api', function() {
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
 
-    it('should filter with subscribed false', async function() {
+    it('should filter with subscribed false', async function () {
+      const subscriberIds = await this.db(this.getTableName('newsletter_subscriber')).whereIn('subscriber_email', [
+        noCustomerEmail2,
+        customerEmail2
+      ]);
+
       const expectedSubscriptions = {
         subscriptions: [
           {
@@ -308,14 +316,16 @@ describe('Subscriptions api', function() {
             store_id: storeId,
             subscriber_email: noCustomerEmail2,
             subscriber_status: '3',
-            website_id: websiteId
+            website_id: websiteId,
+            subscriber_id: subscriberIds.find((s) => s.subscriber_email === noCustomerEmail2).subscriber_id
           },
           {
             customer_id: customerId2,
             store_id: storeId,
             subscriber_email: customerEmail2,
             subscriber_status: '3',
-            website_id: websiteId
+            website_id: websiteId,
+            subscriber_id: subscriberIds.find((s) => s.subscriber_email === customerEmail2).subscriber_id
           }
         ],
         total_count: 2,
@@ -333,7 +343,7 @@ describe('Subscriptions api', function() {
       expect(actualSubscriptions).to.be.eql(expectedSubscriptions);
     });
 
-    it('should filter for not customers', async function() {
+    it('should filter for not customers', async function () {
       const expectedSubscriptions = {
         subscriptions: [
           {

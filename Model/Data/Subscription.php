@@ -17,6 +17,14 @@ class Subscription extends DataObject implements SubscriptionInterface
     }
 
     /**
+     * @return int|null
+     */
+    public function getSubscriberId()
+    {
+        return $this->getData(self::SUBSCRIBER_ID);
+    }
+
+    /**
      * @return string
      */
     public function getSubscriberEmail()
@@ -56,6 +64,16 @@ class Subscription extends DataObject implements SubscriptionInterface
     public function setCustomerId($customerId)
     {
         $this->setData(self::CUSTOMER_ID_KEY, $customerId);
+        return $this;
+    }
+
+    /**
+     * @param int $subscriberId
+     * @return $this
+     */
+    public function setSubscriberId($subscriberId)
+    {
+        $this->setData(self::SUBSCRIBER_ID, $subscriberId);
         return $this;
     }
 
