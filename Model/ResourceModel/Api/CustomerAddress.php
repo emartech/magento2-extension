@@ -282,16 +282,20 @@ class CustomerAddress extends CustomerAddressResourceModel
         }
 
         try {
-            $unionQuery = $this->_resource->getConnection()->select()
-                ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
-            $this->iterator->walk(
-                (string)$unionQuery,
-                [[$this, 'handleAttributeDataTable']],
-                [
-                    'attributeMapper' => $attributeMapper,
-                ],
-                $this->_resource->getConnection()
-            );
+            if (count($attributeQueries)) {
+                $unionQuery = $this->_resource
+                    ->getConnection()
+                    ->select()
+                    ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+                $this->iterator->walk(
+                    (string)$unionQuery,
+                    [[$this, 'handleAttributeDataTable']],
+                    [
+                        'attributeMapper' => $attributeMapper,
+                    ],
+                    $this->_resource->getConnection()
+                );
+            }
         } catch (\Exception $e) {} // @codingStandardsIgnoreLine
 
         return $this;
