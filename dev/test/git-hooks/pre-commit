@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for file in $(git diff --cached --name-only | grep -E '\.(js|jsx)$')
+for file in $(git diff --diff-filter=ACM --cached --name-only | grep -E '\.(js|jsx)$')
 do
   git show ":$file" | dev/test/node_modules/.bin/eslint --stdin --resolve-plugins-relative-to "dev/test/node_modules" --stdin-filename "$file" # we only want to lint the staged changes, not any un-staged changes
   if [ $? -ne 0 ]; then
