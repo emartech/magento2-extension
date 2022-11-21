@@ -5,6 +5,7 @@ namespace Emartech\Emarsys\Model\Data;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Api\Data\StoreConfigInterface;
 use Emartech\Emarsys\Helper\Json as JsonSerializer;
+use Exception;
 use Magento\Framework\App\Config as ScopeConfig;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\DataObject;
@@ -57,19 +58,23 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetCollectCustomerEvents
+     *
      * @return string
      */
-    public function getCollectCustomerEvents()
+    public function getCollectCustomerEvents(): string
     {
-        return $this->getData(self::CUSTOMER_EVENTS);
+        return (string) $this->getData(self::CUSTOMER_EVENTS);
     }
 
     /**
+     * SetCollectCustomerEvents
+     *
      * @param string $collectCustomerEvents
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setCollectCustomerEvents($collectCustomerEvents)
+    public function setCollectCustomerEvents(string $collectCustomerEvents): ConfigInterface
     {
         $this->setData(self::CUSTOMER_EVENTS, $collectCustomerEvents);
 
@@ -77,19 +82,23 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetCollectSalesEvents
+     *
      * @return string
      */
-    public function getCollectSalesEvents()
+    public function getCollectSalesEvents(): string
     {
-        return $this->getData(self::CUSTOMER_EVENTS);
+        return (string) $this->getData(self::CUSTOMER_EVENTS);
     }
 
     /**
+     * SetCollectSalesEvents
+     *
      * @param string $collectSalesEvents
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setCollectSalesEvents($collectSalesEvents)
+    public function setCollectSalesEvents(string $collectSalesEvents): ConfigInterface
     {
         $this->setData(self::SALES_EVENTS, $collectSalesEvents);
 
@@ -97,19 +106,23 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetCollectMarketingEvents
+     *
      * @return string
      */
-    public function getCollectMarketingEvents()
+    public function getCollectMarketingEvents(): string
     {
-        return $this->getData(self::MARKETING_EVENTS);
+        return (string) $this->getData(self::MARKETING_EVENTS);
     }
 
     /**
+     * SetCollectMarketingEvents
+     *
      * @param string $collectMarketingEvents
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setCollectMarketingEvents($collectMarketingEvents)
+    public function setCollectMarketingEvents(string $collectMarketingEvents): ConfigInterface
     {
         $this->setData(self::MARKETING_EVENTS, $collectMarketingEvents);
 
@@ -117,19 +130,23 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetMerchantId
+     *
      * @return string
      */
-    public function getMerchantId()
+    public function getMerchantId(): string
     {
-        return $this->getData(self::MERCHANT_ID);
+        return (string) $this->getData(self::MERCHANT_ID);
     }
 
     /**
+     * SetMerchantId
+     *
      * @param string $merchantId
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setMerchantId($merchantId)
+    public function setMerchantId(string $merchantId): ConfigInterface
     {
         $this->setData(self::MERCHANT_ID, $merchantId);
 
@@ -137,19 +154,23 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetInjectSnippet
+     *
      * @return string
      */
-    public function getInjectSnippet()
+    public function getInjectSnippet(): string
     {
-        return $this->getData(self::INJECT_WEBEXTEND_SNIPPETS);
+        return (string) $this->getData(self::INJECT_WEBEXTEND_SNIPPETS);
     }
 
     /**
+     * SetInjectSnippet
+     *
      * @param string $injectSnippet
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setInjectSnippet($injectSnippet)
+    public function setInjectSnippet(string $injectSnippet): ConfigInterface
     {
         $this->setData(self::INJECT_WEBEXTEND_SNIPPETS, $injectSnippet);
 
@@ -157,19 +178,23 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetWebTrackingSnippetUrl
+     *
      * @return string
      */
-    public function getWebTrackingSnippetUrl()
+    public function getWebTrackingSnippetUrl(): string
     {
-        return $this->getData(self::SNIPPET_URL);
+        return (string) $this->getData(self::SNIPPET_URL);
     }
 
     /**
+     * SetWebTrackingSnippetUrl
+     *
      * @param string $webTrackingSnippetUrl
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setWebTrackingSnippetUrl($webTrackingSnippetUrl)
+    public function setWebTrackingSnippetUrl(string $webTrackingSnippetUrl): ConfigInterface
     {
         $this->setData(self::SNIPPET_URL, $webTrackingSnippetUrl);
 
@@ -177,19 +202,23 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetMagentoSendEmail
+     *
      * @return string
      */
-    public function getMagentoSendEmail()
+    public function getMagentoSendEmail(): string
     {
-        return $this->getData(self::MAGENTO_SEND_EMAIL);
+        return (string) $this->getData(self::MAGENTO_SEND_EMAIL);
     }
 
     /**
+     * SetMagentoSendEmail
+     *
      * @param string $magentoSendEmail
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setMagentoSendEmail($magentoSendEmail)
+    public function setMagentoSendEmail(string $magentoSendEmail): ConfigInterface
     {
         $this->setData(self::MAGENTO_SEND_EMAIL, $magentoSendEmail);
 
@@ -197,15 +226,21 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
-     * @param string $xmlPostPath
-     * @param string $value
-     * @param int    $scopeId
-     * @param string $scope
+     * SetConfigValue
+     *
+     * @param string          $xmlPostPath
+     * @param string|string[] $value
+     * @param int             $scopeId
+     * @param string          $scope
      *
      * @return bool
      */
-    public function setConfigValue($xmlPostPath, $value, $scopeId, $scope = ConfigInterface::SCOPE_TYPE_DEFAULT)
-    {
+    public function setConfigValue(
+        string $xmlPostPath,
+        $value,
+        int $scopeId,
+        string $scope = ConfigInterface::SCOPE_TYPE_DEFAULT
+    ): bool {
         $xmlPath = self::XML_PATH_EMARSYS_PRE_TAG . trim($xmlPostPath, '/');
 
         if (is_array($value)) {
@@ -213,6 +248,7 @@ class Config extends DataObject implements ConfigInterface
                 if ($item instanceof DataObject) {
                     $item = $item->toArray();
                 }
+
                 return $item;
             }, $value);
         }
@@ -233,28 +269,31 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetConfigValue
+     *
      * @param string   $key
      * @param null|int $websiteId
      *
      * @return string|string[]
      */
-    public function getConfigValue($key, $websiteId = null)
+    public function getConfigValue(string $key, int $websiteId = null): mixed
     {
         if (null === $websiteId) {
             try {
                 $websiteId = $this->storeManager->getWebsite()->getId();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $websiteId = 0;
             }
         }
 
-        $value = $this->scopeConfig->getValue(self::XML_PATH_EMARSYS_PRE_TAG . $key, 'websites', $websiteId);
+        $value = $this->scopeConfig
+                     ->getValue(self::XML_PATH_EMARSYS_PRE_TAG . $key, 'websites', $websiteId) ?? '[]';
 
         try {
             $returnValue = $this->jsonSerializer->unserialize($value);
         } catch (\InvalidArgumentException $e) {
             $returnValue = $value;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $returnValue = '';
         }
 
@@ -262,23 +301,27 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * IsEnabledForWebsite
+     *
      * @param string   $key
      * @param null|int $websiteId
      *
      * @return bool
      */
-    public function isEnabledForWebsite($key, $websiteId = null)
+    public function isEnabledForWebsite(string $key, int $websiteId = null): bool
     {
         return $this->getConfigValue($key, $websiteId) === self::CONFIG_ENABLED;
     }
 
     /**
+     * IsEnabledForStore
+     *
      * @param string   $key
      * @param null|int $storeId
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId = null)
+    public function isEnabledForStore(string $key, int $storeId = null): bool
     {
         try {
             if (!$storeId) {
@@ -299,34 +342,39 @@ class Config extends DataObject implements ConfigInterface
                     }
                 }
             }
-        } catch (\Exception $e) { //@codingStandardsIgnoreLine
-        }
+        } catch (Exception $e) { } //@codingStandardsIgnoreLine
 
         return false;
     }
 
     /**
+     * CleanScope
+     *
      * @return void
      */
-    public function cleanScope()
+    public function cleanScope(): void
     {
         $this->scopeConfig->clean();
     }
 
     /**
+     * GetStoreSettings
+     *
      * @return StoreConfigInterface[]
      */
-    public function getStoreSettings()
+    public function getStoreSettings(): array
     {
         return $this->getData(self::STORE_SETTINGS);
     }
 
     /**
+     * SetStoreSettings
+     *
      * @param StoreConfigInterface[] $storeSettings
      *
-     * @return $this
+     * @return ConfigInterface
      */
-    public function setStoreSettings($storeSettings)
+    public function setStoreSettings(array $storeSettings): ConfigInterface
     {
         $this->setData(self::STORE_SETTINGS, $storeSettings);
 
@@ -334,9 +382,11 @@ class Config extends DataObject implements ConfigInterface
     }
 
     /**
+     * GetAvailableWebsites
+     *
      * @return \Magento\Store\Api\Data\WebsiteInterface[]
      */
-    public function getAvailableWebsites()
+    public function getAvailableWebsites(): array
     {
         return $this->storeManager->getWebsites();
     }

@@ -7,28 +7,42 @@ use Emartech\Emarsys\Api\Data\EventInterface;
 interface EventRepositoryInterface
 {
     /**
-     * @param $id
+     * Get
+     *
+     * @param int $id
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
+     *
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function get($id);
+    public function get(int $id): EventInterface;
 
     /**
+     * Save
+     *
      * @param \Emartech\Emarsys\Api\Data\EventInterface $event
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
+     *
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    public function save(EventInterface $event);
+    public function save(EventInterface $event): EventInterface;
 
     /**
-     * @param string sinceId
+     * IsSinceIdIsHigherThanAutoIncrement
+     *
+     * @param int $sinceId
+     *
      * @return bool
      */
-    public function isSinceIdIsHigherThanAutoIncrement($sinceId);
+    public function isSinceIdIsHigherThanAutoIncrement(int $sinceId): bool;
 
     /**
-     * @param string sinceId
+     * DeleteUntilSinceId
+     *
+     * @param int $sinceId
+     *
      * @return void
      */
-    public function deleteUntilSinceId($sinceId);
+    public function deleteUntilSinceId(int $sinceId): void;
 }

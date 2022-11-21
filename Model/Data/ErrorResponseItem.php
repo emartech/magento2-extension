@@ -13,33 +13,43 @@ use Magento\Framework\DataObject;
 class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
 {
     /**
-     * {@inheritdoc}
+     * GetEmail
+     *
+     * @return string
      */
-    public function getEmail()
+    public function getEmail(): string
     {
-        return $this->getData(self::EMAIL_KEY);
+        return (string) $this->getData(self::EMAIL_KEY);
     }
 
     /**
-     * {@inheritdoc}
+     * GetCustomerId
+     *
+     * @return int|null
      */
-    public function getCustomerId()
+    public function getCustomerId(): ?int
     {
         return $this->getData(self::CUSTOMER_ID_KEY);
     }
 
     /**
-     * {@inheritdoc}
+     * GetMessage
+     *
+     * @return string
      */
-    public function getMessage()
+    public function getMessage(): string
     {
-        return $this->getData(self::MESSAGE_KEY);
+        return (string) $this->getData(self::MESSAGE_KEY);
     }
 
     /**
-     * {@inheritdoc}
+     * SetEmail
+     *
+     * @param string $email
+     *
+     * @return ErrorResponseItemInterface
      */
-    public function setEmail($email)
+    public function setEmail(string $email): ErrorResponseItemInterface
     {
         $this->setData(self::EMAIL_KEY, $email);
 
@@ -47,9 +57,13 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
     }
 
     /**
-     * {@inheritdoc}
+     * SetCustomerId
+     *
+     * @param int|null $customerId
+     *
+     * @return ErrorResponseItemInterface
      */
-    public function setCustomerId($customerId)
+    public function setCustomerId(int $customerId = null): ErrorResponseItemInterface
     {
         $this->setData(self::CUSTOMER_ID_KEY, $customerId);
 
@@ -57,9 +71,13 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
     }
 
     /**
-     * {@inheritdoc}
+     * SetMessage
+     *
+     * @param string $message
+     *
+     * @return ErrorResponseItemInterface
      */
-    public function setMessage($message)
+    public function setMessage(string $message): ErrorResponseItemInterface
     {
         $this->setData(self::MESSAGE_KEY, $message);
 

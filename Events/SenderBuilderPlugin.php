@@ -6,18 +6,16 @@ use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 use Emartech\Emarsys\Helper\Json;
-use Emartech\Emarsys\Model\Event as EventModel;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
 use Magento\Framework\Exception\AlreadyExistsException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Model\AbstractModel;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Container\OrderIdentity;
 use Magento\Sales\Model\Order\Email\Container\Template as TemplateContainer;
 use Magento\Sales\Model\Order\Email\SenderBuilder;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 class SenderBuilderPlugin
 {
@@ -77,6 +75,8 @@ class SenderBuilderPlugin
     }
 
     /**
+     * AroundSend
+     *
      * @param SenderBuilder $senderBuilder
      * @param callable      $proceed
      *
@@ -88,8 +88,7 @@ class SenderBuilderPlugin
         //sales_email/general/async_sending - should be disabled
         //----
         try {
-            // @codingStandardsIgnoreLine
-            $reflection = new \ReflectionClass('\Magento\Sales\Model\Order\Email\SenderBuilder');
+            $reflection = new ReflectionClass(SenderBuilder::class);
             /** @var OrderIdentity $identityContainer */
             $identityContainer = $reflection->getProperty('identityContainer');
             $identityContainer->setAccessible(true);
@@ -137,13 +136,13 @@ class SenderBuilderPlugin
     }
 
     /**
+     * ParseTemplateVars
+     *
      * @param TemplateContainer $templateContainer
      *
      * @return array
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
      */
-    private function parseTemplateVars($templateContainer)
+    private function parseTemplateVars(TemplateContainer $templateContainer): array
     {
         $returnArray = [];
 
@@ -163,13 +162,15 @@ class SenderBuilderPlugin
     }
 
     /**
+     * ParseOrderVars
+     *
      * @param string $key
      * @param Order  $order
      * @param array  $data
      *
      * @return void
      */
-    private function parseOrderVars($key, $order, &$data)
+    private function parseOrderVars(string $key, Order $order, array &$data): void
     {
         $data[$key] = $order->getData();
         $items = [];
@@ -219,11 +220,15 @@ class SenderBuilderPlugin
     }
 
     /**
+     * ParseVars
+     *
      * @param string        $key
      * @param AbstractModel $object
      * @param array         $data
+     *
+     * @return void
      */
-    private function parseVars($key, $object, &$data)
+    private function parseVars(string $key, AbstractModel $object, array &$data): void
     {
         $data[$key] = $object->getData();
         $items = [];
@@ -242,6 +247,8 @@ class SenderBuilderPlugin
     }
 
     /**
+     * SaveEvent
+     *
      * @param int    $websiteId
      * @param int    $storeId
      * @param string $type
@@ -251,12 +258,12 @@ class SenderBuilderPlugin
      * @return void
      * @throws AlreadyExistsException
      */
-    private function saveEvent($websiteId, $storeId, $type, $entityId, $data)
+    private function saveEvent(int $websiteId, int $storeId, string $type, int $entityId, array $data): void
     {
         $data = $this->json->serialize($data);
 
-        /** @var EventModel $eventModel */
-        $eventModel = $this->eventFactory->create()
+        $eventModel = $this->eventFactory
+            ->create()
             ->setEntityId($entityId)
             ->setWebsiteId($websiteId)
             ->setStoreId($storeId)

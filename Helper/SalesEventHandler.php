@@ -2,15 +2,16 @@
 
 namespace Emartech\Emarsys\Helper;
 
-use Magento\Framework\App\Helper\Context;
-use Magento\Store\Model\StoreManagerInterface;
+use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Emartech\Emarsys\Helper\Json as JsonSerializer;
-use Magento\Sales\Model\Order;
-use Magento\Sales\Api\Data\OrderItemInterface;
-
 use Emartech\Emarsys\Model\EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
-use Emartech\Emarsys\Api\EventRepositoryInterface;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Sales\Api\Data\OrderItemInterface;
+use Magento\Sales\Model\Order;
+use Magento\Store\Model\StoreManagerInterface;
 
 class SalesEventHandler extends BaseEventHandler
 {
@@ -47,11 +48,15 @@ class SalesEventHandler extends BaseEventHandler
     }
 
     /**
+     * Store
+     *
      * @param Order $order
      *
      * @return bool
+     * @throws AlreadyExistsException
+     * @throws NoSuchEntityException
      */
-    public function store(Order $order)
+    public function store(Order $order): bool
     {
         $storeId = $order->getStoreId();
 
@@ -98,11 +103,13 @@ class SalesEventHandler extends BaseEventHandler
     }
 
     /**
+     * GetOrderEventType
+     *
      * @param string $state
      *
      * @return string
      */
-    private function getOrderEventType($state)
+    private function getOrderEventType(string $state): string
     {
         if ($state === 'new') {
             return 'orders/create';

@@ -4,12 +4,13 @@
  * @package    Emartech_Emarsys
  * @copyright  Copyright (c) 2018 Emarsys. (http://www.emarsys.net/)
  */
-/** @var \Emartech\Emarsys\Block\Snippets $block */
-?>
+/** @var Snippets $block */
 
+use Emartech\Emarsys\Block\Snippets;
+?>
 <?php $injectable = $block->isInjectable(); ?>
 <?php if ($injectable): ?>
-  <script type="text/javascript">
+  <script>
     var ScarabQueue = ScarabQueue || [];
     (function(id) {
       if (document.getElementById(id)) return;

@@ -1,0 +1,20 @@
+{
+    "emarsys_events_data": {
+        "column": {
+            "event_id": true,
+            "website_id": true,
+            "store_id": true,
+            "entity_id": true,
+            "event_type": true,
+            "event_data": true,
+            "created_at": true
+        },
+        "index": {
+            "EMARSYS_EVENTS_DATA_CREATED_AT": true,
+            "EMARSYS_EVENTS_DATA_EVENT_TYPE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

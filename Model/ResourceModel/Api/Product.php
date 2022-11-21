@@ -6,7 +6,9 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
+use Emartech\Emarsys\Helper\DataSource as DataSourceHelper;
 use Emartech\Emarsys\Helper\LinkField;
+use Exception;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Factory;
 use Magento\Catalog\Model\Indexer\Product\Price\PriceTableResolver;
@@ -15,7 +17,6 @@ use Magento\Catalog\Model\ResourceModel\Category as CategoryResourceModel;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute as ProductAttribute;
 use Magento\Catalog\Model\ResourceModel\Product as ProductResourceModel;
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
 use Magento\Customer\Model\Indexer\CustomerGroupDimensionProvider;
 use Magento\Eav\Model\Entity\Attribute\SetFactory;
@@ -28,13 +29,11 @@ use Magento\Framework\Indexer\DimensionFactory;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Store\Model\Indexer\WebsiteDimensionProvider;
 use Magento\Store\Model\StoreManagerInterface;
-use Zend_Db_Select;
-use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
-use Emartech\Emarsys\Helper\DataSource as DataSourceHelper;
+use Zend_Db_Select_Exception;
 
 class Product extends ProductResourceModel
 {
-    const PRODUCT_ENTITY_TYPE_ID = 4;
+    public const PRODUCT_ENTITY_TYPE_ID = 4;
 
     /**
      * @var Iterator
@@ -137,8 +136,6 @@ class Product extends ProductResourceModel
     ];
 
     /**
-     * Product constructor.
-     *
      * @param Context                           $context
      * @param StoreManagerInterface             $storeManager
      * @param Factory                           $modelFactory
@@ -153,6 +150,8 @@ class Product extends ProductResourceModel
      * @param LinkField                         $linkFieldHelper
      * @param DataSourceHelper                  $dataSourceHelper
      * @param array                             $data
+     *
+     * @throws Exception
      */
     public function __construct(
         Context $context,
@@ -173,21 +172,15 @@ class Product extends ProductResourceModel
         $this->iterator = $iterator;
         $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
         $this->linkFieldHelper = $linkFieldHelper;
-        $this->linkField = $this->linkFieldHelper->getEntityLinkField(
-            ProductInterface::class
-        );
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
 
         $this->dataSourceHelper = $dataSourceHelper;
 
         if (class_exists(PriceTableResolver::class)) {
-            $this->priceTableResolver = ObjectManager::getInstance()->get(
-                PriceTableResolver::class
-            );
+            $this->priceTableResolver = ObjectManager::getInstance()->get(PriceTableResolver::class);// @codingStandardsIgnoreLine
         }
         if (class_exists(Dimension::class)) {
-            $this->dimensionFactory = ObjectManager::getInstance()->get(
-                DimensionFactory::class
-            );
+            $this->dimensionFactory = ObjectManager::getInstance()->get(DimensionFactory::class);// @codingStandardsIgnoreLine
         }
 
         parent::__construct(
@@ -205,6 +198,8 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * HandleIds
+     *
      * @param int         $page
      * @param int         $pageSize
      * @param string|null $table
@@ -215,13 +210,13 @@ class Product extends ProductResourceModel
      * @return array
      */
     public function handleIds(
-        $page,
-        $pageSize,
-        $table = null,
-        $primaryKey = null,
-        $wheres = [],
-        $countField = null
-    ) {
+        int $page,
+        int $pageSize,
+        string $table = null,
+        string $primaryKey = null,
+        array $wheres = [],
+        string $countField = null
+    ): array {
         if (null === $table) {
             $table = $this->getTable('catalog_product_entity');
         }
@@ -246,16 +241,16 @@ class Product extends ProductResourceModel
             }
         }
 
-        $numberOfItems = $this->_resource->getConnection()->fetchOne(
-            $itemsCountQuery
-        );
+        $numberOfItems = $this->_resource->getConnection()->fetchOne($itemsCountQuery);
 
         $subFields['eid'] = $primaryKey;
 
-        $subSelect = $this->_resource->getConnection()->select()
-                                     ->from($table, $subFields)
-                                     ->order($primaryKey)
-                                     ->limit($pageSize, $page);
+        $subSelect = $this->_resource
+            ->getConnection()
+            ->select()
+            ->from($table, $subFields)
+            ->order($primaryKey)
+            ->limit($pageSize, $page);
 
         if ($wheres) {
             foreach ($wheres as $where) {
@@ -273,29 +268,30 @@ class Product extends ProductResourceModel
         $minMaxValues = $this->_resource->getConnection()->fetchRow($idQuery);
 
         return [
-            'numberOfItems' => (int)$numberOfItems,
-            'minId'         => (int)$minMaxValues['minId'],
-            'maxId'         => (int)$minMaxValues['maxId'],
+            'numberOfItems' => (int) $numberOfItems,
+            'minId'         => (int) $minMaxValues['minId'],
+            'maxId'         => (int) $minMaxValues['maxId'],
         ];
     }
 
     /**
+     * GetChildrenProductIds
+     *
      * @param array      $wheres
      * @param array|null $joinInner
      *
      * @return array
      */
-    public function getChildrenProductIds($wheres, $joinInner = null)
+    public function getChildrenProductIds(array $wheres, array $joinInner = null): array
     {
         $this->childrenProductIds = [];
 
         $superLinkTable = $this->getTable('catalog_product_super_link');
 
-        $superLinkQuery = $this->_resource->getConnection()->select()
-                                          ->from(
-                                              $superLinkTable,
-                                              ['product_id', 'parent_id']
-                                          );
+        $superLinkQuery = $this->_resource
+            ->getConnection()
+            ->select()
+            ->from($superLinkTable, ['product_id', 'parent_id']);
 
         foreach ($wheres as $where) {
             $superLinkQuery->where($where[0], $where[1]);
@@ -310,7 +306,7 @@ class Product extends ProductResourceModel
         }
 
         $this->iterator->walk(
-            (string)$superLinkQuery,
+            (string) $superLinkQuery,
             [[$this, 'handleChildrenProductId']],
             [],
             $this->_resource->getConnection()
@@ -320,11 +316,13 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * HandleChildrenProductId
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleChildrenProductId($args)
+    public function handleChildrenProductId(array $args): void
     {
         $productId = $args['row']['product_id'];
         $parentId = $args['row']['parent_id'];
@@ -335,32 +333,36 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * GetStockData
+     *
      * @param array      $wheres
      * @param array|null $joinInner
      *
      * @return array
      */
-    public function getStockData($wheres, $joinInner = null)
+    public function getStockData(array $wheres, array $joinInner = null): array
     {
         $this->stockData = [];
         $stockItemTable = $this->getTable('cataloginventory_stock_item');
-        $stockQuery = $this->_resource->getConnection()->select()
-                                      ->from(
-                                          $stockItemTable,
-                                          [
-                                              'is_in_stock', 'qty',
-                                              'product_id',
-                                          ]
-                                      )
-                                      ->joinLeft(
-                                          [
-                                              'entity_table' => $this->getTable(
-                                                  'catalog_product_entity'
-                                              ),
-                                          ],
-                                          'entity_table.entity_id = ' . $stockItemTable . '.product_id',
-                                          []
-                                      )->where('stock_id = ?', 1);
+        $stockQuery = $this->_resource
+            ->getConnection()
+            ->select()
+            ->from(
+                $stockItemTable,
+                [
+                    'is_in_stock', 'qty',
+                    'product_id',
+                ]
+            )
+            ->joinLeft(
+                [
+                    'entity_table' => $this->getTable(
+                        'catalog_product_entity'
+                    ),
+                ],
+                'entity_table.entity_id = ' . $stockItemTable . '.product_id',
+                []
+            )->where('stock_id = ?', 1);
 
         foreach ($wheres as $where) {
             $stockQuery->where($where[0], $where[1]);
@@ -371,7 +373,7 @@ class Product extends ProductResourceModel
         }
 
         $this->iterator->walk(
-            (string)$stockQuery,
+            (string) $stockQuery,
             [[$this, 'handleStockItem']],
             [],
             $this->_resource->getConnection()
@@ -381,11 +383,13 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * HandleStockItem
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleStockItem($args)
+    public function handleStockItem(array $args): void
     {
         $productId = $args['row']['product_id'];
         $isInStock = $args['row']['is_in_stock'];
@@ -398,15 +402,20 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * GetStatusData
+     *
      * @param array      $wheres
      * @param array|null $joinInner
+     *
      * @return array
      */
-    public function getStatusData($wheres, $joinInner = null)
+    public function getStatusData(array $wheres, array $joinInner = null): array
     {
         $this->statusData = [];
         $productWebsiteTable = $this->getTable('catalog_product_website');
-        $productWebsiteQuery = $this->_resource->getConnection()->select()
+        $productWebsiteQuery = $this->_resource
+            ->getConnection()
+            ->select()
             ->from(
                 $productWebsiteTable,
                 [
@@ -433,7 +442,7 @@ class Product extends ProductResourceModel
         }
 
         $this->iterator->walk(
-            (string)$productWebsiteQuery,
+            (string) $productWebsiteQuery,
             [[$this, 'handleStatusItem']],
             [],
             $this->_resource->getConnection()
@@ -443,11 +452,13 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * HandleStatusItem
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleStatusItem($args)
+    public function handleStatusItem(array $args): void
     {
         $productId = $args['row']['product_id'];
         $websiteId = $args['row']['website_id'];
@@ -456,10 +467,12 @@ class Product extends ProductResourceModel
             $this->statusData[$productId] = [];
         }
 
-        $this->statusData[$productId][] = (int)$websiteId;
+        $this->statusData[$productId][] = (int) $websiteId;
     }
 
     /**
+     * GetAttributeData
+     *
      * @param array      $wheres
      * @param array      $storeIds
      * @param string[]   $attributeCodes
@@ -468,11 +481,11 @@ class Product extends ProductResourceModel
      * @return array
      */
     public function getAttributeData(
-        $wheres,
-        $storeIds,
-        $attributeCodes,
-        $joinInner = null
-    ) {
+        array $wheres,
+        array $storeIds,
+        array $attributeCodes,
+        array $joinInner = null
+    ): array {
         $this->mainTable = $this->getEntityTable();
         $this->attributeData = [];
 
@@ -481,14 +494,9 @@ class Product extends ProductResourceModel
         $attributeTables = [];
         $sourceModels = [];
 
-        /** @var ProductAttributeCollection $productAttributeCollection */
-        $productAttributeCollection =
-            $this->productAttributeCollectionFactory->create();
-        $productAttributeCollection
-            ->addFieldToFilter(
-                'entity_type_id',
-                ['eq' => self::PRODUCT_ENTITY_TYPE_ID]
-            )
+        $productAttributeCollection = $this->productAttributeCollectionFactory
+            ->create()
+            ->addFieldToFilter('entity_type_id', ['eq' => self::PRODUCT_ENTITY_TYPE_ID])
             ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
         /** @var ProductAttribute $productAttribute */
@@ -497,7 +505,7 @@ class Product extends ProductResourceModel
                 try {
                     $sourceModels[$productAttribute->getAttributeCode()] =
                         $productAttribute->getSource();
-                } catch (\Exception $e) { } // @codingStandardsIgnoreLine
+                } catch (Exception $e) {} // @codingStandardsIgnoreLine
             }
 
             $attributeTable = $productAttribute->getBackendTable();
@@ -508,7 +516,7 @@ class Product extends ProductResourceModel
                     $attributeTables[] = $attributeTable;
                 }
                 $attributeMapper[$productAttribute->getAttributeCode()] =
-                    (int)$productAttribute->getId();
+                    (int) $productAttribute->getId();
             }
         }
 
@@ -539,30 +547,31 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * GetMainTableFieldItems
+     *
      * @param array      $mainTableFields
      * @param array      $wheres
      * @param array      $storeIds
      * @param array      $attributeMapper
      * @param array|null $joinInner
      *
-     * @return $this
+     * @return Product
      */
     private function getMainTableFieldItems(
-        $mainTableFields,
-        $wheres,
-        $storeIds,
-        $attributeMapper,
-        $joinInner = null
-    ) {
+        array $mainTableFields,
+        array $wheres,
+        array $storeIds,
+        array $attributeMapper,
+        array $joinInner = null
+    ): Product {
         if ($mainTableFields) {
             if (!in_array($this->linkField, $mainTableFields)) {
                 $mainTableFields[] = $this->linkField;
             }
-            $attributesQuery = $this->_resource->getConnection()->select()
-                                               ->from(
-                                                   $this->mainTable,
-                                                   $mainTableFields
-                                               );
+            $attributesQuery = $this->_resource
+                ->getConnection()
+                ->select()
+                ->from($this->mainTable, $mainTableFields);
 
             foreach ($wheres as $where) {
                 $attributesQuery->where($where[0], $where[1]);
@@ -577,7 +586,7 @@ class Product extends ProductResourceModel
             }
 
             $this->iterator->walk(
-                (string)$attributesQuery,
+                (string) $attributesQuery,
                 [[$this, 'handleMainTableAttributeDataTable']],
                 [
                     'storeIds'        => $storeIds,
@@ -595,41 +604,45 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * GetAttributeTableFieldItems
+     *
      * @param array      $attributeTables
      * @param array      $wheres
      * @param array      $storeIds
      * @param array      $attributeMapper
      * @param array|null $joinInner
      *
-     * @return $this
+     * @return Product
      */
     private function getAttributeTableFieldItems(
-        $attributeTables,
-        $wheres,
-        $storeIds,
-        $attributeMapper,
-        $joinInner = null
-    ) {
+        array $attributeTables,
+        array $wheres,
+        array $storeIds,
+        array $attributeMapper,
+        array $joinInner = null
+    ): Product {
         $attributeQueries = [];
 
         foreach ($attributeTables as $attributeTable) {
-            $attributeQuery = $this->_resource->getConnection()->select()
-                                              ->from(
-                                                  $attributeTable,
-                                                  [
-                                                      'attribute_id',
-                                                      'store_id',
-                                                      $this->linkField, 'value',
-                                                  ]
-                                              )
-                                              ->where(
-                                                  'store_id IN (?)',
-                                                  $storeIds
-                                              )
-                                              ->where(
-                                                  'attribute_id IN (?)',
-                                                  $attributeMapper
-                                              );
+            $attributeQuery = $this->_resource
+                ->getConnection()
+                ->select()
+                ->from(
+                    $attributeTable,
+                    [
+                        'attribute_id',
+                        'store_id',
+                        $this->linkField, 'value',
+                    ]
+                )
+                ->where(
+                    'store_id IN (?)',
+                    $storeIds
+                )
+                ->where(
+                    'attribute_id IN (?)',
+                    $attributeMapper
+                );
 
             foreach ($wheres as $where) {
                 $attributeQuery->where($where[0], $where[1]);
@@ -649,8 +662,9 @@ class Product extends ProductResourceModel
         try {
             if (count($attributeQueries)) {
                 $unionQuery = $this->_resource
-                    ->getConnection()->select()
-                    ->union($attributeQueries, Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+                    ->getConnection()
+                    ->select()
+                    ->union($attributeQueries, 'UNION ALL');
 
                 $this->iterator->walk(
                     (string) $unionQuery,
@@ -661,18 +675,20 @@ class Product extends ProductResourceModel
                     $this->_resource->getConnection()
                 );
             }
-        } catch (\Exception $e) { // @codingStandardsIgnoreLine
+        } catch (Exception $e) { // @codingStandardsIgnoreLine
         }
 
         return $this;
     }
 
     /**
+     * HandleMainTableAttributeDataTable
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleMainTableAttributeDataTable($args)
+    public function handleMainTableAttributeDataTable(array $args): void
     {
         $productId = $args['row'][$this->linkField];
 
@@ -686,11 +702,13 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * HandleAttributeDataTable
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleAttributeDataTable($args)
+    public function handleAttributeDataTable(array $args): void
     {
         $productId = $args['row'][$this->linkField];
         $attributeCode = $this->findAttributeCodeById(
@@ -705,12 +723,14 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * FindAttributeCodeById
+     *
      * @param int   $attributeId
      * @param array $attributeMapper
      *
      * @return string
      */
-    private function findAttributeCodeById($attributeId, $attributeMapper)
+    private function findAttributeCodeById(int $attributeId, array $attributeMapper): string
     {
         foreach ($attributeMapper as $attributeCode => $attributeCodeId) {
             if ($attributeId == $attributeCodeId) {
@@ -722,12 +742,14 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * InitStoreProductData
+     *
      * @param int $productId
      * @param int $storeId
      *
      * @return void
      */
-    private function initStoreProductData($productId, $storeId)
+    private function initStoreProductData(int $productId, int $storeId): void
     {
         if (!array_key_exists($productId, $this->attributeData)) {
             $this->attributeData[$productId] = [];
@@ -739,19 +761,22 @@ class Product extends ProductResourceModel
     }
 
     /**
-     * @param array $websiteIds
-     * @param int[] $customerGroupIds
-     * @param array $wheres
-     * @param array $joinInner
+     * GetPrices
+     *
+     * @param array      $websiteIds
+     * @param int[]      $customerGroupIds
+     * @param array      $wheres
+     * @param array|null $joinInner
      *
      * @return array
+     * @throws Zend_Db_Select_Exception
      */
     public function getPrices(
-        $websiteIds,
-        $customerGroupIds,
-        $wheres,
-        $joinInner
-    ) {
+        array $websiteIds,
+        array $customerGroupIds,
+        array $wheres,
+        array $joinInner = null
+    ): array {
         $this->priceData = [];
 
         if (empty($websiteIds)) {
@@ -790,7 +815,10 @@ class Product extends ProductResourceModel
 
         $unionSelects = [];
         foreach ($tables as $table) {
-            $select = $this->_resource->getConnection()->select()->reset()
+            $select = $this->_resource
+                ->getConnection()
+                ->select()
+                ->reset()
                 ->from($table, $columns)
                 ->joinLeft(
                     [
@@ -827,11 +855,9 @@ class Product extends ProductResourceModel
 
         if (count($unionSelects)) {
             $unionQuery = $this->_resource
-                ->getConnection()->select()
-                ->union(
-                    $unionSelects,
-                    Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
-                );
+                ->getConnection()
+                ->select()
+                ->union($unionSelects, 'UNION ALL');
 
             $this->iterator->walk(
                 (string) $unionQuery,
@@ -847,11 +873,13 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * HandleProductPriceTable
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleProductPriceTable($args)
+    public function handleProductPriceTable(array $args): void
     {
         $websiteId = $args['row']['website_id'];
 
@@ -867,12 +895,12 @@ class Product extends ProductResourceModel
                     $this->priceData[$entityId][$storeId] = [];
                 }
 
-                $minPrice = (float)$args['row']['minimal_price'];
-                $price = (float)$args['row']['price'];
+                $minPrice = (float) $args['row']['minimal_price'];
+                $price = (float) $args['row']['price'];
                 if (!$price) {
                     $price = $minPrice;
                 }
-                $finalPrice = (float)$args['row']['final_price'];
+                $finalPrice = (float) $args['row']['final_price'];
                 if (!$finalPrice) {
                     $finalPrice = $minPrice;
                 }
@@ -887,12 +915,14 @@ class Product extends ProductResourceModel
     }
 
     /**
+     * GetPriceIndexTable
+     *
      * @param int $websiteId
      * @param int $customerGroupId
      *
      * @return string
      */
-    private function getPriceIndexTable($websiteId, $customerGroupId)
+    private function getPriceIndexTable(int $websiteId, int $customerGroupId): string
     {
 
         if (!($this->priceTableResolver instanceof PriceTableResolver)) {
@@ -906,11 +936,11 @@ class Product extends ProductResourceModel
             [
                 $this->dimensionFactory->create(
                     WebsiteDimensionProvider::DIMENSION_NAME,
-                    (string)$websiteId
+                    (string) $websiteId
                 ),
                 $this->dimensionFactory->create(
                     CustomerGroupDimensionProvider::DIMENSION_NAME,
-                    (string)$customerGroupId
+                    (string) $customerGroupId
                 ),
             ]
         );

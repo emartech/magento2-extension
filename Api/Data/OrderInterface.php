@@ -6,17 +6,21 @@ use Magento\Sales\Api\Data\OrderInterface as OriginalOrderInterface;
 
 interface OrderInterface extends OriginalOrderInterface
 {
-    const ID_KEY = 'id';
+    public const ID_KEY = 'id';
 
     /**
+     * GetId
+     *
      * @return int
      */
-    public function getId();
+    public function getId(): int;
 
     /**
+     * SetId
+     *
      * @param int $id
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\OrderInterface
      */
-    public function setId($id);
+    public function setId($id): OrderInterface;
 }

@@ -13,27 +13,33 @@ use Magento\Framework\DataObject;
 class InventoryItemItem extends DataObject implements InventoryItemItemInterface
 {
     /**
+     * GetQuantity
+     *
      * @return float
      */
-    public function getQuantity()
+    public function getQuantity(): float
     {
-        return $this->getData(self::QUANTITY_KEY);
+        return (float) $this->getData(self::QUANTITY_KEY);
     }
 
     /**
+     * GetSourceCode
+     *
      * @return string
      */
-    public function getSourceCode()
+    public function getSourceCode(): string
     {
-        return $this->getData(self::SOURCE_CODE_KEY);
+        return (string) $this->getData(self::SOURCE_CODE_KEY);
     }
 
     /**
+     * SetQuantity
+     *
      * @param float $quantity
      *
-     * @return $this
+     * @return InventoryItemItemInterface
      */
-    public function setQuantity($quantity)
+    public function setQuantity(float $quantity): InventoryItemItemInterface
     {
         $this->setData(self::QUANTITY_KEY, $quantity);
 
@@ -41,11 +47,13 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
     }
 
     /**
+     * SetSourceCode
+     *
      * @param string $sourceCode
      *
-     * @return $this
+     * @return InventoryItemItemInterface
      */
-    public function setSourceCode($sourceCode)
+    public function setSourceCode(string $sourceCode): InventoryItemItemInterface
     {
         $this->setData(self::SOURCE_CODE_KEY, $sourceCode);
 
@@ -53,19 +61,23 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
     }
 
     /**
+     * GetIsInStock
+     *
      * @return bool
      */
-    public function getIsInStock()
+    public function getIsInStock(): bool
     {
         return (bool) $this->getData(self::IS_IN_STOCK_KEY);
     }
 
     /**
-     * @param int $isInStock
+     * SetIsInStock
      *
-     * @return $this
+     * @param bool $isInStock
+     *
+     * @return InventoryItemItemInterface
      */
-    public function setIsInStock($isInStock)
+    public function setIsInStock(bool $isInStock): InventoryItemItemInterface
     {
         $this->setData(self::IS_IN_STOCK_KEY, $isInStock);
 

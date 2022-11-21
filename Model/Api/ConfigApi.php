@@ -8,8 +8,8 @@ use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
 use Emartech\Emarsys\Api\Data\StatusResponseInterface;
 use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
-use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Framework\App\Cache\TypeListInterface as CacheTypeList;
+use Magento\Framework\Webapi\Exception as WebApiException;
 
 class ConfigApi implements ConfigApiInterface
 {
@@ -58,12 +58,14 @@ class ConfigApi implements ConfigApiInterface
     }
 
     /**
+     * Set
+     *
      * @param int             $websiteId
      * @param ConfigInterface $config
      *
      * @return StatusResponseInterface
      */
-    public function set($websiteId, ConfigInterface $config)
+    public function set(int $websiteId, ConfigInterface $config): StatusResponseInterface
     {
         $foundDifference = false;
 
@@ -78,11 +80,14 @@ class ConfigApi implements ConfigApiInterface
             $this->cacheTypeList->cleanType('full_page');
         }
 
-        return $this->statusResponseFactory->create()
+        return $this->statusResponseFactory
+            ->create()
             ->setStatus('ok');
     }
 
     /**
+     * SetAttributes
+     *
      * @param string   $type
      * @param int      $websiteId
      * @param string[] $codes
@@ -90,13 +95,12 @@ class ConfigApi implements ConfigApiInterface
      * @return StatusResponseInterface
      * @throws WebApiException
      */
-    public function setAttributes($type, $websiteId, $codes)
+    public function setAttributes(string $type, int $websiteId, array $codes): StatusResponseInterface
     {
         if (!in_array($type, AttributesApiInterface::TYPES)) {
             throw new WebApiException(__('Invalid Type'));
         }
 
-        /** @var ConfigInterface $config */
         $config = $this->configFactory->create();
 
         if (0 !== $websiteId && !array_key_exists($websiteId, $config->getAvailableWebsites())) {
@@ -107,7 +111,8 @@ class ConfigApi implements ConfigApiInterface
             $config->cleanScope();
         }
 
-        return $this->statusResponseFactory->create()
+        return $this->statusResponseFactory
+            ->create()
             ->setStatus('ok');
     }
 }

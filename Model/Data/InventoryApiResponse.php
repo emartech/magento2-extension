@@ -14,11 +14,13 @@ use Magento\Framework\DataObject;
 class InventoryApiResponse extends DataObject implements InventoryApiResponseInterface
 {
     /**
+     * SetItems
+     *
      * @param InventoryItemInterface[] $items
      *
      * @return $this
      */
-    public function setItems(array $items)
+    public function setItems(array $items): InventoryApiResponseInterface
     {
         $this->setData(self::ITEMS_KEY, $items);
 
@@ -26,9 +28,11 @@ class InventoryApiResponse extends DataObject implements InventoryApiResponseInt
     }
 
     /**
+     * GetItems
+     *
      * @return InventoryItemInterface[]
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->getData(self::ITEMS_KEY);
     }

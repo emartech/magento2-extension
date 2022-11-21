@@ -2,26 +2,32 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Emartech\Emarsys\Api\Data\SubscriptionInterface;
 use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
 
 class SubscriptionsApiResponse extends ListApiResponseBase implements SubscriptionsApiResponseInterface
 {
     /**
-     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface[]
+     * GetSubscriptions
+     *
+     * @return SubscriptionInterface[]
      */
-    public function getSubscriptions()
+    public function getSubscriptions(): array
     {
         return $this->getData(self::SUBSCRIPTIONS_KEY);
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
+     * SetSubscriptions
      *
-     * @return $this
+     * @param SubscriptionInterface[] $subscriptions
+     *
+     * @return SubscriptionsApiResponseInterface
      */
-    public function setSubscriptions(array $subscriptions)
+    public function setSubscriptions(array $subscriptions): SubscriptionsApiResponseInterface
     {
         $this->setData(self::SUBSCRIPTIONS_KEY, $subscriptions);
+
         return $this;
     }
 }

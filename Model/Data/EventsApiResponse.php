@@ -2,26 +2,32 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Emartech\Emarsys\Api\Data\EventInterface;
 use Emartech\Emarsys\Api\Data\EventsApiResponseInterface;
 
 class EventsApiResponse extends ListApiResponseBase implements EventsApiResponseInterface
 {
     /**
-     * @return \Emartech\Emarsys\Api\Data\EventInterface[]
+     * GetEvents
+     *
+     * @return EventInterface[]
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->getData(self::EVENTS_KEY);
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\EventInterface[] $events
+     * SetEvents
      *
-     * @return $this
+     * @param EventInterface[] $events
+     *
+     * @return EventsApiResponseInterface
      */
-    public function setEvents(array $events)
+    public function setEvents(array $events): EventsApiResponseInterface
     {
         $this->setData(self::EVENTS_KEY, $events);
+
         return $this;
     }
 }

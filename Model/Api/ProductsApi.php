@@ -11,8 +11,7 @@ use Emartech\Emarsys\Api\Data\ProductsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\ProductsApiInterface;
 use Emartech\Emarsys\Helper\LinkField as LinkFieldHelper;
 use Emartech\Emarsys\Helper\Product as ProductHelper;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Model\Product;
+use Exception;
 use Magento\Framework\Data\Collection as DataCollection;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Store\Model\StoreManagerInterface;
@@ -25,12 +24,12 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     private $productsApiResponseFactory;
 
     /**
-     * ProductsApi constructor.
-     *
      * @param StoreManagerInterface               $storeManager
      * @param ProductsApiResponseInterfaceFactory $productsApiResponseFactory
      * @param LinkFieldHelper                     $linkFieldHelper
      * @param ProductHelper                       $productHelper
+     *
+     * @throws Exception
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -48,6 +47,8 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
+     * Get
+     *
      * @param int    $page
      * @param int    $pageSize
      * @param string $storeId
@@ -55,7 +56,7 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
      * @return ProductsApiResponseInterface
      * @throws WebApiException
      */
-    public function get($page, $pageSize, $storeId)
+    public function get(int $page, int $pageSize, string $storeId): ProductsApiResponseInterface
     {
         $this
             ->initStores($storeId)
@@ -72,23 +73,21 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
 
         $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
-        return $this->productsApiResponseFactory->create()
+        return $this->productsApiResponseFactory
+            ->create()
             ->setCurrentPage($page)
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
             ->setTotalCount($this->numberOfItems)
-            ->setProducts(
-                $this->handleProducts(
-                    $this->productHelper->getProductCollection()
-                )
-            );
+            ->setProducts($this->handleProducts($this->productHelper->getProductCollection()));
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return ProductsApi
      */
-    // @codingStandardsIgnoreLine
-    protected function initCollection()
+    protected function initCollection(): ProductsApi
     {
         $this->productHelper->initCollection();
 
@@ -96,15 +95,16 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
+     * HandleIds
+     *
      * @param int $page
      * @param int $pageSize
      *
-     * @return $this
+     * @return ProductsApi
      */
-    // @codingStandardsIgnoreLine
-    protected function handleIds($page, $pageSize)
+    protected function handleIds(int $page, int $pageSize): ProductsApi
     {
-        $page--;
+        $page --;
         $page *= $pageSize;
 
         $data = $this->productHelper->handleIds($page, $pageSize);
@@ -117,28 +117,27 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @return $this
+     * GetPrices
+     *
+     * @return ProductsApi
      */
-    protected function getPrices()
+    protected function getPrices(): ProductsApi
     {
         $wheres = [
             ['entity_table.' . $this->linkField . ' >= ?', $this->minId],
             ['entity_table.' . $this->linkField . ' <= ?', $this->maxId],
         ];
-        $this->productHelper->getPrices(
-            $this->websiteIds,
-            $this->customerGroups,
-            $wheres
-        );
+        $this->productHelper->getPrices($this->websiteIds, $this->customerGroups, $wheres);
 
         return $this;
     }
 
     /**
-     * @return $this
+     * HandleCategoryIds
+     *
+     * @return ProductsApi
      */
-    // @codingStandardsIgnoreLine
-    protected function handleCategoryIds()
+    protected function handleCategoryIds(): ProductsApi
     {
         $this->productHelper->getCategoryIds(
             [
@@ -151,10 +150,11 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @return $this
+     * HandleChildrenProductIds
+     *
+     * @return ProductsApi
      */
-    // @codingStandardsIgnoreLine
-    protected function handleChildrenProductIds()
+    protected function handleChildrenProductIds(): ProductsApi
     {
         $this->productHelper->getChildrenProductIds(
             [
@@ -167,10 +167,11 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @return $this
+     * HandleStockData
+     *
+     * @return ProductsApi
      */
-    // @codingStandardsIgnoreLine
-    protected function handleStockData()
+    protected function handleStockData(): ProductsApi
     {
         $this->productHelper->getStockData(
             [
@@ -182,7 +183,12 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
         return $this;
     }
 
-    protected function handleStatusData()
+    /**
+     * HandleStatusData
+     *
+     * @return ProductsApi
+     */
+    protected function handleStatusData(): ProductsApi
     {
         $this->productHelper->getStatusData(
             [
@@ -195,9 +201,11 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @return $this
+     * HandleAttributes
+     *
+     * @return ProductsApi
      */
-    private function handleAttributes()
+    private function handleAttributes(): ProductsApi
     {
         $this->productHelper->getAttributeData(
             [
@@ -211,10 +219,11 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @return $this
+     * SetWhere
+     *
+     * @return ProductsApi
      */
-    // @codingStandardsIgnoreLine
-    protected function setWhere()
+    protected function setWhere(): ProductsApi
     {
         $this->productHelper->setWhere(
             $this->linkField,
@@ -226,10 +235,11 @@ class ProductsApi extends BaseProductsApi implements ProductsApiInterface
     }
 
     /**
-     * @return $this
+     * SetOrder
+     *
+     * @return ProductsApi
      */
-    // @codingStandardsIgnoreLine
-    protected function setOrder()
+    protected function setOrder(): ProductsApi
     {
         $this->productHelper->setOrder(
             $this->linkField,

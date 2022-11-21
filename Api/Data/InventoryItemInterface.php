@@ -9,30 +9,38 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface InventoryItemInterface
 {
-    const SKU_KEY = 'sku';
-    const INVENTORY_ITEMS_KEY = 'inventory_items';
+    public const SKU_KEY             = 'sku';
+    public const INVENTORY_ITEMS_KEY = 'inventory_items';
 
     /**
+     * GetSku
+     *
      * @return string
      */
-    public function getSku();
+    public function getSku(): string;
 
     /**
+     * SetSku
+     *
      * @param string $sku
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\InventoryItemInterface
      */
-    public function setSku($sku);
+    public function setSku(string $sku): InventoryItemInterface;
 
     /**
+     * GetInventoryItems
+     *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface[]
      */
-    public function getInventoryItems();
+    public function getInventoryItems(): array;
 
     /**
+     * SetInventoryItems
+     *
      * @param \Emartech\Emarsys\Api\Data\InventoryItemItemInterface[] $inventoryItems
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\InventoryItemInterface
      */
-    public function setInventoryItems($inventoryItems);
+    public function setInventoryItems(array $inventoryItems): InventoryItemInterface;
 }

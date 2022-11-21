@@ -9,17 +9,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface InventoryApiResponseInterface
 {
-    const ITEMS_KEY = 'items';
+    public const ITEMS_KEY = 'items';
 
     /**
+     * GetItems
+     *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemInterface[]
      */
-    public function getItems();
+    public function getItems(): array;
 
     /**
+     * SetItems
+     *
      * @param \Emartech\Emarsys\Api\Data\InventoryItemInterface[] $items
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\InventoryApiResponseInterface
      */
-    public function setItems(array $items);
+    public function setItems(array $items): InventoryApiResponseInterface;
 }

@@ -9,43 +9,55 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface ExtraFieldsInterface
 {
-    const KEY_KEY        = 'key';
-    const VALUE_KEY      = 'value';
-    const TEXT_VALUE_KEY = 'text_value';
+    public const KEY_KEY        = 'key';
+    public const VALUE_KEY      = 'value';
+    public const TEXT_VALUE_KEY = 'text_value';
 
     /**
+     * GetKey
+     *
      * @return string
      */
-    public function getKey();
+    public function getKey(): string;
 
     /**
+     * GetValue
+     *
      * @return string
      */
-    public function getValue();
+    public function getValue(): string;
 
     /**
+     * GetTextValue
+     *
      * @return string|null
      */
-    public function getTextValue();
+    public function getTextValue(): ?string;
 
     /**
+     * SetKey
+     *
      * @param string $key
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setKey($key);
+    public function setKey(string $key): ExtraFieldsInterface;
 
     /**
+     * SetValue
+     *
      * @param string $value
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setValue($value);
+    public function setValue(string $value): ExtraFieldsInterface;
 
     /**
-     * @param string $textValue
+     * SetTextValue
      *
-     * @return $this
+     * @param string|null $textValue
+     *
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setTextValue($textValue);
+    public function setTextValue(string $textValue = null): ExtraFieldsInterface;
 }

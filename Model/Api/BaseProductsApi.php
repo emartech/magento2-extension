@@ -7,12 +7,14 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
+use Emartech\Emarsys\Helper\LinkField as LinkFieldHelper;
 use Emartech\Emarsys\Helper\Product as ProductHelper;
+use Exception;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Framework\Webapi\Exception as WebApiException;
 use Magento\Store\Model\StoreManagerInterface;
-use Emartech\Emarsys\Helper\LinkField as LinkFieldHelper;
 
 class BaseProductsApi
 {
@@ -67,11 +69,11 @@ class BaseProductsApi
     protected $maxId = 0;
 
     /**
-     * BaseProductsApi constructor.
-     *
      * @param StoreManagerInterface $storeManager
      * @param ProductHelper         $productHelper
      * @param LinkFieldHelper       $linkFieldHelper
+     *
+     * @throws Exception
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -81,19 +83,18 @@ class BaseProductsApi
         $this->storeManager = $storeManager;
         $this->productHelper = $productHelper;
         $this->linkFieldHelper = $linkFieldHelper;
-        $this->linkField = $this->linkFieldHelper->getEntityLinkField(
-            ProductInterface::class
-        );
+        $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
     }
 
     /**
-     * @param mixed $storeIds
+     * InitStores
+     *
+     * @param int|int[] $storeIds
      *
      * @return $this
      * @throws WebApiException
      */
-    // @codingStandardsIgnoreLine
-    protected function initStores($storeIds)
+    protected function initStores($storeIds): BaseProductsApi
     {
         if (!is_array($storeIds)) {
             $storeIds = explode(',', $storeIds);
@@ -105,7 +106,7 @@ class BaseProductsApi
             if (array_key_exists($storeId, $availableStores)) {
                 $availableStore = $availableStores[$storeId];
                 $this->storeIds[$storeId] = $availableStore;
-                $websiteId = (int)$availableStore->getWebsiteId();
+                $websiteId = (int) $availableStore->getWebsiteId();
                 if ($websiteId) {
                     if (!array_key_exists($websiteId, $this->websiteIds)) {
                         $this->websiteIds[$websiteId] = [];
@@ -123,12 +124,13 @@ class BaseProductsApi
     }
 
     /**
-     * @param $productCollection
+     * HandleProducts
+     *
+     * @param ProductCollection $productCollection
      *
      * @return array
      */
-    // @codingStandardsIgnoreLine
-    protected function handleProducts($productCollection)
+    protected function handleProducts(ProductCollection $productCollection): array
     {
         $returnArray = [];
 

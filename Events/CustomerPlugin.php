@@ -6,9 +6,9 @@ use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 use Emartech\Emarsys\Helper\Json;
-use Emartech\Emarsys\Model\Event as EventModel;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
+use Exception;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\EmailNotificationInterface;
 use Magento\Framework\Exception\AlreadyExistsException;
@@ -20,15 +20,15 @@ use Psr\Log\LoggerInterface;
 
 class CustomerPlugin
 {
-    const EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL = 'newsletter_send_confirmation_success_email';
-    const EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL = 'newsletter_send_confirmation_request_email';
-    const EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL       = 'newsletter_send_unsubscription_email';
-    const EVENT_CUSTOMER_NEW_ACCOUNT                       = 'customer_new_account_';
-    const EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED        = 'customer_email_and_password_changed';
-    const EVENT_CUSTOMER_EMAIL_CHANGED                     = 'customer_email_changed';
-    const EVENT_CUSTOMER_PASSWORD_RESET                    = 'customer_password_reset';
-    const EVENT_CUSTOMER_PASSWORD_REMINDER                 = 'customer_password_reminder';
-    const EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION       = 'customer_password_reset_confirmation';
+    public const EVENT_NEWSLETTER_SEND_CONFIRMATION_SUCCESS_EMAIL = 'newsletter_send_confirmation_success_email';
+    public const EVENT_NEWSLETTER_SEND_CONFIRMATION_REQUEST_EMAIL = 'newsletter_send_confirmation_request_email';
+    public const EVENT_NEWSLETTER_SEND_UNSUBSCRIPTION_EMAIL       = 'newsletter_send_unsubscription_email';
+    public const EVENT_CUSTOMER_NEW_ACCOUNT                       = 'customer_new_account_';
+    public const EVENT_CUSTOMER_EMAIL_AND_PASSWORD_CHANGED        = 'customer_email_and_password_changed';
+    public const EVENT_CUSTOMER_EMAIL_CHANGED                     = 'customer_email_changed';
+    public const EVENT_CUSTOMER_PASSWORD_RESET                    = 'customer_password_reset';
+    public const EVENT_CUSTOMER_PASSWORD_REMINDER                 = 'customer_password_reminder';
+    public const EVENT_CUSTOMER_PASSWORD_RESET_CONFIRMATION       = 'customer_password_reset_confirmation';
 
     /**
      * @var StoreManagerInterface
@@ -95,6 +95,8 @@ class CustomerPlugin
     }
 
     /**
+     * AroundSendConfirmationSuccessEmail
+     *
      * @param Subscriber $subscriber
      * @param callable   $proceed
      *
@@ -108,6 +110,8 @@ class CustomerPlugin
     }
 
     /**
+     * AroundSendConfirmationRequestEmail
+     *
      * @param Subscriber $subscriber
      * @param callable   $proceed
      *
@@ -121,6 +125,8 @@ class CustomerPlugin
     }
 
     /**
+     * AroundSendUnsubscriptionEmail
+     *
      * @param Subscriber $subscriber
      * @param callable   $proceed
      *
@@ -134,6 +140,8 @@ class CustomerPlugin
     }
 
     /**
+     * AroundNewAccount
+     *
      * @param EmailNotificationInterface $emailNotification
      * @param callable                   $proceed
      * @param CustomerInterface          $customer
@@ -147,15 +155,14 @@ class CustomerPlugin
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    // @codingStandardsIgnoreLine
     public function aroundNewAccount(
         EmailNotificationInterface $emailNotification,
         callable $proceed,
         CustomerInterface $customer,
-        $type = EmailNotificationInterface::NEW_ACCOUNT_EMAIL_REGISTERED,
+        string $type = EmailNotificationInterface::NEW_ACCOUNT_EMAIL_REGISTERED,
         $backUrl = '',
-        $storeId = 0,
-        $senderMailStoreId = null
+        int $storeId = 0,
+        int $senderMailStoreId = null
     ) {
         if (!$storeId) {
             $storeId = $this->getWebsiteStoreId($customer, $senderMailStoreId);
@@ -194,6 +201,8 @@ class CustomerPlugin
     }
 
     /**
+     * AroundCredentialsChanged
+     *
      * @param EmailNotificationInterface $emailNotification
      * @param callable                   $proceed
      * @param CustomerInterface          $savedCustomer
@@ -204,13 +213,12 @@ class CustomerPlugin
      * @throws AlreadyExistsException
      * @throws NoSuchEntityException
      */
-    // @codingStandardsIgnoreLine
     public function aroundCredentialsChanged(
         EmailNotificationInterface $emailNotification,
         callable $proceed,
         CustomerInterface $savedCustomer,
-        $origCustomerEmail,
-        $isPasswordChanged = false
+        string $origCustomerEmail,
+        bool $isPasswordChanged = false
     ) {
         $websiteId = $savedCustomer->getWebsiteId();
         $storeId = $savedCustomer->getStoreId();
@@ -269,6 +277,8 @@ class CustomerPlugin
     }
 
     /**
+     * AroundPasswordReminder
+     *
      * @param EmailNotificationInterface $emailNotification
      * @param callable                   $proceed
      * @param CustomerInterface          $customer
@@ -277,7 +287,6 @@ class CustomerPlugin
      * @throws AlreadyExistsException
      * @throws NoSuchEntityException
      */
-    // @codingStandardsIgnoreLine
     public function aroundPasswordReminder(
         EmailNotificationInterface $emailNotification,
         callable $proceed,
@@ -318,6 +327,8 @@ class CustomerPlugin
     }
 
     /**
+     * AroundPasswordResetConfirmation
+     *
      * @param EmailNotificationInterface $emailNotification
      * @param callable                   $proceed
      * @param CustomerInterface          $customer
@@ -326,7 +337,6 @@ class CustomerPlugin
      * @throws AlreadyExistsException
      * @throws NoSuchEntityException
      */
-    // @codingStandardsIgnoreLine
     public function aroundPasswordResetConfirmation(
         EmailNotificationInterface $emailNotification,
         callable $proceed,
@@ -367,28 +377,33 @@ class CustomerPlugin
     }
 
     /**
+     * GetWebsiteStoreId
+     *
      * @param CustomerInterface $customer
      * @param null              $defaultStoreId
      *
      * @return int
      * @throws LocalizedException
      */
-    private function getWebsiteStoreId($customer, $defaultStoreId = null)
+    private function getWebsiteStoreId(CustomerInterface $customer, $defaultStoreId = null): int
     {
         if ($customer->getWebsiteId() != 0 && empty($defaultStoreId)) {
             $storeIds = $this->storeManager->getWebsite($customer->getWebsiteId())->getStoreIds();
             $defaultStoreId = reset($storeIds);
         }
+
         return $defaultStoreId;
     }
 
     /**
+     * GetDataFromSubscription
+     *
      * @param Subscriber $subscriber
-     * @param int $websiteId
+     * @param int        $websiteId
      *
      * @return array
      */
-    private function getDataFromSubscription(Subscriber $subscriber, $websiteId)
+    private function getDataFromSubscription(Subscriber $subscriber, int $websiteId): array
     {
         $data = [
             'subscriber' => $subscriber->getData(),
@@ -404,22 +419,28 @@ class CustomerPlugin
                 $data['customer'] = $customerData;
             }
         }
+
         return $data;
     }
 
     /**
+     * HandleConfirmation
+     *
      * @param Subscriber $subscriber
      * @param string     $type
+     * @param callable   $proceed
      *
-     * @return bool
+     * @return mixed
      */
-    private function handleConfirmation($subscriber, $type, $proceed)
+    private function handleConfirmation(Subscriber $subscriber, string $type, callable $proceed)
     {
         $storeId = $subscriber->getStoreId();
 
         try {
             $websiteId = $this->storeManager->getStore($storeId)->getWebsiteId();
-        } catch (\Exception $e) { } //@codingStandardsIgnoreLine
+        } catch (Exception $e) {
+            $websiteId = null;
+        }
 
         $marketingEventsEnabled = $this->configReader
             ->isEnabledForWebsite(ConfigInterface::MARKETING_EVENTS, $websiteId);
@@ -435,7 +456,7 @@ class CustomerPlugin
                     $subscriber->getId(),
                     $this->getDataFromSubscription($subscriber, $websiteId)
                 );
-            } catch (\Exception $e) { } //@codingStandardsIgnoreLine
+            } catch (Exception $e) {} //@codingStandardsIgnoreLine
 
             if ($magentoSendEmailEnabled) {
                 return $proceed($subscriber);
@@ -446,6 +467,8 @@ class CustomerPlugin
     }
 
     /**
+     * SaveEvent
+     *
      * @param int    $websiteId
      * @param int    $storeId
      * @param string $type
@@ -453,14 +476,14 @@ class CustomerPlugin
      * @param array  $data
      *
      * @return void
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @throws AlreadyExistsException
      */
-    private function saveEvent($websiteId, $storeId, $type, $entityId, $data)
+    private function saveEvent(int $websiteId, int $storeId, string $type, int $entityId, array $data): void
     {
         $data = $this->json->serialize($data);
 
-        /** @var EventModel $eventModel */
-        $eventModel = $this->eventFactory->create()
+        $eventModel = $this->eventFactory
+            ->create()
             ->setEntityId($entityId)
             ->setWebsiteId($websiteId)
             ->setStoreId($storeId)

@@ -11,27 +11,29 @@ use Emartech\Emarsys\Api\Data\AttributesApiResponseInterface;
 
 interface AttributesApiInterface
 {
-    const TYPE_CUSTOMER         = 'customer';
-    const TYPE_CUSTOMER_ADDRESS = 'customer_address';
-    const TYPE_PRODUCT          = 'product';
-    const TYPE_CATEGORY         = 'category';
+    public const TYPE_CUSTOMER         = 'customer';
+    public const TYPE_CUSTOMER_ADDRESS = 'customer_address';
+    public const TYPE_PRODUCT          = 'product';
+    public const TYPE_CATEGORY         = 'category';
 
-    const TYPES = [
+    public const TYPES = [
         self::TYPE_CUSTOMER,
         self::TYPE_CUSTOMER_ADDRESS,
         self::TYPE_PRODUCT,
         self::TYPE_CATEGORY,
     ];
 
-    const CUSTOMER_ENTITY_TYPE_ID         = 1;
-    const CUSTOMER_ADDRESS_ENTITY_TYPE_ID = 2;
-    const CATEGORY_ENTITY_TYPE_ID         = 3;
-    const PRODUCT_ENTITY_TYPE_ID          = 4;
+    public const CUSTOMER_ENTITY_TYPE_ID         = 1;
+    public const CUSTOMER_ADDRESS_ENTITY_TYPE_ID = 2;
+    public const CATEGORY_ENTITY_TYPE_ID         = 3;
+    public const PRODUCT_ENTITY_TYPE_ID          = 4;
 
     /**
+     * Get
+     *
      * @param string $type
      *
      * @return \Emartech\Emarsys\Api\Data\AttributesApiResponseInterface
      */
-    public function get($type);
+    public function get(string $type): AttributesApiResponseInterface;
 }

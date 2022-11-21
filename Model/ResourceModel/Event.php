@@ -5,11 +5,11 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 class Event extends AbstractDb
 {
-  /**
-   * construct
-   * @return void
-   */
-    // @codingStandardsIgnoreLine
+    /**
+     * _construct
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init('emarsys_events_data', 'event_id');

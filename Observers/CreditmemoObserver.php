@@ -20,8 +20,6 @@ class CreditmemoObserver implements ObserverInterface
     private $logger;
 
     /**
-     * CreditmemoObserver constructor.
-     *
      * @param RefundEventHandler $refundEventHandler
      * @param LoggerInterface    $logger
      */
@@ -34,6 +32,8 @@ class CreditmemoObserver implements ObserverInterface
     }
 
     /**
+     * Execute
+     *
      * @param Observer $observer
      *
      * @return void

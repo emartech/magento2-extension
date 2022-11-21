@@ -4,95 +4,123 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface EventInterface
 {
-    const EVENT_ID_KEY   = 'event_id';
-    const EVENT_TYPE_KEY = 'event_type';
-    const EVENT_DATA_KEY = 'event_data';
-    const CREATED_AT_KEY = 'created_at';
-    const WEBSITE_ID_KEY = 'website_id';
-    const STORE_ID_KEY   = 'store_id';
-    const ENTITY_ID_KEY  = 'entity_id';
+    public const EVENT_ID_KEY   = 'event_id';
+    public const EVENT_TYPE_KEY = 'event_type';
+    public const EVENT_DATA_KEY = 'event_data';
+    public const CREATED_AT_KEY = 'created_at';
+    public const WEBSITE_ID_KEY = 'website_id';
+    public const STORE_ID_KEY   = 'store_id';
+    public const ENTITY_ID_KEY  = 'entity_id';
 
     /**
-     * @return string
-     */
-    public function getEventId();
-
-    /**
-     * @return string
-     */
-    public function getEventType();
-
-    /**
-     * @return string
-     */
-    public function getEventData();
-
-    /**
-     * @return string
-     */
-    public function getCreatedAt();
-
-    /**
+     * GetEventId
+     *
      * @return int
      */
-    public function getWebsiteId();
+    public function getEventId(): int;
 
     /**
+     * GetEventType
+     *
+     * @return string
+     */
+    public function getEventType(): string;
+
+    /**
+     * GetEventData
+     *
+     * @return string
+     */
+    public function getEventData(): string;
+
+    /**
+     * GetCreatedAt
+     *
+     * @return string
+     */
+    public function getCreatedAt(): string;
+
+    /**
+     * GetWebsiteId
+     *
      * @return int
      */
-    public function getStoreId();
+    public function getWebsiteId(): int;
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getEntityId();
+    public function getStoreId(): int;
 
     /**
+     * GetEntityId
+     *
+     * @return int
+     */
+    public function getEntityId(): int;
+
+    /**
+     * SetEventId
+     *
      * @param int $eventId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEventId($eventId);
+    public function setEventId(int $eventId): EventInterface;
 
     /**
+     * SetEventType
+     *
      * @param string $eventType
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEventType($eventType);
+    public function setEventType(string $eventType): EventInterface;
 
     /**
+     * SetEventData
+     *
      * @param string $eventData
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEventData($eventData);
+    public function setEventData(string $eventData): EventInterface;
 
     /**
+     * SetCreatedAt
+     *
      * @param string $createdAt
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setCreatedAt($createdAt);
+    public function setCreatedAt(string $createdAt): EventInterface;
 
     /**
+     * SetWebsiteId
+     *
      * @param int $websiteId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setWebsiteId($websiteId);
+    public function setWebsiteId(int $websiteId): EventInterface;
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setStoreId($storeId);
+    public function setStoreId(int $storeId): EventInterface;
 
     /**
+     * SetEntityId
+     *
      * @param int $entityId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEntityId($entityId);
+    public function setEntityId(int $entityId): EventInterface;
 }

@@ -2,13 +2,12 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
-use Magento\Sales\Model\ResourceModel\Order\Collection as OrderCollection;
-use Magento\Framework\Webapi\Exception as WebApiException;
-
-use Emartech\Emarsys\Api\OrdersApiInterface;
-use Emartech\Emarsys\Api\Data\OrdersApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
+use Emartech\Emarsys\Api\Data\OrdersApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\OrdersApiInterface;
+use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Sales\Model\ResourceModel\Order\Collection as OrderCollection;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 
 class OrdersApi implements OrdersApiInterface
 {
@@ -42,6 +41,8 @@ class OrdersApi implements OrdersApiInterface
     }
 
     /**
+     * Get
+     *
      * @param int         $page
      * @param int         $pageSize
      * @param int         $sinceId
@@ -50,7 +51,7 @@ class OrdersApi implements OrdersApiInterface
      * @return OrdersApiResponseInterface
      * @throws WebApiException
      */
-    public function get($page, $pageSize, $sinceId = 0, $storeId = null)
+    public function get(int $page, int $pageSize, int $sinceId = 0, string $storeId = null): OrdersApiResponseInterface
     {
         if (empty($storeId)) {
             throw new WebApiException(__('Store ID is required'));
@@ -62,7 +63,8 @@ class OrdersApi implements OrdersApiInterface
             ->filterSinceId($sinceId)
             ->setPage($page, $pageSize);
 
-        return $this->responseFactory->create()
+        return $this->responseFactory
+            ->create()
             ->setCurrentPage($this->orderCollection->getCurPage())
             ->setLastPage($this->orderCollection->getLastPageNumber())
             ->setPageSize($this->orderCollection->getPageSize())
@@ -71,9 +73,11 @@ class OrdersApi implements OrdersApiInterface
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return OrdersApi
      */
-    private function initCollection()
+    private function initCollection(): OrdersApi
     {
         $this->orderCollection = $this->orderCollectionFactory->create();
 
@@ -81,11 +85,13 @@ class OrdersApi implements OrdersApiInterface
     }
 
     /**
-     * @param int|string|null $storeId
+     * FilterStore
      *
-     * @return $this
+     * @param string|null $storeId
+     *
+     * @return OrdersApi
      */
-    private function filterStore($storeId = null)
+    private function filterStore(string $storeId = null): OrdersApi
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {
@@ -98,11 +104,13 @@ class OrdersApi implements OrdersApiInterface
     }
 
     /**
+     * FilterSinceId
+     *
      * @param int $sinceId
      *
-     * @return $this
+     * @return OrdersApi
      */
-    private function filterSinceId($sinceId = 0)
+    private function filterSinceId(int $sinceId = 0): OrdersApi
     {
         if ($sinceId) {
             $this->orderCollection
@@ -113,12 +121,14 @@ class OrdersApi implements OrdersApiInterface
     }
 
     /**
-     * @param $page
-     * @param $pageSize
+     * SetPage
      *
-     * @return $this
+     * @param int $page
+     * @param int $pageSize
+     *
+     * @return OrdersApi
      */
-    private function setPage($page, $pageSize)
+    private function setPage(int $page, int $pageSize): OrdersApi
     {
         $this->orderCollection->setPage($page, $pageSize);
 
@@ -126,9 +136,11 @@ class OrdersApi implements OrdersApiInterface
     }
 
     /**
+     * HandleItems
+     *
      * @return array
      */
-    private function handleItems()
+    private function handleItems(): array
     {
         $returnArray = [];
 

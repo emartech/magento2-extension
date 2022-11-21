@@ -17,8 +17,8 @@ use Magento\Catalog\Model\ResourceModel\Category\Attribute\CollectionFactory as 
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection as ProductAttributeCollection;
 use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as ProductAttributeCollectionFactory;
 use Magento\Customer\Model\ResourceModel\Address\Attribute\Collection as CustomerAddressAttributeCollection;
-use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory as
-    CustomerAddressAttributeCollectionFactory;
+use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory
+    as CustomerAddressAttributeCollectionFactory;
 use Magento\Customer\Model\ResourceModel\Attribute\Collection as CustomerAttributeCollection;
 use Magento\Customer\Model\ResourceModel\Attribute\CollectionFactory as CustomerAttributeCollectionFactory;
 use Magento\Eav\Model\Entity\Attribute as EavAttributeModel;
@@ -88,12 +88,14 @@ class AttributesApi implements AttributesApiInterface
     }
 
     /**
+     * Get
+     *
      * @param string $type
      *
      * @return AttributesApiResponseInterface
      * @throws WebApiException
      */
-    public function get($type)
+    public function get(string $type): AttributesApiResponseInterface
     {
         if (!in_array($type, self::TYPES)) {
             throw new WebApiException(__('Invalid Type'));
@@ -105,11 +107,13 @@ class AttributesApi implements AttributesApiInterface
     }
 
     /**
+     * InitCollection
+     *
      * @param string $type
      *
-     * @return $this
+     * @return AttributesApi
      */
-    private function initCollection($type)
+    private function initCollection(string $type): AttributesApi
     {
         switch ($type) {
             case AttributesApiInterface::TYPE_CATEGORY:
@@ -131,9 +135,11 @@ class AttributesApi implements AttributesApiInterface
     }
 
     /**
+     * HandleAttributes
+     *
      * @return AttributeInterface[]
      */
-    private function handleAttributes()
+    private function handleAttributes(): array
     {
         $returnArray = [];
         if (null === $this->attributeCollection) {
@@ -146,64 +152,69 @@ class AttributesApi implements AttributesApiInterface
                 continue;
             }
 
-            $returnArray[] = $this->attributeFactory->create()
+            $returnArray[] = $this->attributeFactory
+                ->create()
                 ->setCode($attribute->getAttributeCode())
                 ->setName($attribute->getFrontendLabel())
                 ->setIsVisible($attribute->getIsVisible())
                 ->setIsVisibleOnFront($attribute->getIsVisible() || $attribute->getIsVisibleOnFront())
-                ->setIsSystem((bool)$attribute->getIsSystem());
+                ->setIsSystem((bool) $attribute->getIsSystem());
         }
 
         return $returnArray;
     }
 
     /**
-     * @return $this
+     * GetCustomerAttributes
+     *
+     * @return AttributesApi
      */
-    private function getCustomerAttributes()
+    private function getCustomerAttributes(): AttributesApi
     {
-        /** @var CustomerAttributeCollection attributeCollection */
-        $this->attributeCollection = $this->customerAttributeCollectionFactory->create();
-        $this->attributeCollection
+        $this->attributeCollection = $this->customerAttributeCollectionFactory
+            ->create()
             ->addFieldToFilter('entity_type_id', ['eq' => self::CUSTOMER_ENTITY_TYPE_ID]);
 
         return $this;
     }
 
     /**
-     * @return $this
+     * GetCustomerAddressAttributes
+     *
+     * @return AttributesApi
      */
-    private function getCustomerAddressAttributes()
+    private function getCustomerAddressAttributes(): AttributesApi
     {
-        /** @var CustomerAddressAttributeCollection attributeCollection */
-        $this->attributeCollection = $this->customerAddressAttributeCollectionFactory->create();
-        $this->attributeCollection
+        $this->attributeCollection = $this->customerAddressAttributeCollectionFactory
+            ->create()
             ->addFieldToFilter('entity_type_id', ['eq' => self::CUSTOMER_ADDRESS_ENTITY_TYPE_ID]);
 
         return $this;
     }
 
     /**
-     * @return $this
+     * GetProductAttributes
+     *
+     * @return AttributesApi
      */
-    private function getProductAttributes()
+    private function getProductAttributes(): AttributesApi
     {
-        /** @var ProductAttributeCollection attributeCollection */
-        $this->attributeCollection = $this->productAttributeCollectionFactory->create();
-        $this->attributeCollection
+        $this->attributeCollection = $this->productAttributeCollectionFactory
+            ->create()
             ->addFieldToFilter('entity_type_id', ['eq' => self::PRODUCT_ENTITY_TYPE_ID]);
 
         return $this;
     }
 
     /**
-     * @return $this
+     * GetCategoryAttributes
+     *
+     * @return AttributesApi
      */
-    private function getCategoryAttributes()
+    private function getCategoryAttributes(): AttributesApi
     {
-        /** @var CategoryAttributeCollection attributeCollection */
-        $this->attributeCollection = $this->categoryAttributeCollectionFactory->create();
-        $this->attributeCollection
+        $this->attributeCollection = $this->categoryAttributeCollectionFactory
+            ->create()
             ->addFieldToFilter('entity_type_id', ['eq' => self::CATEGORY_ENTITY_TYPE_ID]);
 
         return $this;

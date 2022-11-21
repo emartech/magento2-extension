@@ -34,6 +34,8 @@ class CustomerAddressObserver implements ObserverInterface
     }
 
     /**
+     * Execute
+     *
      * @param Observer $observer
      *
      * @return void

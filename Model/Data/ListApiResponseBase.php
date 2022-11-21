@@ -2,85 +2,104 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\ListApiResponseBaseInterface;
+use Magento\Framework\DataObject;
 
 class ListApiResponseBase extends DataObject implements ListApiResponseBaseInterface
 {
     /**
+     * GetCurrentPage
+     *
      * @return int
      */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
-        return $this->getData(self::PAGE_KEY);
+        return (int) $this->getData(self::PAGE_KEY);
     }
 
     /**
+     * GetLastPage
+     *
      * @return int
      */
-    public function getLastPage()
+    public function getLastPage(): int
     {
-        return $this->getData(self::LAST_PAGE_KEY);
+        return (int) $this->getData(self::LAST_PAGE_KEY);
     }
 
     /**
+     * GetPageSize
+     *
      * @return int
      */
-    public function getPageSize()
+    public function getPageSize(): int
     {
-        return $this->getData(self::PAGE_SIZE_KEY);
+        return (int) $this->getData(self::PAGE_SIZE_KEY);
     }
 
     /**
+     * GetTotalCount
+     *
      * @return int
      */
-    public function getTotalCount()
+    public function getTotalCount(): int
     {
-        return $this->getData(self::TOTAL_COUNT_KEY);
+        return (int) $this->getData(self::TOTAL_COUNT_KEY);
     }
 
     /**
+     * SetCurrentPage
+     *
      * @param int $currentPage
      *
-     * @return $this
+     * @return ListApiResponseBaseInterface
      */
-    public function setCurrentPage($currentPage)
+    public function setCurrentPage(int $currentPage): ListApiResponseBaseInterface
     {
         $this->setData(self::PAGE_KEY, $currentPage);
+
         return $this;
     }
 
     /**
+     * SetLastPage
+     *
      * @param int $lastPage
      *
-     * @return $this
+     * @return ListApiResponseBaseInterface
      */
-    public function setLastPage($lastPage)
+    public function setLastPage(int $lastPage): ListApiResponseBaseInterface
     {
         $this->setData(self::LAST_PAGE_KEY, $lastPage);
+
         return $this;
     }
 
     /**
+     * SetPageSize
+     *
      * @param int $pageSize
      *
-     * @return $this
+     * @return ListApiResponseBaseInterface
      */
-    public function setPageSize($pageSize)
+    public function setPageSize(int $pageSize): ListApiResponseBaseInterface
     {
         $this->setData(self::PAGE_SIZE_KEY, $pageSize);
+
         return $this;
     }
 
     /**
+     * SetTotalCount
+     *
      * @param int $totalCount
      *
-     * @return $this
+     * @return ListApiResponseBaseInterface
      */
-    public function setTotalCount($totalCount)
+    public function setTotalCount(int $totalCount): ListApiResponseBaseInterface
     {
         $this->setData(self::TOTAL_COUNT_KEY, $totalCount);
+
         return $this;
     }
 }

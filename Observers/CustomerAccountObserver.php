@@ -21,8 +21,6 @@ class CustomerAccountObserver implements ObserverInterface
     private $logger;
 
     /**
-     * CustomerAccountObserver constructor.
-     *
      * @param CustomerEventHandler $customerEventHandler
      * @param LoggerInterface      $logger
      */
@@ -35,6 +33,8 @@ class CustomerAccountObserver implements ObserverInterface
     }
 
     /**
+     * Execute
+     *
      * @param Observer $observer
      *
      * @return void

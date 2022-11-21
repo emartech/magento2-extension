@@ -2,17 +2,19 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 use Emartech\Emarsys\Api\Data\OrderInterface;
+use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 
 class OrdersApiResponse extends ListApiResponseBase implements OrdersApiResponseInterface
 {
     /**
+     * SetItems
+     *
      * @param OrderInterface[] $items
      *
-     * @return $this
+     * @return OrdersApiResponseInterface
      */
-    public function setItems(array $items)
+    public function setItems(array $items): OrdersApiResponseInterface
     {
         $this->setData(self::ITEMS_KEY, $items);
 
@@ -20,9 +22,11 @@ class OrdersApiResponse extends ListApiResponseBase implements OrdersApiResponse
     }
 
     /**
+     * GetItems
+     *
      * @return OrderInterface[]
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->getData(self::ITEMS_KEY);
     }

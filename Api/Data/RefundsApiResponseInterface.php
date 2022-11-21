@@ -4,17 +4,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface RefundsApiResponseInterface extends ListApiResponseBaseInterface
 {
-    const ITEMS_KEY = 'items';
+    public const ITEMS_KEY = 'items';
 
     /**
+     * GetItems
+     *
      * @return \Emartech\Emarsys\Api\Data\RefundInterface[]
      */
-    public function getItems();
+    public function getItems(): array;
 
     /**
+     * SetItems
+     *
      * @param \Emartech\Emarsys\Api\Data\RefundInterface[] $items
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\RefundsApiResponseInterface
      */
-    public function setItems(array $items);
+    public function setItems(array $items): RefundsApiResponseInterface;
 }

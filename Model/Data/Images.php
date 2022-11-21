@@ -2,42 +2,49 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\ImagesInterface;
+use Magento\Framework\DataObject;
 
 class Images extends DataObject implements ImagesInterface
 {
     /**
+     * GetImage
+     *
      * @return string
      */
-    public function getImage()
+    public function getImage(): string
     {
-        return $this->getData(self::IMAGE_KEY);
+        return (string) $this->getData(self::IMAGE_KEY);
     }
 
     /**
+     * GetSmallImage
+     *
      * @return string
      */
-    public function getSmallImage()
+    public function getSmallImage(): string
     {
-        return $this->getData(self::SMALL_IMAGE_KEY);
+        return (string) $this->getData(self::SMALL_IMAGE_KEY);
     }
 
     /**
+     * GetThumbnail
+     *
      * @return string
      */
-    public function getThumbnail()
+    public function getThumbnail(): string
     {
-        return $this->getData(self::THUMBNAIL_KEY);
+        return (string) $this->getData(self::THUMBNAIL_KEY);
     }
 
     /**
+     * SetImage
+     *
      * @param string $image
      *
-     * @return $this
+     * @return ImagesInterface
      */
-    public function setImage($image)
+    public function setImage(string $image): ImagesInterface
     {
         $this->setData(self::IMAGE_KEY, $image);
 
@@ -45,11 +52,13 @@ class Images extends DataObject implements ImagesInterface
     }
 
     /**
+     * SetSmallImage
+     *
      * @param string $smallImage
      *
-     * @return $this
+     * @return ImagesInterface
      */
-    public function setSmallImage($smallImage)
+    public function setSmallImage(string $smallImage): ImagesInterface
     {
         $this->setData(self::SMALL_IMAGE_KEY, $smallImage);
 
@@ -57,11 +66,13 @@ class Images extends DataObject implements ImagesInterface
     }
 
     /**
+     * SetThumbnail
+     *
      * @param string $thumbnail
      *
-     * @return $this
+     * @return ImagesInterface
      */
-    public function setThumbnail($thumbnail)
+    public function setThumbnail(string $thumbnail): ImagesInterface
     {
         $this->setData(self::THUMBNAIL_KEY, $thumbnail);
 

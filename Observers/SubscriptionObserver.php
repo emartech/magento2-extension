@@ -4,11 +4,12 @@ namespace Emartech\Emarsys\Observers;
 
 use Emartech\Emarsys\Helper\CustomerEventHandler;
 use Emartech\Emarsys\Helper\SubscriptionEventHandler;
+use Exception;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Newsletter\Model\Subscriber;
-use Psr\Log\LoggerInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class SubscriptionObserver implements ObserverInterface
 {
@@ -31,8 +32,6 @@ class SubscriptionObserver implements ObserverInterface
     private $storeManager;
 
     /**
-     * SubscriptionObserver constructor.
-     *
      * @param CustomerEventHandler     $customerEventHandler
      * @param SubscriptionEventHandler $subscriptionEventHandler
      * @param LoggerInterface          $logger
@@ -51,6 +50,8 @@ class SubscriptionObserver implements ObserverInterface
     }
 
     /**
+     * Execute
+     *
      * @param Observer $observer
      *
      * @return void
@@ -58,6 +59,7 @@ class SubscriptionObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         /** @var Subscriber $subscriber */
+        /** @noinspection PhpUndefinedMethodInspection */
         $subscriber = $observer->getSubscriber();
 
         try {
@@ -77,7 +79,7 @@ class SubscriptionObserver implements ObserverInterface
                     $this->subscriptionEventHandler->getEventType($observer->getEvent()->getName())
                 );
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->warning('Emartech\\Emarsys\\Observers\\SubscriptionObserver: ' . $e->getMessage());
         }
     }

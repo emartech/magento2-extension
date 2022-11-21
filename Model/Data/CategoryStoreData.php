@@ -2,58 +2,69 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\CategoryStoreDataInterface;
+use Magento\Framework\DataObject;
 
 class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
 {
     /**
+     * GetDescription
+     *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
-        return $this->getData(self::DESCRIPTION_KEY);
+        return (string) $this->getData(self::DESCRIPTION_KEY);
     }
 
     /**
+     * GetName
+     *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->getData(self::NAME_KEY);
+        return (string) $this->getData(self::NAME_KEY);
     }
 
     /**
+     * GetImage
+     *
      * @return string
      */
-    public function getImage()
+    public function getImage(): string
     {
-        return $this->getData(self::IMAGE_KEY);
+        return (string) $this->getData(self::IMAGE_KEY);
     }
 
     /**
+     * GetIsActive
+     *
      * @return int
      */
-    public function getIsActive()
+    public function getIsActive(): int
     {
-        return $this->getData(self::IS_ACTIVE_KEY);
+        return (int) $this->getData(self::IS_ACTIVE_KEY);
     }
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId()
+    public function getStoreId(): int
     {
-        return $this->getData(self::STORE_ID_KEY);
+        return (int) $this->getData(self::STORE_ID_KEY);
     }
 
     /**
+     * SetDescription
+     *
      * @param string $description
      *
-     * @return $this
+     * @return CategoryStoreDataInterface
      */
-    public function setDescription($description)
+    public function setDescription(string $description): CategoryStoreDataInterface
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -61,11 +72,13 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     }
 
     /**
+     * SetName
+     *
      * @param string $name
      *
-     * @return $this
+     * @return CategoryStoreDataInterface
      */
-    public function setName($name)
+    public function setName(string $name): CategoryStoreDataInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -73,11 +86,13 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     }
 
     /**
+     * SetImage
+     *
      * @param string $image
      *
-     * @return $this
+     * @return CategoryStoreDataInterface
      */
-    public function setImage($image)
+    public function setImage(string $image): CategoryStoreDataInterface
     {
         $this->setData(self::IMAGE_KEY, $image);
 
@@ -85,11 +100,13 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     }
 
     /**
+     * SetIsActive
+     *
      * @param int $isActive
      *
-     * @return $this
+     * @return CategoryStoreDataInterface
      */
-    public function setIsActive($isActive)
+    public function setIsActive(int $isActive): CategoryStoreDataInterface
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
 
@@ -97,11 +114,13 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     }
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return CategoryStoreDataInterface
      */
-    public function setStoreId($storeId)
+    public function setStoreId(int $storeId): CategoryStoreDataInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

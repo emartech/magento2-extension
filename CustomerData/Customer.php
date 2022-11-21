@@ -7,12 +7,14 @@ use Magento\Customer\CustomerData\Customer as OriginalCustomerData;
 class Customer extends OriginalCustomerData
 {
     /**
+     * AfterGetSectionData
+     *
      * @param OriginalCustomerData $subject
-     * @param                      $result
+     * @param array                $result
      *
      * @return array
      */
-    public function afterGetSectionData(\Magento\Customer\CustomerData\Customer $subject, $result)
+    public function afterGetSectionData(OriginalCustomerData $subject, array $result): array
     {
         $customerId = $subject->currentCustomer->getCustomerId();
         if ($customerId) {

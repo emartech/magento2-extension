@@ -9,69 +9,89 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface AttributeInterface
 {
-    const CODE_KEY                = 'code';
-    const NAME_KEY                = 'name';
-    const IS_SYSTEM_KEY           = 'is_system';
-    const IS_VISIBLE_KEY          = 'is_visible';
-    const IS_VISIBLE_ON_FRONT_KEY = 'is_visible_on_front';
+    public const CODE_KEY                = 'code';
+    public const NAME_KEY                = 'name';
+    public const IS_SYSTEM_KEY           = 'is_system';
+    public const IS_VISIBLE_KEY          = 'is_visible';
+    public const IS_VISIBLE_ON_FRONT_KEY = 'is_visible_on_front';
 
     /**
+     * GetCode
+     *
      * @return string
      */
-    public function getCode();
+    public function getCode(): string;
 
     /**
+     * GetName
+     *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
+     * GetIsSystem
+     *
      * @return bool
      */
-    public function getIsSystem();
+    public function getIsSystem(): bool;
 
     /**
+     * GetIsVisible
+     *
      * @return bool
      */
-    public function getIsVisible();
+    public function getIsVisible(): bool;
 
     /**
+     * GetIsVisibleOnFront
+     *
      * @return bool
      */
-    public function getIsVisibleOnFront();
+    public function getIsVisibleOnFront(): bool;
 
     /**
+     * SetCode
+     *
      * @param string $code
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setCode($code);
+    public function setCode(string $code): AttributeInterface;
 
     /**
+     * SetName
+     *
      * @param string $name
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setName($name);
+    public function setName(string $name): AttributeInterface;
 
     /**
+     * SetIsSystem
+     *
      * @param bool $isSystem
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsSystem($isSystem);
+    public function setIsSystem(bool $isSystem): AttributeInterface;
 
     /**
+     * SetIsVisible
+     *
      * @param bool $isVisible
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsVisible($isVisible);
+    public function setIsVisible(bool $isVisible): AttributeInterface;
 
     /**
+     * SetIsVisibleOnFront
+     *
      * @param bool $isVisibleOnFront
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsVisibleOnFront($isVisibleOnFront);
+    public function setIsVisibleOnFront(bool $isVisibleOnFront): AttributeInterface;
 }

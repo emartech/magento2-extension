@@ -2,15 +2,15 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Emartech\Emarsys\Model\EventRepository;
-use Magento\Framework\Data\Collection as DataCollection;
-
-use Emartech\Emarsys\Api\Data\EventsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\EventsApiResponseInterface;
+use Emartech\Emarsys\Api\Data\EventsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\EventsApiInterface;
 use Emartech\Emarsys\Model\Event;
-use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
+use Emartech\Emarsys\Model\EventRepository;
 use Emartech\Emarsys\Model\ResourceModel\Event\Collection;
+use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
+use Magento\Framework\Data\Collection as DataCollection;
+use Magento\Framework\Webapi\Exception;
 
 class EventsApi implements EventsApiInterface
 {
@@ -36,8 +36,9 @@ class EventsApi implements EventsApiInterface
 
     /**
      * EventsApi constructor.
-     * @param EventRepository $eventRepository
-     * @param CollectionFactory $eventCollectionFactory
+     *
+     * @param EventRepository                   $eventRepository
+     * @param CollectionFactory                 $eventCollectionFactory
      * @param EventsApiResponseInterfaceFactory $eventsApiResponseFactory
      */
     public function __construct(
@@ -51,13 +52,15 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
-     * @param string $sinceId
+     * Get
+     *
+     * @param int $sinceId
      * @param int $pageSize
      *
      * @return EventsApiResponseInterface
-     * @throws \Magento\Framework\Webapi\Exception
+     * @throws Exception
      */
-    public function get($sinceId, $pageSize)
+    public function get(int $sinceId, int $pageSize): EventsApiResponseInterface
     {
         $this->validateSinceId($sinceId);
 
@@ -68,7 +71,8 @@ class EventsApi implements EventsApiInterface
             ->setOrder()
             ->setPageSize($pageSize);
 
-        return $this->eventsApiResponseFactory->create()
+        return $this->eventsApiResponseFactory
+            ->create()
             ->setCurrentPage($this->eventCollection->getCurPage())
             ->setLastPage($this->eventCollection->getLastPageNumber())
             ->setPageSize($this->eventCollection->getPageSize())
@@ -77,9 +81,11 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
+     * HandleEvents
+     *
      * @return array
      */
-    private function handleEvents()
+    private function handleEvents(): array
     {
         $eventsArray = [];
 
@@ -92,9 +98,11 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return EventsApi
      */
-    private function initCollection()
+    private function initCollection(): EventsApi
     {
         $this->eventCollection = $this->eventCollectionFactory->create();
 
@@ -102,11 +110,13 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
+     * GetEvents
+     *
      * @param int $sinceId
      *
-     * @return $this
+     * @return EventsApi
      */
-    private function getEvents($sinceId)
+    private function getEvents(int $sinceId): EventsApi
     {
         $this->eventCollection
             ->addFieldToFilter('event_id', ['gt' => $sinceId]);
@@ -115,9 +125,11 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
-     * @return $this
+     * SetOrder
+     *
+     * @return EventsApi
      */
-    private function setOrder()
+    private function setOrder(): EventsApi
     {
         $this->eventCollection
             ->setOrder('event_id', DataCollection::SORT_ORDER_ASC);
@@ -126,11 +138,13 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
+     * SetPageSize
+     *
      * @param int $pageSize
      *
-     * @return $this
+     * @return EventsApi
      */
-    private function setPageSize($pageSize)
+    private function setPageSize(int $pageSize): EventsApi
     {
         $this->eventCollection
             ->setPageSize($pageSize);
@@ -139,11 +153,13 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
+     * RemoveOldEvents
+     *
      * @param int $beforeId
      *
-     * @return $this
+     * @return EventsApi
      */
-    private function removeOldEvents($beforeId)
+    private function removeOldEvents(int $beforeId): EventsApi
     {
         $this->eventRepository->deleteUntilSinceId($beforeId);
 
@@ -151,16 +167,19 @@ class EventsApi implements EventsApiInterface
     }
 
     /**
-     * @param $sinceId
-     * @throws \Magento\Framework\Webapi\Exception
+     * ValidateSinceId
+     *
+     * @param int $sinceId
+     *
+     * @throws Exception
      */
-    private function validateSinceId($sinceId)
+    private function validateSinceId(int $sinceId): void
     {
         if ($this->eventRepository->isSinceIdIsHigherThanAutoIncrement($sinceId)) {
-            throw new \Magento\Framework\Webapi\Exception(
+            throw new Exception(
                 __('sinceId is higher than auto-increment'),
-                \Magento\Framework\Webapi\Exception::HTTP_NOT_ACCEPTABLE,
-                \Magento\Framework\Webapi\Exception::HTTP_NOT_ACCEPTABLE
+                Exception::HTTP_NOT_ACCEPTABLE,
+                Exception::HTTP_NOT_ACCEPTABLE
             );
         }
     }

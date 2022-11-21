@@ -8,19 +8,23 @@ use Emartech\Emarsys\Api\Data\CategoryInterface;
 class CategoriesApiResponse extends ListApiResponseBase implements CategoriesApiResponseInterface
 {
     /**
+     * GetCategories
+     *
      * @return CategoryInterface[]
      */
-    public function getCategories()
+    public function getCategories(): array
     {
         return $this->getData(self::CATEGORIES_KEY);
     }
 
     /**
+     * SetCategories
+     *
      * @param CategoryInterface[] $categories
      *
-     * @return $this
+     * @return CategoriesApiResponseInterface
      */
-    public function setCategories(array $categories)
+    public function setCategories(array $categories): CategoriesApiResponseInterface
     {
         $this->setData(self::CATEGORIES_KEY, $categories);
 

@@ -8,8 +8,8 @@
 namespace Emartech\Emarsys\Helper;
 
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
-use Magento\Store\Model\App\Emulation;
 use Magento\Framework\App\Area;
+use Magento\Store\Model\App\Emulation;
 
 class DataSource
 {
@@ -18,6 +18,9 @@ class DataSource
      */
     private $emulation;
 
+    /**
+     * @var array
+     */
     private $optionValues = [];
 
     /**
@@ -32,12 +35,14 @@ class DataSource
     }
 
     /**
+     * GetAllOptions
+     *
      * @param AbstractSource[] $sourceModels
      * @param int[]            $storeIds
      *
      * @return array
      */
-    public function getAllOptions($sourceModels, $storeIds)
+    public function getAllOptions(array $sourceModels, array $storeIds): array
     {
         foreach ($storeIds as $storeId) {
             $this->optionValues[$storeId] = [];
@@ -50,27 +55,32 @@ class DataSource
     }
 
     /**
+     * GetAllOptionsByStore
+     *
      * @param AbstractSource[] $sourceModels
      * @param int              $storeId
+     *
+     * @return void
      */
-    private function getAllOptionsByStore($sourceModels, $storeId)
+    private function getAllOptionsByStore(array $sourceModels, int $storeId): void
     {
         foreach ($sourceModels as $attributeCode => $sourceModel) {
             foreach ($sourceModel->getAllOptions() as $option) {
                 if (is_string($option['value'])) {
-                    $this->optionValues[$storeId][$attributeCode][$option['value']] =
-                        $option['label'].'';
+                    $this->optionValues[$storeId][$attributeCode][$option['value']] = $option['label'] . '';
                 }
             }
         }
     }
 
     /**
+     * StartEmulation
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return DataSource
      */
-    private function startEmulation($storeId)
+    private function startEmulation(int $storeId): DataSource
     {
         $area = Area::AREA_FRONTEND;
         if ($storeId == 0) {
@@ -82,9 +92,11 @@ class DataSource
     }
 
     /**
-     * @return $this
+     * StopEmulation
+     *
+     * @return DataSource
      */
-    private function stopEmulation()
+    private function stopEmulation(): DataSource
     {
         $this->emulation->stopEnvironmentEmulation();
 

@@ -4,69 +4,89 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface CategoryStoreDataInterface
 {
-    const NAME_KEY        = 'name';
-    const IMAGE_KEY       = 'image';
-    const DESCRIPTION_KEY = 'description';
-    const IS_ACTIVE_KEY   = 'is_active';
-    const STORE_ID_KEY    = 'store_id';
+    public const NAME_KEY        = 'name';
+    public const IMAGE_KEY       = 'image';
+    public const DESCRIPTION_KEY = 'description';
+    public const IS_ACTIVE_KEY   = 'is_active';
+    public const STORE_ID_KEY    = 'store_id';
 
     /**
+     * GetName
+     *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
+     * GetImage
+     *
      * @return string
      */
-    public function getImage();
+    public function getImage(): string;
 
     /**
+     * GetDescription
+     *
      * @return string
      */
-    public function getDescription();
+    public function getDescription(): string;
 
     /**
+     * GetIsActive
+     *
      * @return int
      */
-    public function getIsActive();
+    public function getIsActive(): int;
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
+     * SetName
+     *
      * @param string $name
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setName($name);
+    public function setName(string $name): CategoryStoreDataInterface;
 
     /**
+     * SetImage
+     *
      * @param string $image
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setImage($image);
+    public function setImage(string $image): CategoryStoreDataInterface;
 
     /**
+     * SetDescription
+     *
      * @param string $description
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setDescription($description);
+    public function setDescription(string $description): CategoryStoreDataInterface;
 
     /**
+     * SetIsActive
+     *
      * @param int $isActive
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setIsActive($isActive);
+    public function setIsActive(int $isActive): CategoryStoreDataInterface;
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setStoreId($storeId);
+    public function setStoreId(int $storeId): CategoryStoreDataInterface;
 }

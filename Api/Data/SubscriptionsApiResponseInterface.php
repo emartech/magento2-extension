@@ -4,17 +4,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface SubscriptionsApiResponseInterface extends ListApiResponseBaseInterface
 {
-    const SUBSCRIPTIONS_KEY = 'subscriptions';
+    public const SUBSCRIPTIONS_KEY = 'subscriptions';
 
     /**
+     * GetSubscriptions
+     *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface[]
      */
-    public function getSubscriptions();
+    public function getSubscriptions(): array;
 
     /**
+     * SetSubscriptions
+     *
      * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
      */
-    public function setSubscriptions(array $subscriptions);
+    public function setSubscriptions(array $subscriptions): SubscriptionsApiResponseInterface;
 }

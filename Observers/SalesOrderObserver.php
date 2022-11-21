@@ -3,8 +3,10 @@
 namespace Emartech\Emarsys\Observers;
 
 use Emartech\Emarsys\Helper\SalesEventHandler;
+use Exception;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Psr\Log\LoggerInterface;
 
@@ -20,8 +22,6 @@ class SalesOrderObserver implements ObserverInterface
     private $logger;
 
     /**
-     * SalesOrderObserver constructor.
-     *
      * @param SalesEventHandler $salesEventHandler
      * @param LoggerInterface   $logger
      */
@@ -29,16 +29,18 @@ class SalesOrderObserver implements ObserverInterface
         SalesEventHandler $salesEventHandler,
         LoggerInterface $logger
     ) {
-    
+
         $this->salesEventHandler = $salesEventHandler;
         $this->logger = $logger;
     }
 
     /**
+     * Execute
+     *
      * @param Observer $observer
      *
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function execute(Observer $observer)
     {
@@ -46,10 +48,12 @@ class SalesOrderObserver implements ObserverInterface
         /** @noinspection PhpUndefinedMethodInspection */
         $order = $observer->getEvent()->getOrder();
 
-        if ($order->getState() != $order->getOrigData(Order::STATE) && $order->getState() == Order::STATE_COMPLETE) {
+        if ($order->getState() != $order->getOrigData(OrderInterface::STATE)
+            && $order->getState() == Order::STATE_COMPLETE
+        ) {
             try {
                 $this->salesEventHandler->store($order);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->warning('Emartech\\Emarsys\\Observers\\SalesOrderObserver: ' . $e->getMessage());
             }
         }

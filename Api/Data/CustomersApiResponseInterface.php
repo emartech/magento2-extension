@@ -4,17 +4,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface CustomersApiResponseInterface extends ListApiResponseBaseInterface
 {
-    const CUSTOMERS_KEY = 'customers';
+    public const CUSTOMERS_KEY = 'customers';
 
     /**
+     * GetCustomers
+     *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface[]
      */
-    public function getCustomers();
+    public function getCustomers(): array;
 
     /**
+     * SetCustomers
+     *
      * @param \Emartech\Emarsys\Api\Data\CustomerInterface[] $customers
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
      */
-    public function setCustomers(array $customers);
+    public function setCustomers(array $customers): CustomersApiResponseInterface;
 }

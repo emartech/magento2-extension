@@ -14,19 +14,23 @@ use Magento\Framework\DataObject;
 class AttributesApiResponse extends DataObject implements AttributesApiResponseInterface
 {
     /**
+     * GetAttributes
+     *
      * @return AttributeInterface[]
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->getData(self::ATTRIBUTES_KEY);
     }
 
     /**
+     * SetAttributes
+     *
      * @param AttributeInterface[] $attributes
      *
-     * @return $this
+     * @return AttributesApiResponseInterface
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): AttributesApiResponseInterface
     {
         $this->setData(self::ATTRIBUTES_KEY, $attributes);
 
