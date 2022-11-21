@@ -176,7 +176,7 @@ class EventsApi implements EventsApiInterface
     private function validateSinceId(int $sinceId): void
     {
         if ($this->eventRepository->isSinceIdIsHigherThanAutoIncrement($sinceId)) {
-            throw new \Magento\Framework\Webapi\Exception(
+            throw new Exception(
                 __('sinceId is higher than auto-increment'),
                 Exception::HTTP_NOT_ACCEPTABLE,
                 Exception::HTTP_NOT_ACCEPTABLE
