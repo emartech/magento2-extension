@@ -9,268 +9,338 @@ use Magento\Framework\DataObject;
 class CustomerAddress extends DataObject implements CustomerAddressInterface
 {
     /**
+     * GetCity
+     *
      * @return string
      */
-    public function getCity()
+    public function getCity(): string
     {
-        return $this->getData(self::CITY_KEY);
+        return (string) $this->getData(self::CITY_KEY);
     }
 
     /**
-     * @return string
+     * GetCompany
+     *
+     * @return string|null
      */
-    public function getCompany()
+    public function getCompany(): ?string
     {
         return $this->getData(self::COMPANY_KEY);
     }
 
     /**
+     * GetCountryId
+     *
      * @return string
      */
-    public function getCountryId()
+    public function getCountryId(): string
     {
-        return $this->getData(self::COUNTRY_ID_KEY);
+        return (string) $this->getData(self::COUNTRY_ID_KEY);
     }
 
     /**
-     * @return string
+     * GetFax
+     *
+     * @return string|null
      */
-    public function getFax()
+    public function getFax(): ?string
     {
         return $this->getData(self::FAX_KEY);
     }
 
     /**
+     * GetFirstname
+     *
      * @return string
      */
-    public function getFirstname()
+    public function getFirstname(): string
     {
-        return $this->getData(self::FIRSTNAME_KEY);
+        return (string) $this->getData(self::FIRSTNAME_KEY);
     }
 
     /**
+     * GetLastname
+     *
      * @return string
      */
-    public function getLastname()
+    public function getLastname(): string
     {
-        return $this->getData(self::LASTNAME_KEY);
+        return (string) $this->getData(self::LASTNAME_KEY);
     }
 
     /**
-     * @return string
+     * GetMiddlename
+     *
+     * @return string|null
      */
-    public function getMiddlename()
+    public function getMiddlename(): ?string
     {
         return $this->getData(self::MIDDLENAME_KEY);
     }
 
     /**
+     * GetPostcode
+     *
      * @return string
      */
-    public function getPostcode()
+    public function getPostcode(): string
     {
-        return $this->getData(self::POSTCODE_KEY);
+        return (string) $this->getData(self::POSTCODE_KEY);
     }
 
     /**
-     * @return string
+     * GetPrefix
+     *
+     * @return string|null
      */
-    public function getPrefix()
+    public function getPrefix(): ?string
     {
         return $this->getData(self::PREFIX_KEY);
     }
 
     /**
-     * @return string
+     * GetRegion
+     *
+     * @return string|null
      */
-    public function getRegion()
+    public function getRegion(): ?string
     {
         return $this->getData(self::REGION_KEY);
     }
 
     /**
+     * GetStreet
+     *
      * @return string
      */
-    public function getStreet()
+    public function getStreet(): string
     {
-        return $this->getData(self::STREET_KEY);
+        return (string) $this->getData(self::STREET_KEY);
     }
 
     /**
-     * @return string
+     * GetSuffix
+     *
+     * @return string|null
      */
-    public function getSuffix()
+    public function getSuffix(): ?string
     {
         return $this->getData(self::SUFFIX_KEY);
     }
 
     /**
+     * GetTelephone
+     *
      * @return string
      */
-    public function getTelephone()
+    public function getTelephone(): string
     {
-        return $this->getData(self::TELEPHONE_KEY);
+        return (string) $this->getData(self::TELEPHONE_KEY);
     }
 
     /**
+     * GetExtraFields
+     *
      * @return ExtraFieldsInterface[]
      */
-    public function getExtraFields()
+    public function getExtraFields(): array
     {
-        return $this->getData(self::EXTRA_FIELDS);
+        return (array) $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
+     * SetCity
+     *
      * @param string $city
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setCity($city)
+    public function setCity(string $city): CustomerAddressInterface
     {
         $this->setData(self::CITY_KEY, $city);
+
         return $this;
     }
 
     /**
-     * @param string $company
+     * SetCompany
      *
-     * @return $this
+     * @param string|null $company
+     *
+     * @return CustomerAddressInterface
      */
-    public function setCompany($company)
+    public function setCompany(string $company = null): CustomerAddressInterface
     {
         $this->setData(self::COMPANY_KEY, $company);
+
         return $this;
     }
 
     /**
+     * SetCountryId
+     *
      * @param string $countryId
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setCountryId($countryId)
+    public function setCountryId(string $countryId): CustomerAddressInterface
     {
         $this->setData(self::COUNTRY_ID_KEY, $countryId);
+
         return $this;
     }
 
     /**
-     * @param string $fax
+     * SetFax
      *
-     * @return $this
+     * @param string|null $fax
+     *
+     * @return CustomerAddressInterface
      */
-    public function setFax($fax)
+    public function setFax(string $fax = null): CustomerAddressInterface
     {
         $this->setData(self::FAX_KEY, $fax);
+
         return $this;
     }
 
     /**
+     * SetFirstname
+     *
      * @param string $firstName
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setFirstname($firstName)
+    public function setFirstname(string $firstName): CustomerAddressInterface
     {
         $this->setData(self::FIRSTNAME_KEY, $firstName);
+
         return $this;
     }
 
     /**
+     * SetLastname
+     *
      * @param string $lastName
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setLastname($lastName)
+    public function setLastname(string $lastName): CustomerAddressInterface
     {
         $this->setData(self::LASTNAME_KEY, $lastName);
+
         return $this;
     }
 
     /**
-     * @param string $middleName
+     * SetMiddlename
      *
-     * @return $this
+     * @param string|null $middleName
+     *
+     * @return CustomerAddressInterface
      */
-    public function setMiddlename($middleName)
+    public function setMiddlename(string $middleName = null): CustomerAddressInterface
     {
         $this->setData(self::MIDDLENAME_KEY, $middleName);
+
         return $this;
     }
 
     /**
+     * SetPostcode
+     *
      * @param string $postCode
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setPostcode($postCode)
+    public function setPostcode(string $postCode): CustomerAddressInterface
     {
         $this->setData(self::POSTCODE_KEY, $postCode);
+
         return $this;
     }
 
     /**
-     * @param string $prefix
+     * SetPrefix
      *
-     * @return $this
+     * @param string|null $prefix
+     *
+     * @return CustomerAddressInterface
      */
-    public function setPrefix($prefix)
+    public function setPrefix(string $prefix = null): CustomerAddressInterface
     {
         $this->setData(self::PREFIX_KEY, $prefix);
+
         return $this;
     }
 
     /**
-     * @param string $region
+     * SetRegion
      *
-     * @return $this
+     * @param string|null $region
+     *
+     * @return CustomerAddressInterface
      */
-    public function setRegion($region)
+    public function setRegion(string $region = null): CustomerAddressInterface
     {
         $this->setData(self::REGION_KEY, $region);
+
         return $this;
     }
 
     /**
+     * SetStreet
+     *
      * @param string $street
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setStreet($street)
+    public function setStreet(string $street): CustomerAddressInterface
     {
         $this->setData(self::STREET_KEY, $street);
+
         return $this;
     }
 
     /**
-     * @param string $suffix
+     * SetSuffix
      *
-     * @return $this
+     * @param string|null $suffix
+     *
+     * @return CustomerAddressInterface
      */
-    public function setSuffix($suffix)
+    public function setSuffix(string $suffix = null): CustomerAddressInterface
     {
         $this->setData(self::SUFFIX_KEY, $suffix);
+
         return $this;
     }
 
     /**
+     * SetTelephone
+     *
      * @param string $telephone
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setTelephone($telephone)
+    public function setTelephone(string $telephone): CustomerAddressInterface
     {
         $this->setData(self::TELEPHONE_KEY, $telephone);
+
         return $this;
     }
 
     /**
+     * SetExtraFields
+     *
      * @param ExtraFieldsInterface[] $extraFields
      *
-     * @return $this
+     * @return CustomerAddressInterface
      */
-    public function setExtraFields($extraFields)
+    public function setExtraFields(array $extraFields): CustomerAddressInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
+
         return $this;
     }
 }

@@ -6,8 +6,10 @@
 
 namespace Emartech\Emarsys\Helper;
 
+use Exception;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\ObjectManagerInterface;
 
 class LinkField extends AbstractHelper
@@ -33,18 +35,18 @@ class LinkField extends AbstractHelper
     }
 
     /**
+     * GetEntityLinkField
+     *
      * @param string $class
      * @param string $linkField
      *
      * @return string
+     * @throws Exception
      */
-    public function getEntityLinkField($class, $linkField = 'entity_id')
+    public function getEntityLinkField(string $class, string $linkField = 'entity_id'): string
     {
-        if (class_exists(\Magento\Framework\EntityManager\MetadataPool::class)) {
-            // @codingStandardsIgnoreLine
-            $metadataPool = $this->objectManager->create(
-                \Magento\Framework\EntityManager\MetadataPool::class
-            );
+        if (class_exists(MetadataPool::class)) {
+            $metadataPool = $this->objectManager->create(MetadataPool::class);
             $linkField = $metadataPool->getMetadata($class)->getLinkField();
         }
 

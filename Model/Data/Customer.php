@@ -10,382 +10,482 @@ use Magento\Framework\DataObject;
 class Customer extends DataObject implements CustomerInterface
 {
     /**
+     * GetId
+     *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
-        return $this->getData(self::ID_KEY);
+        return (int) $this->getData(self::ID_KEY);
     }
 
     /**
+     * GetAcceptsMarketing
+     *
      * @return int
      */
-    public function getAcceptsMarketing()
+    public function getAcceptsMarketing(): int
     {
-        return $this->getData(self::ACCEPTS_MARKETING_KEY);
+        return (int) $this->getData(self::ACCEPTS_MARKETING_KEY);
     }
 
     /**
-     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+     * GetBillingAddress
+     *
+     * @return CustomerAddressInterface|null
      */
-    public function getBillingAddress()
+    public function getBillingAddress(): ?CustomerAddressInterface
     {
         return $this->getData(self::BILLING_ADDRESS_KEY);
     }
 
     /**
+     * GetCreatedAt
+     *
      * @return string
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): string
     {
-        return $this->getData(self::CREATED_AT_KEY);
+        return (string) $this->getData(self::CREATED_AT_KEY);
     }
 
     /**
-     * @return string
+     * GetDob
+     *
+     * @return string|null
      */
-    public function getDob()
+    public function getDob(): ?string
     {
         return $this->getData(self::DOB_KEY);
     }
 
     /**
+     * GetEmail
+     *
      * @return string
      */
-    public function getEmail()
+    public function getEmail(): string
     {
-        return $this->getData(self::EMAIL_KEY);
+        return (string) $this->getData(self::EMAIL_KEY);
     }
 
     /**
+     * GetFirstname
+     *
      * @return string
      */
-    public function getFirstname()
+    public function getFirstname(): string
     {
-        return $this->getData(self::FIRSTNAME_KEY);
+        return (string) $this->getData(self::FIRSTNAME_KEY);
     }
 
     /**
-     * @return int
+     * GetGender
+     *
+     * @return int|null
      */
-    public function getGender()
+    public function getGender(): ?int
     {
         return $this->getData(self::GENDER_KEY);
     }
 
     /**
+     * GetGroupId
+     *
      * @return int
      */
-    public function getGroupId()
+    public function getGroupId(): int
     {
-        return $this->getData(self::GROUP_ID_KEY);
+        return (int) $this->getData(self::GROUP_ID_KEY);
     }
 
     /**
+     * GetIsActive
+     *
      * @return int
      */
-    public function getIsActive()
+    public function getIsActive(): int
     {
-        return $this->getData(self::IS_ACTIVE_KEY);
+        return (int) $this->getData(self::IS_ACTIVE_KEY);
     }
 
     /**
+     * GetLastname
+     *
      * @return string
      */
-    public function getLastname()
+    public function getLastname(): string
     {
-        return $this->getData(self::LASTNAME_KEY);
+        return (string) $this->getData(self::LASTNAME_KEY);
     }
 
     /**
-     * @return string
+     * GetMiddlename
+     *
+     * @return string|null
      */
-    public function getMiddlename()
+    public function getMiddlename(): ?string
     {
         return $this->getData(self::MIDDLENAME_KEY);
     }
 
     /**
-     * @return string
+     * GetPrefix
+     *
+     * @return string|null
      */
-    public function getPrefix()
+    public function getPrefix(): ?string
     {
         return $this->getData(self::PREFIX_KEY);
     }
 
     /**
-     * @return CustomerAddressInterface
+     * GetShippingAddress
+     *
+     * @return CustomerAddressInterface|null
      */
-    public function getShippingAddress()
+    public function getShippingAddress(): ?CustomerAddressInterface
     {
         return $this->getData(self::SHIPPING_ADDRESS_KEY);
     }
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId()
+    public function getStoreId(): int
     {
-        return $this->getData(self::STORE_ID_KEY);
+        return (int) $this->getData(self::STORE_ID_KEY);
     }
 
     /**
-     * @return string
+     * GetSuffix
+     *
+     * @return string|null
      */
-    public function getSuffix()
+    public function getSuffix(): ?string
     {
         return $this->getData(self::SUFFIX_KEY);
     }
 
     /**
-     * @return string
+     * GetTaxvat
+     *
+     * @return string|null
      */
-    public function getTaxvat()
+    public function getTaxvat(): ?string
     {
         return $this->getData(self::TAXVAT_KEY);
     }
 
     /**
+     * GetUpdatedAt
+     *
      * @return string
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): string
     {
-        return $this->getData(self::UPDATED_AT_KEY);
+        return (string) $this->getData(self::UPDATED_AT_KEY);
     }
 
     /**
+     * GetWebsiteId
+     *
      * @return int
      */
-    public function getWebsiteId()
+    public function getWebsiteId(): int
     {
-        return $this->getData(self::WEBSITE_ID_KEY);
+        return (int) $this->getData(self::WEBSITE_ID_KEY);
     }
 
     /**
-     * @return ExtraFieldsInterface
+     * GetExtraFields
+     *
+     * @return ExtraFieldsInterface[]
      */
-    public function getExtraFields()
+    public function getExtraFields(): array
     {
         return $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
+     * SetId
+     *
      * @param int $id
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setId($id)
+    public function setId(int $id): CustomerInterface
     {
         $this->setData(self::ID_KEY, $id);
+
         return $this;
     }
 
     /**
+     * SetAcceptsMarketing
+     *
      * @param int $acceptsMarketing
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setAcceptsMarketing($acceptsMarketing)
+    public function setAcceptsMarketing(int $acceptsMarketing): CustomerInterface
     {
         $this->setData(self::ACCEPTS_MARKETING_KEY, $acceptsMarketing);
+
         return $this;
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface $billingAddress
+     * SetBillingAddress
      *
-     * @return $this
+     * @param CustomerAddressInterface|array|null $billingAddress
+     *
+     * @return CustomerInterface
      */
-    public function setBillingAddress($billingAddress)
+    public function setBillingAddress($billingAddress = null): CustomerInterface
     {
         $this->setData(self::BILLING_ADDRESS_KEY, $billingAddress);
+
         return $this;
     }
 
     /**
+     * SetCreatedAt
+     *
      * @param string $createdAt
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(string $createdAt): CustomerInterface
     {
         $this->setData(self::CREATED_AT_KEY, $createdAt);
+
         return $this;
     }
 
     /**
-     * @param string $dob
+     * SetDob
+     *
+     * @param string|null $dob
      *
      * @return $this
      */
-    public function setDob($dob)
+    public function setDob(string $dob = null): CustomerInterface
     {
         $this->setData(self::DOB_KEY, $dob);
+
         return $this;
     }
 
     /**
+     * SetEmail
+     *
      * @param string $email
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setEmail($email)
+    public function setEmail(string $email): CustomerInterface
     {
         $this->setData(self::EMAIL_KEY, $email);
+
         return $this;
     }
 
     /**
+     * SetFirstname
+     *
      * @param string $firstName
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setFirstname($firstName)
+    public function setFirstname(string $firstName): CustomerInterface
     {
         $this->setData(self::FIRSTNAME_KEY, $firstName);
+
         return $this;
     }
 
     /**
-     * @param int $gender
+     * SetGender
      *
-     * @return $this
+     * @param int|null $gender
+     *
+     * @return CustomerInterface
      */
-    public function setGender($gender)
+    public function setGender(int $gender = null): CustomerInterface
     {
         $this->setData(self::GENDER_KEY, $gender);
+
         return $this;
     }
 
     /**
+     * SetGroupId
+     *
      * @param int $groupId
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setGroupId($groupId)
+    public function setGroupId(int $groupId): CustomerInterface
     {
         $this->setData(self::GROUP_ID_KEY, $groupId);
+
         return $this;
     }
 
     /**
+     * SetIsActive
+     *
      * @param int $isActive
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setIsActive($isActive)
+    public function setIsActive(int $isActive): CustomerInterface
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
+
         return $this;
     }
 
     /**
+     * SetLastname
+     *
      * @param string $lastName
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setLastname($lastName)
+    public function setLastname(string $lastName): CustomerInterface
     {
         $this->setData(self::LASTNAME_KEY, $lastName);
+
         return $this;
     }
 
     /**
-     * @param string $middleName
+     * SetMiddlename
      *
-     * @return $this
+     * @param string|null $middleName
+     *
+     * @return CustomerInterface
      */
-    public function setMiddlename($middleName)
+    public function setMiddlename(string $middleName = null): CustomerInterface
     {
         $this->setData(self::MIDDLENAME_KEY, $middleName);
+
         return $this;
     }
 
     /**
-     * @param string $prefix
+     * SetPrefix
      *
-     * @return $this
+     * @param string|null $prefix
+     *
+     * @return CustomerInterface
      */
-    public function setPrefix($prefix)
+    public function setPrefix(string $prefix = null): CustomerInterface
     {
         $this->setData(self::PREFIX_KEY, $prefix);
+
         return $this;
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface $shippingAddress
+     * SetShippingAddress
+     *
+     * @param CustomerAddressInterface|array|null $shippingAddress
      *
      * @return $this
      */
-    public function setShippingAddress($shippingAddress)
+    public function setShippingAddress($shippingAddress = null): CustomerInterface
     {
         $this->setData(self::SHIPPING_ADDRESS_KEY, $shippingAddress);
+
         return $this;
     }
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setStoreId($storeId)
+    public function setStoreId(int $storeId): CustomerInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
+
         return $this;
     }
 
     /**
-     * @param string $suffix
+     * SetSuffix
      *
-     * @return $this
+     * @param string|null $suffix
+     *
+     * @return CustomerInterface
      */
-    public function setSuffix($suffix)
+    public function setSuffix(string $suffix = null): CustomerInterface
     {
         $this->setData(self::SUFFIX_KEY, $suffix);
+
         return $this;
     }
 
     /**
-     * @param string $taxVat
+     * SetTaxvat
      *
-     * @return $this
+     * @param string|null $taxVat
+     *
+     * @return CustomerInterface
      */
-    public function setTaxvat($taxVat)
+    public function setTaxvat(string $taxVat = null): CustomerInterface
     {
         $this->setData(self::TAXVAT_KEY, $taxVat);
+
         return $this;
     }
 
     /**
+     * SetUpdatedAt
+     *
      * @param string $updatedAt
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt(string $updatedAt): CustomerInterface
     {
         $this->setData(self::UPDATED_AT_KEY, $updatedAt);
+
         return $this;
     }
 
     /**
+     * SetWebsiteId
+     *
      * @param int $websiteId
      *
-     * @return $this
+     * @return CustomerInterface
      */
-    public function setWebsiteId($websiteId)
+    public function setWebsiteId(int $websiteId): CustomerInterface
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
+
         return $this;
     }
 
     /**
+     * SetExtraFields
+     *
      * @param ExtraFieldsInterface[] $extraFields
      *
      * @return $this
      */
-    public function setExtraFields($extraFields)
+    public function setExtraFields(array $extraFields): CustomerInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
+
         return $this;
     }
 }

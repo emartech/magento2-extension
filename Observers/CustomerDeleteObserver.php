@@ -4,6 +4,7 @@
 namespace Emartech\Emarsys\Observers;
 
 use Emartech\Emarsys\Helper\CustomerEventHandler;
+use Exception;
 use Magento\Customer\Model\Customer;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -21,8 +22,6 @@ class CustomerDeleteObserver implements ObserverInterface
     private $logger;
 
     /**
-     * CustomerAccountObserver constructor.
-     *
      * @param CustomerEventHandler $customerEventHandler
      * @param LoggerInterface      $logger
      */
@@ -35,6 +34,8 @@ class CustomerDeleteObserver implements ObserverInterface
     }
 
     /**
+     * Execute
+     *
      * @param Observer $observer
      *
      * @return void
@@ -55,7 +56,7 @@ class CustomerDeleteObserver implements ObserverInterface
                 $customer->getStoreId(),
                 'customers/delete'
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->warning('Emartech\\Emarsys\\Observers\\CustomerDeleteObserver: ' . $e->getMessage());
         }
     }

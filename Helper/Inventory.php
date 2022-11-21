@@ -9,19 +9,24 @@ namespace Emartech\Emarsys\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\ObjectManager;
+use Magento\Inventory\Model\ResourceModel\SourceItem\Collection;
+use Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory;
 
 class Inventory extends AbstractHelper
 {
+    // @codingStandardsIgnoreStart
     /**
-     * @return \Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory|bool
+     * GetSourceItemCollectionFactory
+     *
+     * @return CollectionFactory|null
      */
-    public function getSourceItemCollectionFactory()
+    public function getSourceItemCollectionFactory(): ?CollectionFactory
     {
-        if (class_exists(\Magento\Inventory\Model\ResourceModel\SourceItem\Collection::class)) {
-            $objManager = ObjectManager::getInstance();
-            return $objManager->create(\Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory::class);
+        if (class_exists(Collection::class)) {
+            return ObjectManager::getInstance()->create(CollectionFactory::class);
         }
 
-        return false;
+        return null;
     }
+    // @codingStandardsIgnoreEnd
 }

@@ -8,22 +8,29 @@
 namespace Emartech\Emarsys\Model\Data;
 
 use Emartech\Emarsys\Api\Data\ErrorResponseInterface;
+use Emartech\Emarsys\Api\Data\ErrorResponseItemInterface;
 use Magento\Framework\DataObject;
 
 class ErrorResponse extends DataObject implements ErrorResponseInterface
 {
     /**
-     * {@inheritdoc}
+     * GetErrors
+     *
+     * @return ErrorResponseItemInterface[]|null
      */
-    public function getErrors()
+    public function getErrors(): ?array
     {
         return $this->getData(self::ERRORS_KEY);
     }
 
     /**
-     * {@inheritdoc}
+     * SetErrors
+     *
+     * @param ErrorResponseItemInterface[]|null $errors
+     *
+     * @return ErrorResponseInterface
      */
-    public function setErrors($errors)
+    public function setErrors(array $errors = null): ErrorResponseInterface
     {
         $this->setData(self::ERRORS_KEY, $errors);
 

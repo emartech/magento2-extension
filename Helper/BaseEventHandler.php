@@ -2,43 +2,36 @@
 
 namespace Emartech\Emarsys\Helper;
 
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\Helper\Context;
-use Magento\Store\Model\StoreManagerInterface;
+use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Emartech\Emarsys\Helper\Json as JsonSerializer;
-
 use Emartech\Emarsys\Model\EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
-use Emartech\Emarsys\Model\ResourceModel\Event\Collection as EventCollection;
-use Emartech\Emarsys\Api\EventRepositoryInterface;
-use Emartech\Emarsys\Model\Event as EventModel;
-use Emartech\Emarsys\Api\Data\ConfigInterface;
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Store\Model\StoreManagerInterface;
 
 class BaseEventHandler extends AbstractHelper
 {
-    // @codingStandardsIgnoreLine
     /**
      * @var ConfigReader
      */
-    // @codingStandardsIgnoreLine
     protected $configReader;
 
     /**
      * @var EventFactory
      */
-    // @codingStandardsIgnoreLine
     protected $eventFactory;
 
     /**
      * @var EventRepositoryInterface
      */
-    // @codingStandardsIgnoreLine
     protected $eventRepository;
 
     /**
      * @var StoreManagerInterface
      */
-    // @codingStandardsIgnoreLine
     protected $storeManager;
 
     /**
@@ -82,28 +75,32 @@ class BaseEventHandler extends AbstractHelper
     }
 
     /**
-     * @param int $websiteId
+     * IsEnabledForWebsite
+     *
+     * @param int|null $websiteId
      *
      * @return bool
      */
-    // @codingStandardsIgnoreLine
-    protected function isEnabledForWebsite($websiteId)
+    protected function isEnabledForWebsite(int $websiteId = null): bool
     {
         return $this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId);
     }
 
     /**
-     * @param int $storeId
+     * IsEnabledForStore
+     *
+     * @param int|null $storeId
      *
      * @return bool
      */
-    // @codingStandardsIgnoreLine
-    protected function isEnabledForStore($storeId)
+    protected function isEnabledForStore(int $storeId = null): bool
     {
         return $this->configReader->isEnabledForStore(ConfigInterface::SALES_EVENTS, $storeId);
     }
 
     /**
+     * SaveEvent
+     *
      * @param int    $websiteId
      * @param int    $storeId
      * @param string $type
@@ -111,16 +108,16 @@ class BaseEventHandler extends AbstractHelper
      * @param array  $data
      *
      * @return void
+     * @throws AlreadyExistsException
      */
-    // @codingStandardsIgnoreLine
-    protected function saveEvent($websiteId, $storeId, $type, $entityId, $data)
+    protected function saveEvent(int $websiteId, int $storeId, string $type, int $entityId, array $data): void
     {
         $this->removeOldEvents($type, $entityId, $storeId);
 
         $data = $this->jsonSerializer->serialize($data);
 
-        /** @var EventModel $eventModel */
-        $eventModel = $this->eventFactory->create()
+        $eventModel = $this->eventFactory
+            ->create()
             ->setEntityId($entityId)
             ->setWebsiteId($websiteId)
             ->setStoreId($storeId)
@@ -133,18 +130,18 @@ class BaseEventHandler extends AbstractHelper
     }
 
     /**
+     * RemoveOldEvents
+     *
      * @param string $type
      * @param int    $entityId
      * @param int    $storeId
      *
      * @return void
      */
-    private function removeOldEvents($type, $entityId, $storeId)
+    private function removeOldEvents(string $type, int $entityId, int $storeId): void
     {
-        /** @var EventCollection $oldEventCollection */
-        $oldEventCollection = $this->eventCollectionFactory->create();
-
-        $oldEventCollection
+        $oldEventCollection = $this->eventCollectionFactory
+            ->create()
             ->addFieldToFilter('entity_id', ['eq' => $entityId])
             ->addFieldToFilter('event_type', ['eq' => $type])
             ->addFieldToFilter('store_id', ['eq' => $storeId]);

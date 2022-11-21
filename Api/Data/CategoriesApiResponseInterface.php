@@ -4,17 +4,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface CategoriesApiResponseInterface extends ListApiResponseBaseInterface
 {
-    const CATEGORIES_KEY = 'categories';
+    public const CATEGORIES_KEY = 'categories';
 
     /**
+     * GetCategories
+     *
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface[]
      */
-    public function getCategories();
+    public function getCategories(): array;
 
     /**
+     * SetCategories
+     *
      * @param \Emartech\Emarsys\Api\Data\CategoryInterface[] $categories
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface
      */
-    public function setCategories(array $categories);
+    public function setCategories(array $categories): CategoriesApiResponseInterface;
 }

@@ -11,10 +11,10 @@ use Emartech\Emarsys\Helper\DataSource as DataSourceHelper;
 use Emartech\Emarsys\Model\ResourceModel\Api\Customer as CustomerResourceModel;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\ResourceModel\Address as CustomerAddressResourceModel;
-use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory as CustomerAddressAttributeCollectionFactory; // @codingStandardsIgnoreLine
+use Magento\Customer\Model\ResourceModel\Address\Attribute\CollectionFactory
+    as CustomerAddressAttributeCollectionFactory;
 use Magento\Eav\Model\Entity\Attribute;
 use Magento\Eav\Model\Entity\Context;
-use Magento\Framework\DB\Select;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\RelationComposite;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\Snapshot;
 use Magento\Framework\Model\ResourceModel\Iterator;
@@ -22,7 +22,7 @@ use Magento\Framework\Validator\Factory;
 
 class CustomerAddress extends CustomerAddressResourceModel
 {
-    const CUSTOMER_ADDRESS_ENTITY_TYPE_ID = 2;
+    public const CUSTOMER_ADDRESS_ENTITY_TYPE_ID = 2;
 
     /**
      * @var array
@@ -100,15 +100,21 @@ class CustomerAddress extends CustomerAddressResourceModel
     }
 
     /**
-     * @param int       $minCustomerId
-     * @param int       $maxCustomerId
-     * @param int|false $websiteId
-     * @param string[]  $attributeCodes
+     * GetAttributeData
+     *
+     * @param int      $minCustomerId
+     * @param int      $maxCustomerId
+     * @param string[] $attributeCodes
+     * @param int|null $websiteId
      *
      * @return array
      */
-    public function getAttributeData($minCustomerId, $maxCustomerId, $websiteId, $attributeCodes)
-    {
+    public function getAttributeData(
+        int $minCustomerId,
+        int $maxCustomerId,
+        array $attributeCodes,
+        int $websiteId = null
+    ): array {
         $this->mainTable = $this->getEntityTable();
 
         $this->attributeData = [];
@@ -118,8 +124,8 @@ class CustomerAddress extends CustomerAddressResourceModel
         $attributeTables = [];
         $sourceModels = [];
 
-        $customerAddressAttributeCollection = $this->customerAddressAttributeCollectionFactory->create();
-        $customerAddressAttributeCollection
+        $customerAddressAttributeCollection = $this->customerAddressAttributeCollectionFactory
+            ->create()
             ->addFieldToFilter('entity_type_id', ['eq' => self::CUSTOMER_ADDRESS_ENTITY_TYPE_ID])
             ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
@@ -140,7 +146,7 @@ class CustomerAddress extends CustomerAddressResourceModel
                     $attributeTables[] = $attributeTable;
                 }
                 $attributeMapper[$customerAddressAttribute->getAttributeCode()] =
-                    (int)$customerAddressAttribute->getId();
+                    (int) $customerAddressAttribute->getId();
             }
         }
 
@@ -149,14 +155,14 @@ class CustomerAddress extends CustomerAddressResourceModel
                 $mainTableFields,
                 $minCustomerId,
                 $maxCustomerId,
-                $websiteId,
-                $attributeMapper
+                $attributeMapper,
+                $websiteId
             )->getAttributeTableFieldItems(
                 $attributeTables,
                 $minCustomerId,
                 $maxCustomerId,
-                $websiteId,
-                $attributeMapper
+                $attributeMapper,
+                $websiteId
             );
 
         $attributeValues = $this->dataSourceHelper->getAllOptions(
@@ -171,21 +177,23 @@ class CustomerAddress extends CustomerAddressResourceModel
     }
 
     /**
-     * @param string[]  $mainTableFields
-     * @param int       $minCustomerId
-     * @param int       $maxCustomerId
-     * @param int|false $websiteId
-     * @param string[]  $attributeMapper
+     * GetMainTableFieldItems
      *
-     * @return $this
+     * @param string[] $mainTableFields
+     * @param int      $minCustomerId
+     * @param int      $maxCustomerId
+     * @param string[] $attributeMapper
+     * @param int|null $websiteId
+     *
+     * @return CustomerAddress
      */
     private function getMainTableFieldItems(
-        $mainTableFields,
-        $minCustomerId,
-        $maxCustomerId,
-        $websiteId,
-        $attributeMapper
-    ) {
+        array $mainTableFields,
+        int $minCustomerId,
+        int $maxCustomerId,
+        array $attributeMapper,
+        int $websiteId = null
+    ): CustomerAddress {
         if ($mainTableFields) {
             if (!in_array($this->linkField, $mainTableFields)) {
                 $mainTableFields[] = $this->linkField;
@@ -197,18 +205,22 @@ class CustomerAddress extends CustomerAddressResourceModel
             $customerTable = $this->customerResourceModel->getEntityTable();
             $customerTableLinkField = $this->customerResourceModel->getLinkField();
 
-            $attributesQuery = $this->_resource->getConnection()->select()
+            $attributesQuery = $this->_resource
+                ->getConnection()
+                ->select()
                 ->from($this->mainTable, $mainTableFields)
                 ->joinLeft(
                     ['customer_entity_table' => $customerTable],
                     $this->mainTable . '.parent_id = customer_entity_table.' . $customerTableLinkField,
                     ''
                 )
-                ->where('
+                ->where(
+                    '
                         customer_entity_table.default_shipping = ' . $this->mainTable . '.' . $this->linkField . '
                         OR
                         customer_entity_table.default_billing = ' . $this->mainTable . '.' . $this->linkField . '
-                    ')
+                    '
+                )
                 ->where('parent_id' . ' >= ?', $minCustomerId)
                 ->where('parent_id' . ' <= ?', $maxCustomerId);
 
@@ -217,7 +229,7 @@ class CustomerAddress extends CustomerAddressResourceModel
             }
 
             $this->iterator->walk(
-                (string)$attributesQuery,
+                (string) $attributesQuery,
                 [[$this, 'handleMainTableAttributeDataTable']],
                 [
                     'fields'          => array_diff($mainTableFields, [$this->linkField]),
@@ -231,21 +243,23 @@ class CustomerAddress extends CustomerAddressResourceModel
     }
 
     /**
-     * @param array     $attributeTables
-     * @param int       $minCustomerId
-     * @param int       $maxCustomerId
-     * @param int|false $websiteId
-     * @param array     $attributeMapper
+     * GetAttributeTableFieldItems
+     *
+     * @param array    $attributeTables
+     * @param int      $minCustomerId
+     * @param int      $maxCustomerId
+     * @param array    $attributeMapper
+     * @param int|null $websiteId
      *
      * @return $this
      */
     private function getAttributeTableFieldItems(
-        $attributeTables,
-        $minCustomerId,
-        $maxCustomerId,
-        $websiteId,
-        $attributeMapper
-    ) {
+        array $attributeTables,
+        int $minCustomerId,
+        int $maxCustomerId,
+        array $attributeMapper,
+        int $websiteId = null
+    ): CustomerAddress {
         $attributeQueries = [];
 
         $customerTable = $this->customerResourceModel->getEntityTable();
@@ -253,7 +267,9 @@ class CustomerAddress extends CustomerAddressResourceModel
         $customerAddressTable = $this->getEntityTable();
 
         foreach ($attributeTables as $attributeTable) {
-            $attributeQuery = $this->_resource->getConnection()->select()
+            $attributeQuery = $this->_resource
+                ->getConnection()
+                ->select()
                 ->from($attributeTable, ['attribute_id', $this->linkField, 'value'])
                 ->joinLeft(
                     ['customer_address_entity_table' => $customerAddressTable],
@@ -265,11 +281,13 @@ class CustomerAddress extends CustomerAddressResourceModel
                     'customer_address_entity_table.parent_id = customer_entity_table.' . $customerTableLinkField,
                     ''
                 )
-                ->where('
+                ->where(
+                    '
                         customer_entity_table.default_shipping = ' . $attributeTable . '.' . $this->linkField . '
                         OR
                         customer_entity_table.default_billing = ' . $attributeTable . '.' . $this->linkField . '
-                    ')
+                    '
+                )
                 ->where('attribute_id IN (?)', $attributeMapper)
                 ->where('customer_address_entity_table.parent_id >= ?', $minCustomerId)
                 ->where('customer_address_entity_table.parent_id <= ?', $maxCustomerId);
@@ -287,8 +305,9 @@ class CustomerAddress extends CustomerAddressResourceModel
                     ->getConnection()
                     ->select()
                     ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+
                 $this->iterator->walk(
-                    (string)$unionQuery,
+                    (string) $unionQuery,
                     [[$this, 'handleAttributeDataTable']],
                     [
                         'attributeMapper' => $attributeMapper,
@@ -302,11 +321,13 @@ class CustomerAddress extends CustomerAddressResourceModel
     }
 
     /**
+     * HandleMainTableAttributeDataTable
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleMainTableAttributeDataTable($args)
+    public function handleMainTableAttributeDataTable(array $args): void
     {
         $addressId = $args['row'][$this->linkField];
         $customerId = $args['row']['parent_id'];
@@ -317,11 +338,13 @@ class CustomerAddress extends CustomerAddressResourceModel
     }
 
     /**
+     * HandleAttributeDataTable
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleAttributeDataTable($args)
+    public function handleAttributeDataTable(array $args): void
     {
         $addressId = $args['row'][$this->linkField];
         $customerId = $args['row']['customer_id'];
@@ -338,12 +361,14 @@ class CustomerAddress extends CustomerAddressResourceModel
     }
 
     /**
+     * FindAttributeCodeById
+     *
      * @param int   $attributeId
      * @param array $attributeMapper
      *
      * @return string
      */
-    private function findAttributeCodeById($attributeId, $attributeMapper)
+    private function findAttributeCodeById(int $attributeId, array $attributeMapper): string
     {
         foreach ($attributeMapper as $attributeCode => $attributeCodeId) {
             if ($attributeId == $attributeCodeId) {

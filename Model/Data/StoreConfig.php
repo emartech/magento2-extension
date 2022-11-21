@@ -2,34 +2,39 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\StoreConfigInterface;
+use Magento\Framework\DataObject;
 
 class StoreConfig extends DataObject implements StoreConfigInterface
 {
     /**
+     * GetSlug
+     *
      * @return string
      */
-    public function getSlug()
+    public function getSlug(): string
     {
-        return $this->getData(self::STORE_SLUG_KEY);
+        return (string) $this->getData(self::STORE_SLUG_KEY);
     }
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId()
+    public function getStoreId(): int
     {
-        return $this->getData(self::STORE_SLUG_KEY);
+        return (int) $this->getData(self::STORE_SLUG_KEY);
     }
 
     /**
+     * SetSlug
+     *
      * @param string $slug
      *
-     * @return $this
+     * @return StoreConfigInterface
      */
-    public function setSlug($slug)
+    public function setSlug(string $slug): StoreConfigInterface
     {
         $this->setData(self::STORE_SLUG_KEY, $slug);
 
@@ -37,11 +42,13 @@ class StoreConfig extends DataObject implements StoreConfigInterface
     }
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return StoreConfigInterface
      */
-    public function setStoreId($storeId)
+    public function setStoreId(int $storeId): StoreConfigInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

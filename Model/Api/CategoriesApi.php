@@ -6,26 +6,28 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
-use Magento\Catalog\Model\ResourceModel\Category\Attribute\CollectionFactory as CategoryAttributeCollectionFactory;
-use Magento\Catalog\Model\ResourceModel\Category\Attribute\Collection as CategoryAttributeCollection;
-use Magento\Framework\Data\Collection as DataCollection;
-use Magento\Catalog\Model\Category;
-use Magento\Store\Model\Store;
-use Magento\Framework\UrlInterface;
-use Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Webapi\Exception as WebApiException;
-use Magento\Catalog\Api\Data\CategoryInterface;
-use Magento\Framework\ObjectManagerInterface;
 use Emartech\Emarsys\Api\CategoriesApiInterface;
-use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface;
+use Emartech\Emarsys\Api\Data\CategoriesApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoryInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CategoryStoreDataInterfaceFactory;
 use Emartech\Emarsys\Helper\LinkField;
+use Exception;
+use Magento\Catalog\Api\Data\CategoryInterface;
+use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\ResourceModel\Category\Attribute\Collection as CategoryAttributeCollection;
+use Magento\Catalog\Model\ResourceModel\Category\Attribute\CollectionFactory as CategoryAttributeCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
+use Magento\CatalogUrlRewrite\Model\CategoryUrlPathGenerator;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Data\Collection as DataCollection;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\UrlInterface;
+use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Store\Model\Store;
+use Magento\Store\Model\StoreManagerInterface;
 
 class CategoriesApi implements CategoriesApiInterface
 {
@@ -149,14 +151,17 @@ class CategoriesApi implements CategoriesApiInterface
     }
 
     /**
+     * Get
+     *
      * @param int    $page
      * @param int    $pageSize
      * @param string $storeId
      *
      * @return CategoriesApiResponseInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
+     * @throws WebApiException
      */
-    public function get($page, $pageSize, $storeId)
+    public function get(int $page, int $pageSize, string $storeId): CategoriesApiResponseInterface
     {
         $this
             ->initStores($storeId);
@@ -171,7 +176,8 @@ class CategoriesApi implements CategoriesApiInterface
             ->setOrder()
             ->setPage($page, $pageSize);
 
-        return $this->categoriesApiResponseFactory->create()->setCurrentPage($this->categoryCollection->getCurPage())
+        return $this->categoriesApiResponseFactory
+            ->create()->setCurrentPage($this->categoryCollection->getCurPage())
             ->setLastPage($this->categoryCollection->getLastPageNumber())
             ->setPageSize($this->categoryCollection->getPageSize())
             ->setTotalCount($this->categoryCollection->getSize())
@@ -179,11 +185,13 @@ class CategoriesApi implements CategoriesApiInterface
     }
 
     /**
-     * @param mixed $storeIds
+     * InitStores
      *
-     * @return $this
+     * @param int|int[] $storeIds
+     *
+     * @return CategoriesApi
      */
-    private function initStores($storeIds)
+    private function initStores($storeIds): CategoriesApi
     {
         if (!is_array($storeIds)) {
             $storeIds = explode(',', $storeIds);
@@ -201,33 +209,39 @@ class CategoriesApi implements CategoriesApiInterface
     }
 
     /**
-     * @return $this
-     * @throws \Exception
+     * InitCollection
+     *
+     * @return CategoriesApi
+     * @throws Exception
      */
-    private function initCollection()
+    private function initCollection(): CategoriesApi
     {
         $this->categoryCollection = $this->categoryCollectionFactory->create();
+
         return $this;
     }
 
     /**
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * JoinData
+     *
+     * @return CategoriesApi
+     * @throws LocalizedException
      */
-    private function joinData()
+    private function joinData(): CategoriesApi
     {
-        $this->categoryAttributeCollection = $this->categoryAttributeCollectionFactory->create();
-        $this->categoryAttributeCollection
+        $this->categoryAttributeCollection = $this->categoryAttributeCollectionFactory
+            ->create()
             ->addFieldToFilter('attribute_code', [
-                'in' => array_values(array_merge(
-                    $this->storeCategoryAttributeCodes,
-                    $this->globalCategoryAttributeCodes
-                )),
+                'in' => array_values(
+                    array_merge(
+                        $this->storeCategoryAttributeCodes,
+                        $this->globalCategoryAttributeCodes
+                    )
+                ),
             ]);
 
         $mainTableName = $this->categoryCollection->getResource()->getTable('catalog_category_entity');
 
-        /** @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute $categoryAttribute */
         foreach ($this->categoryAttributeCollection as $categoryAttribute) {
             if ($categoryAttribute->getBackendTable() === $mainTableName) {
                 $this->categoryCollection->addAttributeToSelect($categoryAttribute->getAttributeCode());
@@ -261,38 +275,44 @@ class CategoriesApi implements CategoriesApiInterface
     }
 
     /**
+     * GetAttributeValueAlias
+     *
      * @param string   $attributeCode
      * @param int|null $storeId
      *
      * @return string
      */
-    private function getAttributeValueAlias($attributeCode, $storeId = null)
+    private function getAttributeValueAlias(string $attributeCode, int $storeId = null): string
     {
         $returnValue = $attributeCode;
         if ($storeId !== null) {
             $returnValue .= '_' . $storeId;
         }
+
         return $returnValue;
     }
 
     /**
+     * SetOrder
+     *
      * @return $this
      */
-    private function setOrder()
+    private function setOrder(): CategoriesApi
     {
-        $this->categoryCollection
-            ->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
+        $this->categoryCollection->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
 
         return $this;
     }
 
     /**
+     * SetPage
+     *
      * @param int $page
      * @param int $pageSize
      *
-     * @return $this
+     * @return CategoriesApi
      */
-    private function setPage($page, $pageSize)
+    private function setPage(int $page, int $pageSize): CategoriesApi
     {
         $this->categoryCollection->setPage($page, $pageSize);
 
@@ -300,14 +320,17 @@ class CategoriesApi implements CategoriesApiInterface
     }
 
     /**
+     * HandleCategories
+     *
      * @return array
      */
-    private function handleCategories()
+    private function handleCategories(): array
     {
         $returnArray = [];
 
         foreach ($this->categoryCollection as $category) {
-            $returnArray[] = $this->categoryFactory->create()
+            $returnArray[] = $this->categoryFactory
+                ->create()
                 ->setPath($category->getPath())
                 ->setEntityId($category->getId())
                 ->setChildrenCount($category->getChildrenCount())
@@ -318,33 +341,40 @@ class CategoriesApi implements CategoriesApiInterface
     }
 
     /**
+     * HandleCategoryStoreData
+     *
      * @param Category $category
      *
      * @return array
      */
-    private function handleCategoryStoreData($category)
+    private function handleCategoryStoreData(Category $category): array
     {
         $returnArray = [];
 
         foreach ($this->storeIds as $storeId => $storeObject) {
-            $returnArray[] = $this->categoryStoreDataFactory->create()
+            $returnArray[] = $this->categoryStoreDataFactory
+                ->create()
                 ->setStoreId($storeId)
-                ->setIsActive($category->getData($this->getAttributeValueAlias('is_active', $storeId)))
+                ->setIsActive($category->getData($this->getAttributeValueAlias('is_active', $storeId)) ?? 0)
                 ->setImage($this->handleImage($category, $storeObject))
                 ->setName($category->getData($this->getAttributeValueAlias('name', $storeId)))
-                ->setDescription($category->getData($this->getAttributeValueAlias('description', $storeId)));
+                ->setDescription(
+                    $category->getData($this->getAttributeValueAlias('description', $storeId)) ?? ''
+                );
         }
 
         return $returnArray;
     }
 
     /**
+     * HandleImage
+     *
      * @param Category $category
      * @param Store    $store
      *
      * @return string
      */
-    private function handleImage($category, $store)
+    private function handleImage(Category $category, Store $store): string
     {
         $imagePreUrl = $this->storeIds[0]->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/category/';
         $image = $category->getData($this->getAttributeValueAlias('image', $store->getId()));

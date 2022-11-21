@@ -8,51 +8,63 @@ use Magento\Framework\DataObject;
 class Attribute extends DataObject implements AttributeInterface
 {
     /**
+     * GetCode
+     *
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
-        return $this->getData(self::CODE_KEY);
+        return (string) $this->getData(self::CODE_KEY);
     }
 
     /**
+     * GetName
+     *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->getData(self::NAME_KEY);
+        return (string) $this->getData(self::NAME_KEY);
     }
 
     /**
+     * GetIsSystem
+     *
      * @return bool
      */
-    public function getIsSystem()
+    public function getIsSystem(): bool
     {
-        return $this->getData(self::IS_SYSTEM_KEY);
+        return (bool) $this->getData(self::IS_SYSTEM_KEY);
     }
 
     /**
+     * GetIsVisible
+     *
      * @return bool
      */
-    public function getIsVisible()
+    public function getIsVisible(): bool
     {
-        return $this->getData(self::IS_VISIBLE_KEY);
+        return (bool) $this->getData(self::IS_VISIBLE_KEY);
     }
 
     /**
+     * GetIsVisibleOnFront
+     *
      * @return bool
      */
-    public function getIsVisibleOnFront()
+    public function getIsVisibleOnFront(): bool
     {
-        return $this->getData(self::IS_VISIBLE_ON_FRONT_KEY);
+        return (bool) $this->getData(self::IS_VISIBLE_ON_FRONT_KEY);
     }
 
     /**
+     * SetCode
+     *
      * @param string $code
      *
-     * @return $this
+     * @return AttributeInterface
      */
-    public function setCode($code)
+    public function setCode(string $code): AttributeInterface
     {
         $this->setData(self::CODE_KEY, $code);
 
@@ -60,11 +72,13 @@ class Attribute extends DataObject implements AttributeInterface
     }
 
     /**
+     * SetName
+     *
      * @param string $name
      *
-     * @return $this
+     * @return AttributeInterface
      */
-    public function setName($name)
+    public function setName(string $name): AttributeInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -72,11 +86,13 @@ class Attribute extends DataObject implements AttributeInterface
     }
 
     /**
+     * SetIsSystem
+     *
      * @param bool $isSystem
      *
-     * @return $this
+     * @return AttributeInterface
      */
-    public function setIsSystem($isSystem)
+    public function setIsSystem(bool $isSystem): AttributeInterface
     {
         $this->setData(self::IS_SYSTEM_KEY, $isSystem);
 
@@ -84,11 +100,13 @@ class Attribute extends DataObject implements AttributeInterface
     }
 
     /**
+     * SetIsVisible
+     *
      * @param bool $isVisible
      *
-     * @return $this
+     * @return AttributeInterface
      */
-    public function setIsVisible($isVisible)
+    public function setIsVisible(bool$isVisible): AttributeInterface
     {
         $this->setData(self::IS_VISIBLE_KEY, $isVisible);
 
@@ -96,11 +114,13 @@ class Attribute extends DataObject implements AttributeInterface
     }
 
     /**
+     * SetIsVisibleOnFront
+     *
      * @param bool $isVisibleOnFront
      *
-     * @return $this
+     * @return AttributeInterface
      */
-    public function setIsVisibleOnFront($isVisibleOnFront)
+    public function setIsVisibleOnFront(bool $isVisibleOnFront): AttributeInterface
     {
         $this->setData(self::IS_VISIBLE_ON_FRONT_KEY, $isVisibleOnFront);
 

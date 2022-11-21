@@ -2,52 +2,61 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\CategoryInterface;
 use Emartech\Emarsys\Api\Data\CategoryStoreDataInterface;
+use Magento\Framework\DataObject;
 
 class Category extends DataObject implements CategoryInterface
 {
 
     /**
+     * GetStoreData
+     *
      * @return CategoryStoreDataInterface[]
      */
-    public function getStoreData()
+    public function getStoreData(): array
     {
         return $this->getData(self::STORE_DATA_KEY);
     }
 
     /**
+     * GetChildrenCount
+     *
      * @return int
      */
-    public function getChildrenCount()
+    public function getChildrenCount(): int
     {
-        return $this->getData(self::CHILDREN_COUNT_KEY);
+        return (int) $this->getData(self::CHILDREN_COUNT_KEY);
     }
 
     /**
+     * GetEntityId
+     *
      * @return int
      */
-    public function getEntityId()
+    public function getEntityId(): int
     {
-        return $this->getData(self::ENTITY_ID_KEY);
+        return (int) $this->getData(self::ENTITY_ID_KEY);
     }
 
     /**
-     * @return string
+     * GetPath
+     *
+     * @retrn string
      */
-    public function getPath()
+    public function getPath(): string
     {
-        return $this->getData(self::PATH_KEY);
+        return (string) $this->getData(self::PATH_KEY);
     }
 
     /**
+     * SetChildrenCount
+     *
      * @param int $childrenCount
      *
-     * @return $this
+     * @return CategoryInterface
      */
-    public function setChildrenCount($childrenCount)
+    public function setChildrenCount(int $childrenCount): CategoryInterface
     {
         $this->setData(self::CHILDREN_COUNT_KEY, $childrenCount);
 
@@ -55,11 +64,13 @@ class Category extends DataObject implements CategoryInterface
     }
 
     /**
+     * SetEntityId
+     *
      * @param int $entityId
      *
-     * @return $this
+     * @return CategoryInterface
      */
-    public function setEntityId($entityId)
+    public function setEntityId(int $entityId): CategoryInterface
     {
         $this->setData(self::ENTITY_ID_KEY, $entityId);
 
@@ -67,11 +78,13 @@ class Category extends DataObject implements CategoryInterface
     }
 
     /**
+     * SetPath
+     *
      * @param string $path
      *
-     * @return $this
+     * @return CategoryInterface
      */
-    public function setPath($path)
+    public function setPath(string $path): CategoryInterface
     {
         $this->setData(self::PATH_KEY, $path);
 
@@ -79,11 +92,13 @@ class Category extends DataObject implements CategoryInterface
     }
 
     /**
+     * SetStoreData
+     *
      * @param CategoryStoreDataInterface[] $storeData
      *
-     * @return $this
+     * @return CategoryInterface
      */
-    public function setStoreData($storeData)
+    public function setStoreData(array $storeData): CategoryInterface
     {
         $this->setData(self::STORE_DATA_KEY, $storeData);
 

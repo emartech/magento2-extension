@@ -211,25 +211,31 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetProductGlobalFields
+     *
      * @return string[]
      */
-    public function getProductGlobalFields()
+    public function getProductGlobalFields(): array
     {
         return $this->fields;
     }
 
     /**
+     * GetProductStoreFields
+     *
      * @return string[]
      */
-    public function getProductStoreFields()
+    public function getProductStoreFields(): array
     {
         return $this->storeFields;
     }
 
     /**
+     * GetProductFields
+     *
      * @return string[]
      */
-    public function getProductFields()
+    public function getProductFields(): array
     {
         return array_merge(
             $this->getProductGlobalFields(),
@@ -238,14 +244,15 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetProductExtraFields
+     *
      * @return string[]
      */
-    public function getProductExtraFields()
+    public function getProductExtraFields(): array
     {
         if (null == $this->extraFields) {
             $this->extraFields = [];
 
-            /** @var ConfigInterface $config */
             $config = $this->configFactory->create();
 
             $productAttributes = $config->getConfigValue(
@@ -262,17 +269,20 @@ class Product extends AbstractHelper
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return Product
      */
-    public function initCollection()
+    public function initCollection(): Product
     {
-        /** @var ProductCollection customerCollection */
         $this->productCollection = $this->productCollectionFactory->create();
 
         return $this;
     }
 
     /**
+     * HandleIds
+     *
      * @param int         $page
      * @param int         $pageSize
      * @param string|null $table
@@ -283,13 +293,13 @@ class Product extends AbstractHelper
      * @return array
      */
     public function handleIds(
-        $page,
-        $pageSize,
-        $table = null,
-        $primaryKey = null,
-        $wheres = [],
-        $countField = null
-    ) {
+        int $page,
+        int $pageSize,
+        string $table = null,
+        string $primaryKey = null,
+        array $wheres = [],
+        string $countField = null
+    ): array {
         return $this->productResource->handleIds(
             $page,
             $pageSize,
@@ -301,12 +311,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetCategoryIds
+     *
      * @param array      $wheres
      * @param array|null $joinInner
      *
-     * @return $this
+     * @return Product
      */
-    public function getCategoryIds($wheres, $joinInner = null)
+    public function getCategoryIds(array $wheres, array $joinInner = null): Product
     {
         $this->categoryIds = $this->categoryResource->getCategoryIds(
             $wheres,
@@ -317,12 +329,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetChildrenProductIds
+     *
      * @param array      $wheres
      * @param array|null $joinInner
      *
-     * @return $this
+     * @return Product
      */
-    public function getChildrenProductIds($wheres, $joinInner = null)
+    public function getChildrenProductIds(array $wheres, array $joinInner = null): Product
     {
         $this->childrenProductIds = $this->productResource->getChildrenProductIds(
             $wheres,
@@ -333,12 +347,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetStockData
+     *
      * @param array      $wheres
      * @param array|null $joinInner
      *
-     * @return $this
+     * @return Product
      */
-    public function getStockData($wheres, $joinInner = null)
+    public function getStockData(array $wheres, array $joinInner = null): Product
     {
         $this->stockData = $this->productResource->getStockData(
             $wheres,
@@ -348,7 +364,15 @@ class Product extends AbstractHelper
         return $this;
     }
 
-    public function getStatusData($wheres, $joinInner = null)
+    /**
+     * GetStatusData
+     *
+     * @param array      $wheres
+     * @param array|null $joinInner
+     *
+     * @return Product
+     */
+    public function getStatusData(array $wheres, array $joinInner = null): Product
     {
         $this->statusData = $this->productResource->getStatusData(
             $wheres,
@@ -359,17 +383,21 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetAttributeData
+     *
      * @param array         $wheres
      * @param int[]         $storeIds
      * @param array|null    $joinInner
-     * @param null|string[] $fields
+     * @param string[]|null $fields
+     *
+     * @return void
      */
     public function getAttributeData(
-        $wheres,
-        $storeIds,
-        $joinInner = null,
-        $fields = null
-    ) {
+        array $wheres,
+        array $storeIds,
+        array $joinInner = null,
+        array $fields = null
+    ): void {
         if (!$fields) {
             $fields = array_merge(
                 $this->getProductFields(),
@@ -377,12 +405,7 @@ class Product extends AbstractHelper
             );
         }
 
-        $data = $this->productResource->getAttributeData(
-            $wheres,
-            $storeIds,
-            $fields,
-            $joinInner
-        );
+        $data = $this->productResource->getAttributeData($wheres, $storeIds, $fields, $joinInner);
         if (isset($data['attribute_data'])) {
             $this->productAttributeData = $data['attribute_data'];
         }
@@ -392,13 +415,15 @@ class Product extends AbstractHelper
     }
 
     /**
+     * SetWhere
+     *
      * @param string $linkField
      * @param int    $min
      * @param int    $max
      *
-     * @return $this
+     * @return Product
      */
-    public function setWhere($linkField, $min, $max)
+    public function setWhere(string $linkField, int $min, int $max): Product
     {
         $this->productCollection
             ->addFieldToFilter($linkField, ['from' => $min])
@@ -408,12 +433,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * SetOrder
+     *
      * @param string $linkField
      * @param string $direction
      *
-     * @return $this
+     * @return Product
      */
-    public function setOrder($linkField, $direction)
+    public function setOrder(string $linkField, string $direction): Product
     {
         $this->productCollection
             ->groupByAttribute($linkField)
@@ -423,14 +450,18 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetProductCollection
+     *
      * @return ProductCollection
      */
-    public function getProductCollection()
+    public function getProductCollection(): ProductCollection
     {
         return $this->productCollection;
     }
 
     /**
+     * BuildProductObject
+     *
      * @param ProductModel $product
      * @param array        $storeIds
      * @param string       $linkField
@@ -439,11 +470,11 @@ class Product extends AbstractHelper
      * @return ProductInterface
      */
     public function buildProductObject(
-        $product,
-        $storeIds,
-        $linkField,
-        $toArray = false
-    ) {
+        ProductModel $product,
+        array $storeIds,
+        string $linkField,
+        bool $toArray = false
+    ): ProductInterface {
         $productEntityId = $product->getEntityId();
         $productId = $product->getData($linkField);
 
@@ -451,34 +482,13 @@ class Product extends AbstractHelper
         $productItem = $this->productFactory
             ->create()
             ->setType($product->getTypeId())
-            ->setCategories(
-                $this->handleCategories(
-                    $productEntityId
-                )
-            )
-            ->setChildrenEntityIds(
-                $this->handleChildrenEntityIds(
-                    $productId
-                )
-            )
+            ->setCategories($this->handleCategories($productEntityId))
+            ->setChildrenEntityIds($this->handleChildrenEntityIds($productId))
             ->setEntityId($productEntityId)
-            ->setIsInStock(
-                $this->handleStock(
-                    $productEntityId
-                )
-            )
-            ->setQty(
-                $this->handleQty(
-                    $productEntityId
-                )
-            )
+            ->setIsInStock($this->handleStock($productEntityId))
+            ->setQty($this->handleQty($productEntityId))
             ->setSku($product->getSku())
-            ->setImages(
-                $this->handleImages(
-                    $storeIds[0],
-                    $productId
-                )
-            )
+            ->setImages($this->handleImages($storeIds[0], $productId))
             ->setStoreData(
                 $this->handleProductStoreData(
                     $product,
@@ -497,12 +507,13 @@ class Product extends AbstractHelper
     }
 
     /**
+     * HandleCategories
+     *
      * @param int $productId
      *
      * @return array
      */
-    // @codingStandardsIgnoreLine
-    protected function handleCategories($productId)
+    protected function handleCategories(int $productId): array
     {
         if (array_key_exists($productId, $this->categoryIds)) {
             return $this->categoryIds[$productId];
@@ -512,12 +523,13 @@ class Product extends AbstractHelper
     }
 
     /**
+     * HandleChildrenEntityIds
+     *
      * @param int $productId
      *
      * @return array
      */
-    // @codingStandardsIgnoreLine
-    protected function handleChildrenEntityIds($productId)
+    protected function handleChildrenEntityIds(int $productId): array
     {
         if (array_key_exists($productId, $this->childrenProductIds)) {
             return $this->childrenProductIds[$productId];
@@ -527,12 +539,13 @@ class Product extends AbstractHelper
     }
 
     /**
+     * HandleStock
+     *
      * @param int $productId
      *
      * @return int
      */
-    // @codingStandardsIgnoreLine
-    protected function handleStock($productId)
+    protected function handleStock(int $productId): int
     {
         if (array_key_exists($productId, $this->stockData)) {
             return $this->stockData[$productId]['is_in_stock'];
@@ -542,12 +555,13 @@ class Product extends AbstractHelper
     }
 
     /**
+     * HandleQty
+     *
      * @param int $productId
      *
      * @return int
      */
-    // @codingStandardsIgnoreLine
-    protected function handleQty($productId)
+    protected function handleQty(int $productId): int
     {
         if (array_key_exists($productId, $this->stockData)) {
             return $this->stockData[$productId]['qty'];
@@ -557,13 +571,15 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetStoreData
+     *
      * @param int    $productId
      * @param int    $storeId
      * @param string $attributeCode
      *
      * @return string|null
      */
-    private function getStoreData($productId, $storeId, $attributeCode)
+    private function getStoreData(int $productId, int $storeId, string $attributeCode): ?string
     {
         if (array_key_exists($productId, $this->productAttributeData)
             && array_key_exists(
@@ -586,13 +602,15 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetStoreAttributeValue
+     *
      * @param int    $storeId
      * @param string $field
      * @param string $value
      *
-     * @return string
+     * @return string|null
      */
-    private function getStoreAttributeValue($storeId, $field, $value)
+    private function getStoreAttributeValue(int $storeId, string $field, string $value): ?string
     {
         if (array_key_exists($storeId, $this->productAttributeValues) &&
             array_key_exists($field, $this->productAttributeValues[$storeId]) &&
@@ -612,12 +630,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * HandleImages
+     *
      * @param Store $store
      * @param int   $id
      *
      * @return ImagesInterface
      */
-    protected function handleImages($store, $id)
+    protected function handleImages(Store $store, int $id): ImagesInterface
     {
         $imagePreUrl = $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product';
 
@@ -629,11 +649,7 @@ class Product extends AbstractHelper
         }
 
         try {
-            $smallImage = $this->getStoreData(
-                $id,
-                $store->getId(),
-                'small_image'
-            );
+            $smallImage = $this->getStoreData($id, $store->getId(), 'small_image');
             $smallImage = $imagePreUrl . $smallImage;
         } catch (Exception $e) {
             $smallImage = null;
@@ -646,13 +662,16 @@ class Product extends AbstractHelper
             $thumbnail = null;
         }
 
-        return $this->imagesFactory->create()
+        return $this->imagesFactory
+            ->create()
             ->setImage($image)
             ->setSmallImage($smallImage)
             ->setThumbnail($thumbnail);
     }
 
     /**
+     * HandleProductStoreData
+     *
      * @param ProductModel $product
      * @param array        $storeIds
      * @param int          $productId
@@ -661,14 +680,13 @@ class Product extends AbstractHelper
      *
      * @return ProductStoreDataInterface[]
      */
-    // @codingStandardsIgnoreLine
     protected function handleProductStoreData(
-        $product,
-        $storeIds,
-        $productId,
-        $productEntityId,
-        $toArray = false
-    ) {
+        ProductModel $product,
+        array $storeIds,
+        int $productId,
+        int $productEntityId,
+        bool $toArray = false
+    ): array {
         $product->setPriceCalculation(false);
 
         $returnArray = [];
@@ -676,11 +694,7 @@ class Product extends AbstractHelper
         foreach ($storeIds as $storeId => $storeObject) {
             $price = $this->getPrice($productId, $storeId);
 
-            $webShopPrice = (float)$this->getWebShopPrice(
-                $productEntityId,
-                $storeId,
-                0
-            );
+            $webShopPrice = (float) $this->getWebShopPrice($productEntityId, $storeId, 0);
             if (!$webShopPrice) {
                 $webShopPrice = $price;
             } elseif ($price > 0) {
@@ -693,18 +707,9 @@ class Product extends AbstractHelper
                 $price = $webShopPrice;
             }
 
-            $displayPrice = (float)$this->getDisplayPrice($price, $storeObject);
-
-            $originalPrice = (float)$this->getStoreData(
-                $productId,
-                $storeId,
-                'price'
-            );
-            $originalWebShopPrice = (float)$this->getOriginalWebShopPrice(
-                $productEntityId,
-                $storeId,
-                0
-            );
+            $displayPrice = (float) $this->getDisplayPrice($price, $storeObject);
+            $originalPrice = (float) $this->getStoreData($productId, $storeId, 'price');
+            $originalWebShopPrice = (float) $this->getOriginalWebShopPrice($productEntityId, $storeId, 0);
             if (!$originalWebShopPrice) {
                 $originalWebShopPrice = $originalPrice;
             } elseif ($originalPrice > 0) {
@@ -717,20 +722,9 @@ class Product extends AbstractHelper
                 $originalPrice = $originalWebShopPrice;
             }
 
-            $originalDisplayPrice = (float)$this->getDisplayPrice(
-                $originalPrice,
-                $storeObject
-            );
-
-            $displayWebShopPrice = (float)$this->getDisplayPrice(
-                $webShopPrice,
-                $storeObject
-            );
-
-            $originalDisplayWebShopPrice = (float)$this->getDisplayPrice(
-                $originalWebShopPrice,
-                $storeObject
-            );
+            $originalDisplayPrice = (float) $this->getDisplayPrice($originalPrice, $storeObject);
+            $displayWebShopPrice = (float) $this->getDisplayPrice($webShopPrice, $storeObject);
+            $originalDisplayWebShopPrice = (float) $this->getDisplayPrice($originalWebShopPrice, $storeObject);
 
             if (!$this->productEnableInWebsite($productEntityId, $storeObject->getWebsiteId())) {
                 $status = 0;
@@ -744,9 +738,7 @@ class Product extends AbstractHelper
                     ->create()
                     ->setStoreId($storeId)
                     ->setStatus($status)
-                    ->setDescription(
-                        $this->getStoreData($productId, $storeId, 'description')
-                    )
+                    ->setDescription($this->getStoreData($productId, $storeId, 'description'))
                     ->setLink($this->handleLink($storeObject, $productId))
                     ->setName($this->getStoreData($productId, $storeId, 'name'))
                     ->setPrice($price)
@@ -756,9 +748,7 @@ class Product extends AbstractHelper
                     ->setWebshopPrice($webShopPrice)
                     ->setDisplayWebshopPrice($displayWebShopPrice)
                     ->setOriginalWebshopPrice($originalWebShopPrice)
-                    ->setOriginalDisplayWebshopPrice(
-                        $originalDisplayWebShopPrice
-                    )
+                    ->setOriginalDisplayWebshopPrice($originalDisplayWebShopPrice)
                     ->setCurrencyCode($this->getCurrencyCode($storeObject))
                     ->setImages($this->handleImages($storeObject, $productId));
 
@@ -794,11 +784,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * ProductEnableInWebsite
+     *
      * @param int $productId
      * @param int $websiteId
+     *
      * @return bool
      */
-    protected function productEnableInWebsite($productId, $websiteId): bool
+    protected function productEnableInWebsite(int $productId, int $websiteId): bool
     {
         // 0 store handle
         if ($websiteId == 0) {
@@ -812,12 +805,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetPrice
+     *
      * @param int $productId
      * @param int $storeId
      *
      * @return float
      */
-    protected function getPrice($productId, $storeId)
+    protected function getPrice(int $productId, int $storeId): float
     {
         $price = $this->getStoreData($productId, $storeId, 'price');
         $specialPrice = $this->getStoreData(
@@ -827,20 +822,12 @@ class Product extends AbstractHelper
         );
         if (null !== $specialPrice) {
             try {
-                $specialFromDate = $this->getStoreData(
-                    $productId,
-                    $storeId,
-                    'special_from_date'
-                );
+                $specialFromDate = $this->getStoreData($productId, $storeId, 'special_from_date');
                 $specialFromDate = new DateTime($specialFromDate);
 
                 $now = new DateTime();
 
-                $specialToDate = $this->getStoreData(
-                    $productId,
-                    $storeId,
-                    'special_to_date'
-                );
+                $specialToDate = $this->getStoreData($productId, $storeId, 'special_to_date');
                 $specialToDate = new DateTime($specialToDate);
 
                 if ($specialFromDate <= $now && $now <= $specialToDate) {
@@ -851,21 +838,20 @@ class Product extends AbstractHelper
             }
         }
 
-        return (float)$price;
+        return (float) $price;
     }
 
     /**
+     * GetWebShopPrice
+     *
      * @param int $productEntityId
      * @param int $storeId
      * @param int $customerGroupId
      *
      * @return float
      */
-    protected function getWebShopPrice(
-        $productEntityId,
-        $storeId,
-        $customerGroupId = 0
-    ) {
+    protected function getWebShopPrice(int $productEntityId, int $storeId, int $customerGroupId = 0): float
+    {
         if (array_key_exists($productEntityId, $this->priceData)
             && array_key_exists($storeId, $this->priceData[$productEntityId])
             && array_key_exists(
@@ -884,17 +870,16 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetOriginalWebShopPrice
+     *
      * @param int $productEntityId
      * @param int $storeId
      * @param int $customerGroupId
      *
      * @return float
      */
-    protected function getOriginalWebShopPrice(
-        $productEntityId,
-        $storeId,
-        $customerGroupId = 0
-    ) {
+    protected function getOriginalWebShopPrice(int $productEntityId, int $storeId, int $customerGroupId = 0): float
+    {
         if (array_key_exists($productEntityId, $this->priceData)
             && array_key_exists($storeId, $this->priceData[$productEntityId])
             && array_key_exists(
@@ -913,26 +898,30 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetCurrencyCode
+     *
      * @param Store $store
      *
      * @return string
      */
-    // @codingStandardsIgnoreLine
-    protected function getCurrencyCode($store)
+    protected function getCurrencyCode(Store $store): string
     {
         if ($store->getId() === '0') {
             return $store->getBaseCurrencyCode();
         }
+
         return $store->getCurrentCurrencyCode();
     }
 
     /**
+     * GetDisplayPrice
+     *
      * @param float $price
      * @param Store $store
      *
      * @return float
      */
-    protected function getDisplayPrice($price, $store)
+    protected function getDisplayPrice(float $price, Store $store): float
     {
         if ($this->getCurrencyCode($store) !== $store->getBaseCurrencyCode()) {
             try {
@@ -950,13 +939,14 @@ class Product extends AbstractHelper
     }
 
     /**
+     * HandleLink
+     *
      * @param Store $store
      * @param int   $productId
      *
      * @return string
      */
-    // @codingStandardsIgnoreLine
-    protected function handleLink($store, $productId)
+    protected function handleLink(Store $store, int $productId): string
     {
         $link = $this->getStoreData($productId, $store->getId(), 'url_key');
 
@@ -968,12 +958,13 @@ class Product extends AbstractHelper
     }
 
     /**
+     * GetProductUrlSuffix
+     *
      * @param int $storeId
      *
      * @return string
      */
-    // @codingStandardsIgnoreLine
-    protected function getProductUrlSuffix($storeId)
+    protected function getProductUrlSuffix(int $storeId): string
     {
         if (!isset($this->productUrlSuffix[$storeId])) {
             $this->productUrlSuffix[$storeId] = $this->scopeConfig->getValue(
@@ -982,29 +973,27 @@ class Product extends AbstractHelper
                 $storeId
             );
         }
+
         return $this->productUrlSuffix[$storeId];
     }
 
     /**
+     * GetPrices
+     *
      * @param array      $websiteIds
      * @param int[]      $customerGroupIds
      * @param array      $wheres
      * @param array|null $joinInner
      *
-     * @return $this
+     * @return Product
      */
     public function getPrices(
-        $websiteIds,
-        $customerGroupIds,
-        $wheres,
-        $joinInner = null
-    ) {
-        $this->priceData = $this->productResource->getPrices(
-            $websiteIds,
-            $customerGroupIds,
-            $wheres,
-            $joinInner
-        );
+        array $websiteIds,
+        array $customerGroupIds,
+        array $wheres,
+        array $joinInner = null
+    ): Product {
+        $this->priceData = $this->productResource->getPrices($websiteIds, $customerGroupIds, $wheres, $joinInner);
 
         return $this;
     }

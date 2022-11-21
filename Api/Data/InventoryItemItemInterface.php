@@ -7,48 +7,57 @@
 
 namespace Emartech\Emarsys\Api\Data;
 
-/**
- * Interface InventoryItemItemInterface
- */
 interface InventoryItemItemInterface
 {
-    const SOURCE_CODE_KEY = 'source_code';
-    const QUANTITY_KEY    = 'quantity';
-    const IS_IN_STOCK_KEY = 'is_in_stock';
+    public const SOURCE_CODE_KEY = 'source_code';
+    public const QUANTITY_KEY    = 'quantity';
+    public const IS_IN_STOCK_KEY = 'is_in_stock';
 
     /**
+     * GetSourceCode
+     *
      * @return string
      */
-    public function getSourceCode();
+    public function getSourceCode(): string;
 
     /**
+     * SetSourceCode
+     *
      * @param string $sourceCode
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setSourceCode($sourceCode);
+    public function setSourceCode(string $sourceCode): InventoryItemItemInterface;
 
     /**
+     * GetQuantity
+     *
      * @return float
      */
-    public function getQuantity();
+    public function getQuantity(): float;
 
     /**
+     * SetQuantity
+     *
      * @param float $quantity
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setQuantity($quantity);
+    public function setQuantity(float $quantity): InventoryItemItemInterface;
 
     /**
+     * GetIsInStock
+     *
      * @return bool
      */
-    public function getIsInStock();
+    public function getIsInStock(): bool;
 
     /**
-     * @param int $isInStock
+     * SetIsInStock
      *
-     * @return $this
+     * @param bool $isInStock
+     *
+     * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setIsInStock($isInStock);
+    public function setIsInStock(bool $isInStock): InventoryItemItemInterface;
 }

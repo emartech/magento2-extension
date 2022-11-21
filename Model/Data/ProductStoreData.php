@@ -10,139 +10,173 @@ use Magento\Framework\DataObject;
 class ProductStoreData extends DataObject implements ProductStoreDataInterface
 {
     /**
+     * GetDescription
+     *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
-        return $this->getData(self::DESCRIPTION_KEY);
+        return (string) $this->getData(self::DESCRIPTION_KEY);
     }
 
     /**
+     * GetLink
+     *
      * @return string
      */
-    public function getLink()
+    public function getLink(): string
     {
-        return $this->getData(self::LINK_KEY);
+        return (string) $this->getData(self::LINK_KEY);
     }
 
     /**
+     * GetName
+     *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
-        return $this->getData(self::NAME_KEY);
+        return (string) $this->getData(self::NAME_KEY);
     }
 
     /**
+     * GetPrice
+     *
      * @return float
      */
-    public function getPrice()
+    public function getPrice(): float
     {
-        return $this->getData(self::PRICE_KEY);
+        return (float) $this->getData(self::PRICE_KEY);
     }
 
     /**
-     * @return float
+     * GetDisplayPrice
+     *
+     * @return float|null
      */
-    public function getDisplayPrice()
+    public function getDisplayPrice(): ?float
     {
         return $this->getData(self::DISPLAY_PRICE_KEY);
     }
 
     /**
-     * @return float
+     * GetOriginalPrice
+     *
+     * @return float|null
      */
-    public function getOriginalPrice()
+    public function getOriginalPrice(): ?float
     {
         return $this->getData(self::ORIGINAL_PRICE_KEY);
     }
 
     /**
-     * @return float
+     * GetOriginalDisplayPrice
+     *
+     * @return float|null
      */
-    public function getOriginalDisplayPrice()
+    public function getOriginalDisplayPrice(): ?float
     {
         return $this->getData(self::ORIGINAL_DISPLAY_PRICE_KEY);
     }
 
     /**
-     * @return float
+     * GetWebshopPrice
+     *
+     * @return float|null
      */
-    public function getWebshopPrice()
+    public function getWebshopPrice(): ?float
     {
         return $this->getData(self::WEBSHOP_PRICE);
     }
 
     /**
-     * @return float
+     * GetDisplayWebshopPrice
+     *
+     * @return float|null
      */
-    public function getDisplayWebshopPrice()
+    public function getDisplayWebshopPrice(): ?float
     {
         return $this->getData(self::DISPLAY_WEBSHOP_PRICE);
     }
 
     /**
-     * @return float
+     * GetOriginalWebshopPrice
+     *
+     * @return float|null
      */
-    public function getOriginalWebshopPrice()
+    public function getOriginalWebshopPrice(): ?float
     {
         return $this->getData(self::ORIGINAL_WEBSHOP_PRICE);
     }
 
     /**
-     * @return float
+     * GetOriginalDisplayWebshopPrice
+     *
+     * @return float|null
      */
-    public function getOriginalDisplayWebshopPrice()
+    public function getOriginalDisplayWebshopPrice(): ?float
     {
         return $this->getData(self::ORIGINAL_DISPLAY_WEBSHOP_PRICE);
     }
 
     /**
+     * GetStatus
+     *
      * @return int
      */
-    public function getStatus()
+    public function getStatus(): int
     {
-        return $this->getData(self::STATUS_KEY);
+        return (int) $this->getData(self::STATUS_KEY);
     }
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId()
+    public function getStoreId(): int
     {
-        return $this->getData(self::STORE_ID_KEY);
+        return (int) $this->getData(self::STORE_ID_KEY);
     }
 
     /**
+     * GetCurrencyCode
+     *
      * @return string
      */
-    public function getCurrencyCode()
+    public function getCurrencyCode(): string
     {
-        return $this->getData(self::CURRENCY_KEY);
+        return (string) $this->getData(self::CURRENCY_KEY);
     }
 
     /**
+     * GetExtraFields
+     *
      * @return ExtraFieldsInterface[]
      */
-    public function getExtraFields()
+    public function getExtraFields(): array
     {
-        return $this->getData(self::EXTRA_FIELDS);
+        return (array) $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
+     * GetImages
+     *
      * @return ImagesInterface
      */
-    public function getImages()
+    public function getImages(): ImagesInterface
     {
         return $this->getData(self::IMAGES_KEY);
     }
 
     /**
+     * SetDescription
+     *
      * @param string $description
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setDescription($description)
+    public function setDescription(string $description): ProductStoreDataInterface
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -150,11 +184,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * SetLink
+     *
      * @param string $link
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setLink($link)
+    public function setLink(string $link): ProductStoreDataInterface
     {
         $this->setData(self::LINK_KEY, $link);
 
@@ -162,11 +198,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * SetName
+     *
      * @param string $name
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setName($name)
+    public function setName(string $name): ProductStoreDataInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -174,11 +212,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * SetPrice
+     *
      * @param float $price
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setPrice($price)
+    public function setPrice(float $price): ProductStoreDataInterface
     {
         $this->setData(self::PRICE_KEY, $price);
 
@@ -186,11 +226,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $displayPrice
+     * SetDisplayPrice
      *
-     * @return $this
+     * @param float|null $displayPrice
+     *
+     * @return ProductStoreDataInterface
      */
-    public function setDisplayPrice($displayPrice)
+    public function setDisplayPrice(float $displayPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::DISPLAY_PRICE_KEY, $displayPrice);
 
@@ -198,11 +240,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $originalPrice
+     * SetOriginalPrice
      *
-     * @return $this
+     * @param float|null $originalPrice
+     *
+     * @return ProductStoreDataInterface
      */
-    public function setOriginalPrice($originalPrice)
+    public function setOriginalPrice(float $originalPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::ORIGINAL_PRICE_KEY, $originalPrice);
 
@@ -210,11 +254,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $originalDisplayPrice
+     * SetOriginalDisplayPrice
      *
-     * @return $this
+     * @param float|null $originalDisplayPrice
+     *
+     * @return ProductStoreDataInterface
      */
-    public function setOriginalDisplayPrice($originalDisplayPrice)
+    public function setOriginalDisplayPrice(float $originalDisplayPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::ORIGINAL_DISPLAY_PRICE_KEY, $originalDisplayPrice);
 
@@ -222,11 +268,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $webShopPrice
+     * SetWebshopPrice
      *
-     * @return $this
+     * @param float|null $webShopPrice
+     *
+     * @return ProductStoreDataInterface
      */
-    public function setWebshopPrice($webShopPrice)
+    public function setWebshopPrice(float $webShopPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::WEBSHOP_PRICE, $webShopPrice);
 
@@ -234,11 +282,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $displayWebShopPrice
+     * SetDisplayWebshopPrice
      *
-     * @return $this
+     * @param float|null $displayWebShopPrice
+     *
+     * @return ProductStoreDataInterface
      */
-    public function setDisplayWebshopPrice($displayWebShopPrice)
+    public function setDisplayWebshopPrice(float $displayWebShopPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::DISPLAY_WEBSHOP_PRICE, $displayWebShopPrice);
 
@@ -246,11 +296,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $originalWebshopPrice
+     * SetOriginalWebshopPrice
      *
-     * @return $this
+     * @param float|null $originalWebshopPrice
+     *
+     * @return ProductStoreDataInterface
      */
-    public function setOriginalWebshopPrice($originalWebshopPrice)
+    public function setOriginalWebshopPrice(float $originalWebshopPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::ORIGINAL_WEBSHOP_PRICE, $originalWebshopPrice);
 
@@ -258,11 +310,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
-     * @param float $originalDisplayWebshopPrice
+     * SetOriginalDisplayWebshopPrice
      *
-     * @return $this
+     * @param float|null $originalDisplayWebshopPrice
+     *
+     * @return ProductStoreDataInterface
      */
-    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice)
+    public function setOriginalDisplayWebshopPrice(float $originalDisplayWebshopPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::ORIGINAL_DISPLAY_WEBSHOP_PRICE, $originalDisplayWebshopPrice);
 
@@ -270,11 +324,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * SetStatus
+     *
      * @param int $status
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setStatus($status)
+    public function setStatus(int $status): ProductStoreDataInterface
     {
         $this->setData(self::STATUS_KEY, $status);
 
@@ -282,11 +338,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setStoreId($storeId)
+    public function setStoreId(int $storeId): ProductStoreDataInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 
@@ -294,11 +352,13 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * SetCurrencyCode
+     *
      * @param string $currencyCode
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setCurrencyCode($currencyCode)
+    public function setCurrencyCode(string $currencyCode): ProductStoreDataInterface
     {
         $this->setData(self::CURRENCY_KEY, $currencyCode);
 
@@ -306,24 +366,30 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     }
 
     /**
+     * SetExtraFields
+     *
      * @param ExtraFieldsInterface[] $extraFields
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setExtraFields($extraFields)
+    public function setExtraFields(array $extraFields): ProductStoreDataInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
+
         return $this;
     }
 
     /**
+     * SetImages
+     *
      * @param ImagesInterface $images
      *
-     * @return $this
+     * @return ProductStoreDataInterface
      */
-    public function setImages($images)
+    public function setImages(ImagesInterface $images): ProductStoreDataInterface
     {
         $this->setData(self::IMAGES_KEY, $images);
+
         return $this;
     }
 }

@@ -2,58 +2,69 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Framework\DataObject;
-
 use Emartech\Emarsys\Api\Data\SystemApiResponseInterface;
+use Magento\Framework\DataObject;
 
 class SystemApiResponse extends DataObject implements SystemApiResponseInterface
 {
     /**
+     * GetMagentoVersion
+     *
      * @return string
      */
-    public function getMagentoVersion()
+    public function getMagentoVersion(): string
     {
-        return $this->getData(self::MAGENTO_VERSION_KEY);
+        return (string) $this->getData(self::MAGENTO_VERSION_KEY);
     }
 
     /**
+     * GetModuleVersion
+     *
      * @return string
      */
-    public function getModuleVersion()
+    public function getModuleVersion(): string
     {
-        return $this->getData(self::MODULE_VERSION_KEY);
+        return (string) $this->getData(self::MODULE_VERSION_KEY);
     }
 
     /**
+     * GetPhpVersion
+     *
      * @return string
      */
-    public function getPhpVersion()
+    public function getPhpVersion(): string
     {
-        return $this->getData(self::PHP_VERSION_KEY);
+        return (string) $this->getData(self::PHP_VERSION_KEY);
     }
 
     /**
+     * GetMagentoEdition
+     *
      * @return string
      */
-    public function getMagentoEdition()
+    public function getMagentoEdition(): string
     {
-        return $this->getData(self::MAGENTO_EDITION_KEY);
+        return (string) $this->getData(self::MAGENTO_EDITION_KEY);
     }
 
     /**
+     * GetIsWebsiteScope
+     *
      * @return bool
      */
-    public function getIsWebsiteScope()
+    public function getIsWebsiteScope(): bool
     {
-        return $this->getData(self::IS_WEBSITE_SCOPE_KEY);
+        return (bool) $this->getData(self::IS_WEBSITE_SCOPE_KEY);
     }
 
     /**
+     * SetMagentoVersion
+     *
      * @param string $magentoVersion
      *
-     * @return $this
+     * @return SystemApiResponseInterface
      */
-    public function setMagentoVersion($magentoVersion)
+    public function setMagentoVersion(string $magentoVersion): SystemApiResponseInterface
     {
         $this->setData(self::MAGENTO_VERSION_KEY, $magentoVersion);
 
@@ -61,11 +72,13 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     }
 
     /**
+     * SetModuleVersion
+     *
      * @param string $moduleVersion
      *
-     * @return $this
+     * @return SystemApiResponseInterface
      */
-    public function setModuleVersion($moduleVersion)
+    public function setModuleVersion(string $moduleVersion): SystemApiResponseInterface
     {
         $this->setData(self::MODULE_VERSION_KEY, $moduleVersion);
 
@@ -73,11 +86,13 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     }
 
     /**
+     * SetPhpVersion
+     *
      * @param string $phpVersion
      *
-     * @return $this
+     * @return SystemApiResponseInterface
      */
-    public function setPhpVersion($phpVersion)
+    public function setPhpVersion(string $phpVersion): SystemApiResponseInterface
     {
         $this->setData(self::PHP_VERSION_KEY, $phpVersion);
 
@@ -85,11 +100,13 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     }
 
     /**
+     * SetMagentoEdition
+     *
      * @param string $magentoEdition
      *
-     * @return $this
+     * @return SystemApiResponseInterface
      */
-    public function setMagentoEdition($magentoEdition)
+    public function setMagentoEdition(string $magentoEdition): SystemApiResponseInterface
     {
         $this->setData(self::MAGENTO_EDITION_KEY, $magentoEdition);
 
@@ -97,11 +114,13 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     }
 
     /**
+     * SetIsWebsiteScope
+     *
      * @param bool $isWebsiteScope
      *
-     * @return $this
+     * @return SystemApiResponseInterface
      */
-    public function setIsWebsiteScope($isWebsiteScope)
+    public function setIsWebsiteScope(bool $isWebsiteScope): SystemApiResponseInterface
     {
         $this->setData(self::IS_WEBSITE_SCOPE_KEY, $isWebsiteScope);
 

@@ -7,7 +7,9 @@ use Emartech\Emarsys\Helper\Json as JsonSerializer;
 use Emartech\Emarsys\Model\EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Sales\Model\Order\Creditmemo;
+use Magento\Sales\Model\Order\Creditmemo\Item;
 use Magento\Store\Model\StoreManagerInterface;
 
 class RefundEventHandler extends BaseEventHandler
@@ -45,11 +47,14 @@ class RefundEventHandler extends BaseEventHandler
     }
 
     /**
+     * Store
+     *
      * @param Creditmemo $creditmemo
      *
      * @return bool
+     * @throws AlreadyExistsException
      */
-    public function store(Creditmemo $creditmemo)
+    public function store(Creditmemo $creditmemo): bool
     {
         if (!$this->isEnabledForStore($creditmemo->getStoreId())) {
             return false;
@@ -93,11 +98,13 @@ class RefundEventHandler extends BaseEventHandler
     }
 
     /**
+     * GetRefundEventType
+     *
      * @param string $state
      *
      * @return string
      */
-    private function getRefundEventType($state)
+    private function getRefundEventType(string $state): string
     {
         switch ($state) {
             case Creditmemo::STATE_OPEN:
@@ -112,11 +119,14 @@ class RefundEventHandler extends BaseEventHandler
     }
 
     /**
+     * GetParentItem
+     *
      * @param Creditmemo $creditmemo
-     * @param Creditmemo\Item $item
-     * @return bool|array
+     * @param Item       $item
+     *
+     * @return array|null
      */
-    private function getParentItem($creditmemo, $item)
+    private function getParentItem(Creditmemo $creditmemo, Item $item): ?array
     {
         $orderItem = $item->getOrderItem();
         if ($orderItem->getParentItemId()) {
@@ -124,10 +134,12 @@ class RefundEventHandler extends BaseEventHandler
                 if ($creditmemoItem->getOrderItemId() == $orderItem->getParentItemId()) {
                     $result = $creditmemoItem->getData();
                     $result['product_type'] = $creditmemoItem->getOrderItem()->getProductType();
+
                     return $result;
                 }
             }
         }
-        return false;
+
+        return null;
     }
 }

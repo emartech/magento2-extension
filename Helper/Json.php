@@ -8,6 +8,7 @@ namespace Emartech\Emarsys\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ProductMetadataInterface;
 
 class Json extends AbstractHelper
@@ -33,16 +34,18 @@ class Json extends AbstractHelper
     }
 
     /**
-     * @param $data
+     * Serialize
      *
-     * @return bool|false|string
+     * @param array $data
+     *
+     * @return string
      */
-    public function serialize($data)
+    public function serialize(array $data): string
     {
         if (version_compare($this->productMetadata->getVersion(), '2.2.0', '>=')) {
-            $objManager = \Magento\Framework\App\ObjectManager::getInstance();
             /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
-            $serializer = $objManager->create(\Magento\Framework\Serialize\Serializer\Json::class);
+            $serializer = ObjectManager::getInstance()->create(\Magento\Framework\Serialize\Serializer\Json::class);
+
             return $serializer->serialize($data);
         }
 
@@ -50,20 +53,23 @@ class Json extends AbstractHelper
         if (false === $result) {
             throw new \InvalidArgumentException('Unable to serialize value.');
         }
+
         return $result;
     }
 
     /**
-     * @param $string
+     * Unserialize
      *
-     * @return array|bool|float|int|mixed|string|null
+     * @param string $string
+     *
+     * @return array
      */
-    public function unserialize($string)
+    public function unserialize(string $string): array
     {
         if (version_compare($this->productMetadata->getVersion(), '2.2.0', '>=')) {
-            $objManager = \Magento\Framework\App\ObjectManager::getInstance();
             /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
-            $serializer = $objManager->create(\Magento\Framework\Serialize\Serializer\Json::class);
+            $serializer = ObjectManager::getInstance()->create(\Magento\Framework\Serialize\Serializer\Json::class);
+
             return $serializer->unserialize($string);
         }
 
@@ -71,6 +77,7 @@ class Json extends AbstractHelper
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \InvalidArgumentException('Unable to unserialize value.');
         }
+
         return $result;
     }
 }

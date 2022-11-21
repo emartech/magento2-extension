@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="emarsys_events_data" resource="default" comment="Emarsys events data">
+        <column xsi:type="int" name="event_id" identity="true" nullable="false" unsigned="true" comment="Event ID" />
+        <column xsi:type="int" name="website_id" identity="false" nullable="true" unsigned="true" comment="Website ID" />
+        <column xsi:type="int" name="store_id" identity="false" nullable="true" unsigned="true" comment="Store ID" />
+        <column xsi:type="int" name="entity_id" identity="false" nullable="false" unsigned="true" comment="Entity ID" />
+        <column xsi:type="varchar" name="event_type" nullable="false" length="255" comment="Event type" />
+        <column xsi:type="mediumblob" name="event_data" nullable="false" comment="Entity data" />
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Create date"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="event_id" />
+        </constraint>
+        <index referenceId="emarsys_events_data_created_at" indexType="btree">
+            <column name="created_at"/>
+        </index>
+        <index referenceId="emarsys_events_data_event_type" indexType="btree">
+            <column name="event_type"/>
+        </index>
+    </table>
+</schema>

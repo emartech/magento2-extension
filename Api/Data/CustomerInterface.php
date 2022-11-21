@@ -4,264 +4,344 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface CustomerInterface
 {
-    const ID_KEY                = 'id';
-    const EMAIL_KEY             = 'email';
-    const WEBSITE_ID_KEY        = 'website_id';
-    const GROUP_ID_KEY          = 'group_id';
-    const STORE_ID_KEY          = 'store_id';
-    const IS_ACTIVE_KEY         = 'is_active';
-    const PREFIX_KEY            = 'prefix';
-    const FIRSTNAME_KEY         = 'firstname';
-    const MIDDLENAME_KEY        = 'middlename';
-    const LASTNAME_KEY          = 'lastname';
-    const SUFFIX_KEY            = 'suffix';
-    const DOB_KEY               = 'dob';
-    const TAXVAT_KEY            = 'taxvat';
-    const GENDER_KEY            = 'gender';
-    const BILLING_ADDRESS_KEY   = 'billing_address';
-    const SHIPPING_ADDRESS_KEY  = 'shipping_address';
-    const ACCEPTS_MARKETING_KEY = 'accepts_marketing';
-    const CREATED_AT_KEY        = 'created_at';
-    const UPDATED_AT_KEY        = 'updated_at';
-    const EXTRA_FIELDS          = 'extra_fields';
+    public const ID_KEY                = 'id';
+    public const EMAIL_KEY             = 'email';
+    public const WEBSITE_ID_KEY        = 'website_id';
+    public const GROUP_ID_KEY          = 'group_id';
+    public const STORE_ID_KEY          = 'store_id';
+    public const IS_ACTIVE_KEY         = 'is_active';
+    public const PREFIX_KEY            = 'prefix';
+    public const FIRSTNAME_KEY         = 'firstname';
+    public const MIDDLENAME_KEY        = 'middlename';
+    public const LASTNAME_KEY          = 'lastname';
+    public const SUFFIX_KEY            = 'suffix';
+    public const DOB_KEY               = 'dob';
+    public const TAXVAT_KEY            = 'taxvat';
+    public const GENDER_KEY            = 'gender';
+    public const BILLING_ADDRESS_KEY   = 'billing_address';
+    public const SHIPPING_ADDRESS_KEY  = 'shipping_address';
+    public const ACCEPTS_MARKETING_KEY = 'accepts_marketing';
+    public const CREATED_AT_KEY        = 'created_at';
+    public const UPDATED_AT_KEY        = 'updated_at';
+    public const EXTRA_FIELDS          = 'extra_fields';
 
     /**
+     * GetId
+     *
      * @return int
      */
-    public function getId();
+    public function getId(): int;
 
     /**
+     * SetId
+     *
      * @param int $id
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setId($id);
+    public function setId(int $id): CustomerInterface;
 
     /**
+     * GetEmail
+     *
      * @return string
      */
-    public function getEmail();
+    public function getEmail(): string;
 
     /**
+     * SetEmail
+     *
      * @param string $email
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setEmail($email);
+    public function setEmail(string $email): CustomerInterface;
 
     /**
+     * GetWebsiteId
+     *
      * @return int
      */
-    public function getWebsiteId();
+    public function getWebsiteId(): int;
 
     /**
+     * SetWebsiteId
+     *
      * @param int $websiteId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setWebsiteId($websiteId);
+    public function setWebsiteId(int $websiteId): CustomerInterface;
 
     /**
+     * GetGroupId
+     *
      * @return int
      */
-    public function getGroupId();
+    public function getGroupId(): int;
 
     /**
+     * SetGroupId
+     *
      * @param int $groupId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setGroupId($groupId);
+    public function setGroupId(int $groupId): CustomerInterface;
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
+     * GetExtraFields
+     *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
      */
-    public function getExtraFields();
+    public function getExtraFields(): array;
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setStoreId($storeId);
+    public function setStoreId(int $storeId): CustomerInterface;
 
     /**
+     * GetIsActive
+     *
      * @return int
      */
-    public function getIsActive();
+    public function getIsActive(): int;
 
     /**
+     * SetIsActive
+     *
      * @param int $isActive
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setIsActive($isActive);
+    public function setIsActive(int $isActive): CustomerInterface;
 
     /**
-     * @return string
-     */
-    public function getPrefix();
-
-    /**
-     * @param string $prefix
+     * GetPrefix
      *
-     * @return $this
+     * @return string|null
      */
-    public function setPrefix($prefix);
+    public function getPrefix(): ?string;
 
     /**
+     * SetPrefix
+     *
+     * @param string|null $prefix
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     */
+    public function setPrefix(string $prefix = null): CustomerInterface;
+
+    /**
+     * GetFirstname
+     *
      * @return string
      */
-    public function getFirstname();
+    public function getFirstname(): string;
 
     /**
+     * SetFirstname
+     *
      * @param string $firstName
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setFirstname($firstName);
+    public function setFirstname(string $firstName): CustomerInterface;
 
     /**
-     * @return string
-     */
-    public function getMiddlename();
-
-    /**
-     * @param string $middleName
+     * GetMiddlename
      *
-     * @return $this
+     * @return string|null
      */
-    public function setMiddlename($middleName);
+    public function getMiddlename(): ?string;
 
     /**
+     * SetMiddlename
+     *
+     * @param string|null $middleName
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     */
+    public function setMiddlename(string $middleName = null): CustomerInterface;
+
+    /**
+     * GetLastname
+     *
      * @return string
      */
-    public function getLastname();
+    public function getLastname(): string;
 
     /**
+     * SetLastname
+     *
      * @param string $lastName
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setLastname($lastName);
+    public function setLastname(string $lastName): CustomerInterface;
 
     /**
-     * @return string
-     */
-    public function getSuffix();
-
-    /**
-     * @param string $suffix
+     * GetSuffix
      *
-     * @return $this
+     * @return string|null
      */
-    public function setSuffix($suffix);
+    public function getSuffix(): ?string;
 
     /**
-     * @return string
-     */
-    public function getDob();
-
-    /**
-     * @param string $dob
+     * SetSuffix
      *
-     * @return $this
-     */
-    public function setDob($dob);
-
-    /**
-     * @return string
-     */
-    public function getTaxvat();
-
-    /**
-     * @param string $taxVat
+     * @param string|null $suffix
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setTaxvat($taxVat);
+    public function setSuffix(string $suffix = null): CustomerInterface;
 
     /**
+     * GetDob
+     *
+     * @return string|null
+     */
+    public function getDob(): ?string;
+
+    /**
+     * SetDob
+     *
+     * @param string|null $dob
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     */
+    public function setDob(string $dob = null): CustomerInterface;
+
+    /**
+     * GetTaxvat
+     *
+     * @return string|null
+     */
+    public function getTaxvat(): ?string;
+
+    /**
+     * SetTaxvat
+     *
+     * @param string|null $taxVat
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     */
+    public function setTaxvat(string $taxVat = null): CustomerInterface;
+
+    /**
+     * GetGender
+     *
+     * @return int|null
+     */
+    public function getGender(): ?int;
+
+    /**
+     * SetGender
+     *
+     * @param int|null $gender
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     */
+    public function setGender(int $gender = null): CustomerInterface;
+
+    /**
+     * GetBillingAddress
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface|null
+     */
+    public function getBillingAddress(): ?CustomerAddressInterface;
+
+    /**
+     * SetBillingAddress
+     *
+     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface|array|null $billingAddress
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     */
+    public function setBillingAddress($billingAddress = null): CustomerInterface;
+
+    /**
+     * GetShippingAddress
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface|null
+     */
+    public function getShippingAddress(): ?CustomerAddressInterface;
+
+    /**
+     * SetShippingAddress
+     *
+     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface|array|null $shippingAddress
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
+     */
+    public function setShippingAddress($shippingAddress = null): CustomerInterface;
+
+    /**
+     * GetAcceptsMarketing
+     *
      * @return int
      */
-    public function getGender();
+    public function getAcceptsMarketing(): int;
 
     /**
-     * @param int $gender
+     * SetAcceptsMarketing
      *
-     * @return $this
-     */
-    public function setGender($gender);
-
-    /**
-     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
-     */
-    public function getBillingAddress();
-
-    /**
-     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface $billingAddress
-     *
-     * @return $this
-     */
-    public function setBillingAddress($billingAddress);
-
-    /**
-     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
-     */
-    public function getShippingAddress();
-
-    /**
-     * @param \Emartech\Emarsys\Api\Data\CustomerAddressInterface $shippingAddress
-     *
-     * @return $this
-     */
-    public function setShippingAddress($shippingAddress);
-
-    /**
-     * @return int
-     */
-    public function getAcceptsMarketing();
-
-    /**
      * @param int $acceptsMarketing
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setAcceptsMarketing($acceptsMarketing);
+    public function setAcceptsMarketing(int $acceptsMarketing): CustomerInterface;
 
     /**
+     * GetCreatedAt
+     *
      * @return string
      */
-    public function getCreatedAt();
+    public function getCreatedAt(): string;
 
     /**
+     * SetCreatedAt
+     *
      * @param string $createdAt
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setCreatedAt($createdAt);
+    public function setCreatedAt(string $createdAt): CustomerInterface;
 
     /**
+     * GetUpdatedAt
+     *
      * @return string
      */
-    public function getUpdatedAt();
+    public function getUpdatedAt(): string;
 
     /**
+     * SetUpdatedAt
+     *
      * @param string $updatedAt
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setUpdatedAt($updatedAt);
+    public function setUpdatedAt(string $updatedAt): CustomerInterface;
 
     /**
+     * SetExtraFields
+     *
      * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setExtraFields($extraFields);
+    public function setExtraFields(array $extraFields): CustomerInterface;
 }

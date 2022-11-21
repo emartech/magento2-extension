@@ -7,6 +7,8 @@ use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 interface OrdersApiInterface
 {
     /**
+     * Get
+     *
      * @param int         $page
      * @param int         $pageSize
      * @param int         $sinceId
@@ -14,5 +16,5 @@ interface OrdersApiInterface
      *
      * @return \Emartech\Emarsys\Api\Data\OrdersApiResponseInterface
      */
-    public function get($page, $pageSize, $sinceId = 0, $storeId = null);
+    public function get(int $page, int $pageSize, int $sinceId = 0, string $storeId = null): OrdersApiResponseInterface;
 }

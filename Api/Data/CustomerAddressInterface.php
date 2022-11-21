@@ -4,186 +4,242 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface CustomerAddressInterface
 {
-    const PREFIX_KEY     = 'prefix';
-    const FIRSTNAME_KEY  = 'firstname';
-    const MIDDLENAME_KEY = 'middlename';
-    const LASTNAME_KEY   = 'lastname';
-    const SUFFIX_KEY     = 'suffix';
-    const COMPANY_KEY    = 'company';
-    const STREET_KEY     = 'street';
-    const CITY_KEY       = 'city';
-    const COUNTRY_ID_KEY = 'country_id';
-    const REGION_KEY     = 'region';
-    const POSTCODE_KEY   = 'postcode';
-    const TELEPHONE_KEY  = 'telephone';
-    const FAX_KEY        = 'fax';
-    const EXTRA_FIELDS   = 'extra_fields';
+    public const PREFIX_KEY     = 'prefix';
+    public const FIRSTNAME_KEY  = 'firstname';
+    public const MIDDLENAME_KEY = 'middlename';
+    public const LASTNAME_KEY   = 'lastname';
+    public const SUFFIX_KEY     = 'suffix';
+    public const COMPANY_KEY    = 'company';
+    public const STREET_KEY     = 'street';
+    public const CITY_KEY       = 'city';
+    public const COUNTRY_ID_KEY = 'country_id';
+    public const REGION_KEY     = 'region';
+    public const POSTCODE_KEY   = 'postcode';
+    public const TELEPHONE_KEY  = 'telephone';
+    public const FAX_KEY        = 'fax';
+    public const EXTRA_FIELDS   = 'extra_fields';
 
     /**
-     * @return string
-     */
-    public function getPrefix();
-
-    /**
-     * @param string $prefix
+     * GetPrefix
      *
-     * @return $this
+     * @return string|null
      */
-    public function setPrefix($prefix);
+    public function getPrefix(): ?string;
 
     /**
+     * SetPrefix
+     *
+     * @param string|null $prefix
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+     */
+    public function setPrefix(string $prefix = null): CustomerAddressInterface;
+
+    /**
+     * GetFirstname
+     *
      * @return string
      */
-    public function getFirstname();
+    public function getFirstname(): string;
 
     /**
+     * SetFirstname
+     *
      * @param string $firstName
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setFirstname($firstName);
+    public function setFirstname(string $firstName): CustomerAddressInterface;
 
     /**
-     * @return string
-     */
-    public function getMiddlename();
-
-    /**
-     * @param string $middleName
+     * GetMiddlename
      *
-     * @return $this
+     * @return string|null
      */
-    public function setMiddlename($middleName);
+    public function getMiddlename(): ?string;
 
     /**
+     * SetMiddlename
+     *
+     * @param string|null $middleName
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+     */
+    public function setMiddlename(string $middleName = null): CustomerAddressInterface;
+
+    /**
+     * GetLastname
+     *
      * @return string
      */
-    public function getLastname();
+    public function getLastname(): string;
 
     /**
+     * SetLastname
+     *
      * @param string $lastName
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setLastname($lastName);
+    public function setLastname(string $lastName): CustomerAddressInterface;
 
     /**
-     * @return string
+     * GetSuffix
+     *
+     * @return string|null
      */
-    public function getSuffix();
+    public function getSuffix(): ?string;
 
     /**
+     * GetExtraFields
+     *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
      */
-    public function getExtraFields();
+    public function getExtraFields(): array;
 
     /**
-     * @param string $suffix
+     * SetSuffix
      *
-     * @return $this
+     * @param string|null $suffix
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setSuffix($suffix);
+    public function setSuffix(string $suffix = null): CustomerAddressInterface;
 
     /**
+     * GetCompany
+     *
+     * @return string|null
+     */
+    public function getCompany(): ?string;
+
+    /**
+     * SetCompany
+     *
+     * @param string|null $company
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+     */
+    public function setCompany(string $company = null): CustomerAddressInterface;
+
+    /**
+     * GetStreet
+     *
      * @return string
      */
-    public function getCompany();
+    public function getStreet(): string;
 
     /**
-     * @param string $company
+     * SetStreet
      *
-     * @return $this
-     */
-    public function setCompany($company);
-
-    /**
-     * @return string
-     */
-    public function getStreet();
-
-    /**
      * @param string $street
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setStreet($street);
+    public function setStreet(string $street): CustomerAddressInterface;
 
     /**
+     * GetCity
+     *
      * @return string
      */
-    public function getCity();
+    public function getCity(): string;
 
     /**
+     * SetCity
+     *
      * @param string $city
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setCity($city);
+    public function setCity(string $city): CustomerAddressInterface;
 
     /**
+     * GetCountryId
+     *
      * @return string
      */
-    public function getCountryId();
+    public function getCountryId(): string;
 
     /**
+     * SetCountryId
+     *
      * @param string $countryId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setCountryId($countryId);
+    public function setCountryId(string $countryId): CustomerAddressInterface;
 
     /**
-     * @return string
-     */
-    public function getRegion();
-
-    /**
-     * @param string $region
+     * GetRegion
      *
-     * @return $this
+     * @return string|null
      */
-    public function setRegion($region);
+    public function getRegion(): ?string;
 
     /**
+     * SetRegion
+     *
+     * @param string|null $region
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+     */
+    public function setRegion(string $region = null): CustomerAddressInterface;
+
+    /**
+     * GetPostcode
+     *
      * @return string
      */
-    public function getPostcode();
+    public function getPostcode(): string;
 
     /**
+     * SetPostcode
+     *
      * @param string $postCode
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setPostcode($postCode);
+    public function setPostcode(string $postCode): CustomerAddressInterface;
 
     /**
+     * GetTelephone
+     *
      * @return string
      */
-    public function getTelephone();
+    public function getTelephone(): string;
 
     /**
+     * SetTelephone
+     *
      * @param string $telephone
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setTelephone($telephone);
+    public function setTelephone(string $telephone): CustomerAddressInterface;
 
     /**
-     * @return string
-     */
-    public function getFax();
-
-    /**
-     * @param string $fax
+     * GetFax
      *
-     * @return $this
+     * @return string|null
      */
-    public function setFax($fax);
+    public function getFax(): ?string;
 
     /**
+     * SetFax
+     *
+     * @param string|null $fax
+     *
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
+     */
+    public function setFax(string $fax = null): CustomerAddressInterface;
+
+    /**
+     * SetExtraFields
+     *
      * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setExtraFields($extraFields);
+    public function setExtraFields(array $extraFields): CustomerAddressInterface;
 }

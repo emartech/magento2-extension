@@ -4,30 +4,38 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface StoreConfigInterface
 {
-    const STORE_ID_KEY = 'store_id';
-    const STORE_SLUG_KEY = 'slug';
+    public const STORE_ID_KEY   = 'store_id';
+    public const STORE_SLUG_KEY = 'slug';
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
+     * GetSlug
+     *
      * @return string
      */
-    public function getSlug();
+    public function getSlug(): string;
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface
      */
-    public function setStoreId($storeId);
+    public function setStoreId(int $storeId): StoreConfigInterface;
 
     /**
+     * SetSlug
+     *
      * @param string $slug
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface
      */
-    public function setSlug($slug);
+    public function setSlug(string $slug): StoreConfigInterface;
 }

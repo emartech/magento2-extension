@@ -2,12 +2,14 @@
 
 namespace Emartech\Emarsys\Api;
 
-use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
 use Emartech\Emarsys\Api\Data\StatusResponseInterface;
+use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
 
 interface SubscriptionsApiInterface
 {
     /**
+     * Get
+     *
      * @param int         $page
      * @param int         $pageSize
      * @param bool        $subscribed
@@ -18,18 +20,20 @@ interface SubscriptionsApiInterface
      * @return \Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface
      */
     public function get(
-        $page = 1,
-        $pageSize = 1000,
-        $subscribed = null,
-        $onlyGuest = false,
-        $websiteId = null,
-        $storeId = null
-    );
+        int $page = 1,
+        int $pageSize = 1000,
+        bool $subscribed = null,
+        bool $onlyGuest = false,
+        string $websiteId = null,
+        string $storeId = null
+    ): SubscriptionsApiResponseInterface;
 
     /**
+     * Update
+     *
      * @param \Emartech\Emarsys\Api\Data\SubscriptionInterface[] $subscriptions
      *
      * @return \Emartech\Emarsys\Api\Data\StatusResponseInterface
      */
-    public function update($subscriptions);
+    public function update(array $subscriptions): StatusResponseInterface;
 }

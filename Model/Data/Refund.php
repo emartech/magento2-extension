@@ -2,27 +2,30 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Sales\Model\Order\Creditmemo;
-
 use Emartech\Emarsys\Api\Data\RefundInterface;
+use Magento\Sales\Model\Order\Creditmemo;
 
 class Refund extends Creditmemo implements RefundInterface
 {
 
     /**
+     * GetId
+     *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->getEntityId();
     }
 
     /**
+     * SetId
+     *
      * @param int $id
      *
      * @return $this
      */
-    public function setId($id)
+    public function setId($id): RefundInterface
     {
         $this->setEntityId($id);
 

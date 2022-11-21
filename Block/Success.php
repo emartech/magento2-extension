@@ -4,29 +4,39 @@
  * @package    Emartech_Emarsys
  * @copyright  Copyright (c) 2018 Emarsys. (http://www.emarsys.net/)
  */
+
 namespace Emartech\Emarsys\Block;
 
 use Emartech\Emarsys\Helper\Json;
+use Magento\Bundle\Model\Product\Type as BundleProduct;
 use Magento\Checkout\Model\Session;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableProduct;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Item;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Sales\Model\ResourceModel\Order\Item\CollectionFactory as OrderItemCollectionFactory;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableProduct;
-use Magento\Bundle\Model\Product\Type as BundleProduct;
 
 class Success extends \Magento\Framework\View\Element\Template
 {
-    // @codingStandardsIgnoreLine
-    protected $_checkoutSession;
-    // @codingStandardsIgnoreLine
-    protected $_orderFactory;
-    // @codingStandardsIgnoreLine
-    protected $_scopeConfig;
+    /**
+     * @var Session
+     */
+    protected $checkoutSession;
+    /**
+     * @var OrderFactory
+     */
+    protected $orderFactory;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
 
     /**
      * @var OrderItemCollectionFactory
      */
-    // @codingStandardsIgnoreLine
     protected $orderItemCollectionFactory;
 
     /**
@@ -34,6 +44,13 @@ class Success extends \Magento\Framework\View\Element\Template
      */
     private $jsonHelper;
 
+    /**
+     * @param Context                    $context
+     * @param Session                    $checkoutSession
+     * @param OrderFactory               $orderFactory
+     * @param OrderItemCollectionFactory $orderItemCollectionFactory
+     * @param Json                       $jsonHelper
+     */
     public function __construct(
         Context $context,
         Session $checkoutSession,
@@ -41,46 +58,61 @@ class Success extends \Magento\Framework\View\Element\Template
         OrderItemCollectionFactory $orderItemCollectionFactory,
         Json $jsonHelper
     ) {
-        $this->_checkoutSession = $checkoutSession;
-        $this->_orderFactory = $orderFactory;
-        $this->orderItemCollectionFactory = $orderItemCollectionFactory;
-        $this->_scopeConfig = $context->getScopeConfig();
-        $this->jsonHelper = $jsonHelper;
         parent::__construct($context);
-    }
 
-    private function getOrderId()
-    {
-        return $this->_checkoutSession->getLastOrderId();
+        $this->checkoutSession = $checkoutSession;
+        $this->orderFactory = $orderFactory;
+        $this->orderItemCollectionFactory = $orderItemCollectionFactory;
+        $this->scopeConfig = $context->getScopeConfig();
+        $this->jsonHelper = $jsonHelper;
     }
 
     /**
-     * @return \Magento\Sales\Model\Order | false
+     * GetOrderId
+     *
+     * @return string|null
      */
-    private function getOrder()
+    private function getOrderId(): ?string
     {
-        if ($this->_checkoutSession->getLastRealOrderId()) {
-            $order = $this->_orderFactory->create()->load($this->getOrderId());
-            return $order;
-        }
-        return false;
+        return $this->checkoutSession->getLastOrderId();
     }
 
-    private function getLineItems()
+    /**
+     * GetOrder
+     *
+     * @return Order|null
+     */
+    private function getOrder(): ?Order
+    {
+        if ($this->checkoutSession->getLastRealOrderId()) {
+            return $this->orderFactory->create()->load($this->getOrderId());
+        }
+
+        return null;
+    }
+
+    /**
+     * GetLineItems
+     *
+     * @return array
+     */
+    private function getLineItems(): array
     {
         $items = [];
         $order = $this->getOrder();
-        foreach ($order->getAllItems() as $item) {
-            if ($this->notBundleProduct($item) && $this->notConfigurableChild($item)) {
-                $qty = (int) $item->getQtyOrdered();
-                $sku = $item->getSku();
-                $price = $item->getBaseRowTotal() - $item->getBaseDiscountAmount();
+        if ($order instanceof Order) {
+            foreach ($order->getAllItems() as $item) {
+                if ($this->notBundleProduct($item) && $this->notConfigurableChild($item)) {
+                    $qty = (int) $item->getQtyOrdered();
+                    $sku = $item->getSku();
+                    $price = $item->getBaseRowTotal() - $item->getBaseDiscountAmount();
 
-                $items[] = [
-                    'item' => $sku,
-                    'price' => $price,
-                    'quantity' => $qty
-                ];
+                    $items[] = [
+                        'item'     => $sku,
+                        'price'    => $price,
+                        'quantity' => $qty
+                    ];
+                }
             }
         }
 
@@ -88,34 +120,51 @@ class Success extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * GetOrderData
+     *
      * @return string
      */
-    public function getOrderData()
+    public function getOrderData(): string
     {
-        return $this->jsonHelper->serialize([
-            'orderId' => $this->getOrderId(),
-            'items' => $this->getLineItems(),
-            'email' => $this->getOrder()->getCustomerEmail()
-        ]);
+        $email = '';
+        $order = $this->getOrder();
+        if ($order instanceof Order) {
+            $email = $order->getCustomerEmail();
+        }
+
+        return $this->jsonHelper->serialize(
+            [
+                'orderId' => $this->getOrderId(),
+                'items'   => $this->getLineItems(),
+                'email'   => $email
+            ]
+        );
     }
 
     /**
-     * @param $item
+     * NotBundleProduct
+     *
+     * @param Item $item
+     *
      * @return bool
      */
-    private function notBundleProduct($item)
+    private function notBundleProduct(Item $item): bool
     {
         return $item->getProductType() !== BundleProduct::TYPE_CODE;
     }
 
     /**
-     * @param $item
+     * NotConfigurableChild
+     *
+     * @param Item $item
+     *
      * @return bool
      */
-    private function notConfigurableChild($item)
+    private function notConfigurableChild(Item $item): bool
     {
         return !($item->getProductType() === 'simple'
-            && $item->getParentItem() !== null
-            && $item->getParentItem()->getProductType() === ConfigurableProduct::TYPE_CODE);
+                 && $item->getParentItem() !== null
+                 && $item->getParentItem()->getProductType() === ConfigurableProduct::TYPE_CODE
+        );
     }
 }

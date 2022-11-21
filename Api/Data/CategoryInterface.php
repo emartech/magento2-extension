@@ -4,56 +4,72 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface CategoryInterface
 {
-    const ENTITY_ID_KEY      = 'entity_id';
-    const PATH_KEY           = 'path';
-    const CHILDREN_COUNT_KEY = 'children_count';
-    const STORE_DATA_KEY     = 'stores';
+    public const ENTITY_ID_KEY      = 'entity_id';
+    public const PATH_KEY           = 'path';
+    public const CHILDREN_COUNT_KEY = 'children_count';
+    public const STORE_DATA_KEY     = 'stores';
 
     /**
+     * GetStoreData
+     *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[]
      */
-    public function getStoreData();
+    public function getStoreData(): array;
 
     /**
+     * GetEntityId
+     *
      * @return int
      */
-    public function getEntityId();
+    public function getEntityId(): int;
 
     /**
+     * GetPath
+     *
      * @return string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
+     * GetChildrenCount
+     *
      * @return int
      */
-    public function getChildrenCount();
+    public function getChildrenCount(): int;
 
     /**
+     * SetEntityId
+     *
      * @param int $entityId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setEntityId($entityId);
+    public function setEntityId(int $entityId): CategoryInterface;
 
     /**
+     * SetPath
+     *
      * @param string $path
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setPath($path);
+    public function setPath(string $path): CategoryInterface;
 
     /**
+     * SetChildrenCount
+     *
      * @param int $childrenCount
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setChildrenCount($childrenCount);
+    public function setChildrenCount(int $childrenCount): CategoryInterface;
 
     /**
+     * SetStoreData
+     *
      * @param \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[] $storeData
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setStoreData($storeData);
+    public function setStoreData(array $storeData): CategoryInterface;
 }

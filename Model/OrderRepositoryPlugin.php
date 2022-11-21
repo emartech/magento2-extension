@@ -16,8 +16,11 @@ class OrderRepositoryPlugin
 {
 
     /**
-     * @param OrderRepository      $repository
-     * @param OrderInterface|Order $entity
+     * BeforeSave
+     *
+     * @param OrderRepository $repository
+     * @param OrderInterface  $entity
+     *
      * @return void
      * @throws InputException
      * @throws NoSuchEntityException
@@ -26,11 +29,11 @@ class OrderRepositoryPlugin
         OrderRepository $repository,
         OrderInterface $entity
     ) {
-        if ($entity->getEntityId() && !$entity->getOrigData(Order::STATE)) {
+        if ($entity->getEntityId() && !$entity->getOrigData(OrderInterface::STATE)) {
             /** @var Order $entity */
             $order = $repository->get($entity->getEntityId());
-            $entity->setOrigData(Order::STATE, $order->getData(Order::STATE));
-            $entity->setOrigData(Order::STATUS, $order->getData(Order::STATUS));
+            $entity->setOrigData(OrderInterface::STATE, $order->getData(OrderInterface::STATE));
+            $entity->setOrigData(OrderInterface::STATUS, $order->getData(OrderInterface::STATUS));
         }
     }
 }

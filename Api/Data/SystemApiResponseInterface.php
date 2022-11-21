@@ -4,69 +4,89 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface SystemApiResponseInterface
 {
-    const MAGENTO_VERSION_KEY = 'magento_version';
-    const PHP_VERSION_KEY     = 'php_version';
-    const MODULE_VERSION_KEY  = 'module_version';
-    const MAGENTO_EDITION_KEY  = 'magento_edition';
-    const IS_WEBSITE_SCOPE_KEY  = 'is_website_scope';
+    public const MAGENTO_VERSION_KEY  = 'magento_version';
+    public const PHP_VERSION_KEY      = 'php_version';
+    public const MODULE_VERSION_KEY   = 'module_version';
+    public const MAGENTO_EDITION_KEY  = 'magento_edition';
+    public const IS_WEBSITE_SCOPE_KEY = 'is_website_scope';
 
     /**
+     * GetMagentoVersion
+     *
      * @return string
      */
-    public function getMagentoVersion();
+    public function getMagentoVersion(): string;
 
     /**
+     * GetPhpVersion
+     *
      * @return string
      */
-    public function getPhpVersion();
+    public function getPhpVersion(): string;
 
     /**
+     * GetModuleVersion
+     *
      * @return string
      */
-    public function getModuleVersion();
+    public function getModuleVersion(): string;
 
     /**
+     * GetMagentoEdition
+     *
      * @return string
      */
-    public function getMagentoEdition();
+    public function getMagentoEdition(): string;
 
     /**
+     * GetIsWebsiteScope
+     *
      * @return bool
      */
-    public function getIsWebsiteScope();
-    
+    public function getIsWebsiteScope(): bool;
+
     /**
+     * SetMagentoVersion
+     *
      * @param string $magentoVersion
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setMagentoVersion($magentoVersion);
+    public function setMagentoVersion(string $magentoVersion): SystemApiResponseInterface;
 
     /**
+     * SetPhpVersion
+     *
      * @param string $phpVersion
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setPhpVersion($phpVersion);
+    public function setPhpVersion(string $phpVersion): SystemApiResponseInterface;
 
     /**
+     * SetModuleVersion
+     *
      * @param string $moduleVersion
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setModuleVersion($moduleVersion);
+    public function setModuleVersion(string $moduleVersion): SystemApiResponseInterface;
 
     /**
+     * SetMagentoEdition
+     *
      * @param string $magentoEdition
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setMagentoEdition($magentoEdition);
+    public function setMagentoEdition(string $magentoEdition): SystemApiResponseInterface;
 
     /**
+     * SetIsWebsiteScope
+     *
      * @param bool $isWebsiteScope
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setIsWebsiteScope($isWebsiteScope);
+    public function setIsWebsiteScope(bool $isWebsiteScope): SystemApiResponseInterface;
 }

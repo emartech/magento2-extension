@@ -2,13 +2,12 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory as CreditmemoCollectionFactory;
-use Magento\Sales\Model\ResourceModel\Order\Creditmemo\Collection as CreditmemoCollection;
-use Magento\Framework\Webapi\Exception as WebApiException;
-
-use Emartech\Emarsys\Api\RefundsApiInterface;
-use Emartech\Emarsys\Api\Data\RefundsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\RefundsApiResponseInterface;
+use Emartech\Emarsys\Api\Data\RefundsApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\RefundsApiInterface;
+use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Sales\Model\ResourceModel\Order\Creditmemo\Collection as CreditmemoCollection;
+use Magento\Sales\Model\ResourceModel\Order\Creditmemo\CollectionFactory as CreditmemoCollectionFactory;
 
 class RefundsApi implements RefundsApiInterface
 {
@@ -42,6 +41,8 @@ class RefundsApi implements RefundsApiInterface
     }
 
     /**
+     * Get
+     *
      * @param int         $page
      * @param int         $pageSize
      * @param int         $sinceId
@@ -50,7 +51,7 @@ class RefundsApi implements RefundsApiInterface
      * @return RefundsApiResponseInterface
      * @throws WebApiException
      */
-    public function get($page, $pageSize, $sinceId = 0, $storeId = null)
+    public function get(int $page, int $pageSize, int $sinceId = 0, string $storeId = null): RefundsApiResponseInterface
     {
         if (empty($storeId)) {
             throw new WebApiException(__('Store ID is required'));
@@ -62,7 +63,8 @@ class RefundsApi implements RefundsApiInterface
             ->filterSinceId($sinceId)
             ->setPage($page, $pageSize);
 
-        return $this->responseFactory->create()
+        return $this->responseFactory
+            ->create()
             ->setCurrentPage($this->creditmemoCollection->getCurPage())
             ->setLastPage($this->creditmemoCollection->getLastPageNumber())
             ->setPageSize($this->creditmemoCollection->getPageSize())
@@ -71,9 +73,11 @@ class RefundsApi implements RefundsApiInterface
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return RefundsApi
      */
-    private function initCollection()
+    private function initCollection(): RefundsApi
     {
         $this->creditmemoCollection = $this->creditmemoCollectionFactory->create();
 
@@ -81,11 +85,13 @@ class RefundsApi implements RefundsApiInterface
     }
 
     /**
-     * @param int|string|null $storeId
+     * FilterStore
      *
-     * @return $this
+     * @param string|null $storeId
+     *
+     * @return RefundsApi
      */
-    private function filterStore($storeId = null)
+    private function filterStore(string $storeId = null): RefundsApi
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {
@@ -98,11 +104,13 @@ class RefundsApi implements RefundsApiInterface
     }
 
     /**
+     * FilterSinceId
+     *
      * @param int $sinceId
      *
-     * @return $this
+     * @return RefundsApi
      */
-    private function filterSinceId($sinceId = 0)
+    private function filterSinceId(int $sinceId = 0): RefundsApi
     {
         if ($sinceId) {
             $this->creditmemoCollection->addFieldToFilter('entity_id', ['gt' => $sinceId]);
@@ -112,12 +120,14 @@ class RefundsApi implements RefundsApiInterface
     }
 
     /**
-     * @param $page
-     * @param $pageSize
+     * SetPage
      *
-     * @return $this
+     * @param int $page
+     * @param int $pageSize
+     *
+     * @return RefundsApi
      */
-    private function setPage($page, $pageSize)
+    private function setPage(int $page, int $pageSize): RefundsApi
     {
         $this->creditmemoCollection->setPage($page, $pageSize);
 
@@ -125,9 +135,11 @@ class RefundsApi implements RefundsApiInterface
     }
 
     /**
+     * HandleItems
+     *
      * @return array
      */
-    private function handleItems()
+    private function handleItems(): array
     {
         $returnArray = [];
 

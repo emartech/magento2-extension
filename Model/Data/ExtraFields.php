@@ -8,35 +8,43 @@ use Magento\Framework\DataObject;
 class ExtraFields extends DataObject implements ExtraFieldsInterface
 {
     /**
+     * GetKey
+     *
      * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
-        return $this->getData(self::KEY_KEY);
+        return (string) $this->getData(self::KEY_KEY);
     }
 
     /**
+     * GetValue
+     *
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
-        return $this->getData(self::VALUE_KEY);
+        return (string) $this->getData(self::VALUE_KEY);
     }
 
     /**
-     * @return string
+     * GetTextValue
+     *
+     * @return string|null
      */
-    public function getTextValue()
+    public function getTextValue(): ?string
     {
         return $this->getData(self::TEXT_VALUE_KEY);
     }
 
     /**
+     * SetKey
+     *
      * @param string $key
      *
-     * @return $this
+     * @return ExtraFieldsInterface
      */
-    public function setKey($key)
+    public function setKey(string $key): ExtraFieldsInterface
     {
         $this->setData(self::KEY_KEY, $key);
 
@@ -44,11 +52,13 @@ class ExtraFields extends DataObject implements ExtraFieldsInterface
     }
 
     /**
+     * SetValue
+     *
      * @param string $value
      *
-     * @return $this
+     * @return ExtraFieldsInterface
      */
-    public function setValue($value)
+    public function setValue(string $value): ExtraFieldsInterface
     {
         $this->setData(self::VALUE_KEY, $value);
 
@@ -56,11 +66,13 @@ class ExtraFields extends DataObject implements ExtraFieldsInterface
     }
 
     /**
-     * @param string $textValue
+     * SetTextValue
      *
-     * @return $this
+     * @param string|null $textValue
+     *
+     * @return ExtraFieldsInterface
      */
-    public function setTextValue($textValue)
+    public function setTextValue(string $textValue = null): ExtraFieldsInterface
     {
         $this->setData(self::TEXT_VALUE_KEY, $textValue);
 

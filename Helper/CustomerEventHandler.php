@@ -2,21 +2,20 @@
 
 namespace Emartech\Emarsys\Helper;
 
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\CustomerFactory;
-use Magento\Newsletter\Model\Subscriber;
-use Magento\Framework\App\Helper\Context;
-use Magento\Store\Model\StoreManagerInterface;
-use Emartech\Emarsys\Helper\Json as JsonSerializer;
-
-use Emartech\Emarsys\Model\EventFactory;
-use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
 use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Emartech\Emarsys\Helper\Customer as CustomerHelper;
+use Emartech\Emarsys\Helper\Json as JsonSerializer;
+use Emartech\Emarsys\Model\EventFactory;
+use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
+use Magento\Customer\Model\CustomerFactory;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Newsletter\Model\Subscriber;
+use Magento\Store\Model\StoreManagerInterface;
 
 class CustomerEventHandler extends BaseEventHandler
 {
-    const DEFAULT_TYPE = 'customers/update';
+    public const DEFAULT_TYPE = 'customers/update';
 
     /**
      * @var CustomerFactory
@@ -34,8 +33,11 @@ class CustomerEventHandler extends BaseEventHandler
     private $customerHelper;
 
     /**
-     * CustomerEventHandler constructor.
-     *
+     * @var RpTokenHelper
+     */
+    private $tokenHelper;
+
+    /**
      * @param CustomerFactory          $customerFactory
      * @param Subscriber               $subscriber
      * @param ConfigReader             $configReader
@@ -44,8 +46,9 @@ class CustomerEventHandler extends BaseEventHandler
      * @param EventCollectionFactory   $eventCollectionFactory
      * @param Context                  $context
      * @param StoreManagerInterface    $storeManager
-     * @param JsonSerializer           $jsonSerializer
-     * @param CustomerHelper           $customerHelper
+     * @param Json                     $jsonSerializer
+     * @param Customer                 $customerHelper
+     * @param RpTokenHelper            $tokenHelper
      */
     public function __construct(
         CustomerFactory $customerFactory,
@@ -57,11 +60,13 @@ class CustomerEventHandler extends BaseEventHandler
         Context $context,
         StoreManagerInterface $storeManager,
         JsonSerializer $jsonSerializer,
-        CustomerHelper $customerHelper
+        CustomerHelper $customerHelper,
+        RpTokenHelper $tokenHelper
     ) {
         $this->customerFactory = $customerFactory;
         $this->subscriber = $subscriber;
         $this->customerHelper = $customerHelper;
+        $this->tokenHelper = $tokenHelper;
 
         parent::__construct(
             $storeManager,
@@ -75,14 +80,17 @@ class CustomerEventHandler extends BaseEventHandler
     }
 
     /**
+     * Store
+     *
      * @param int         $customerId
-     * @param int         $websiteId
+     * @param int|null    $websiteId
      * @param int         $storeId
-     * @param null|string $type
+     * @param string|null $type
      *
      * @return bool
+     * @throws AlreadyExistsException
      */
-    public function store($customerId, $websiteId, $storeId, $type = null)
+    public function store(int $customerId, int $websiteId = null, int $storeId, string $type = null): bool
     {
         if (!$this->isEnabledForWebsite($websiteId)) {
             return false;
@@ -94,41 +102,41 @@ class CustomerEventHandler extends BaseEventHandler
 
         $customerData = $this->customerHelper->getOneCustomer($customerId, $websiteId, true);
 
+        /*if (!empty($customerData['rp_token'])) {
+            $customerData['rp_token'] = $this->tokenHelper->decryptRpToken($customerData['rp_token']);
+        }*/
+
         if (false !== $customerData) {
-            $this->saveEvent(
-                $websiteId,
-                $storeId,
-                $type,
-                $customerId,
-                $customerData
-            );
+            $this->saveEvent($websiteId, $storeId, $type, $customerId, $customerData);
         }
 
         return true;
     }
 
     /**
+     * StoreUserDataDirectly
+     *
      * @param array       $customerData
      * @param int         $customerId
-     * @param int         $websiteId
+     * @param int|null    $websiteId
      * @param int         $storeId
-     * @param null|string $type
+     * @param string|null $type
      *
      * @return bool
+     * @throws AlreadyExistsException
      */
-    public function storeUserDataDirectly($customerData, $customerId, $websiteId, $storeId, $type = null)
-    {
+    public function storeUserDataDirectly(
+        array $customerData,
+        int $customerId,
+        int $websiteId = null,
+        int $storeId,
+        string $type = null
+    ): bool {
         if (!$this->isEnabledForWebsite($websiteId)) {
             return false;
         }
 
-        $this->saveEvent(
-            $websiteId,
-            $storeId,
-            $type,
-            $customerId,
-            $customerData
-        );
+        $this->saveEvent($websiteId, $storeId, $type, $customerId, $customerData);
 
         return true;
     }

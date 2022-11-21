@@ -3,14 +3,14 @@
 
 namespace Emartech\Emarsys\Model;
 
-use Magento\Framework\Api\SearchResultsInterfaceFactory;
-use Magento\Framework\Exception\NoSuchEntityException;
-
 use Emartech\Emarsys\Api\Data\EventInterface;
+use Emartech\Emarsys\Api\EventRepositoryInterface;
 use Emartech\Emarsys\Model\EventFactory as EventFactory;
 use Emartech\Emarsys\Model\ResourceModel\Event as EventResourceModel;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory as EventCollectionFactory;
-use Emartech\Emarsys\Api\EventRepositoryInterface;
+use Magento\Framework\Api\SearchResultsInterfaceFactory;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class EventRepository implements EventRepositoryInterface
 {
@@ -33,9 +33,9 @@ class EventRepository implements EventRepositoryInterface
     /**
      * EventRepository constructor.
      *
-     * @param EventFactory                  $eventFactory
-     * @param EventResourceModel            $eventResourceModel
-     * @param EventCollectionFactory        $eventCollectionFactory
+     * @param EventFactory           $eventFactory
+     * @param EventResourceModel     $eventResourceModel
+     * @param EventCollectionFactory $eventCollectionFactory
      */
     public function __construct(
         EventFactory $eventFactory,
@@ -48,58 +48,67 @@ class EventRepository implements EventRepositoryInterface
     }
 
     /**
-     * @param $id
+     * Get
+     *
+     * @param int $id
      *
      * @return EventInterface
      * @throws NoSuchEntityException
      */
-    public function get($id)
+    public function get(int $id): EventInterface
     {
-        /** @var \Emartech\Emarsys\Model\Event $event */
         $event = $this->eventFactory->create()->load($id);
         if (!$event->getId()) {
             throw new NoSuchEntityException(__('Requested Event doesn\'t exist'));
         }
+
         return $event;
     }
 
     /**
+     * Save
+     *
      * @param EventInterface $event
      *
      * @return EventInterface
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @throws AlreadyExistsException
      */
-    public function save(EventInterface $event)
+    public function save(EventInterface $event): EventInterface
     {
-        /** @var \Emartech\Emarsys\Model\Event $event */
         $this->eventResourceModel->save($event);
 
         return $event;
     }
 
     /**
-     * @param string sinceId
+     * IsSinceIdIsHigherThanAutoIncrement
+     *
+     * @param int $sinceId
+     *
      * @return bool
      */
-    public function isSinceIdIsHigherThanAutoIncrement($sinceId)
+    public function isSinceIdIsHigherThanAutoIncrement(int $sinceId): bool
     {
         $eventsTableName = $this->eventResourceModel->getTable('emarsys_events_data');
         $query = sprintf(
             "SELECT (SELECT COALESCE(MAX(event_id), CAST(? AS UNSIGNED)) FROM %s) < CAST(? AS UNSIGNED);",
             $eventsTableName
         );
-        return (bool)$this->eventResourceModel->getConnection()->fetchOne(
+
+        return (bool) $this->eventResourceModel->getConnection()->fetchOne(
             $query,
             [$sinceId, $sinceId]
         );
     }
 
     /**
-     * @param string sinceId
+     * DeleteUntilSinceId
+     *
+     * @param int $sinceId
      *
      * @return void
      */
-    public function deleteUntilSinceId($sinceId)
+    public function deleteUntilSinceId(int $sinceId): void
     {
         $eventsTableName = $this->eventResourceModel->getTable('emarsys_events_data');
         $query = sprintf(

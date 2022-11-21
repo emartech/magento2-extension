@@ -6,12 +6,11 @@
 
 namespace Emartech\Emarsys\Model\ResourceModel\Api;
 
-use Magento\Catalog\Model\ResourceModel\Category\TreeFactory;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
-use Magento\Framework\Model\ResourceModel\Iterator;
-use Magento\Eav\Model\Entity\Context;
 use Magento\Catalog\Model\Category as CategoryModel;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
 use Magento\Eav\Model\Entity\AbstractEntity;
+use Magento\Eav\Model\Entity\Context;
+use Magento\Framework\Model\ResourceModel\Iterator;
 
 class Category extends AbstractEntity
 {
@@ -31,8 +30,6 @@ class Category extends AbstractEntity
     private $categories = [];
 
     /**
-     * Category collection factory
-     *
      * @var CollectionFactory
      */
     private $categoryCollectionFactory;
@@ -57,18 +54,22 @@ class Category extends AbstractEntity
     }
 
     /**
+     * GetCategoryIds
+     *
      * @param array      $wheres
      * @param array|null $joinInner
      *
      * @return array
      */
-    public function getCategoryIds($wheres, $joinInner = null)
+    public function getCategoryIds(array $wheres, array $joinInner = null): array
     {
         $this->categoryIds = [];
 
         $categoryTable = $this->getTable('catalog_category_product');
 
-        $categoryQuery = $this->_resource->getConnection()->select()
+        $categoryQuery = $this->_resource
+            ->getConnection()
+            ->select()
             ->from(
                 $categoryTable,
                 ['category_id', 'product_id']
@@ -91,7 +92,7 @@ class Category extends AbstractEntity
         }
 
         $this->iterator->walk(
-            (string)$categoryQuery,
+            (string) $categoryQuery,
             [[$this, 'handleCategoryId']],
             [],
             $this->_resource->getConnection()
@@ -101,11 +102,13 @@ class Category extends AbstractEntity
     }
 
     /**
+     * HandleCategoryId
+     *
      * @param array $args
      *
      * @return void
      */
-    public function handleCategoryId($args)
+    public function handleCategoryId(array $args): void
     {
         $productId = $args['row']['product_id'];
         $categoryId = $args['row']['category_id'];
@@ -117,11 +120,13 @@ class Category extends AbstractEntity
     }
 
     /**
+     * HandleCategory
+     *
      * @param int $categoryId
      *
      * @return string
      */
-    private function handleCategory($categoryId)
+    private function handleCategory(int $categoryId): string
     {
         $categoryData = $this->getCategory($categoryId);
 
@@ -133,11 +138,13 @@ class Category extends AbstractEntity
     }
 
     /**
+     * GetCategory
+     *
      * @param int $categoryId
      *
-     * @return Category | null
+     * @return CategoryModel|null
      */
-    private function getCategory($categoryId)
+    private function getCategory(int $categoryId): ?CategoryModel
     {
         if (!array_key_exists($categoryId, $this->categories)) {
             $categoryCollection = $this->categoryCollectionFactory->create();

@@ -9,27 +9,33 @@ use Magento\Framework\DataObject;
 class InventoryItem extends DataObject implements InventoryItemInterface
 {
     /**
+     * GetSku
+     *
      * @return string
      */
-    public function getSku()
+    public function getSku(): string
     {
-        return $this->getData(self::SKU_KEY);
+        return (string) $this->getData(self::SKU_KEY);
     }
 
     /**
+     * GetInventoryItems
+     *
      * @return InventoryItemItemInterface[]
      */
-    public function getInventoryItems()
+    public function getInventoryItems(): array
     {
         return $this->getData(self::INVENTORY_ITEMS_KEY);
     }
 
     /**
+     * SetSku
+     *
      * @param string $sku
      *
-     * @return $this
+     * @return InventoryItemInterface
      */
-    public function setSku($sku)
+    public function setSku(string $sku): InventoryItemInterface
     {
         $this->setData(self::SKU_KEY, $sku);
 
@@ -37,11 +43,13 @@ class InventoryItem extends DataObject implements InventoryItemInterface
     }
 
     /**
+     * SetInventoryItems
+     *
      * @param InventoryItemItemInterface[] $inventoryItems
      *
-     * @return $this
+     * @return InventoryItemInterface
      */
-    public function setInventoryItems($inventoryItems)
+    public function setInventoryItems(array $inventoryItems): InventoryItemInterface
     {
         $this->setData(self::INVENTORY_ITEMS_KEY, $inventoryItems);
 

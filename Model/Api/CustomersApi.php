@@ -3,12 +3,12 @@
 namespace Emartech\Emarsys\Model\Api;
 
 use Emartech\Emarsys\Api\CustomersApiInterface;
-use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Api\Data\ConfigInterfaceFactory;
 use Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
 use Emartech\Emarsys\Api\Data\CustomersApiResponseInterfaceFactory;
 use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 use Emartech\Emarsys\Helper\LinkField;
+use Exception;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\Config\Share as ConfigShare;
 use Magento\Framework\Data\Collection as DataCollection;
@@ -67,13 +67,13 @@ class CustomersApi implements CustomersApiInterface
     private $customerHelper;
 
     /**
-     * CustomersApi constructor.
-     *
      * @param CustomersApiResponseInterfaceFactory $customersResponseFactory
      * @param ConfigInterfaceFactory               $configFactory
      * @param ConfigShare                          $configShare
      * @param LinkField                            $linkFieldHelper
      * @param CustomerHelper                       $customerHelper
+     *
+     * @throws Exception
      */
     public function __construct(
         CustomersApiResponseInterfaceFactory $customersResponseFactory,
@@ -91,6 +91,8 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
+     * Get
+     *
      * @param int         $page
      * @param int         $pageSize
      * @param string|null $websiteId
@@ -100,13 +102,20 @@ class CustomersApi implements CustomersApiInterface
      * @return CustomersApiResponseInterface
      * @throws WebApiException
      */
-    public function get($page, $pageSize, $websiteId = null, $storeId = null, $onlyReg = null)
-    {
-        /** @var ConfigInterface $config */
+    public function get(
+        int $page,
+        int $pageSize,
+        string $websiteId = null,
+        string $storeId = null,
+        bool $onlyReg = null
+    ): CustomersApiResponseInterface {
         $config = $this->configFactory->create();
 
         if (!array_key_exists($websiteId, $config->getAvailableWebsites())) {
             throw new WebApiException(__('Invalid Website'));
+        }
+        if (null === $onlyReg) {
+            $onlyReg = false;
         }
 
         $this
@@ -121,7 +130,8 @@ class CustomersApi implements CustomersApiInterface
 
         $lastPageNumber = ceil($this->numberOfItems / $pageSize);
 
-        return $this->customersResponseFactory->create()
+        return $this->customersResponseFactory
+            ->create()
             ->setCurrentPage($page)
             ->setLastPage($lastPageNumber)
             ->setPageSize($pageSize)
@@ -130,23 +140,28 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @param string|null $websiteId
-     * @param bool        $onlyReg
+     * HandleWebsiteId
      *
-     * @return $this
+     * @param int|null $websiteId
+     * @param bool     $onlyReg
+     *
+     * @return CustomersApi
      */
-    private function handleWebsiteId($websiteId = null, $onlyReg = false)
+    private function handleWebsiteId(int $websiteId = null, bool $onlyReg = false): CustomersApi
     {
         if ($onlyReg || $this->configShare->isWebsiteScope()) {
             $this->websiteId = $websiteId;
         }
+
         return $this;
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return CustomersApi
      */
-    private function initCollection()
+    private function initCollection(): CustomersApi
     {
         $this->customerHelper->initCollection($this->websiteId);
 
@@ -154,14 +169,16 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
+     * HandleIds
+     *
      * @param int $page
      * @param int $pageSize
      *
-     * @return $this
+     * @return CustomersApi
      */
-    private function handleIds($page, $pageSize)
+    private function handleIds(int $page, int $pageSize): CustomersApi
     {
-        $page--;
+        $page --;
         $page *= $pageSize;
 
         $data = $this->customerHelper->handleIds($page, $pageSize, $this->websiteId);
@@ -174,9 +191,11 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @return $this
+     * HandleAttributeData
+     *
+     * @return CustomersApi
      */
-    private function handleAttributeData()
+    private function handleAttributeData(): CustomersApi
     {
         $this->customerHelper->getCustomersAttributeData(
             $this->minId,
@@ -188,9 +207,11 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @return $this
+     * HandleAddressesAttributeData
+     *
+     * @return CustomersApi
      */
-    private function handleAddressesAttributeData()
+    private function handleAddressesAttributeData(): CustomersApi
     {
         $this->customerHelper->getCustomersAddressesAttributeData(
             $this->minId,
@@ -202,9 +223,11 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @return $this
+     * SetWhere
+     *
+     * @return CustomersApi
      */
-    protected function setWhere()
+    protected function setWhere(): CustomersApi
     {
         $this->customerHelper->setWhere($this->linkField, $this->minId, $this->maxId, $this->websiteId);
 
@@ -212,9 +235,11 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @return $this
+     * SetOrder
+     *
+     * @return CustomersApi
      */
-    protected function setOrder()
+    protected function setOrder(): CustomersApi
     {
         $this->customerHelper->setOrder($this->linkField, DataCollection::SORT_ORDER_ASC);
 
@@ -222,9 +247,11 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
+     * HandleCustomers
+     *
      * @return array
      */
-    private function handleCustomers()
+    private function handleCustomers(): array
     {
         $customerArray = [];
         foreach ($this->customerHelper->getCustomerCollection() as $customer) {
@@ -235,11 +262,13 @@ class CustomersApi implements CustomersApiInterface
     }
 
     /**
-     * @param int $websiteId
+     * JoinSubscriptionStatus
      *
-     * @return $this
+     * @param int|null $websiteId
+     *
+     * @return CustomersApi
      */
-    private function joinSubscriptionStatus($websiteId)
+    private function joinSubscriptionStatus(int $websiteId = null): CustomersApi
     {
         $this->customerHelper->joinSubscriptionStatus($websiteId);
 

@@ -9,43 +9,55 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface ErrorResponseItemInterface
 {
-    const EMAIL_KEY       = 'email';
-    const CUSTOMER_ID_KEY = 'customer_id';
-    const MESSAGE_KEY     = 'message';
+    public const EMAIL_KEY       = 'email';
+    public const CUSTOMER_ID_KEY = 'customer_id';
+    public const MESSAGE_KEY     = 'message';
 
     /**
+     * GetEmail
+     *
      * @return string
      */
-    public function getEmail();
+    public function getEmail(): string;
 
     /**
+     * GetCustomerId
+     *
      * @return int|null
      */
-    public function getCustomerId();
+    public function getCustomerId(): ?int;
 
     /**
+     * GetMessage
+     *
      * @return string
      */
-    public function getMessage();
+    public function getMessage(): string;
 
     /**
+     * SetEmail
+     *
      * @param string $email
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface
      */
-    public function setEmail($email);
+    public function setEmail(string $email): ErrorResponseItemInterface;
 
     /**
+     * SetCustomerId
+     *
      * @param int|null $customerId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface
      */
-    public function setCustomerId($customerId);
+    public function setCustomerId(int $customerId = null): ErrorResponseItemInterface;
 
     /**
+     * SetMessage
+     *
      * @param string $message
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface
      */
-    public function setMessage($message);
+    public function setMessage(string $message): ErrorResponseItemInterface;
 }

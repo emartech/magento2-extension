@@ -7,12 +7,16 @@
 
 namespace Emartech\Emarsys\Api;
 
+use Emartech\Emarsys\Api\Data\InventoryApiResponseInterface;
+
 interface InventoryApiInterface
 {
     /**
+     * GetList
+     *
      * @param string[] $sku
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryApiResponseInterface
      */
-    public function getList($sku);
+    public function getList(array $sku): InventoryApiResponseInterface;
 }

@@ -2,14 +2,13 @@
 
 namespace Emartech\Emarsys\Model\Api;
 
-use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\Module\ModuleListInterface;
-
-use Emartech\Emarsys\Api\SystemApiInterface;
 use Emartech\Emarsys\Api\Data\SystemApiResponseInterface;
 use Emartech\Emarsys\Api\Data\SystemApiResponseInterfaceFactory;
+use Emartech\Emarsys\Api\SystemApiInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
 use Magento\Customer\Model\Config\Share as ConfigShare;
+use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\Module\ModuleListInterface;
 
 class SystemApi implements SystemApiInterface
 {
@@ -62,11 +61,14 @@ class SystemApi implements SystemApiInterface
     }
 
     /**
+     * Get
+     *
      * @return SystemApiResponseInterface
      */
-    public function get()
+    public function get(): SystemApiResponseInterface
     {
-        return $this->systemApiResponseFactory->create()
+        return $this->systemApiResponseFactory
+            ->create()
             ->setMagentoVersion($this->getMagentoVersion())
             ->setMagentoEdition($this->getMagentoEdition())
             ->setPhpVersion($this->getPhpVersion())
@@ -75,25 +77,31 @@ class SystemApi implements SystemApiInterface
     }
 
     /**
+     * GetMagentoVersion
+     *
      * @return string
      */
-    private function getMagentoVersion()
+    private function getMagentoVersion(): string
     {
         return $this->productMetadata->getVersion();
     }
 
     /**
+     * GetMagentoEdition
+     *
      * @return string
      */
-    private function getMagentoEdition()
+    private function getMagentoEdition(): string
     {
         return $this->productMetadata->getEdition();
     }
 
     /**
+     * GetPhpVersion
+     *
      * @return string
      */
-    private function getPhpVersion()
+    private function getPhpVersion(): string
     {
         if (defined(PHP_VERSION)) {
             return PHP_VERSION;
@@ -103,9 +111,11 @@ class SystemApi implements SystemApiInterface
     }
 
     /**
+     * GetModuleVersion
+     *
      * @return string
      */
-    private function getModuleVersion()
+    private function getModuleVersion(): string
     {
         $moduleData = $this->moduleList->getOne($this->configReader->getModuleName());
         if (is_array($moduleData) && array_key_exists('setup_version', $moduleData)) {

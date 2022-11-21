@@ -8,22 +8,21 @@
 namespace Emartech\Emarsys\Observers;
 
 use Emartech\Emarsys\Api\Data\ConfigInterface;
-use Emartech\Emarsys\Helper\ConfigReader as HelperConfigReader;
+use Emartech\Emarsys\Helper\ConfigReader;
+use Emartech\Emarsys\Helper\Json;
+use Emartech\Emarsys\Model\Event as EventModel;
+use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
+use Emartech\Emarsys\Model\EventRepository;
 use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\LocalizedException;
-use Emartech\Emarsys\Helper\Json;
-use Emartech\Emarsys\Model\Event as EventModel;
-use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
-use Emartech\Emarsys\Model\EventRepository;
 use Magento\Store\Model\StoreManagerInterface;
-use Emartech\Emarsys\Helper\ConfigReader;
 
 class CreateCustomEvent implements ObserverInterface
 {
-    const EVENT_TYPE_PREFIX = 'custom/';
+    public const EVENT_TYPE_PREFIX = 'custom/';
 
     /**
      * @var string[]
@@ -59,11 +58,11 @@ class CreateCustomEvent implements ObserverInterface
     private $configReader;
 
     /**
-     * CreateCustomEvent constructor.
-     *
-     * @param Json $json
-     * @param EmarsysEventFactory $eventFactory
-     * @param EventRepository $eventRepository
+     * @param Json                  $json
+     * @param EmarsysEventFactory   $eventFactory
+     * @param EventRepository       $eventRepository
+     * @param StoreManagerInterface $storeManager
+     * @param ConfigReader          $configReader
      */
     public function __construct(
         Json $json,
@@ -80,6 +79,8 @@ class CreateCustomEvent implements ObserverInterface
     }
 
     /**
+     * Execute
+     *
      * @param Observer $observer
      *
      * @throws LocalizedException
@@ -132,12 +133,14 @@ class CreateCustomEvent implements ObserverInterface
     }
 
     /**
+     * Validate
+     *
      * @param Event $event
      *
      * @return bool
      * @throws LocalizedException
      */
-    private function validate($event)
+    private function validate(Event $event): bool
     {
         $errors = [];
 

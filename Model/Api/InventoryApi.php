@@ -12,10 +12,10 @@ use Emartech\Emarsys\Api\Data\InventoryApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\InventoryItemInterfaceFactory;
 use Emartech\Emarsys\Api\Data\InventoryItemItemInterfaceFactory;
 use Emartech\Emarsys\Api\InventoryApiInterface;
+use Emartech\Emarsys\Helper\Inventory as InventoryHelper;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Inventory\Model\ResourceModel\SourceItem\Collection as SourceItemCollection;
 use Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory as SourceItemCollectionFactory;
-use Emartech\Emarsys\Helper\Inventory as InventoryHelper;
 
 /**
  * Class InventoryApi
@@ -61,11 +61,12 @@ class InventoryApi implements InventoryApiInterface
 
     /**
      * InventoryApi constructor.
-     * @param InventoryHelper $inventoryHelper
+     *
+     * @param InventoryHelper                      $inventoryHelper
      * @param InventoryApiResponseInterfaceFactory $inventoryApiResponseFactory
-     * @param InventoryItemInterfaceFactory $inventoryItemInterfaceFactory
-     * @param InventoryItemItemInterfaceFactory $inventoryItemItemFactory
-     * @param Iterator $iterator
+     * @param InventoryItemInterfaceFactory        $inventoryItemInterfaceFactory
+     * @param InventoryItemItemInterfaceFactory    $inventoryItemItemFactory
+     * @param Iterator                             $iterator
      */
     public function __construct(
         InventoryHelper $inventoryHelper,
@@ -82,16 +83,18 @@ class InventoryApi implements InventoryApiInterface
     }
 
     /**
+     * GetList
+     *
      * @param string[] $sku
      *
      * @return InventoryApiResponseInterface
      */
-    public function getList($sku)
+    public function getList(array $sku): InventoryApiResponseInterface
     {
         /** @var InventoryApiResponseInterface $response */
         $response = $this->inventoryApiResponseFactory->create();
 
-        if ($this->sourceItemCollectionFactory === false) {
+        if (null === $this->sourceItemCollectionFactory) {
             return $response->setItems([]);
         }
 
@@ -104,14 +107,16 @@ class InventoryApi implements InventoryApiInterface
     }
 
     /**
-     * @return $this
+     * ParseInventoryItems
+     *
+     * @return InventoryApiInterface
      */
-    private function parseInventoryItems()
+    private function parseInventoryItems(): InventoryApiInterface
     {
         $this->data = [];
 
         $this->iterator->walk(
-            (string)$this->sourceItemCollection->getSelect(),
+            (string) $this->sourceItemCollection->getSelect(),
             [[$this, 'handleStockItemData']],
             [],
             $this->sourceItemCollection->getConnection()
@@ -121,9 +126,11 @@ class InventoryApi implements InventoryApiInterface
     }
 
     /**
+     * HandleStockItemData
+     *
      * @param array $args
      */
-    public function handleStockItemData($args)
+    public function handleStockItemData(array $args): void
     {
         $sku = $args['row']['sku'];
         $sourceCode = $args['row']['source_code'];
@@ -133,21 +140,24 @@ class InventoryApi implements InventoryApiInterface
         }
         if (!array_key_exists($sourceCode, $this->data[$sku])) {
             $this->data[$sku][$sourceCode] = [
-                'quantity' => (float)$args['row']['quantity'],
-                'is_in_stock'   => (int)$args['row']['status'],
+                'quantity'    => (float) $args['row']['quantity'],
+                'is_in_stock' => (int) $args['row']['status'],
             ];
         }
     }
 
     /**
+     * HandleItems
+     *
      * @return array
      */
-    private function handleItems()
+    private function handleItems(): array
     {
         $returnArray = [];
 
         foreach ($this->data as $sku => $stockData) {
-            $returnArray[] = $this->inventoryItemFactory->create()
+            $returnArray[] = $this->inventoryItemFactory
+                ->create()
                 ->setSku($sku)
                 ->setInventoryItems($this->handleInventoryItems($stockData));
         }
@@ -156,16 +166,19 @@ class InventoryApi implements InventoryApiInterface
     }
 
     /**
+     * HandleInventoryItems
+     *
      * @param array $stockData
      *
      * @return array
      */
-    private function handleInventoryItems($stockData)
+    private function handleInventoryItems(array $stockData): array
     {
         $returnArray = [];
 
         foreach ($stockData as $sourceCode => $data) {
-            $returnArray[] = $this->inventoryItemItemFactory->create()
+            $returnArray[] = $this->inventoryItemItemFactory
+                ->create()
                 ->setQuantity($data['quantity'])
                 ->setSourceCode($sourceCode)
                 ->setIsInStock($data['is_in_stock']);
@@ -175,9 +188,11 @@ class InventoryApi implements InventoryApiInterface
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return InventoryApiInterface
      */
-    private function initCollection()
+    private function initCollection(): InventoryApiInterface
     {
         $this->sourceItemCollection = $this->sourceItemCollectionFactory->create();
 
@@ -185,11 +200,13 @@ class InventoryApi implements InventoryApiInterface
     }
 
     /**
+     * FilterSKUs
+     *
      * @param string|string[] $sku
      *
      * @return $this
      */
-    private function filterSKUs($sku)
+    private function filterSKUs($sku): InventoryApiInterface
     {
         if (!is_array($sku)) {
             $sku = [$sku];

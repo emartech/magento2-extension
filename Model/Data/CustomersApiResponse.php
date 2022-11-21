@@ -2,26 +2,32 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
+use Emartech\Emarsys\Api\Data\CustomerInterface;
 use Emartech\Emarsys\Api\Data\CustomersApiResponseInterface;
 
 class CustomersApiResponse extends ListApiResponseBase implements CustomersApiResponseInterface
 {
     /**
-     * @return \Emartech\Emarsys\Api\Data\CustomerInterface[]
+     * GetCustomers
+     *
+     * @return CustomerInterface[]
      */
-    public function getCustomers()
+    public function getCustomers(): array
     {
         return $this->getData(self::CUSTOMERS_KEY);
     }
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\CustomerInterface[] $customers
+     * SetCustomers
      *
-     * @return $this
+     * @param CustomerInterface[] $customers
+     *
+     * @return CustomersApiResponseInterface
      */
-    public function setCustomers(array $customers)
+    public function setCustomers(array $customers): CustomersApiResponseInterface
     {
         $this->setData(self::CUSTOMERS_KEY, $customers);
+
         return $this;
     }
 }

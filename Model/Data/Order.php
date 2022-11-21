@@ -2,27 +2,30 @@
 
 namespace Emartech\Emarsys\Model\Data;
 
-use Magento\Sales\Model\Order as OriginalOrderModel;
-
 use Emartech\Emarsys\Api\Data\OrderInterface;
+use Magento\Sales\Model\Order as OriginalOrderModel;
 
 class Order extends OriginalOrderModel implements OrderInterface
 {
 
     /**
+     * GetId
+     *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->getEntityId();
     }
 
     /**
+     * SetId
+     *
      * @param int $id
      *
-     * @return $this
+     * @return OrderInterface
      */
-    public function setId($id)
+    public function setId($id): OrderInterface
     {
         $this->setEntityId($id);
 

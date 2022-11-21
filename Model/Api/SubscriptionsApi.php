@@ -8,12 +8,14 @@ use Emartech\Emarsys\Api\Data\StatusResponseInterface;
 use Emartech\Emarsys\Api\Data\StatusResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\SubscriptionInterface;
 use Emartech\Emarsys\Api\Data\SubscriptionInterfaceFactory;
+use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface;
 use Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\SubscriptionsApiInterface;
 use Exception;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Model\Config\Share;
+use Magento\Framework\DataObject;
 use Magento\Newsletter\Model\ResourceModel\Subscriber\Collection;
 use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory;
 use Magento\Newsletter\Model\Subscriber;
@@ -120,16 +122,25 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get
+     *
+     * @param int         $page
+     * @param int         $pageSize
+     * @param bool|null   $subscribed
+     * @param bool        $onlyGuest
+     * @param string|null $websiteId
+     * @param string|null $storeId
+     *
+     * @return SubscriptionsApiResponseInterface
      */
     public function get(
-        $page = 1,
-        $pageSize = 1000,
-        $subscribed = null,
-        $onlyGuest = false,
-        $websiteId = null,
-        $storeId = null
-    ) {
+        int $page = 1,
+        int $pageSize = 1000,
+        bool $subscribed = null,
+        bool $onlyGuest = false,
+        string $websiteId = null,
+        string $storeId = null
+    ): SubscriptionsApiResponseInterface {
 
         $this
             ->initCollection()
@@ -140,7 +151,8 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             ->filterCustomers($onlyGuest)
             ->setPage($page, $pageSize);
 
-        return $this->subscriptionsResponseFactory->create()
+        return $this->subscriptionsResponseFactory
+            ->create()
             ->setCurrentPage($this->subscriptionCollection->getCurPage())
             ->setLastPage($this->subscriptionCollection->getLastPageNumber())
             ->setPageSize($this->subscriptionCollection->getPageSize())
@@ -149,16 +161,20 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Update
+     *
+     * @param array $subscriptions
+     *
+     * @return StatusResponseInterface
      */
-    public function update($subscriptions)
+    public function update(array $subscriptions): StatusResponseInterface
     {
         /** @var SubscriptionInterface $subscription */
         foreach ($subscriptions as $subscription) {
             try {
                 $this->changeSubscription(
                     $subscription,
-                    (bool)$subscription->getSubscriberStatus() === true ?
+                    (bool) $subscription->getSubscriberStatus() === true ?
                         Subscriber::STATUS_SUBSCRIBED :
                         Subscriber::STATUS_UNSUBSCRIBED
                 );
@@ -171,9 +187,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
+     * HandleResponse
+     *
      * @return StatusResponseInterface
      */
-    private function handleResponse()
+    private function handleResponse(): StatusResponseInterface
     {
         $status = 'ok';
         $errors = null;
@@ -182,18 +200,21 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             $errors = $this->getErrors();
         }
 
-        return $this->statusResponseFactory->create()
+        return $this->statusResponseFactory
+            ->create()
             ->setErrors($errors)
             ->setStatus($status);
     }
 
     /**
+     * AddError
+     *
      * @param SubscriptionInterface $subscription
      * @param Exception             $error
      *
-     * @return $this
+     * @return SubscriptionsApi
      */
-    private function addError($subscription, $error)
+    private function addError(SubscriptionInterface $subscription, Exception $error): SubscriptionsApi
     {
         $this->errors[] = [
             'email'       => $subscription->getSubscriberEmail(),
@@ -205,13 +226,16 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
+     * GetErrors
+     *
      * @return ErrorResponseItemInterface[]
      */
-    private function getErrors()
+    private function getErrors(): array
     {
         $returnArray = [];
         foreach ($this->errors as $error) {
-            $returnArray[] = $this->errorResponseItemFactory->create()
+            $returnArray[] = $this->errorResponseItemFactory
+                ->create()
                 ->setEmail($error['email'])
                 ->setCustomerId($error['customer_id'])
                 ->setMessage($error['message']);
@@ -221,9 +245,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * @return $this
+     * InitCollection
+     *
+     * @return SubscriptionsApi
      */
-    private function initCollection()
+    private function initCollection(): SubscriptionsApi
     {
         $this->subscriptionCollection = $this->subscriberCollectionFactory->create();
         $this->storeTableName = $this->subscriptionCollection->getResource()->getTable('store');
@@ -232,9 +258,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
+     * HandleSubscriptions
+     *
      * @return array
      */
-    private function handleSubscriptions()
+    private function handleSubscriptions(): array
     {
         $subscriptionArray = [];
         foreach ($this->subscriptionCollection as $subscription) {
@@ -245,13 +273,14 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * @param $subscription
+     * ParseSubscription
+     *
+     * @param DataObject $subscription
      *
      * @return SubscriptionInterface
      */
-    private function parseSubscription($subscription)
+    private function parseSubscription(DataObject $subscription): SubscriptionInterface
     {
-        /** @var SubscriptionInterface $subscriptionItem */
         $subscriptionItem = $this->subscriptionFactory->create();
 
         foreach ($subscription->getData() as $key => $value) {
@@ -262,26 +291,29 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
+     * SetPage
+     *
      * @param int $page
      * @param int $pageSize
      *
-     * @return $this
+     * @return SubscriptionsApi
      */
-    private function setPage($page, $pageSize)
+    private function setPage(int $page, int $pageSize): SubscriptionsApi
     {
         $this->subscriptionCollection
             ->setCurPage($page)
             ->setPageSize($pageSize);
+
         return $this;
     }
 
     /**
-     * @return $this
+     * JoinWebsite
+     *
+     * @return SubscriptionsApi
      */
-    private function joinWebsite()
+    private function joinWebsite(): SubscriptionsApi
     {
-
-        // @codingStandardsIgnoreLine
         $this->subscriptionCollection->getSelect()->joinLeft(
             [$this->storeTableName],
             $this->storeTableName . '.store_id = main_table.store_id',
@@ -292,11 +324,13 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * @param int|string|null $websiteId
+     * FilterWebsite
      *
-     * @return $this
+     * @param string|null $websiteId
+     *
+     * @return SubscriptionsApi
      */
-    private function filterWebsite($websiteId = null)
+    private function filterWebsite(string $websiteId = null): SubscriptionsApi
     {
         if ($websiteId !== null) {
             if (!is_array($websiteId)) {
@@ -312,11 +346,13 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
-     * @param int|string|null $storeId
+     * FilterStore
      *
-     * @return $this
+     * @param string|null $storeId
+     *
+     * @return SubscriptionsApi
      */
-    private function filterStore($storeId = null)
+    private function filterStore(string $storeId = null): SubscriptionsApi
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {
@@ -329,51 +365,61 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
+     * FilterSubscribed
+     *
      * @param bool $subscribed
      *
-     * @return $this
+     * @return SubscriptionsApi
      */
-    private function filterSubscribed($subscribed = null)
+    private function filterSubscribed(bool $subscribed = null): SubscriptionsApi
     {
         if ($subscribed === true) {
             $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
         } elseif ($subscribed === false) {
             $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['neq' => 1]);
         }
+
         return $this;
     }
 
     /**
-     * @param mixed $onlyGuest
+     * FilterCustomers
      *
-     * @return $this
+     * @param bool|null $onlyGuest
+     *
+     * @return SubscriptionsApi
      */
-    private function filterCustomers($onlyGuest = null)
+    private function filterCustomers(bool $onlyGuest = null): SubscriptionsApi
     {
-        if ((bool)$onlyGuest) {
+        if ($onlyGuest) {
             $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => 0]);
         }
+
         return $this;
     }
 
     /**
+     * FilterCustomer
+     *
      * @param int $customerId
      *
-     * @return $this
+     * @return SubscriptionsApi
      */
-    private function filterCustomer($customerId)
+    private function filterCustomer(int $customerId): SubscriptionsApi
     {
-        $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => (int)$customerId]);
+        $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => (int) $customerId]);
 
         return $this;
     }
 
     /**
+     * FilterEmail
+     *
      * @param string $email
      *
-     * @return $this
+     * @return SubscriptionsApi
      */
-    private function filterEmail($email)
+    private function filterEmail(string $email): SubscriptionsApi
     {
         $this->subscriptionCollection->addFieldToFilter('subscriber_email', ['eq' => $email]);
 
@@ -381,19 +427,23 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     }
 
     /**
+     * ChangeSubscription
+     *
      * @param SubscriptionInterface $subscription
      * @param string                $type
      *
      * @return bool
      * @throws Exception
      */
-    private function changeSubscription($subscription, $type)
+    private function changeSubscription(SubscriptionInterface $subscription, string $type): bool
     {
         if ($subscription->getSubscriberEmail()) {
             $this
                 ->initCollection()
-                ->filterEmail($subscription->getSubscriberEmail())
-                ->filterCustomer($subscription->getCustomerId());
+                ->filterEmail($subscription->getSubscriberEmail());
+            if ($subscription->getCustomerId()) {
+                $this->filterCustomer($subscription->getCustomerId());
+            }
 
             if ($this->customerModelConfigShare->isWebsiteScope()) {
                 $this
@@ -407,7 +457,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             if (!$subscriber) {
                 if ($type !== Subscriber::STATUS_SUBSCRIBED
                     || !$subscription->getCustomerId()
-                    || false === ($customer = $this->getCustomerData($subscription->getCustomerId()))
+                    || null === ($customer = $this->getCustomerData($subscription->getCustomerId()))
                     || $customer->getWebsiteId() != $subscription->getWebsiteId()
                     || $customer->getEmail() != $subscription->getSubscriberEmail()
                 ) {
@@ -426,20 +476,26 @@ class SubscriptionsApi implements SubscriptionsApiInterface
             $subscriber->setStatusChanged(true);
 
             $subscriber->save();
+
             return true;
         }
+
         return false;
     }
 
     /**
+     * GetCustomerData
+     *
      * @param int $customerId
      *
-     * @return bool|CustomerInterface
-     *
-     * @throws Exception
+     * @return CustomerInterface|null
      */
-    private function getCustomerData($customerId)
+    private function getCustomerData(int $customerId): ?CustomerInterface
     {
-        return $this->customerRepository->getById($customerId);
+        try {
+            return $this->customerRepository->getById($customerId);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

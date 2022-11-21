@@ -2,10 +2,9 @@
 
 namespace Emartech\Emarsys\Helper;
 
+use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-
-use Emartech\Emarsys\Api\Data\ConfigInterface;
 
 class ConfigReader extends AbstractHelper
 {
@@ -29,42 +28,50 @@ class ConfigReader extends AbstractHelper
     }
 
     /**
+     * GetConfigValue
+     *
      * @param string   $key
      * @param null|int $websiteId
      *
-     * @return string
+     * @return string|string[]
      */
-    public function getConfigValue($key, $websiteId = null)
+    public function getConfigValue(string $key, int $websiteId = null)
     {
         return $this->config->getConfigValue($key, $websiteId);
     }
 
     /**
-     * @param string $key
-     * @param null|int    $websiteId
+     * IsEnabledForWebsite
+     *
+     * @param string   $key
+     * @param null|int $websiteId
      *
      * @return bool
      */
-    public function isEnabledForWebsite($key, $websiteId = null)
+    public function isEnabledForWebsite(string $key, int $websiteId = null): bool
     {
         return $this->config->isEnabledForWebsite($key, $websiteId);
     }
 
     /**
+     * IsEnabledForStore
+     *
      * @param string   $key
      * @param int|null $storeId
      *
      * @return bool
      */
-    public function isEnabledForStore($key, $storeId = null)
+    public function isEnabledForStore(string $key, int $storeId = null): bool
     {
         return $this->config->isEnabledForStore($key, $storeId);
     }
 
     /**
+     * GetModuleName
+     *
      * @return string
      */
-    public function getModuleName()
+    public function getModuleName(): string
     {
         return $this->_getModuleName();
     }

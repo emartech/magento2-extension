@@ -5,7 +5,10 @@ namespace Emartech\Emarsys\Helper;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\IntegrationException;
+use Magento\Framework\Oauth\Exception;
 use Magento\Integration\Model\AuthorizationService;
+use Magento\Integration\Model\Integration as IntegrationModel;
 use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
@@ -13,18 +16,34 @@ use Magento\Setup\Exception as SetupException;
 
 class Integration extends AbstractHelper
 {
-    /** @var IntegrationService */
+    /**
+     * @var IntegrationService
+     */
     private $integrationService;
-    /** @var AuthorizationService */
+
+    /**
+     * @var AuthorizationService
+     */
     private $authorizationService;
-    /** @var Json */
+
+    /**
+     * @var Json
+     */
     private $json;
-    /** @var Token */
+
+    /**
+     * @var Token
+     */
     private $token;
-    /** @var Provider */
+
+    /**
+     * @var Provider
+     */
     private $tokenProvider;
-    /** @var WriterInterface */
-    // @codingStandardsIgnoreLine
+
+    /**
+     * @var WriterInterface
+     */
     protected $configWriter;
 
     /**
@@ -43,17 +62,18 @@ class Integration extends AbstractHelper
      */
     private $context;
 
-    const MAGENTO_VERSION = 2;
+    public const MAGENTO_VERSION = 2;
 
     /**
      * Integration constructor.
-     * @param Context $context
-     * @param IntegrationService $integrationService
+     *
+     * @param Context              $context
+     * @param IntegrationService   $integrationService
      * @param AuthorizationService $authorizationService
-     * @param Json $json
-     * @param Token $token
-     * @param Provider $tokenProvider
-     * @param WriterInterface $configWriter
+     * @param Json                 $json
+     * @param Token                $token
+     * @param Provider             $tokenProvider
+     * @param WriterInterface      $configWriter
      */
     public function __construct(
         Context $context,
@@ -75,9 +95,11 @@ class Integration extends AbstractHelper
     }
 
     /**
+     * Create
+     *
      * @return void
      */
-    public function create()
+    public function create(): void
     {
         if ($this->getExistingIntegration()->getId() === null) {
             try {
@@ -91,11 +113,13 @@ class Integration extends AbstractHelper
     }
 
     /**
+     * GenerateConnectToken
+     *
      * @return string
      * @throws SetupException
-     * @throws \Magento\Framework\Oauth\Exception
+     * @throws Exception
      */
-    public function generateConnectToken()
+    public function generateConnectToken(): string
     {
         $token = $this->getToken()['token'];
         $base_url = $this->getBaseUrl();
@@ -107,10 +131,12 @@ class Integration extends AbstractHelper
     }
 
     /**
+     * Delete
+     *
      * @return void
-     * @throws \Magento\Framework\Exception\IntegrationException
+     * @throws IntegrationException
      */
-    public function delete()
+    public function delete(): void
     {
         $this->configWriter->delete('emartech/emarsys/connecttoken');
         $existingIntegrationId = $this->getExistingIntegration()->getId();
@@ -119,16 +145,23 @@ class Integration extends AbstractHelper
         }
     }
 
-    private function getExistingIntegration()
+    /**
+     * GetExistingIntegration
+     *
+     * @return IntegrationModel
+     */
+    private function getExistingIntegration(): IntegrationModel
     {
         return $this->integrationService->findByName($this->integrationData['name']);
     }
 
     /**
+     * GetBaseUrl
+     *
      * @return string
      * @throws SetupException
      */
-    private function getBaseUrl()
+    private function getBaseUrl(): string
     {
         $baseUrl = $this->context->getScopeConfig()->getValue('web/unsecure/base_url');
 
@@ -140,10 +173,12 @@ class Integration extends AbstractHelper
     }
 
     /**
+     * GetToken
+     *
      * @return array
-     * @throws \Magento\Framework\Oauth\Exception
+     * @throws Exception
      */
-    private function getToken()
+    private function getToken(): array
     {
         $existingIntegration = $this->getExistingIntegration();
         if ($existingIntegration->getId() === null) {

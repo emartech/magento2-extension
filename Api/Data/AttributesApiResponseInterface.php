@@ -9,17 +9,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface AttributesApiResponseInterface
 {
-    const ATTRIBUTES_KEY = 'attributes';
+    public const ATTRIBUTES_KEY = 'attributes';
 
     /**
+     * GetAttributes
+     *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface[]
      */
-    public function getAttributes();
+    public function getAttributes(): array;
 
     /**
+     * SetAttributes
+     *
      * @param \Emartech\Emarsys\Api\Data\AttributeInterface[] $attributes
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\AttributesApiResponseInterface
      */
-    public function setAttributes(array $attributes);
+    public function setAttributes(array $attributes): AttributesApiResponseInterface;
 }

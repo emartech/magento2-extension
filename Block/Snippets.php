@@ -10,25 +10,29 @@ namespace Emartech\Emarsys\Block;
 use Emartech\Emarsys\Api\Data\ConfigInterface;
 use Emartech\Emarsys\Helper\ConfigReader;
 use Emartech\Emarsys\Helper\Json;
-use Magento\Catalog\Api\Data\CategoryInterface;
+use Emartech\Emarsys\Model\SettingsFactory;
+use Exception;
 use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\Category as CategoryModel;
+use Magento\Catalog\Model\CategoryFactory;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ResourceModel\Category\Collection;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Directory\Model\CurrencyFactory;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
-use Magento\Catalog\Model\CategoryFactory;
-use Magento\Catalog\Model\Category as CategoryModel;
-use Magento\Framework\App\Request\Http;
-use Magento\Framework\Registry;
-use Emartech\Emarsys\Model\SettingsFactory;
-use Magento\Directory\Model\CurrencyFactory;
-use Magento\Framework\ObjectManagerInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Snippets extends Template
 {
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     private $storeManager;
 
@@ -71,8 +75,6 @@ class Snippets extends Template
     private $jsonHelper;
 
     /**
-     * Snippets constructor.
-     *
      * @param Context                   $context
      * @param CategoryFactory           $categoryFactory
      * @param Http                      $request
@@ -80,7 +82,9 @@ class Snippets extends Template
      * @param ConfigReader              $configReader
      * @param CurrencyFactory           $currencyFactory
      * @param CategoryCollectionFactory $categoryCollectionFactory
+     * @param Configurable              $configurable
      * @param ObjectManagerInterface    $objectManager
+     * @param Json                      $jsonHelper
      * @param array                     $data
      */
     public function __construct(
@@ -110,169 +114,163 @@ class Snippets extends Template
     }
 
     /**
-     * Get Tracking Data
+     * GetTrackingData
      *
-     * @return mixed
-     * @throws \Exception
+     * @return string
+     * @throws Exception
      */
-    public function getTrackingData()
+    public function getTrackingData(): string
     {
-        return $this->jsonHelper->serialize([
-            'product'            => $this->getCurrentProduct(),
-            'category'           => $this->getCategory(0),
-            'localizedCategory' => $this->getCategory(),
-            'store'              => $this->getStoreData(),
-            'search'             => $this->getSearchData(),
-            'exchangeRate'       => $this->getExchangeRate(),
-            'slug'               => $this->getStoreSlug()
-        ]);
+        return $this->jsonHelper->serialize(
+            [
+                'product'           => $this->getCurrentProduct() ?? false,
+                'category'          => $this->getCategory(0) ?? false,
+                'localizedCategory' => $this->getCategory() ?? false,
+                'store'             => $this->getStoreData(),
+                'search'            => $this->getSearchData() ?? false,
+                'exchangeRate'      => $this->getExchangeRate(),
+                'slug'              => $this->getStoreSlug()
+            ]
+        );
     }
 
     /**
+     * GetStoreSlug
+     *
      * @return string|null
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
-    public function getStoreSlug()
+    public function getStoreSlug(): ?string
     {
         $storeSettings = $this->configReader->getConfigValue(ConfigInterface::STORE_SETTINGS);
         if (is_array($storeSettings)) {
             $currentStoreId = $this->storeManager->getStore()->getId();
             foreach ($storeSettings as $store) {
-                if ($store['store_id'] === (int)$currentStoreId) {
+                if ($store['store_id'] === (int) $currentStoreId) {
                     return $store['slug'];
                 }
             }
         }
+
         return null;
     }
 
     /**
      * Get Exchange Rate
      *
-     * @return bool|float
-     * @throws \Exception
+     * @return float
+     * @throws Exception
      */
-    public function getExchangeRate()
+    public function getExchangeRate(): float
     {
-        try {
-            $currentCurrency = $this->storeManager->getStore()->getCurrentCurrency()->getCode();
-            $baseCurrency = $this->storeManager->getStore()->getBaseCurrency()->getCode();
-            return (float)$this->currencyFactory->create()->load($baseCurrency)->getAnyRate($currentCurrency);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $currentCurrency = $this->storeManager->getStore()->getCurrentCurrency()->getCode();
+        $baseCurrency = $this->storeManager->getStore()->getBaseCurrency()->getCode();
+
+        return (float) $this->currencyFactory->create()->load($baseCurrency)->getAnyRate($currentCurrency);
     }
 
     /**
-     * Get Store Data
+     * GetStoreData
      *
-     * @return bool|mixed
-     * @throws \Exception
+     * @return string[]
      */
-    public function getStoreData()
+    public function getStoreData(): array
     {
-        try {
+        return [
+            'merchantId' => $this->getMerchantId(),
+        ];
+    }
+
+    /**
+     * GetCurrentProduct
+     *
+     * @return array|null
+     */
+    public function getCurrentProduct(): ?array
+    {
+        $product = $this->coreRegistry->registry('current_product');
+        if ($product instanceof Product) {
+            $isVisibleChild = $this->isVisibleChild($product);
+
             return [
-                'merchantId' => $this->getMerchantId(),
+                'sku'            => $product->getSku(),
+                'id'             => $product->getId(),
+                'isVisibleChild' => $isVisibleChild
             ];
-        } catch (\Exception $e) {
-            throw $e;
         }
+
+        return null;
     }
 
     /**
-     * Get Current Product
+     * GetSearchData
      *
-     * @return bool|mixed
-     * @throws \Exception
+     * @return array|null
      */
-    public function getCurrentProduct()
+    public function getSearchData(): ?array
     {
-        try {
-            $product = $this->coreRegistry->registry('current_product');
-            if ($product instanceof Product) {
-                $isVisibleChild = $this->isVisibleChild($product);
-                return [
-                    'sku' => $product->getSku(),
-                    'id'  => $product->getId(),
-                    'isVisibleChild' => $isVisibleChild
-                ];
-            }
-        } catch (\Exception $e) {
-            throw $e;
+        $q = $this->_request->getParam('q');
+        if ($q != '') {
+            return [
+                'term' => $q,
+            ];
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * Get Search Data
+     * GetCategory
      *
-     * @return bool|mixed
-     * @throws \Exception
-     */
-    public function getSearchData()
-    {
-        try {
-            $q = $this->_request->getParam('q');
-            if ($q != '') {
-                return [
-                    'term' => $q,
-                ];
-            }
-        } catch (\Exception $e) {
-            throw $e;
-        }
-        return false;
-    }
-
-    /**
-     * Get Category
+     * @param int|null $storeId
      *
-     * @return mixed
-     * @throws \Exception
+     * @return array|null
+     *
+     * @throws NoSuchEntityException
+     * @throws LocalizedException
      */
-    public function getCategory($storeId = null)
+    public function getCategory(int $storeId = null): ?array
     {
-        try {
-            $category = $this->coreRegistry->registry('current_category');
-            if ($category instanceof CategoryModel) {
-                $categoryList = [];
+        $category = $this->coreRegistry->registry('current_category');
+        if ($category instanceof CategoryModel) {
+            $categoryList = [];
 
-                $categoryIds = $this->removeDefaultCategories($category->getPathIds());
+            $categoryIds = $this->removeDefaultCategories($category->getPathIds());
 
-                /** @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
-                $categoryCollection = $this->categoryCollectionFactory->create()
-                    ->setStore($this->storeManager->getStore($storeId))
-                    ->addAttributeToSelect('name')
-                    ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
+            /** @var Collection $categoryCollection */
+            $categoryCollection = $this
+                ->categoryCollectionFactory
+                ->create()
+                ->setStore($this->storeManager->getStore($storeId))
+                ->addAttributeToSelect('name')
+                ->addFieldToFilter('entity_id', ['in' => $categoryIds]);
 
-                foreach ($categoryIds as $categoryId) {
-                    foreach ($categoryCollection as $categoryItem) {
-                        if ($categoryItem->getId() == $categoryId) {
-                            $categoryList[] = $categoryItem->getName();
-                        }
+            foreach ($categoryIds as $categoryId) {
+                foreach ($categoryCollection as $categoryItem) {
+                    if ($categoryItem->getId() == $categoryId) {
+                        $categoryList[] = $categoryItem->getName();
                     }
                 }
-
-                return [
-                    'names' => $categoryList,
-                    'ids'   => $categoryIds,
-                ];
             }
-        } catch (\Exception $e) {
-            throw $e;
+
+            return [
+                'names' => $categoryList,
+                'ids'   => $categoryIds,
+            ];
         }
-        return false;
+
+        return null;
     }
 
     /**
+     * RemoveDefaultCategories
+     *
      * @param array $categoryIds
      *
      * @return array
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws NoSuchEntityException
      */
-    private function removeDefaultCategories($categoryIds)
+    private function removeDefaultCategories(array $categoryIds): array
     {
         $returnArray = [];
         $basicCategoryIds = [
@@ -293,9 +291,9 @@ class Snippets extends Template
      *
      * @return string
      */
-    public function getMerchantId()
+    public function getMerchantId(): string
     {
-        return $this->configReader->getConfigValue(ConfigInterface::MERCHANT_ID);
+        return (string) $this->configReader->getConfigValue(ConfigInterface::MERCHANT_ID);
     }
 
     /**
@@ -303,26 +301,29 @@ class Snippets extends Template
      *
      * @return string
      */
-    public function getSnippetUrl()
+    public function getSnippetUrl(): string
     {
-        return $this->configReader->getConfigValue(ConfigInterface::SNIPPET_URL);
+        return (string) $this->configReader->getConfigValue(ConfigInterface::SNIPPET_URL);
     }
 
     /**
      * Is Injectable
      *
-     * @return string
+     * @return bool
      */
-    public function isInjectable()
+    public function isInjectable(): bool
     {
         return $this->configReader->isEnabledForStore(ConfigInterface::INJECT_WEBEXTEND_SNIPPETS);
     }
 
     /**
+     * IsVisibleChild
+     *
      * @param Product $product
+     *
      * @return bool
      */
-    private function isVisibleChild(Product $product)
+    private function isVisibleChild(Product $product): bool
     {
         $productId = $product->getId();
         $productVisibility = $product->getVisibility();
@@ -333,6 +334,7 @@ class Snippets extends Template
                 return true;
             }
         }
+
         return false;
     }
 }

@@ -4,82 +4,106 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface SubscriptionInterface
 {
-    const CUSTOMER_ID_KEY   = 'customer_id';
-    const STORE_ID_KEY      = 'store_id';
-    const WEBSITE_ID_KEY    = 'website_id';
-    const SUBSCRIBER_ID     = 'subscriber_id';
-    const SUBSCRIBER_EMAIL  = 'subscriber_email';
-    const SUBSCRIBER_STATUS = 'subscriber_status';
+    public const CUSTOMER_ID_KEY   = 'customer_id';
+    public const STORE_ID_KEY      = 'store_id';
+    public const WEBSITE_ID_KEY    = 'website_id';
+    public const SUBSCRIBER_ID     = 'subscriber_id';
+    public const SUBSCRIBER_EMAIL  = 'subscriber_email';
+    public const SUBSCRIBER_STATUS = 'subscriber_status';
 
     /**
+     * GetCustomerId
+     *
      * @return int|null
      */
-    public function getCustomerId();
+    public function getCustomerId(): ?int;
 
     /**
-     * @param int $customerId
+     * SetCustomerId
      *
-     * @return $this
+     * @param int|null $customerId
+     *
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setCustomerId($customerId);
+    public function setCustomerId(int $customerId = null): SubscriptionInterface;
 
     /**
+     * GetSubscriberId
+     *
      * @return int|null
      */
-    public function getSubscriberId();
+    public function getSubscriberId(): ?int;
 
     /**
-     * @param int $subscriberId
+     * SetSubscriberId
      *
-     * @return $this
+     * @param int|null $subscriberId
+     *
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberId($subscriberId);
+    public function setSubscriberId(int $subscriberId = null): SubscriptionInterface;
 
     /**
+     * GetWebsiteId
+     *
      * @return int|null
      */
-    public function getWebsiteId();
+    public function getWebsiteId(): ?int;
 
     /**
-     * @param int $websiteId
+     * SetWebsiteId
      *
-     * @return $this
+     * @param int|null $websiteId
+     *
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setWebsiteId($websiteId);
+    public function setWebsiteId(int $websiteId = null): SubscriptionInterface;
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setStoreId($storeId);
+    public function setStoreId(int $storeId): SubscriptionInterface;
 
     /**
+     * GetSubscriberEmail
+     *
      * @return string
      */
-    public function getSubscriberEmail();
+    public function getSubscriberEmail(): string;
 
     /**
+     * SetSubscriberEmail
+     *
      * @param string $subscriberEmail
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberEmail($subscriberEmail);
+    public function setSubscriberEmail(string $subscriberEmail): SubscriptionInterface;
 
     /**
+     * GetSubscriberStatus
+     *
      * @return string
      */
-    public function getSubscriberStatus();
+    public function getSubscriberStatus(): string;
 
     /**
+     * SetSubscriberStatus
+     *
      * @param string $subscriberStatus
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberStatus($subscriberStatus);
+    public function setSubscriberStatus(string $subscriberStatus): SubscriptionInterface;
 }

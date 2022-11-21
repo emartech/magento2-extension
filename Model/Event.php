@@ -2,74 +2,89 @@
 
 namespace Emartech\Emarsys\Model;
 
-use Magento\Framework\Model\AbstractModel;
-
 use Emartech\Emarsys\Api\Data\EventInterface;
+use Magento\Framework\Model\AbstractModel;
 
 class Event extends AbstractModel implements EventInterface
 {
     /**
-     * @return string
-     */
-    public function getEventId()
-    {
-        return $this->_getData(self::EVENT_ID_KEY);
-    }
-
-    /**
-     * @return string
-     */
-    public function getEventType()
-    {
-        return $this->_getData(self::EVENT_TYPE_KEY);
-    }
-
-    /**
-     * @return string
-     */
-    public function getEventData()
-    {
-        return $this->_getData(self::EVENT_DATA_KEY);
-    }
-
-    /**
-     * @return string
-     */
-    public function getCreatedAt()
-    {
-        return $this->_getData(self::CREATED_AT_KEY);
-    }
-
-    /**
+     * GetEventId
+     *
      * @return int
      */
-    public function getWebsiteId()
+    public function getEventId(): int
     {
-        return $this->_getData(self::WEBSITE_ID_KEY);
+        return (int) $this->_getData(self::EVENT_ID_KEY);
     }
 
     /**
+     * GetEventType
+     *
+     * @return string
+     */
+    public function getEventType(): string
+    {
+        return (string) $this->_getData(self::EVENT_TYPE_KEY);
+    }
+
+    /**
+     * GetEventData
+     *
+     * @return string
+     */
+    public function getEventData(): string
+    {
+        return (string) $this->_getData(self::EVENT_DATA_KEY);
+    }
+
+    /**
+     * GetCreatedAt
+     *
+     * @return string
+     */
+    public function getCreatedAt(): string
+    {
+        return (string) $this->_getData(self::CREATED_AT_KEY);
+    }
+
+    /**
+     * GetWebsiteId
+     *
      * @return int
      */
-    public function getStoreId()
+    public function getWebsiteId(): int
     {
-        return $this->_getData(self::STORE_ID_KEY);
+        return (int) $this->_getData(self::WEBSITE_ID_KEY);
     }
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getEntityId()
+    public function getStoreId(): int
     {
-        return $this->_getData(self::ENTITY_ID_KEY);
+        return (int) $this->_getData(self::STORE_ID_KEY);
     }
 
     /**
+     * GetEntityId
+     *
+     * @return int
+     */
+    public function getEntityId(): int
+    {
+        return (int) $this->_getData(self::ENTITY_ID_KEY);
+    }
+
+    /**
+     * SetEventId
+     *
      * @param int $eventId
      *
-     * @return $this
+     * @return EventInterface
      */
-    public function setEventId($eventId)
+    public function setEventId(int $eventId): EventInterface
     {
         $this->setData(self::EVENT_ID_KEY, $eventId);
 
@@ -77,11 +92,13 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * SetEventType
+     *
      * @param string $eventType
      *
-     * @return $this
+     * @return EventInterface
      */
-    public function setEventType($eventType)
+    public function setEventType(string $eventType): EventInterface
     {
         $this->setData(self::EVENT_TYPE_KEY, $eventType);
 
@@ -89,11 +106,13 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * SetEventData
+     *
      * @param string $eventData
      *
-     * @return $this
+     * @return EventInterface
      */
-    public function setEventData($eventData)
+    public function setEventData(string $eventData): EventInterface
     {
         $this->setData(self::EVENT_DATA_KEY, $eventData);
 
@@ -101,11 +120,13 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * SetCreatedAt
+     *
      * @param string $createdAt
      *
-     * @return $this
+     * @return EventInterface
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(string $createdAt): EventInterface
     {
         $this->setData(self::CREATED_AT_KEY, $createdAt);
 
@@ -113,11 +134,13 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * SetWebsiteId
+     *
      * @param int $websiteId
      *
-     * @return $this
+     * @return EventInterface
      */
-    public function setWebsiteId($websiteId)
+    public function setWebsiteId(int $websiteId): EventInterface
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
 
@@ -125,11 +148,13 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return EventInterface
      */
-    public function setStoreId($storeId)
+    public function setStoreId(int $storeId): EventInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 
@@ -137,11 +162,13 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * SetEntityId
+     *
      * @param int $entityId
      *
-     * @return $this
+     * @return EventInterface
      */
-    public function setEntityId($entityId)
+    public function setEntityId($entityId): EventInterface
     {
         $this->setData(self::ENTITY_ID_KEY, $entityId);
 
@@ -149,10 +176,12 @@ class Event extends AbstractModel implements EventInterface
     }
 
     /**
+     * _construct
+     *
      * @return void
      */
     protected function _construct()
     {
-        $this->_init(\Emartech\Emarsys\Model\ResourceModel\Event::class);
+        $this->_init(ResourceModel\Event::class);
     }
 }

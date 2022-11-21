@@ -4,212 +4,278 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface ProductStoreDataInterface
 {
-    const NAME_KEY                       = 'name';
-    const LINK_KEY                       = 'url_key';
-    const DESCRIPTION_KEY                = 'description';
-    const STATUS_KEY                     = 'status';
-    const STORE_ID_KEY                   = 'store_id';
-    const CURRENCY_KEY                   = 'currency';
-    const PRICE_KEY                      = 'price';
-    const DISPLAY_PRICE_KEY              = 'display_price';
-    const ORIGINAL_PRICE_KEY             = 'original_price';
-    const ORIGINAL_DISPLAY_PRICE_KEY     = 'original_display_price';
-    const WEBSHOP_PRICE                  = 'webshop_price';
-    const DISPLAY_WEBSHOP_PRICE          = 'display_webshop_price';
-    const ORIGINAL_WEBSHOP_PRICE         = 'original_webshop_price';
-    const ORIGINAL_DISPLAY_WEBSHOP_PRICE = 'original_display_webshop_price';
-    const EXTRA_FIELDS                   = 'extra_fields';
-    const IMAGES_KEY                     = 'images';
+    public const NAME_KEY                       = 'name';
+    public const LINK_KEY                       = 'url_key';
+    public const DESCRIPTION_KEY                = 'description';
+    public const STATUS_KEY                     = 'status';
+    public const STORE_ID_KEY                   = 'store_id';
+    public const CURRENCY_KEY                   = 'currency';
+    public const PRICE_KEY                      = 'price';
+    public const DISPLAY_PRICE_KEY              = 'display_price';
+    public const ORIGINAL_PRICE_KEY             = 'original_price';
+    public const ORIGINAL_DISPLAY_PRICE_KEY     = 'original_display_price';
+    public const WEBSHOP_PRICE                  = 'webshop_price';
+    public const DISPLAY_WEBSHOP_PRICE          = 'display_webshop_price';
+    public const ORIGINAL_WEBSHOP_PRICE         = 'original_webshop_price';
+    public const ORIGINAL_DISPLAY_WEBSHOP_PRICE = 'original_display_webshop_price';
+    public const EXTRA_FIELDS                   = 'extra_fields';
+    public const IMAGES_KEY                     = 'images';
 
     /**
+     * GetName
+     *
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
+     * GetPrice
+     *
      * @return float
      */
-    public function getPrice();
+    public function getPrice(): float;
 
     /**
-     * @return float
+     * GetDisplayPrice
+     *
+     * @return float|null
      */
-    public function getDisplayPrice();
+    public function getDisplayPrice(): ?float;
 
     /**
-     * @return float
+     * GetOriginalPrice
+     *
+     * @return float|null
      */
-    public function getOriginalPrice();
+    public function getOriginalPrice(): ?float;
 
     /**
-     * @return float
+     * GetOriginalDisplayPrice
+     *
+     * @return float|null
      */
-    public function getOriginalDisplayPrice();
+    public function getOriginalDisplayPrice(): ?float;
 
     /**
-     * @return float
+     * GetWebshopPrice
+     *
+     * @return float|null
      */
-    public function getWebshopPrice();
+    public function getWebshopPrice(): ?float;
 
     /**
-     * @return float
+     * GetDisplayWebshopPrice
+     *
+     * @return float|null
      */
-    public function getDisplayWebshopPrice();
+    public function getDisplayWebshopPrice(): ?float;
 
     /**
-     * @return float
+     * GetOriginalWebshopPrice
+     *
+     * @return float|null
      */
-    public function getOriginalWebshopPrice();
+    public function getOriginalWebshopPrice(): ?float;
 
     /**
-     * @return float
+     * GetOriginalDisplayWebshopPrice
+     *
+     * @return float|null
      */
-    public function getOriginalDisplayWebshopPrice();
+    public function getOriginalDisplayWebshopPrice(): ?float;
 
     /**
+     * GetLink
+     *
      * @return string
      */
-    public function getLink();
+    public function getLink(): string;
 
     /**
+     * GetDescription
+     *
      * @return string
      */
-    public function getDescription();
+    public function getDescription(): string;
 
     /**
+     * GetStatus
+     *
      * @return int
      */
-    public function getStatus();
+    public function getStatus(): int;
 
     /**
+     * GetStoreId
+     *
      * @return int
      */
-    public function getStoreId();
+    public function getStoreId(): int;
 
     /**
+     * GetCurrencyCode
+     *
      * @return string
      */
-    public function getCurrencyCode();
+    public function getCurrencyCode(): string;
 
     /**
+     * GetExtraFields
+     *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
      */
-    public function getExtraFields();
+    public function getExtraFields(): array;
 
     /**
+     * GetImages
+     *
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function getImages();
+    public function getImages(): ImagesInterface;
 
     /**
+     * SetName
+     *
      * @param string $name
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setName($name);
+    public function setName(string $name): ProductStoreDataInterface;
 
     /**
+     * SetPrice
+     *
      * @param float $price
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setPrice($price);
+    public function setPrice(float $price): ProductStoreDataInterface;
 
     /**
-     * @param float $displayPrice
+     * SetDisplayPrice
      *
-     * @return $this
-     */
-    public function setDisplayPrice($displayPrice);
-
-    /**
-     * @param float $originalPrice
+     * @param float|null $displayPrice
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setOriginalPrice($originalPrice);
+    public function setDisplayPrice(float $displayPrice = null): ProductStoreDataInterface;
 
     /**
-     * @param float $originalDisplayPrice
+     * SetOriginalPrice
      *
-     * @return $this
-     */
-    public function setOriginalDisplayPrice($originalDisplayPrice);
-
-    /**
-     * @param float $webShopPrice
+     * @param float|null $originalPrice
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setWebshopPrice($webShopPrice);
+    public function setOriginalPrice(float $originalPrice = null): ProductStoreDataInterface;
 
     /**
-     * @param float $displayWebShopPrice
+     * SetOriginalDisplayPrice
      *
-     * @return $this
-     */
-    public function setDisplayWebshopPrice($displayWebShopPrice);
-
-    /**
-     * @param float $originalWebshopPrice
+     * @param float|null $originalDisplayPrice
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setOriginalWebshopPrice($originalWebshopPrice);
+    public function setOriginalDisplayPrice(float $originalDisplayPrice = null): ProductStoreDataInterface;
 
     /**
-     * @param float $originalDisplayWebshopPrice
+     * SetWebshopPrice
      *
-     * @return $this
+     * @param float|null $webShopPrice
+     *
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setOriginalDisplayWebshopPrice($originalDisplayWebshopPrice);
+    public function setWebshopPrice(float $webShopPrice = null): ProductStoreDataInterface;
 
     /**
+     * SetDisplayWebshopPrice
+     *
+     * @param float|null $displayWebShopPrice
+     *
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
+     */
+    public function setDisplayWebshopPrice(float $displayWebShopPrice = null): ProductStoreDataInterface;
+
+    /**
+     * SetOriginalWebshopPrice
+     *
+     * @param float|null $originalWebshopPrice
+     *
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
+     */
+    public function setOriginalWebshopPrice(float $originalWebshopPrice = null): ProductStoreDataInterface;
+
+    /**
+     * SetOriginalDisplayWebshopPrice
+     *
+     * @param float|null $originalDisplayWebshopPrice
+     *
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
+     */
+    public function setOriginalDisplayWebshopPrice(
+        float $originalDisplayWebshopPrice = null
+    ): ProductStoreDataInterface;
+
+    /**
+     * SetLink
+     *
      * @param string $link
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setLink($link);
+    public function setLink(string $link): ProductStoreDataInterface;
 
     /**
+     * SetDescription
+     *
      * @param string $description
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setDescription($description);
+    public function setDescription(string $description): ProductStoreDataInterface;
 
     /**
+     * SetStatus
+     *
      * @param int $status
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setStatus($status);
+    public function setStatus(int $status): ProductStoreDataInterface;
 
     /**
+     * SetStoreId
+     *
      * @param int $storeId
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setStoreId($storeId);
+    public function setStoreId(int $storeId): ProductStoreDataInterface;
 
     /**
+     * SetCurrencyCode
+     *
      * @param string $currencyCode
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setCurrencyCode($currencyCode);
+    public function setCurrencyCode(string $currencyCode): ProductStoreDataInterface;
 
     /**
+     * SetExtraFields
+     *
      * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setExtraFields($extraFields);
+    public function setExtraFields(array $extraFields): ProductStoreDataInterface;
 
     /**
+     * SetImages
+     *
      * @param \Emartech\Emarsys\Api\Data\ImagesInterface $images
      *
-     * @return $this
+     * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setImages($images);
+    public function setImages(ImagesInterface $images): ProductStoreDataInterface;
 }

@@ -4,17 +4,21 @@ namespace Emartech\Emarsys\Api\Data;
 
 interface ErrorResponseInterface
 {
-    const ERRORS_KEY   = 'errors';
+    public const ERRORS_KEY = 'errors';
 
     /**
+     * GetErrors
+     *
      * @return \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface[]|null
      */
-    public function getErrors();
+    public function getErrors(): ?array;
 
     /**
-     * @param \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface[] $errors
+     * SetErrors
      *
-     * @return $this
+     * @param \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface[]|null $errors
+     *
+     * @return \Emartech\Emarsys\Api\Data\ErrorResponseInterface
      */
-    public function setErrors($errors);
+    public function setErrors(array $errors = null): ErrorResponseInterface;
 }
