@@ -647,20 +647,20 @@ class Product extends ProductResourceModel
         }
 
         try {
-            $unionQuery = $this->_resource->getConnection()->select()
-                                          ->union(
-                                              $attributeQueries,
-                                              Zend_Db_Select::SQL_UNION_ALL
-                                          ); // @codingStandardsIgnoreLine
+            if (count($attributeQueries)) {
+                $unionQuery = $this->_resource
+                    ->getConnection()->select()
+                    ->union($attributeQueries, Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
 
-            $this->iterator->walk(
-                (string)$unionQuery,
-                [[$this, 'handleAttributeDataTable']],
-                [
-                    'attributeMapper' => $attributeMapper,
-                ],
-                $this->_resource->getConnection()
-            );
+                $this->iterator->walk(
+                    (string) $unionQuery,
+                    [[$this, 'handleAttributeDataTable']],
+                    [
+                        'attributeMapper' => $attributeMapper,
+                    ],
+                    $this->_resource->getConnection()
+                );
+            }
         } catch (\Exception $e) { // @codingStandardsIgnoreLine
         }
 
@@ -825,20 +825,23 @@ class Product extends ProductResourceModel
             $unionSelects[] = $select;
         }
 
-        $unionQuery = $this->_resource->getConnection()->select()
-            ->union(
-                $unionSelects,
-                Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
-            );
+        if (count($unionSelects)) {
+            $unionQuery = $this->_resource
+                ->getConnection()->select()
+                ->union(
+                    $unionSelects,
+                    Zend_Db_Select::SQL_UNION_ALL  // @codingStandardsIgnoreLine
+                );
 
-        $this->iterator->walk(
-            (string)$unionQuery,
-            [[$this, 'handleProductPriceTable']],
-            [
-                'websiteIds' => $websiteIds,
-            ],
-            $this->_resource->getConnection()
-        );
+            $this->iterator->walk(
+                (string) $unionQuery,
+                [[$this, 'handleProductPriceTable']],
+                [
+                    'websiteIds' => $websiteIds,
+                ],
+                $this->_resource->getConnection()
+            );
+        }
 
         return $this->priceData;
     }
