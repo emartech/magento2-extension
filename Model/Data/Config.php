@@ -276,7 +276,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return string|string[]
      */
-    public function getConfigValue(string $key, int $websiteId = null): mixed
+    public function getConfigValue(string $key, int $websiteId = null)
     {
         if (null === $websiteId) {
             try {
