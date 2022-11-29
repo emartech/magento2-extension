@@ -6,9 +6,8 @@ const cheerio = require('cheerio');
 const getEmarsysSnippetContents = async path => {
   const response = await axios.get(`http://magento-test.local/index.php/${path}`);
   const $ = cheerio.load(response.data);
-  return $('.emarsys-snippets')
-    .html()
-    .replace(/(?:\r\n|\r|\n)/g, '');
+  const html = $('.emarsys-snippets').html();
+  return html ? html.replace(/(?:\r\n|\r|\n)/g, '') : '';
 };
 
 const alterProductVisibility = async (magentoApi, sku) => {
@@ -44,7 +43,7 @@ const insertNewCategoryBetween = async (magentoApi, { name, parentId, childId })
   return middleCategoryId;
 };
 
-describe('Webextend scripts', function() {
+describe('Webextend scripts', function () {
   describe('enabled', function() {
     beforeEach(async function() {
       await this.magentoApi.execute('config', 'set', {
@@ -65,7 +64,7 @@ describe('Webextend scripts', function() {
       expect(
         emarsysSnippets.includes(
           //eslint-disable-next-line
-          `<script type="text/javascript">    var ScarabQueue = ScarabQueue || [];    (function(id) {      if (document.getElementById(id)) return;      var js = document.createElement('script'); js.id = id;      js.src = '\\/' + '\\/' + 'cdn.scarabresearch.com/js/abc123/scarab-v2.js';      var fs = document.getElementsByTagName('script')[0];      fs.parentNode.insertBefore(js, fs);    })('scarab-js-api');  </script>`
+          `<script>    var ScarabQueue = ScarabQueue || [];    (function(id) {      if (document.getElementById(id)) return;      var js = document.createElement('script'); js.id = id;      js.src = '\\/' + '\\/' + 'cdn.scarabresearch.com/js/abc123/scarab-v2.js';      var fs = document.getElementsByTagName('script')[0];      fs.parentNode.insertBefore(js, fs);    })('scarab-js-api');  </script>`
         )
       ).to.be.true;
 
@@ -192,7 +191,7 @@ describe('Webextend scripts', function() {
     });
   });
 
-  describe('disabled', function() {
+  describe('disabled', function () {
     it('should not be in the HTML if injectsnippet setting is disabled', async function() {
       await this.turnOffEverySetting(1);
       const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
