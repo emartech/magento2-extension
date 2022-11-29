@@ -489,13 +489,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      * @param int|null $customerId
      *
      * @return CustomerInterface|null
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function getCustomerData(int $customerId = null): ?CustomerInterface
     {
-        try {
-            return $this->customerRepository->getById($customerId);
-        } catch (\Exception $e) {
-            return null;
-        }
+        return $this->customerRepository->getById($customerId);
     }
 }
