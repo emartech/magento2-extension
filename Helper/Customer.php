@@ -701,18 +701,20 @@ class Customer extends AbstractHelper
                         $addressId,
                         $field
                     );
-                    $textValue = $this->getAddressAttributeValue($field, $value);
-                    $extraField = $this->extraFieldsFactory
-                        ->create()
-                        ->setKey($field)
-                        ->setValue($value)
-                        ->setTextValue($textValue);
+                    if ($value) {
+                        $textValue = $this->getAddressAttributeValue($field, $value);
+                        $extraField = $this->extraFieldsFactory
+                            ->create()
+                            ->setKey($field)
+                            ->setValue($value)
+                            ->setTextValue($textValue);
 
-                    if ($toArray) {
-                        $extraField = $extraField->getData();
+                        if ($toArray) {
+                            $extraField = $extraField->getData();
+                        }
+
+                        $extraFields[] = $extraField;
                     }
-
-                    $extraFields[] = $extraField;
                 }
             }
             $addressItem->setExtraFields($extraFields);
