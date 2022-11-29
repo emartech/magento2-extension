@@ -628,18 +628,20 @@ class Customer extends AbstractHelper
         if ($this->getCustomerExtraFields($websiteId)) {
             foreach ($this->getCustomerExtraFields($websiteId) as $field) {
                 $value = $this->handleWebsiteData($customer->getId(), $field);
-                $textValue = $this->getAttributeValue($field, $value);
-                $extraField = $this->extraFieldsFactory
-                    ->create()
-                    ->setKey($field)
-                    ->setValue($value)
-                    ->setTextValue($textValue);
+                if ($value) {
+                    $textValue = $this->getAttributeValue($field, $value);
+                    $extraField = $this->extraFieldsFactory
+                        ->create()
+                        ->setKey($field)
+                        ->setValue($value)
+                        ->setTextValue($textValue);
 
-                if ($toArray) {
-                    $extraField = $extraField->getData();
+                    if ($toArray) {
+                        $extraField = $extraField->getData();
+                    }
+
+                    $extraFields[] = $extraField;
                 }
-
-                $extraFields[] = $extraField;
             }
         }
         $customerItem->setExtraFields($extraFields);
