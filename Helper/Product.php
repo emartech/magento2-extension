@@ -564,7 +564,7 @@ class Product extends AbstractHelper
     protected function handleQty(int $productId): int
     {
         if (array_key_exists($productId, $this->stockData)) {
-            return $this->stockData[$productId]['qty'];
+            return (int)$this->stockData[$productId]['qty'];
         }
 
         return 0;

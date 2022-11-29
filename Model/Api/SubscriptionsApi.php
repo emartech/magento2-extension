@@ -430,12 +430,12 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      * ChangeSubscription
      *
      * @param SubscriptionInterface $subscription
-     * @param string                $type
+     * @param int                   $type
      *
      * @return bool
      * @throws Exception
      */
-    private function changeSubscription(SubscriptionInterface $subscription, string $type): bool
+    private function changeSubscription(SubscriptionInterface $subscription, int $type): bool
     {
         if ($subscription->getSubscriberEmail()) {
             $this
@@ -486,11 +486,11 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     /**
      * GetCustomerData
      *
-     * @param int $customerId
+     * @param int|null $customerId
      *
      * @return CustomerInterface|null
      */
-    private function getCustomerData(int $customerId): ?CustomerInterface
+    private function getCustomerData(int $customerId = null): ?CustomerInterface
     {
         try {
             return $this->customerRepository->getById($customerId);
