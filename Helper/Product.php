@@ -756,23 +756,25 @@ class Product extends AbstractHelper
                 $extraFields = [];
                 foreach ($this->getProductExtraFields() as $field) {
                     $value = $this->getStoreData($productId, $storeId, $field);
-                    $textValue = $this->getStoreAttributeValue(
-                        $storeId,
-                        $field,
-                        $value
-                    );
-                    $extraField =
-                        $this->extraFieldsFactory
-                            ->create()
-                            ->setKey($field)
-                            ->setValue($value)
-                            ->setTextValue($textValue);
+                    if ($value) {
+                        $textValue = $this->getStoreAttributeValue(
+                            $storeId,
+                            $field,
+                            $value
+                        );
+                        $extraField =
+                            $this->extraFieldsFactory
+                                ->create()
+                                ->setKey($field)
+                                ->setValue($value)
+                                ->setTextValue($textValue);
 
-                    if ($toArray) {
-                        $extraField = $extraField->getData();
+                        if ($toArray) {
+                            $extraField = $extraField->getData();
+                        }
+
+                        $extraFields[] = $extraField;
                     }
-
-                    $extraFields[] = $extraField;
                 }
                 $productStoreData->setExtraFields($extraFields);
             }
