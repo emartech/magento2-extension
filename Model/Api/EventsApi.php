@@ -11,6 +11,7 @@ use Emartech\Emarsys\Model\ResourceModel\Event\Collection;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
 use Magento\Framework\Data\Collection as DataCollection;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Webapi\Exception;
 
 class EventsApi implements EventsApiInterface
 {
@@ -176,7 +177,11 @@ class EventsApi implements EventsApiInterface
     private function validateSinceId(int $sinceId): void
     {
         if ($this->eventRepository->isSinceIdIsHigherThanAutoIncrement($sinceId)) {
-            throw new LocalizedException(__('sinceId is higher than auto-increment'));
+            throw new LocalizedException(
+                __('sinceId is higher than auto-increment'),
+                null,
+                Exception::HTTP_NOT_ACCEPTABLE
+            );
         }
     }
 }
