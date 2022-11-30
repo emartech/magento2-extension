@@ -36,11 +36,6 @@ pipeline {
     }
     stage('Run code style check') {
       parallel {
-        stage('Magento') {
-          steps {
-            // sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
-          }
-        }
         stage('ESLint') {
           steps {
             sh 'docker run --rm mage_node sh -c "npm run code-style"'
