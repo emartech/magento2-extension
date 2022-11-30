@@ -52,8 +52,8 @@ module.exports = (on, config) => {
       collectMarketingEvents = 'disabled',
       magentoSendEmail = 'disabled',
       injectSnippet = 'disabled',
-      merchantId = null,
-      webTrackingSnippetUrl = null
+      merchantId = '',
+      webTrackingSnippetUrl = ''
     }) => {
       const config = {
         websiteId,
@@ -79,7 +79,7 @@ module.exports = (on, config) => {
       const response = await magentoApi.execute('config', 'set', config);
 
       if (response.data.status !== 'ok') {
-        throw new Error('Magento config set failed!');
+        throw new Error('Magento config set failed! ' + response.data);
       }
       return response.data;
     },
