@@ -10,7 +10,6 @@ use Emartech\Emarsys\Model\EventRepository;
 use Emartech\Emarsys\Model\ResourceModel\Event\Collection;
 use Emartech\Emarsys\Model\ResourceModel\Event\CollectionFactory;
 use Magento\Framework\Data\Collection as DataCollection;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Webapi\Exception;
 
 class EventsApi implements EventsApiInterface
@@ -59,7 +58,7 @@ class EventsApi implements EventsApiInterface
      * @param int $pageSize
      *
      * @return EventsApiResponseInterface
-     * @throws LocalizedException
+     * @throws Exception
      */
     public function get(int $sinceId, int $pageSize): EventsApiResponseInterface
     {
@@ -172,14 +171,14 @@ class EventsApi implements EventsApiInterface
      *
      * @param int $sinceId
      *
-     * @throws LocalizedException
+     * @throws Exception
      */
     private function validateSinceId(int $sinceId): void
     {
         if ($this->eventRepository->isSinceIdIsHigherThanAutoIncrement($sinceId)) {
-            throw new LocalizedException(
+            throw new \Magento\Framework\Webapi\Exception(
                 __('sinceId is higher than auto-increment'),
-                null,
+                Exception::HTTP_NOT_ACCEPTABLE,
                 Exception::HTTP_NOT_ACCEPTABLE
             );
         }
