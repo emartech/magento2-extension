@@ -38,7 +38,7 @@ pipeline {
       parallel {
         stage('Magento') {
           steps {
-            sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
+            // sh 'VERSION=2.3.3ee sh dev/jenkins/run-code-style.sh'
           }
         }
         stage('ESLint') {
