@@ -54,7 +54,6 @@ pipeline {
         sh 'VERSION=2.3.3ce sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
-        sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.1ce-prefixed sh ./dev/jenkins/destroy.sh'
         sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
         sh 'sh ./dev/jenkins/killall.sh'
@@ -109,17 +108,6 @@ pipeline {
           }
         }
 
-        stage('Run unit tests on 2.2.6CE') {
-          steps {
-            sh 'VERSION=2.2.6ce sh dev/jenkins/run-unit.sh'
-          }
-        }
-        stage('Run e2e tests on 2.2.6CE') {
-          steps {
-            sh 'VERSION=2.2.6ce sh dev/jenkins/run-e2e.sh'
-          }
-        }
-
         stage('Run unit tests on 2.3.2EE') {
           steps {
             sh 'VERSION=2.3.2ee sh dev/jenkins/run-unit.sh'
@@ -140,7 +128,6 @@ pipeline {
       sh 'VERSION=2.3.3ce sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.3ee sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.2ee sh ./dev/jenkins/destroy.sh'
-      sh 'VERSION=2.2.6ce sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.1ce-prefixed sh ./dev/jenkins/destroy.sh'
       sh 'VERSION=2.3.5ce sh ./dev/jenkins/destroy.sh'
       sh 'sh ./dev/jenkins/killall.sh'
