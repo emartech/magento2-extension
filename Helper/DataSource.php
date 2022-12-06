@@ -48,8 +48,8 @@ class DataSource
             $this->optionValues[$storeId] = [];
             $this->startEmulation($storeId)
                  ->getAllOptionsByStore($sourceModels, $storeId);
+            $this->stopEmulation();
         }
-        $this->stopEmulation();
 
         return $this->optionValues;
     }
