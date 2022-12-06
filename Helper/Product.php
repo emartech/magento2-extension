@@ -969,7 +969,7 @@ class Product extends AbstractHelper
     protected function getProductUrlSuffix(int $storeId): string
     {
         if (!isset($this->productUrlSuffix[$storeId])) {
-            $this->productUrlSuffix[$storeId] = $this->scopeConfig->getValue(
+            $this->productUrlSuffix[$storeId] = (string) $this->scopeConfig->getValue(
                 ProductUrlPathGenerator::XML_PATH_PRODUCT_URL_SUFFIX,
                 ScopeInterface::SCOPE_STORE,
                 $storeId
