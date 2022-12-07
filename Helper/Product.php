@@ -738,9 +738,9 @@ class Product extends AbstractHelper
                     ->create()
                     ->setStoreId($storeId)
                     ->setStatus($status)
-                    ->setDescription($this->getStoreData($productId, $storeId, 'description'))
+                    ->setDescription((string) $this->getStoreData($productId, $storeId, 'description'))
                     ->setLink($this->handleLink($storeObject, $productId))
-                    ->setName($this->getStoreData($productId, $storeId, 'name'))
+                    ->setName((string) $this->getStoreData($productId, $storeId, 'name'))
                     ->setPrice($price)
                     ->setDisplayPrice($displayPrice)
                     ->setOriginalPrice($originalPrice)
@@ -969,7 +969,7 @@ class Product extends AbstractHelper
     protected function getProductUrlSuffix(int $storeId): string
     {
         if (!isset($this->productUrlSuffix[$storeId])) {
-            $this->productUrlSuffix[$storeId] = $this->scopeConfig->getValue(
+            $this->productUrlSuffix[$storeId] = (string) $this->scopeConfig->getValue(
                 ProductUrlPathGenerator::XML_PATH_PRODUCT_URL_SUFFIX,
                 ScopeInterface::SCOPE_STORE,
                 $storeId
