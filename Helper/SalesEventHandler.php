@@ -59,6 +59,9 @@ class SalesEventHandler extends BaseEventHandler
     public function store(Order $order): bool
     {
         $storeId = $order->getStoreId();
+        if (!$storeId) {
+            $storeId = $this->storeManager->getStore()->getId();
+        }
 
         if (!$this->isEnabledForStore($storeId)) {
             return false;
