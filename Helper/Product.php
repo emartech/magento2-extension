@@ -737,11 +737,11 @@ class Product extends AbstractHelper
                 $this->productStoreDataFactory
                     ->create()
                     ->setStoreId($storeId)
-                    ->setStatus($status)
+                    ->setStatus((int)$status)
                     ->setDescription((string) $this->getStoreData($productId, $storeId, 'description'))
                     ->setLink($this->handleLink($storeObject, $productId))
                     ->setName((string) $this->getStoreData($productId, $storeId, 'name'))
-                    ->setPrice($price)
+                    ->setPrice((float)$price)
                     ->setDisplayPrice($displayPrice)
                     ->setOriginalPrice($originalPrice)
                     ->setOriginalDisplayPrice($originalDisplayPrice)
@@ -908,7 +908,7 @@ class Product extends AbstractHelper
      */
     protected function getCurrencyCode(Store $store): string
     {
-        if ($store->getId() === '0') {
+        if ($store->getId() == 0) {
             return $store->getBaseCurrencyCode();
         }
 
