@@ -35,10 +35,14 @@ class RpTokenHelper
      */
     public function decryptRpToken(string $rpToken): string
     {
-        if (str_contains($rpToken, ':')) {
-            $rpToken = (string)$this->encryptor->decrypt($rpToken);
+        $returnToken = $rpToken;
+        if (str_contains($returnToken, ':')) {
+            $returnToken = (string)$this->encryptor->decrypt($returnToken);
+            if (!mb_check_encoding($returnToken, 'ASCII')) {
+                $returnToken = $rpToken;
+            }
         }
 
-        return $rpToken;
+        return $returnToken;
     }
 }
