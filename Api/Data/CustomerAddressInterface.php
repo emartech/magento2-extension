@@ -200,7 +200,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setPostcode(string $postCode): CustomerAddressInterface;
+    public function setPostcode(string $postCode = null): CustomerAddressInterface;
 
     /**
      * GetTelephone

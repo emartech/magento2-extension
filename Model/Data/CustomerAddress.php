@@ -253,7 +253,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setPostcode(string $postCode): CustomerAddressInterface
+    public function setPostcode(string $postCode = null): CustomerAddressInterface
     {
         $this->setData(self::POSTCODE_KEY, $postCode);
 
