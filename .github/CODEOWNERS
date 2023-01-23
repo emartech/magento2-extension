@@ -1,4 +1,4 @@
 # Each line is a file pattern followed by one or more owners.
 # Order is important. The last matching pattern has the most precedence.
 
-*.js   oliver.weisenburger@sap.com   nikolay.dimitrov@sap.com   ivan.froehlich@sap.com   @ptomi
+*   oliver.weisenburger@sap.com   nikolay.dimitrov@sap.com   ivan.froehlich@sap.com   @ptomi
