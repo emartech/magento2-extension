@@ -81,11 +81,11 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
     /**
      * GetPostcode
      *
-     * @return string
+     * @return string|null
      */
-    public function getPostcode(): string
+    public function getPostcode(): ?string
     {
-        return (string) $this->getData(self::POSTCODE_KEY);
+        return $this->getData(self::POSTCODE_KEY);
     }
 
     /**
@@ -253,7 +253,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setPostcode(string $postCode): CustomerAddressInterface
+    public function setPostcode(string $postCode = null): CustomerAddressInterface
     {
         $this->setData(self::POSTCODE_KEY, $postCode);
 

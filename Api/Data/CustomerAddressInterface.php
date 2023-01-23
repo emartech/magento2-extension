@@ -189,18 +189,18 @@ interface CustomerAddressInterface
     /**
      * GetPostcode
      *
-     * @return string
+     * @return string|null
      */
-    public function getPostcode(): string;
+    public function getPostcode(): ?string;
 
     /**
      * SetPostcode
      *
-     * @param string $postCode
+     * @param string|null $postCode
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setPostcode(string $postCode): CustomerAddressInterface;
+    public function setPostcode(string $postCode = null): CustomerAddressInterface;
 
     /**
      * GetTelephone
