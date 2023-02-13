@@ -10,61 +10,61 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * GetMagentoVersion
      *
-     * @return string
+     * @return string|null
      */
-    public function getMagentoVersion(): string
+    public function getMagentoVersion(): ?string
     {
-        return (string) $this->getData(self::MAGENTO_VERSION_KEY);
+        return $this->getData(self::MAGENTO_VERSION_KEY);
     }
 
     /**
      * GetModuleVersion
      *
-     * @return string
+     * @return string|null
      */
-    public function getModuleVersion(): string
+    public function getModuleVersion(): ?string
     {
-        return (string) $this->getData(self::MODULE_VERSION_KEY);
+        return $this->getData(self::MODULE_VERSION_KEY);
     }
 
     /**
      * GetPhpVersion
      *
-     * @return string
+     * @return string|null
      */
-    public function getPhpVersion(): string
+    public function getPhpVersion(): ?string
     {
-        return (string) $this->getData(self::PHP_VERSION_KEY);
+        return $this->getData(self::PHP_VERSION_KEY);
     }
 
     /**
      * GetMagentoEdition
      *
-     * @return string
+     * @return string|null
      */
-    public function getMagentoEdition(): string
+    public function getMagentoEdition(): ?string
     {
-        return (string) $this->getData(self::MAGENTO_EDITION_KEY);
+        return $this->getData(self::MAGENTO_EDITION_KEY);
     }
 
     /**
      * GetIsWebsiteScope
      *
-     * @return bool
+     * @return bool|null
      */
-    public function getIsWebsiteScope(): bool
+    public function getIsWebsiteScope(): ?bool
     {
-        return (bool) $this->getData(self::IS_WEBSITE_SCOPE_KEY);
+        return $this->getData(self::IS_WEBSITE_SCOPE_KEY);
     }
 
     /**
      * SetMagentoVersion
      *
-     * @param string $magentoVersion
+     * @param string|null $magentoVersion
      *
      * @return SystemApiResponseInterface
      */
-    public function setMagentoVersion(string $magentoVersion): SystemApiResponseInterface
+    public function setMagentoVersion(string $magentoVersion = null): SystemApiResponseInterface
     {
         $this->setData(self::MAGENTO_VERSION_KEY, $magentoVersion);
 
@@ -74,11 +74,11 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * SetModuleVersion
      *
-     * @param string $moduleVersion
+     * @param string|null $moduleVersion
      *
      * @return SystemApiResponseInterface
      */
-    public function setModuleVersion(string $moduleVersion): SystemApiResponseInterface
+    public function setModuleVersion(string $moduleVersion = null): SystemApiResponseInterface
     {
         $this->setData(self::MODULE_VERSION_KEY, $moduleVersion);
 
@@ -88,11 +88,11 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * SetPhpVersion
      *
-     * @param string $phpVersion
+     * @param string|null $phpVersion
      *
      * @return SystemApiResponseInterface
      */
-    public function setPhpVersion(string $phpVersion): SystemApiResponseInterface
+    public function setPhpVersion(string $phpVersion = null): SystemApiResponseInterface
     {
         $this->setData(self::PHP_VERSION_KEY, $phpVersion);
 
@@ -102,11 +102,11 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * SetMagentoEdition
      *
-     * @param string $magentoEdition
+     * @param string|null $magentoEdition
      *
      * @return SystemApiResponseInterface
      */
-    public function setMagentoEdition(string $magentoEdition): SystemApiResponseInterface
+    public function setMagentoEdition(string $magentoEdition = null): SystemApiResponseInterface
     {
         $this->setData(self::MAGENTO_EDITION_KEY, $magentoEdition);
 
@@ -116,11 +116,11 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
     /**
      * SetIsWebsiteScope
      *
-     * @param bool $isWebsiteScope
+     * @param bool|null $isWebsiteScope
      *
      * @return SystemApiResponseInterface
      */
-    public function setIsWebsiteScope(bool $isWebsiteScope): SystemApiResponseInterface
+    public function setIsWebsiteScope(bool $isWebsiteScope = null): SystemApiResponseInterface
     {
         $this->setData(self::IS_WEBSITE_SCOPE_KEY, $isWebsiteScope);
 

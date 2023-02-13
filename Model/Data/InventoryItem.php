@@ -11,19 +11,19 @@ class InventoryItem extends DataObject implements InventoryItemInterface
     /**
      * GetSku
      *
-     * @return string
+     * @return string|null
      */
-    public function getSku(): string
+    public function getSku(): ?string
     {
-        return (string) $this->getData(self::SKU_KEY);
+        return $this->getData(self::SKU_KEY);
     }
 
     /**
      * GetInventoryItems
      *
-     * @return InventoryItemItemInterface[]
+     * @return InventoryItemItemInterface[]|null
      */
-    public function getInventoryItems(): array
+    public function getInventoryItems(): ?array
     {
         return $this->getData(self::INVENTORY_ITEMS_KEY);
     }
@@ -31,11 +31,11 @@ class InventoryItem extends DataObject implements InventoryItemInterface
     /**
      * SetSku
      *
-     * @param string $sku
+     * @param string|null $sku
      *
      * @return InventoryItemInterface
      */
-    public function setSku(string $sku): InventoryItemInterface
+    public function setSku(string $sku = null): InventoryItemInterface
     {
         $this->setData(self::SKU_KEY, $sku);
 
@@ -45,11 +45,11 @@ class InventoryItem extends DataObject implements InventoryItemInterface
     /**
      * SetInventoryItems
      *
-     * @param InventoryItemItemInterface[] $inventoryItems
+     * @param InventoryItemItemInterface[]|null $inventoryItems
      *
      * @return InventoryItemInterface
      */
-    public function setInventoryItems(array $inventoryItems): InventoryItemInterface
+    public function setInventoryItems(array $inventoryItems = null): InventoryItemInterface
     {
         $this->setData(self::INVENTORY_ITEMS_KEY, $inventoryItems);
 

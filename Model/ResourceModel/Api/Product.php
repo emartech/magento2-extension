@@ -177,10 +177,14 @@ class Product extends ProductResourceModel
         $this->dataSourceHelper = $dataSourceHelper;
 
         if (class_exists(PriceTableResolver::class)) {
-            $this->priceTableResolver = ObjectManager::getInstance()->get(PriceTableResolver::class);// @codingStandardsIgnoreLine
+            // @codingStandardsIgnoreStart
+            $this->priceTableResolver = ObjectManager::getInstance()->get(PriceTableResolver::class);
+            // @codingStandardsIgnoreEnd
         }
         if (class_exists(Dimension::class)) {
-            $this->dimensionFactory = ObjectManager::getInstance()->get(DimensionFactory::class);// @codingStandardsIgnoreLine
+            // @codingStandardsIgnoreStart
+            $this->dimensionFactory = ObjectManager::getInstance()->get(DimensionFactory::class);
+            // @codingStandardsIgnoreEnd
         }
 
         parent::__construct(

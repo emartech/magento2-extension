@@ -44,89 +44,89 @@ interface CustomerInterface
     /**
      * GetEmail
      *
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string;
+    public function getEmail(): ?string;
 
     /**
      * SetEmail
      *
-     * @param string $email
+     * @param string|null $email
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setEmail(string $email): CustomerInterface;
+    public function setEmail(string $email = null): CustomerInterface;
 
     /**
      * GetWebsiteId
      *
-     * @return int
+     * @return int|null
      */
-    public function getWebsiteId(): int;
+    public function getWebsiteId(): ?int;
 
     /**
      * SetWebsiteId
      *
-     * @param int $websiteId
+     * @param int|null $websiteId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setWebsiteId(int $websiteId): CustomerInterface;
+    public function setWebsiteId(int $websiteId = null): CustomerInterface;
 
     /**
      * GetGroupId
      *
-     * @return int
+     * @return int|null
      */
-    public function getGroupId(): int;
+    public function getGroupId(): ?int;
 
     /**
      * SetGroupId
      *
-     * @param int $groupId
+     * @param int|null $groupId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setGroupId(int $groupId): CustomerInterface;
+    public function setGroupId(int $groupId = null): CustomerInterface;
 
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int;
+    public function getStoreId(): ?int;
 
     /**
      * GetExtraFields
      *
-     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]|null
      */
-    public function getExtraFields(): array;
+    public function getExtraFields(): ?array;
 
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setStoreId(int $storeId): CustomerInterface;
+    public function setStoreId(int $storeId = null): CustomerInterface;
 
     /**
      * GetIsActive
      *
-     * @return int
+     * @return int|null
      */
-    public function getIsActive(): int;
+    public function getIsActive(): ?int;
 
     /**
      * SetIsActive
      *
-     * @param int $isActive
+     * @param int|null $isActive
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setIsActive(int $isActive): CustomerInterface;
+    public function setIsActive(int $isActive = null): CustomerInterface;
 
     /**
      * GetPrefix
@@ -147,18 +147,18 @@ interface CustomerInterface
     /**
      * GetFirstname
      *
-     * @return string
+     * @return string|null
      */
-    public function getFirstname(): string;
+    public function getFirstname(): ?string;
 
     /**
      * SetFirstname
      *
-     * @param string $firstName
+     * @param string|null $firstName
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setFirstname(string $firstName): CustomerInterface;
+    public function setFirstname(string $firstName = null): CustomerInterface;
 
     /**
      * GetMiddlename
@@ -179,18 +179,18 @@ interface CustomerInterface
     /**
      * GetLastname
      *
-     * @return string
+     * @return string|null
      */
-    public function getLastname(): string;
+    public function getLastname(): ?string;
 
     /**
      * SetLastname
      *
-     * @param string $lastName
+     * @param string|null $lastName
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setLastname(string $lastName): CustomerInterface;
+    public function setLastname(string $lastName = null): CustomerInterface;
 
     /**
      * GetSuffix
@@ -291,57 +291,57 @@ interface CustomerInterface
     /**
      * GetAcceptsMarketing
      *
-     * @return int
+     * @return int|null
      */
-    public function getAcceptsMarketing(): int;
+    public function getAcceptsMarketing(): ?int;
 
     /**
      * SetAcceptsMarketing
      *
-     * @param int $acceptsMarketing
+     * @param int|null $acceptsMarketing
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setAcceptsMarketing(int $acceptsMarketing): CustomerInterface;
+    public function setAcceptsMarketing(int $acceptsMarketing = null): CustomerInterface;
 
     /**
      * GetCreatedAt
      *
-     * @return string
+     * @return string|null
      */
-    public function getCreatedAt(): string;
+    public function getCreatedAt(): ?string;
 
     /**
      * SetCreatedAt
      *
-     * @param string $createdAt
+     * @param string|null $createdAt
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setCreatedAt(string $createdAt): CustomerInterface;
+    public function setCreatedAt(string $createdAt = null): CustomerInterface;
 
     /**
      * GetUpdatedAt
      *
-     * @return string
+     * @return string|null
      */
-    public function getUpdatedAt(): string;
+    public function getUpdatedAt(): ?string;
 
     /**
      * SetUpdatedAt
      *
-     * @param string $updatedAt
+     * @param string|null $updatedAt
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setUpdatedAt(string $updatedAt): CustomerInterface;
+    public function setUpdatedAt(string $updatedAt = null): CustomerInterface;
 
     /**
      * SetExtraFields
      *
-     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
+     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]|null $extraFields
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setExtraFields(array $extraFields): CustomerInterface;
+    public function setExtraFields(array $extraFields = null): CustomerInterface;
 }

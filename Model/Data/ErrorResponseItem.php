@@ -15,11 +15,11 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
     /**
      * GetEmail
      *
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
-        return (string) $this->getData(self::EMAIL_KEY);
+        return $this->getData(self::EMAIL_KEY);
     }
 
     /**
@@ -35,21 +35,21 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
     /**
      * GetMessage
      *
-     * @return string
+     * @return string|null
      */
-    public function getMessage(): string
+    public function getMessage(): ?string
     {
-        return (string) $this->getData(self::MESSAGE_KEY);
+        return $this->getData(self::MESSAGE_KEY);
     }
 
     /**
      * SetEmail
      *
-     * @param string $email
+     * @param string|null $email
      *
      * @return ErrorResponseItemInterface
      */
-    public function setEmail(string $email): ErrorResponseItemInterface
+    public function setEmail(string $email = null): ErrorResponseItemInterface
     {
         $this->setData(self::EMAIL_KEY, $email);
 
@@ -73,11 +73,11 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
     /**
      * SetMessage
      *
-     * @param string $message
+     * @param string|null $message
      *
      * @return ErrorResponseItemInterface
      */
-    public function setMessage(string $message): ErrorResponseItemInterface
+    public function setMessage(string $message = null): ErrorResponseItemInterface
     {
         $this->setData(self::MESSAGE_KEY, $message);
 

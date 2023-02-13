@@ -15,31 +15,31 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
     /**
      * GetQuantity
      *
-     * @return float
+     * @return float|null
      */
-    public function getQuantity(): float
+    public function getQuantity(): ?float
     {
-        return (float) $this->getData(self::QUANTITY_KEY);
+        return $this->getData(self::QUANTITY_KEY);
     }
 
     /**
      * GetSourceCode
      *
-     * @return string
+     * @return string|null
      */
-    public function getSourceCode(): string
+    public function getSourceCode(): ?string
     {
-        return (string) $this->getData(self::SOURCE_CODE_KEY);
+        return $this->getData(self::SOURCE_CODE_KEY);
     }
 
     /**
      * SetQuantity
      *
-     * @param float $quantity
+     * @param float|null $quantity
      *
      * @return InventoryItemItemInterface
      */
-    public function setQuantity(float $quantity): InventoryItemItemInterface
+    public function setQuantity(float $quantity = null): InventoryItemItemInterface
     {
         $this->setData(self::QUANTITY_KEY, $quantity);
 
@@ -49,11 +49,11 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
     /**
      * SetSourceCode
      *
-     * @param string $sourceCode
+     * @param string|null $sourceCode
      *
      * @return InventoryItemItemInterface
      */
-    public function setSourceCode(string $sourceCode): InventoryItemItemInterface
+    public function setSourceCode(string $sourceCode = null): InventoryItemItemInterface
     {
         $this->setData(self::SOURCE_CODE_KEY, $sourceCode);
 
@@ -63,9 +63,9 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
     /**
      * GetIsInStock
      *
-     * @return bool
+     * @return bool|null
      */
-    public function getIsInStock(): bool
+    public function getIsInStock(): ?bool
     {
         return (bool) $this->getData(self::IS_IN_STOCK_KEY);
     }
@@ -73,11 +73,11 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
     /**
      * SetIsInStock
      *
-     * @param bool $isInStock
+     * @param bool|null $isInStock
      *
      * @return InventoryItemItemInterface
      */
-    public function setIsInStock(bool $isInStock): InventoryItemItemInterface
+    public function setIsInStock(bool $isInStock = null): InventoryItemItemInterface
     {
         $this->setData(self::IS_IN_STOCK_KEY, $isInStock);
 

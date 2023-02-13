@@ -16,48 +16,48 @@ interface InventoryItemItemInterface
     /**
      * GetSourceCode
      *
-     * @return string
+     * @return string|null
      */
-    public function getSourceCode(): string;
+    public function getSourceCode(): ?string;
 
     /**
      * SetSourceCode
      *
-     * @param string $sourceCode
+     * @param string|null $sourceCode
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setSourceCode(string $sourceCode): InventoryItemItemInterface;
+    public function setSourceCode(string $sourceCode = null): InventoryItemItemInterface;
 
     /**
      * GetQuantity
      *
-     * @return float
+     * @return float|null
      */
-    public function getQuantity(): float;
+    public function getQuantity(): ?float;
 
     /**
      * SetQuantity
      *
-     * @param float $quantity
+     * @param float|null $quantity
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setQuantity(float $quantity): InventoryItemItemInterface;
+    public function setQuantity(float $quantity = null): InventoryItemItemInterface;
 
     /**
      * GetIsInStock
      *
-     * @return bool
+     * @return bool|null
      */
-    public function getIsInStock(): bool;
+    public function getIsInStock(): ?bool;
 
     /**
      * SetIsInStock
      *
-     * @param bool $isInStock
+     * @param bool|null $isInStock
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setIsInStock(bool $isInStock): InventoryItemItemInterface;
+    public function setIsInStock(bool $isInStock = null): InventoryItemItemInterface;
 }

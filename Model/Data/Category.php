@@ -12,9 +12,9 @@ class Category extends DataObject implements CategoryInterface
     /**
      * GetStoreData
      *
-     * @return CategoryStoreDataInterface[]
+     * @return CategoryStoreDataInterface[]|null
      */
-    public function getStoreData(): array
+    public function getStoreData(): ?array
     {
         return $this->getData(self::STORE_DATA_KEY);
     }
@@ -22,11 +22,11 @@ class Category extends DataObject implements CategoryInterface
     /**
      * GetChildrenCount
      *
-     * @return int
+     * @return int|null
      */
-    public function getChildrenCount(): int
+    public function getChildrenCount(): ?int
     {
-        return (int) $this->getData(self::CHILDREN_COUNT_KEY);
+        return $this->getData(self::CHILDREN_COUNT_KEY);
     }
 
     /**
@@ -42,21 +42,21 @@ class Category extends DataObject implements CategoryInterface
     /**
      * GetPath
      *
-     * @retrn string
+     * @retrn string|null
      */
-    public function getPath(): string
+    public function getPath(): ?string
     {
-        return (string) $this->getData(self::PATH_KEY);
+        return $this->getData(self::PATH_KEY);
     }
 
     /**
      * SetChildrenCount
      *
-     * @param int $childrenCount
+     * @param int|null $childrenCount
      *
      * @return CategoryInterface
      */
-    public function setChildrenCount(int $childrenCount): CategoryInterface
+    public function setChildrenCount(int $childrenCount = null): CategoryInterface
     {
         $this->setData(self::CHILDREN_COUNT_KEY, $childrenCount);
 
@@ -80,11 +80,11 @@ class Category extends DataObject implements CategoryInterface
     /**
      * SetPath
      *
-     * @param string $path
+     * @param string|null $path
      *
      * @return CategoryInterface
      */
-    public function setPath(string $path): CategoryInterface
+    public function setPath(string $path = null): CategoryInterface
     {
         $this->setData(self::PATH_KEY, $path);
 
@@ -94,11 +94,11 @@ class Category extends DataObject implements CategoryInterface
     /**
      * SetStoreData
      *
-     * @param CategoryStoreDataInterface[] $storeData
+     * @param CategoryStoreDataInterface[]|null $storeData
      *
      * @return CategoryInterface
      */
-    public function setStoreData(array $storeData): CategoryInterface
+    public function setStoreData(array $storeData = null): CategoryInterface
     {
         $this->setData(self::STORE_DATA_KEY, $storeData);
 

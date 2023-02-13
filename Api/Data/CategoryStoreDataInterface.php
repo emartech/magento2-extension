@@ -13,80 +13,80 @@ interface CategoryStoreDataInterface
     /**
      * GetName
      *
-     * @return string
+     * @return string|null
      */
-    public function getName(): string;
+    public function getName(): ?string;
 
     /**
      * GetImage
      *
-     * @return string
+     * @return string|null
      */
-    public function getImage(): string;
+    public function getImage(): ?string;
 
     /**
      * GetDescription
      *
-     * @return string
+     * @return string|null
      */
-    public function getDescription(): string;
+    public function getDescription(): ?string;
 
     /**
      * GetIsActive
      *
-     * @return int
+     * @return int|null
      */
-    public function getIsActive(): int;
+    public function getIsActive(): ?int;
 
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int;
+    public function getStoreId(): ?int;
 
     /**
      * SetName
      *
-     * @param string $name
+     * @param string|null $name
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setName(string $name): CategoryStoreDataInterface;
+    public function setName(string $name = null): CategoryStoreDataInterface;
 
     /**
      * SetImage
      *
-     * @param string $image
+     * @param string|null $image
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setImage(string $image): CategoryStoreDataInterface;
+    public function setImage(string $image = null): CategoryStoreDataInterface;
 
     /**
      * SetDescription
      *
-     * @param string $description
+     * @param string|null $description
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setDescription(string $description): CategoryStoreDataInterface;
+    public function setDescription(string $description = null): CategoryStoreDataInterface;
 
     /**
      * SetIsActive
      *
-     * @param int $isActive
+     * @param int|null $isActive
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setIsActive(int $isActive): CategoryStoreDataInterface;
+    public function setIsActive(int $isActive = null): CategoryStoreDataInterface;
 
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setStoreId(int $storeId): CategoryStoreDataInterface;
+    public function setStoreId(int $storeId = null): CategoryStoreDataInterface;
 }

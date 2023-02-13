@@ -25,30 +25,30 @@ interface AttributeInterface
     /**
      * GetName
      *
-     * @return string
+     * @return string|null
      */
-    public function getName(): string;
+    public function getName(): ?string;
 
     /**
      * GetIsSystem
      *
-     * @return bool
+     * @return bool|null
      */
-    public function getIsSystem(): bool;
+    public function getIsSystem(): ?bool;
 
     /**
      * GetIsVisible
      *
-     * @return bool
+     * @return bool|null
      */
-    public function getIsVisible(): bool;
+    public function getIsVisible(): ?bool;
 
     /**
      * GetIsVisibleOnFront
      *
-     * @return bool
+     * @return bool|null
      */
-    public function getIsVisibleOnFront(): bool;
+    public function getIsVisibleOnFront(): ?bool;
 
     /**
      * SetCode
@@ -62,36 +62,36 @@ interface AttributeInterface
     /**
      * SetName
      *
-     * @param string $name
+     * @param string|null $name
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setName(string $name): AttributeInterface;
+    public function setName(string $name = null): AttributeInterface;
 
     /**
      * SetIsSystem
      *
-     * @param bool $isSystem
+     * @param bool|null $isSystem
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsSystem(bool $isSystem): AttributeInterface;
+    public function setIsSystem(bool $isSystem = null): AttributeInterface;
 
     /**
      * SetIsVisible
      *
-     * @param bool $isVisible
+     * @param bool|null $isVisible
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsVisible(bool $isVisible): AttributeInterface;
+    public function setIsVisible(bool $isVisible = null): AttributeInterface;
 
     /**
      * SetIsVisibleOnFront
      *
-     * @param bool $isVisibleOnFront
+     * @param bool|null $isVisibleOnFront
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsVisibleOnFront(bool $isVisibleOnFront): AttributeInterface;
+    public function setIsVisibleOnFront(bool $isVisibleOnFront = null): AttributeInterface;
 }

@@ -16,16 +16,16 @@ interface ExtraFieldsInterface
     /**
      * GetKey
      *
-     * @return string
+     * @return string|null
      */
-    public function getKey(): string;
+    public function getKey(): ?string;
 
     /**
      * GetValue
      *
-     * @return string
+     * @return string|null
      */
-    public function getValue(): string;
+    public function getValue(): ?string;
 
     /**
      * GetTextValue
@@ -37,20 +37,20 @@ interface ExtraFieldsInterface
     /**
      * SetKey
      *
-     * @param string $key
+     * @param string|null $key
      *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setKey(string $key): ExtraFieldsInterface;
+    public function setKey(string $key = null): ExtraFieldsInterface;
 
     /**
      * SetValue
      *
-     * @param string $value
+     * @param string|null $value
      *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setValue(string $value): ExtraFieldsInterface;
+    public function setValue(string $value = null): ExtraFieldsInterface;
 
     /**
      * SetTextValue

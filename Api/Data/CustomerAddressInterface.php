@@ -38,18 +38,18 @@ interface CustomerAddressInterface
     /**
      * GetFirstname
      *
-     * @return string
+     * @return string|null
      */
-    public function getFirstname(): string;
+    public function getFirstname(): ?string;
 
     /**
      * SetFirstname
      *
-     * @param string $firstName
+     * @param string|null $firstName
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setFirstname(string $firstName): CustomerAddressInterface;
+    public function setFirstname(string $firstName = null): CustomerAddressInterface;
 
     /**
      * GetMiddlename
@@ -70,18 +70,18 @@ interface CustomerAddressInterface
     /**
      * GetLastname
      *
-     * @return string
+     * @return string|null
      */
-    public function getLastname(): string;
+    public function getLastname(): ?string;
 
     /**
      * SetLastname
      *
-     * @param string $lastName
+     * @param string|null $lastName
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setLastname(string $lastName): CustomerAddressInterface;
+    public function setLastname(string $lastName = null): CustomerAddressInterface;
 
     /**
      * GetSuffix
@@ -93,9 +93,9 @@ interface CustomerAddressInterface
     /**
      * GetExtraFields
      *
-     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]
+     * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]|null
      */
-    public function getExtraFields(): array;
+    public function getExtraFields(): ?array;
 
     /**
      * SetSuffix
@@ -125,50 +125,50 @@ interface CustomerAddressInterface
     /**
      * GetStreet
      *
-     * @return string
+     * @return string|null
      */
-    public function getStreet(): string;
+    public function getStreet(): ?string;
 
     /**
      * SetStreet
      *
-     * @param string $street
+     * @param string|null $street
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setStreet(string $street): CustomerAddressInterface;
+    public function setStreet(string $street = null): CustomerAddressInterface;
 
     /**
      * GetCity
      *
-     * @return string
+     * @return string|null
      */
-    public function getCity(): string;
+    public function getCity(): ?string;
 
     /**
      * SetCity
      *
-     * @param string $city
+     * @param string|null $city
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setCity(string $city): CustomerAddressInterface;
+    public function setCity(string $city = null): CustomerAddressInterface;
 
     /**
      * GetCountryId
      *
-     * @return string
+     * @return string|null
      */
-    public function getCountryId(): string;
+    public function getCountryId(): ?string;
 
     /**
      * SetCountryId
      *
-     * @param string $countryId
+     * @param string|null $countryId
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setCountryId(string $countryId): CustomerAddressInterface;
+    public function setCountryId(string $countryId = null): CustomerAddressInterface;
 
     /**
      * GetRegion
@@ -205,18 +205,18 @@ interface CustomerAddressInterface
     /**
      * GetTelephone
      *
-     * @return string
+     * @return string|null
      */
-    public function getTelephone(): string;
+    public function getTelephone(): ?string;
 
     /**
      * SetTelephone
      *
-     * @param string $telephone
+     * @param string|null $telephone
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setTelephone(string $telephone): CustomerAddressInterface;
+    public function setTelephone(string $telephone = null): CustomerAddressInterface;
 
     /**
      * GetFax
@@ -237,9 +237,9 @@ interface CustomerAddressInterface
     /**
      * SetExtraFields
      *
-     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[] $extraFields
+     * @param \Emartech\Emarsys\Api\Data\ExtraFieldsInterface[]|null $extraFields
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setExtraFields(array $extraFields): CustomerAddressInterface;
+    public function setExtraFields(array $extraFields = null): CustomerAddressInterface;
 }
