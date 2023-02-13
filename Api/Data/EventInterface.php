@@ -22,44 +22,44 @@ interface EventInterface
     /**
      * GetEventType
      *
-     * @return string
+     * @return string|null
      */
-    public function getEventType(): string;
+    public function getEventType(): ?string;
 
     /**
      * GetEventData
      *
-     * @return string
+     * @return string|null
      */
-    public function getEventData(): string;
+    public function getEventData(): ?string;
 
     /**
      * GetCreatedAt
      *
-     * @return string
+     * @return string|null
      */
-    public function getCreatedAt(): string;
+    public function getCreatedAt(): ?string;
 
     /**
      * GetWebsiteId
      *
-     * @return int
+     * @return int|null
      */
-    public function getWebsiteId(): int;
+    public function getWebsiteId(): ?int;
 
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int;
+    public function getStoreId(): ?int;
 
     /**
      * GetEntityId
      *
-     * @return int
+     * @return int|null
      */
-    public function getEntityId(): int;
+    public function getEntityId(): ?int;
 
     /**
      * SetEventId
@@ -73,54 +73,54 @@ interface EventInterface
     /**
      * SetEventType
      *
-     * @param string $eventType
+     * @param string|null $eventType
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEventType(string $eventType): EventInterface;
+    public function setEventType(string $eventType = null): EventInterface;
 
     /**
      * SetEventData
      *
-     * @param string $eventData
+     * @param string|null $eventData
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEventData(string $eventData): EventInterface;
+    public function setEventData(string $eventData = null): EventInterface;
 
     /**
      * SetCreatedAt
      *
-     * @param string $createdAt
+     * @param string|null $createdAt
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setCreatedAt(string $createdAt): EventInterface;
+    public function setCreatedAt(string $createdAt = null): EventInterface;
 
     /**
      * SetWebsiteId
      *
-     * @param int $websiteId
+     * @param int|null $websiteId
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setWebsiteId(int $websiteId): EventInterface;
+    public function setWebsiteId(int $websiteId = null): EventInterface;
 
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setStoreId(int $storeId): EventInterface;
+    public function setStoreId(int $storeId = null): EventInterface;
 
     /**
      * SetEntityId
      *
-     * @param int $entityId
+     * @param int|null $entityId
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEntityId(int $entityId): EventInterface;
+    public function setEntityId(int $entityId = null): EventInterface;
 }

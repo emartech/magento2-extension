@@ -10,32 +10,32 @@ interface StoreConfigInterface
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int;
+    public function getStoreId(): ?int;
 
     /**
      * GetSlug
      *
-     * @return string
+     * @return string|null
      */
-    public function getSlug(): string;
+    public function getSlug(): ?string;
 
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface
      */
-    public function setStoreId(int $storeId): StoreConfigInterface;
+    public function setStoreId(int $storeId = null): StoreConfigInterface;
 
     /**
      * SetSlug
      *
-     * @param string $slug
+     * @param string|null $slug
      *
      * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface
      */
-    public function setSlug(string $slug): StoreConfigInterface;
+    public function setSlug(string $slug = null): StoreConfigInterface;
 }

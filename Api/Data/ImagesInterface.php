@@ -11,48 +11,48 @@ interface ImagesInterface
     /**
      * GetImage
      *
-     * @return string
+     * @return string|null
      */
-    public function getImage(): string;
+    public function getImage(): ?string;
 
     /**
      * GetSmallImage
      *
-     * @return string
+     * @return string|null
      */
-    public function getSmallImage(): string;
+    public function getSmallImage(): ?string;
 
     /**
      * GetThumbnail
      *
-     * @return string
+     * @return string|null
      */
-    public function getThumbnail(): string;
+    public function getThumbnail(): ?string;
 
     /**
      * SetImage
      *
-     * @param string $image
+     * @param string|null $image
      *
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function setImage(string $image): ImagesInterface;
+    public function setImage(string $image = null): ImagesInterface;
 
     /**
      * SetSmallImage
      *
-     * @param string $smallImage
+     * @param string|null $smallImage
      *
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function setSmallImage(string $smallImage): ImagesInterface;
+    public function setSmallImage(string $smallImage = null): ImagesInterface;
 
     /**
      * SetThumbnail
      *
-     * @param string $thumbnail
+     * @param string|null $thumbnail
      *
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function setThumbnail(string $thumbnail): ImagesInterface;
+    public function setThumbnail(string $thumbnail = null): ImagesInterface;
 }

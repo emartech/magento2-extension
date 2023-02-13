@@ -12,9 +12,9 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * GetDescription
      *
-     * @return string
+     * @return string|null
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return (string) $this->getData(self::DESCRIPTION_KEY);
     }
@@ -22,9 +22,9 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * GetLink
      *
-     * @return string
+     * @return string|null
      */
-    public function getLink(): string
+    public function getLink(): ?string
     {
         return (string) $this->getData(self::LINK_KEY);
     }
@@ -32,21 +32,21 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * GetName
      *
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
-        return (string) $this->getData(self::NAME_KEY);
+        return $this->getData(self::NAME_KEY);
     }
 
     /**
      * GetPrice
      *
-     * @return float
+     * @return float|null
      */
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
-        return (float) $this->getData(self::PRICE_KEY);
+        return $this->getData(self::PRICE_KEY);
     }
 
     /**
@@ -122,49 +122,49 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * GetStatus
      *
-     * @return int
+     * @return int|null
      */
-    public function getStatus(): int
+    public function getStatus(): ?int
     {
-        return (int) $this->getData(self::STATUS_KEY);
+        return $this->getData(self::STATUS_KEY);
     }
 
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int
+    public function getStoreId(): ?int
     {
-        return (int) $this->getData(self::STORE_ID_KEY);
+        return $this->getData(self::STORE_ID_KEY);
     }
 
     /**
      * GetCurrencyCode
      *
-     * @return string
+     * @return string|null
      */
-    public function getCurrencyCode(): string
+    public function getCurrencyCode(): ?string
     {
-        return (string) $this->getData(self::CURRENCY_KEY);
+        return $this->getData(self::CURRENCY_KEY);
     }
 
     /**
      * GetExtraFields
      *
-     * @return ExtraFieldsInterface[]
+     * @return ExtraFieldsInterface[]|null
      */
-    public function getExtraFields(): array
+    public function getExtraFields(): ?array
     {
-        return (array) $this->getData(self::EXTRA_FIELDS);
+        return $this->getData(self::EXTRA_FIELDS);
     }
 
     /**
      * GetImages
      *
-     * @return ImagesInterface
+     * @return ImagesInterface|null
      */
-    public function getImages(): ImagesInterface
+    public function getImages(): ?ImagesInterface
     {
         return $this->getData(self::IMAGES_KEY);
     }
@@ -172,11 +172,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetDescription
      *
-     * @param string $description
+     * @param string|null $description
      *
      * @return ProductStoreDataInterface
      */
-    public function setDescription(string $description): ProductStoreDataInterface
+    public function setDescription(string $description = null): ProductStoreDataInterface
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -186,11 +186,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetLink
      *
-     * @param string $link
+     * @param string|null $link
      *
      * @return ProductStoreDataInterface
      */
-    public function setLink(string $link): ProductStoreDataInterface
+    public function setLink(string $link = null): ProductStoreDataInterface
     {
         $this->setData(self::LINK_KEY, $link);
 
@@ -200,11 +200,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetName
      *
-     * @param string $name
+     * @param string|null $name
      *
      * @return ProductStoreDataInterface
      */
-    public function setName(string $name): ProductStoreDataInterface
+    public function setName(string $name = null): ProductStoreDataInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -214,11 +214,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetPrice
      *
-     * @param float $price
+     * @param float|null $price
      *
      * @return ProductStoreDataInterface
      */
-    public function setPrice(float $price): ProductStoreDataInterface
+    public function setPrice(float $price = null): ProductStoreDataInterface
     {
         $this->setData(self::PRICE_KEY, $price);
 
@@ -326,11 +326,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetStatus
      *
-     * @param int $status
+     * @param int|null $status
      *
      * @return ProductStoreDataInterface
      */
-    public function setStatus(int $status): ProductStoreDataInterface
+    public function setStatus(int $status = null): ProductStoreDataInterface
     {
         $this->setData(self::STATUS_KEY, $status);
 
@@ -340,11 +340,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return ProductStoreDataInterface
      */
-    public function setStoreId(int $storeId): ProductStoreDataInterface
+    public function setStoreId(int $storeId = null): ProductStoreDataInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 
@@ -354,11 +354,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetCurrencyCode
      *
-     * @param string $currencyCode
+     * @param string|null $currencyCode
      *
      * @return ProductStoreDataInterface
      */
-    public function setCurrencyCode(string $currencyCode): ProductStoreDataInterface
+    public function setCurrencyCode(string $currencyCode = null): ProductStoreDataInterface
     {
         $this->setData(self::CURRENCY_KEY, $currencyCode);
 
@@ -368,11 +368,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetExtraFields
      *
-     * @param ExtraFieldsInterface[] $extraFields
+     * @param ExtraFieldsInterface[]|null $extraFields
      *
      * @return ProductStoreDataInterface
      */
-    public function setExtraFields(array $extraFields): ProductStoreDataInterface
+    public function setExtraFields(array $extraFields = null): ProductStoreDataInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
 
@@ -382,11 +382,11 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
     /**
      * SetImages
      *
-     * @param ImagesInterface $images
+     * @param ImagesInterface|null $images
      *
      * @return ProductStoreDataInterface
      */
-    public function setImages(ImagesInterface $images): ProductStoreDataInterface
+    public function setImages(ImagesInterface $images = null): ProductStoreDataInterface
     {
         $this->setData(self::IMAGES_KEY, $images);
 

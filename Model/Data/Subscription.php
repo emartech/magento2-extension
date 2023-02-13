@@ -30,31 +30,31 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * GetSubscriberEmail
      *
-     * @return string
+     * @return string|null
      */
-    public function getSubscriberEmail(): string
+    public function getSubscriberEmail(): ?string
     {
-        return (string) $this->getData(self::SUBSCRIBER_EMAIL);
+        return $this->getData(self::SUBSCRIBER_EMAIL);
     }
 
     /**
      * GetSubscriberStatus
      *
-     * @return string
+     * @return string|null
      */
-    public function getSubscriberStatus(): string
+    public function getSubscriberStatus(): ?string
     {
-        return (string) $this->getData(self::SUBSCRIBER_STATUS);
+        return $this->getData(self::SUBSCRIBER_STATUS);
     }
 
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int
+    public function getStoreId(): ?int
     {
-        return (int) $this->getData(self::STORE_ID_KEY);
+        return $this->getData(self::STORE_ID_KEY);
     }
 
     /**
@@ -98,11 +98,11 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * SetSubscriberEmail
      *
-     * @param string $subscriberEmail
+     * @param string|null $subscriberEmail
      *
      * @return SubscriptionInterface
      */
-    public function setSubscriberEmail(string $subscriberEmail): SubscriptionInterface
+    public function setSubscriberEmail(string $subscriberEmail = null): SubscriptionInterface
     {
         $this->setData(self::SUBSCRIBER_EMAIL, $subscriberEmail);
 
@@ -112,11 +112,11 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * SetSubscriberStatus
      *
-     * @param string $subscriberStatus
+     * @param string|null $subscriberStatus
      *
      * @return SubscriptionInterface
      */
-    public function setSubscriberStatus(string $subscriberStatus): SubscriptionInterface
+    public function setSubscriberStatus(string $subscriberStatus = null): SubscriptionInterface
     {
         $this->setData(self::SUBSCRIBER_STATUS, $subscriberStatus);
 
@@ -126,11 +126,11 @@ class Subscription extends DataObject implements SubscriptionInterface
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return SubscriptionInterface
      */
-    public function setStoreId(int $storeId): SubscriptionInterface
+    public function setStoreId(int $storeId = null): SubscriptionInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

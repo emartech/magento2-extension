@@ -20,51 +20,51 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * GetName
      *
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
-        return (string) $this->getData(self::NAME_KEY);
+        return $this->getData(self::NAME_KEY);
     }
 
     /**
      * GetImage
      *
-     * @return string
+     * @return string|null
      */
-    public function getImage(): string
+    public function getImage(): ?string
     {
-        return (string) $this->getData(self::IMAGE_KEY);
+        return $this->getData(self::IMAGE_KEY);
     }
 
     /**
      * GetIsActive
      *
-     * @return int
+     * @return int|null
      */
-    public function getIsActive(): int
+    public function getIsActive(): ?int
     {
-        return (int) $this->getData(self::IS_ACTIVE_KEY);
+        return $this->getData(self::IS_ACTIVE_KEY);
     }
 
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int
+    public function getStoreId(): ?int
     {
-        return (int) $this->getData(self::STORE_ID_KEY);
+        return $this->getData(self::STORE_ID_KEY);
     }
 
     /**
      * SetDescription
      *
-     * @param string $description
+     * @param string|null $description
      *
      * @return CategoryStoreDataInterface
      */
-    public function setDescription(string $description): CategoryStoreDataInterface
+    public function setDescription(string $description = null): CategoryStoreDataInterface
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -74,11 +74,11 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * SetName
      *
-     * @param string $name
+     * @param string|null $name
      *
      * @return CategoryStoreDataInterface
      */
-    public function setName(string $name): CategoryStoreDataInterface
+    public function setName(string $name = null): CategoryStoreDataInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -88,11 +88,11 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * SetImage
      *
-     * @param string $image
+     * @param string|null $image
      *
      * @return CategoryStoreDataInterface
      */
-    public function setImage(string $image): CategoryStoreDataInterface
+    public function setImage(string $image = null): CategoryStoreDataInterface
     {
         $this->setData(self::IMAGE_KEY, $image);
 
@@ -102,11 +102,11 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * SetIsActive
      *
-     * @param int $isActive
+     * @param int|null $isActive
      *
      * @return CategoryStoreDataInterface
      */
-    public function setIsActive(int $isActive): CategoryStoreDataInterface
+    public function setIsActive(int $isActive = null): CategoryStoreDataInterface
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
 
@@ -116,11 +116,11 @@ class CategoryStoreData extends DataObject implements CategoryStoreDataInterface
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return CategoryStoreDataInterface
      */
-    public function setStoreId(int $storeId): CategoryStoreDataInterface
+    public function setStoreId(int $storeId = null): CategoryStoreDataInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

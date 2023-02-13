@@ -22,11 +22,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * GetAcceptsMarketing
      *
-     * @return int
+     * @return int|null
      */
-    public function getAcceptsMarketing(): int
+    public function getAcceptsMarketing(): ?int
     {
-        return (int) $this->getData(self::ACCEPTS_MARKETING_KEY);
+        return $this->getData(self::ACCEPTS_MARKETING_KEY);
     }
 
     /**
@@ -42,11 +42,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * GetCreatedAt
      *
-     * @return string
+     * @return string|null
      */
-    public function getCreatedAt(): string
+    public function getCreatedAt(): ?string
     {
-        return (string) $this->getData(self::CREATED_AT_KEY);
+        return $this->getData(self::CREATED_AT_KEY);
     }
 
     /**
@@ -62,21 +62,21 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * GetEmail
      *
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
-        return (string) $this->getData(self::EMAIL_KEY);
+        return $this->getData(self::EMAIL_KEY);
     }
 
     /**
      * GetFirstname
      *
-     * @return string
+     * @return string|null
      */
-    public function getFirstname(): string
+    public function getFirstname(): ?string
     {
-        return (string) $this->getData(self::FIRSTNAME_KEY);
+        return $this->getData(self::FIRSTNAME_KEY);
     }
 
     /**
@@ -92,31 +92,31 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * GetGroupId
      *
-     * @return int
+     * @return int|null
      */
-    public function getGroupId(): int
+    public function getGroupId(): ?int
     {
-        return (int) $this->getData(self::GROUP_ID_KEY);
+        return $this->getData(self::GROUP_ID_KEY);
     }
 
     /**
      * GetIsActive
      *
-     * @return int
+     * @return int|null
      */
-    public function getIsActive(): int
+    public function getIsActive(): ?int
     {
-        return (int) $this->getData(self::IS_ACTIVE_KEY);
+        return $this->getData(self::IS_ACTIVE_KEY);
     }
 
     /**
      * GetLastname
      *
-     * @return string
+     * @return string|null
      */
-    public function getLastname(): string
+    public function getLastname(): ?string
     {
-        return (string) $this->getData(self::LASTNAME_KEY);
+        return $this->getData(self::LASTNAME_KEY);
     }
 
     /**
@@ -152,11 +152,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int
+    public function getStoreId(): ?int
     {
-        return (int) $this->getData(self::STORE_ID_KEY);
+        return $this->getData(self::STORE_ID_KEY);
     }
 
     /**
@@ -182,29 +182,29 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * GetUpdatedAt
      *
-     * @return string
+     * @return string|null
      */
-    public function getUpdatedAt(): string
+    public function getUpdatedAt(): ?string
     {
-        return (string) $this->getData(self::UPDATED_AT_KEY);
+        return $this->getData(self::UPDATED_AT_KEY);
     }
 
     /**
      * GetWebsiteId
      *
-     * @return int
+     * @return int|null
      */
-    public function getWebsiteId(): int
+    public function getWebsiteId(): ?int
     {
-        return (int) $this->getData(self::WEBSITE_ID_KEY);
+        return $this->getData(self::WEBSITE_ID_KEY);
     }
 
     /**
      * GetExtraFields
      *
-     * @return ExtraFieldsInterface[]
+     * @return ExtraFieldsInterface[]|null
      */
-    public function getExtraFields(): array
+    public function getExtraFields(): ?array
     {
         return $this->getData(self::EXTRA_FIELDS);
     }
@@ -226,11 +226,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetAcceptsMarketing
      *
-     * @param int $acceptsMarketing
+     * @param int|null $acceptsMarketing
      *
      * @return CustomerInterface
      */
-    public function setAcceptsMarketing(int $acceptsMarketing): CustomerInterface
+    public function setAcceptsMarketing(int $acceptsMarketing = null): CustomerInterface
     {
         $this->setData(self::ACCEPTS_MARKETING_KEY, $acceptsMarketing);
 
@@ -254,11 +254,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetCreatedAt
      *
-     * @param string $createdAt
+     * @param string|null $createdAt
      *
      * @return CustomerInterface
      */
-    public function setCreatedAt(string $createdAt): CustomerInterface
+    public function setCreatedAt(string $createdAt = null): CustomerInterface
     {
         $this->setData(self::CREATED_AT_KEY, $createdAt);
 
@@ -282,11 +282,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetEmail
      *
-     * @param string $email
+     * @param string|null $email
      *
      * @return CustomerInterface
      */
-    public function setEmail(string $email): CustomerInterface
+    public function setEmail(string $email = null): CustomerInterface
     {
         $this->setData(self::EMAIL_KEY, $email);
 
@@ -296,11 +296,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetFirstname
      *
-     * @param string $firstName
+     * @param string|null $firstName
      *
      * @return CustomerInterface
      */
-    public function setFirstname(string $firstName): CustomerInterface
+    public function setFirstname(string $firstName = null): CustomerInterface
     {
         $this->setData(self::FIRSTNAME_KEY, $firstName);
 
@@ -324,11 +324,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetGroupId
      *
-     * @param int $groupId
+     * @param int|null $groupId
      *
      * @return CustomerInterface
      */
-    public function setGroupId(int $groupId): CustomerInterface
+    public function setGroupId(int $groupId = null): CustomerInterface
     {
         $this->setData(self::GROUP_ID_KEY, $groupId);
 
@@ -338,11 +338,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetIsActive
      *
-     * @param int $isActive
+     * @param int|null $isActive
      *
      * @return CustomerInterface
      */
-    public function setIsActive(int $isActive): CustomerInterface
+    public function setIsActive(int $isActive = null): CustomerInterface
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
 
@@ -352,11 +352,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetLastname
      *
-     * @param string $lastName
+     * @param string|null $lastName
      *
      * @return CustomerInterface
      */
-    public function setLastname(string $lastName): CustomerInterface
+    public function setLastname(string $lastName = null): CustomerInterface
     {
         $this->setData(self::LASTNAME_KEY, $lastName);
 
@@ -408,11 +408,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return CustomerInterface
      */
-    public function setStoreId(int $storeId): CustomerInterface
+    public function setStoreId(int $storeId = null): CustomerInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 
@@ -450,11 +450,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetUpdatedAt
      *
-     * @param string $updatedAt
+     * @param string|null $updatedAt
      *
      * @return CustomerInterface
      */
-    public function setUpdatedAt(string $updatedAt): CustomerInterface
+    public function setUpdatedAt(string $updatedAt = null): CustomerInterface
     {
         $this->setData(self::UPDATED_AT_KEY, $updatedAt);
 
@@ -464,11 +464,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetWebsiteId
      *
-     * @param int $websiteId
+     * @param int|null $websiteId
      *
      * @return CustomerInterface
      */
-    public function setWebsiteId(int $websiteId): CustomerInterface
+    public function setWebsiteId(int $websiteId = null): CustomerInterface
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
 
@@ -478,11 +478,11 @@ class Customer extends DataObject implements CustomerInterface
     /**
      * SetExtraFields
      *
-     * @param ExtraFieldsInterface[] $extraFields
+     * @param ExtraFieldsInterface[]|null $extraFields
      *
      * @return $this
      */
-    public function setExtraFields(array $extraFields): CustomerInterface
+    public function setExtraFields(array $extraFields = null): CustomerInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
 

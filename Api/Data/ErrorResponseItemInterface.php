@@ -16,9 +16,9 @@ interface ErrorResponseItemInterface
     /**
      * GetEmail
      *
-     * @return string
+     * @return string|null
      */
-    public function getEmail(): string;
+    public function getEmail(): ?string;
 
     /**
      * GetCustomerId
@@ -30,18 +30,18 @@ interface ErrorResponseItemInterface
     /**
      * GetMessage
      *
-     * @return string
+     * @return string|null
      */
-    public function getMessage(): string;
+    public function getMessage(): ?string;
 
     /**
      * SetEmail
      *
-     * @param string $email
+     * @param string|null $email
      *
      * @return \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface
      */
-    public function setEmail(string $email): ErrorResponseItemInterface;
+    public function setEmail(string $email = null): ErrorResponseItemInterface;
 
     /**
      * SetCustomerId
@@ -55,9 +55,9 @@ interface ErrorResponseItemInterface
     /**
      * SetMessage
      *
-     * @param string $message
+     * @param string|null $message
      *
      * @return \Emartech\Emarsys\Api\Data\ErrorResponseItemInterface
      */
-    public function setMessage(string $message): ErrorResponseItemInterface;
+    public function setMessage(string $message = null): ErrorResponseItemInterface;
 }

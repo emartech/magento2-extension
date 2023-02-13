@@ -62,48 +62,48 @@ interface SubscriptionInterface
     /**
      * GetStoreId
      *
-     * @return int
+     * @return int|null
      */
-    public function getStoreId(): int;
+    public function getStoreId(): ?int;
 
     /**
      * SetStoreId
      *
-     * @param int $storeId
+     * @param int|null $storeId
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setStoreId(int $storeId): SubscriptionInterface;
+    public function setStoreId(int $storeId = null): SubscriptionInterface;
 
     /**
      * GetSubscriberEmail
      *
-     * @return string
+     * @return string|null
      */
-    public function getSubscriberEmail(): string;
+    public function getSubscriberEmail(): ?string;
 
     /**
      * SetSubscriberEmail
      *
-     * @param string $subscriberEmail
+     * @param string|null $subscriberEmail
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberEmail(string $subscriberEmail): SubscriptionInterface;
+    public function setSubscriberEmail(string $subscriberEmail = null): SubscriptionInterface;
 
     /**
      * GetSubscriberStatus
      *
-     * @return string
+     * @return string|null
      */
-    public function getSubscriberStatus(): string;
+    public function getSubscriberStatus(): ?string;
 
     /**
      * SetSubscriberStatus
      *
-     * @param string $subscriberStatus
+     * @param string|null $subscriberStatus
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberStatus(string $subscriberStatus): SubscriptionInterface;
+    public function setSubscriberStatus(string $subscriberStatus = null): SubscriptionInterface;
 }

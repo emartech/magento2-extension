@@ -12,9 +12,9 @@ interface CategoryInterface
     /**
      * GetStoreData
      *
-     * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[]
+     * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[]|null
      */
-    public function getStoreData(): array;
+    public function getStoreData(): ?array;
 
     /**
      * GetEntityId
@@ -26,16 +26,16 @@ interface CategoryInterface
     /**
      * GetPath
      *
-     * @return string
+     * @return string|null
      */
-    public function getPath(): string;
+    public function getPath(): ?string;
 
     /**
      * GetChildrenCount
      *
-     * @return int
+     * @return int|null
      */
-    public function getChildrenCount(): int;
+    public function getChildrenCount(): ?int;
 
     /**
      * SetEntityId
@@ -49,27 +49,27 @@ interface CategoryInterface
     /**
      * SetPath
      *
-     * @param string $path
+     * @param string|null $path
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setPath(string $path): CategoryInterface;
+    public function setPath(string $path = null): CategoryInterface;
 
     /**
      * SetChildrenCount
      *
-     * @param int $childrenCount
+     * @param int|null $childrenCount
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setChildrenCount(int $childrenCount): CategoryInterface;
+    public function setChildrenCount(int $childrenCount = null): CategoryInterface;
 
     /**
      * SetStoreData
      *
-     * @param \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[] $storeData
+     * @param \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface[]|null $storeData
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setStoreData(array $storeData): CategoryInterface;
+    public function setStoreData(array $storeData = null): CategoryInterface;
 }

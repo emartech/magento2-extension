@@ -15,32 +15,32 @@ interface InventoryItemInterface
     /**
      * GetSku
      *
-     * @return string
+     * @return string|null
      */
-    public function getSku(): string;
+    public function getSku(): ?string;
 
     /**
      * SetSku
      *
-     * @param string $sku
+     * @param string|null $sku
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemInterface
      */
-    public function setSku(string $sku): InventoryItemInterface;
+    public function setSku(string $sku = null): InventoryItemInterface;
 
     /**
      * GetInventoryItems
      *
-     * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface[]
+     * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface[]|null
      */
-    public function getInventoryItems(): array;
+    public function getInventoryItems(): ?array;
 
     /**
      * SetInventoryItems
      *
-     * @param \Emartech\Emarsys\Api\Data\InventoryItemItemInterface[] $inventoryItems
+     * @param \Emartech\Emarsys\Api\Data\InventoryItemItemInterface[]|null $inventoryItems
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemInterface
      */
-    public function setInventoryItems(array $inventoryItems): InventoryItemInterface;
+    public function setInventoryItems(array $inventoryItems = null): InventoryItemInterface;
 }
