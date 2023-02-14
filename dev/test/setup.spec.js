@@ -118,6 +118,7 @@ before(async function () {
 
   this.hostname = url.parse(baseUrl).host;
   this.magentoApi = new Magento2ApiClient({
+    //baseUrl: `http://172.17.0.1:3333`,
     baseUrl: `http://${this.hostname}`,
     token: 'Almafa456',
     platform: 'magento2'
