@@ -70,11 +70,11 @@ class Event extends AbstractModel implements EventInterface
     /**
      * GetEntityId
      *
-     * @return int|null
+     * @return int
      */
-    public function getEntityId(): ?int
+    public function getEntityId(): int
     {
-        return $this->_getData(self::ENTITY_ID_KEY);
+        return (int)$this->_getData(self::ENTITY_ID_KEY);
     }
 
     /**
@@ -164,11 +164,11 @@ class Event extends AbstractModel implements EventInterface
     /**
      * SetEntityId
      *
-     * @param int|null $entityId
+     * @param int $entityId
      *
      * @return EventInterface
      */
-    public function setEntityId(int $entityId = null): EventInterface
+    public function setEntityId($entityId): EventInterface
     {
         $this->setData(self::ENTITY_ID_KEY, $entityId);
 
