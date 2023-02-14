@@ -57,9 +57,9 @@ interface EventInterface
     /**
      * GetEntityId
      *
-     * @return int|null
+     * @return int
      */
-    public function getEntityId(): ?int;
+    public function getEntityId(): int;
 
     /**
      * SetEventId
@@ -118,9 +118,9 @@ interface EventInterface
     /**
      * SetEntityId
      *
-     * @param int|null $entityId
+     * @param int $entityId
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEntityId(int $entityId = null): EventInterface;
+    public function setEntityId($entityId): EventInterface;
 }
