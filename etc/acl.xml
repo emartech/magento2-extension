@@ -13,6 +13,7 @@
                     <resource id="Emartech_Emarsys::api_system" title="System information API" sortOrder="70"/>
                     <resource id="Emartech_Emarsys::api_orders" title="Order API" sortOrder="80"/>
                     <resource id="Emartech_Emarsys::api_refunds" title="Refund API" sortOrder="90"/>
+                    <resource id="Emartech_Emarsys::api_inventory" title="Inventory API" sortOrder="100"/>
                 </resource>
             </resource>
         </resources>
