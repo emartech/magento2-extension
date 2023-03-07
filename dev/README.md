@@ -141,7 +141,7 @@ Update the version in `composer.json` on **master branch**
     "magento/framework": "*"
   },
   "type": "magento2-module",
-  "version": "1.1.3",
+  "version": "2.0.5",
   "autoload": {
      "files": [ "registration.php" ],
      "psr-4": {
@@ -156,7 +156,7 @@ Update the version in `etc/module.xml`:
 <?xml version="1.0"?>
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-  <module name="Emartech_Emarsys" setup_version="1.1.3">
+  <module name="Emartech_Emarsys" setup_version="2.0.5">
     <sequence>
       <module name="Magento_Sales" />
     </sequence>
