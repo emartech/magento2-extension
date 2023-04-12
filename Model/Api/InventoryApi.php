@@ -12,7 +12,6 @@ use Emartech\Emarsys\Api\Data\InventoryApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\InventoryItemInterfaceFactory;
 use Emartech\Emarsys\Api\Data\InventoryItemItemInterfaceFactory;
 use Emartech\Emarsys\Api\InventoryApiInterface;
-use Emartech\Emarsys\Helper\Inventory as InventoryHelper;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Inventory\Model\ResourceModel\SourceItem\Collection as SourceItemCollection;
 use Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory as SourceItemCollectionFactory;
@@ -62,20 +61,20 @@ class InventoryApi implements InventoryApiInterface
     /**
      * InventoryApi constructor.
      *
-     * @param InventoryHelper                      $inventoryHelper
+     * @param SourceItemCollectionFactory          $sourceItemCollectionFactory
      * @param InventoryApiResponseInterfaceFactory $inventoryApiResponseFactory
      * @param InventoryItemInterfaceFactory        $inventoryItemInterfaceFactory
      * @param InventoryItemItemInterfaceFactory    $inventoryItemItemFactory
      * @param Iterator                             $iterator
      */
     public function __construct(
-        InventoryHelper $inventoryHelper,
+        SourceItemCollectionFactory $sourceItemCollectionFactory,
         InventoryApiResponseInterfaceFactory $inventoryApiResponseFactory,
         InventoryItemInterfaceFactory $inventoryItemInterfaceFactory,
         InventoryItemItemInterfaceFactory $inventoryItemItemFactory,
         Iterator $iterator
     ) {
-        $this->sourceItemCollectionFactory = $inventoryHelper->getSourceItemCollectionFactory();
+        $this->sourceItemCollectionFactory = $sourceItemCollectionFactory;
         $this->inventoryApiResponseFactory = $inventoryApiResponseFactory;
         $this->inventoryItemFactory = $inventoryItemInterfaceFactory;
         $this->inventoryItemItemFactory = $inventoryItemItemFactory;
@@ -93,10 +92,6 @@ class InventoryApi implements InventoryApiInterface
     {
         /** @var InventoryApiResponseInterface $response */
         $response = $this->inventoryApiResponseFactory->create();
-
-        if (null === $this->sourceItemCollectionFactory) {
-            return $response->setItems([]);
-        }
 
         $this
             ->initCollection()

@@ -149,6 +149,8 @@ class Product extends ProductResourceModel
      * @param Iterator                          $iterator
      * @param LinkField                         $linkFieldHelper
      * @param DataSourceHelper                  $dataSourceHelper
+     * @param PriceTableResolver                $priceTableResolver
+     * @param DimensionFactory                  $dimensionFactory
      * @param array                             $data
      *
      * @throws Exception
@@ -167,6 +169,8 @@ class Product extends ProductResourceModel
         Iterator $iterator,
         LinkField $linkFieldHelper,
         DataSourceHelper $dataSourceHelper,
+        PriceTableResolver $priceTableResolver,
+        DimensionFactory $dimensionFactory,
         array $data = []
     ) {
         $this->iterator = $iterator;
@@ -175,17 +179,8 @@ class Product extends ProductResourceModel
         $this->linkField = $this->linkFieldHelper->getEntityLinkField(ProductInterface::class);
 
         $this->dataSourceHelper = $dataSourceHelper;
-
-        if (class_exists(PriceTableResolver::class)) {
-            // @codingStandardsIgnoreStart
-            $this->priceTableResolver = ObjectManager::getInstance()->get(PriceTableResolver::class);
-            // @codingStandardsIgnoreEnd
-        }
-        if (class_exists(Dimension::class)) {
-            // @codingStandardsIgnoreStart
-            $this->dimensionFactory = ObjectManager::getInstance()->get(DimensionFactory::class);
-            // @codingStandardsIgnoreEnd
-        }
+        $this->priceTableResolver = $priceTableResolver;
+        $this->dimensionFactory = $dimensionFactory;
 
         parent::__construct(
             $context,
@@ -503,13 +498,17 @@ class Product extends ProductResourceModel
             ->addFieldToFilter('entity_type_id', ['eq' => self::PRODUCT_ENTITY_TYPE_ID])
             ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
+        $failedSources = [];
+
         /** @var ProductAttribute $productAttribute */
         foreach ($productAttributeCollection as $productAttribute) {
             if ($sourceModel = $productAttribute->getSourceModel()) {
                 try {
                     $sourceModels[$productAttribute->getAttributeCode()] =
                         $productAttribute->getSource();
-                } catch (Exception $e) {} // @codingStandardsIgnoreLine
+                } catch (Exception $e) {
+                    $failedSources[] = $productAttribute->getSource();
+                }
             }
 
             $attributeTable = $productAttribute->getBackendTable();
@@ -679,10 +678,10 @@ class Product extends ProductResourceModel
                     $this->_resource->getConnection()
                 );
             }
-        } catch (Exception $e) { // @codingStandardsIgnoreLine
+            return $this;
+        } catch (Exception $e) {
+            return $this;
         }
-
-        return $this;
     }
 
     /**

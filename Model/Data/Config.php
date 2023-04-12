@@ -342,9 +342,10 @@ class Config extends DataObject implements ConfigInterface
                     }
                 }
             }
-        } catch (Exception $e) { } //@codingStandardsIgnoreLine
-
-        return false;
+            return false;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -129,13 +129,17 @@ class CustomerAddress extends CustomerAddressResourceModel
             ->addFieldToFilter('entity_type_id', ['eq' => self::CUSTOMER_ADDRESS_ENTITY_TYPE_ID])
             ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
+        $failedSources = [];
+
         /** @var Attribute $customerAddressAttribute */
         foreach ($customerAddressAttributeCollection as $customerAddressAttribute) {
             if ($sourceModel = $customerAddressAttribute->getSourceModel()) {
                 try {
                     $sourceModels[$customerAddressAttribute->getAttributeCode()] =
                         $customerAddressAttribute->getSource();
-                } catch (\Exception $e) {} // @codingStandardsIgnoreLine
+                } catch (\Exception $e) {
+                    $failedSources[] = $customerAddressAttribute->getSource();
+                }
             }
 
             $attributeTable = $customerAddressAttribute->getBackendTable();
@@ -304,7 +308,7 @@ class CustomerAddress extends CustomerAddressResourceModel
                 $unionQuery = $this->_resource
                     ->getConnection()
                     ->select()
-                    ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+                    ->union($attributeQueries, 'UNION ALL');
 
                 $this->iterator->walk(
                     (string) $unionQuery,
@@ -315,9 +319,10 @@ class CustomerAddress extends CustomerAddressResourceModel
                     $this->_resource->getConnection()
                 );
             }
-        } catch (\Exception $e) {} // @codingStandardsIgnoreLine
-
-        return $this;
+            return $this;
+        } catch (\Exception $e) {
+            return $this;
+        }
     }
 
     /**
