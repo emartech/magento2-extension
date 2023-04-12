@@ -456,7 +456,9 @@ class CustomerPlugin
                     $subscriber->getId(),
                     $this->getDataFromSubscription($subscriber, $websiteId)
                 );
-            } catch (Exception $e) {} //@codingStandardsIgnoreLine
+            } catch (Exception $e) {
+                $marketingEventsEnabled = true;
+            }
 
             if ($magentoSendEmailEnabled) {
                 return $proceed($subscriber);

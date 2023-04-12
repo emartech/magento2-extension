@@ -235,12 +235,16 @@ class Customer extends CustomerResourceModel
             )
             ->addFieldToFilter('attribute_code', ['in' => $attributeCodes]);
 
+        $failedSources = [];
+
         /** @var Attribute $customerAttribute */
         foreach ($customerAttributeCollection as $customerAttribute) {
             if ($sourceModel = $customerAttribute->getSourceModel()) {
                 try {
                     $sourceModels[$customerAttribute->getAttributeCode()] = $customerAttribute->getSource();
-                } catch (\Exception $e) {} // @codingStandardsIgnoreLine
+                } catch (\Exception $e) {
+                    $failedSources[] = $customerAttribute->getSource();
+                }
             }
 
             $attributeTable = $customerAttribute->getBackendTable();
@@ -409,7 +413,7 @@ class Customer extends CustomerResourceModel
                 $unionQuery = $this->_resource
                     ->getConnection()
                     ->select()
-                    ->union($attributeQueries, \Zend_Db_Select::SQL_UNION_ALL); // @codingStandardsIgnoreLine
+                    ->union($attributeQueries, 'UNION ALL');
                 $this->iterator->walk(
                     (string) $unionQuery,
                     [[$this, 'handleAttributeDataTable']],
@@ -419,9 +423,10 @@ class Customer extends CustomerResourceModel
                     $this->_resource->getConnection()
                 );
             }
-        } catch (\Exception $e) {} // @codingStandardsIgnoreLine
-
-        return $this;
+            return $this;
+        } catch (\Exception $e) {
+            return $this;
+        }
     }
 
     /**
