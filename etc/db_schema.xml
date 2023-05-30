@@ -20,5 +20,10 @@
         <index referenceId="emarsys_events_data_event_type" indexType="btree">
             <column name="event_type"/>
         </index>
+        <index referenceId="emarsys_events_data_entity_store_website_id" indexType="btree">
+            <column name="entity_id"/>
+            <column name="store_id"/>
+            <column name="website_id"/>
+        </index>
     </table>
 </schema>
