@@ -12,7 +12,9 @@
         "index": {
             "EMARSYS_EVENTS_DATA_CREATED_AT": true,
             "EMARSYS_EVENTS_DATA_EVENT_TYPE": true,
-            "EMARSYS_EVENTS_DATA_ENTITY_ID_STORE_ID_WEBSITE_ID": true
+            "EMARSYS_EVENTS_DATA_ENTITY_ID": true,
+            "EMARSYS_EVENTS_DATA_STORE_ID": true,
+            "EMARSYS_EVENTS_DATA_WEBSITE_ID": true
         },
         "constraint": {
             "PRIMARY": true
