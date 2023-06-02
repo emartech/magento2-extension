@@ -7,4 +7,9 @@ COPY test /test
 WORKDIR /test
 RUN npm i && \
     ./node_modules/.bin/cypress install && \
-    ./node_modules/.bin/cypress verify
+    ./node_modules/.bin/cypress verify && \
+    pwd
+
+
+
+CMD /usr/local/bin/shell.sh ; sleep infinity
