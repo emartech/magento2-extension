@@ -3,13 +3,12 @@ ARG NPM_TOKEN
 ENV NPM_TOKEN=${NPM_TOKEN}
 
 COPY test /test
+COPY README.md /test/README.md
 
 WORKDIR /test
 RUN npm i && \
     ./node_modules/.bin/cypress install && \
-    ./node_modules/.bin/cypress verify && \
-    pwd
+    ./node_modules/.bin/cypress verify
 
 
-
-CMD /usr/local/bin/shell.sh ; sleep infinity
+#CMD /usr/local/bin/shell.sh ; sleep infinity
