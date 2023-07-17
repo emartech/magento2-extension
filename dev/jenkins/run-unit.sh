@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -e
+set +e
 
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
@@ -12,7 +12,10 @@ else
   composefile="docker-compose.yml"
 fi
 
-alias compose="docker-compose -p mage_unit_$VERSION -f $composefile"
+project_version=$(echo "$VERSION" | tr '.' '_')
+echo "\n|--- Using docker compose project $project_version"
+
+alias compose="docker compose -p mage_unit_$project_version -f $composefile"
 
 compose down
 

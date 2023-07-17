@@ -12,7 +12,10 @@ else
   composefile="docker-compose.yml"
 fi
 
-alias compose="docker-compose -p mage_e2e_$VERSION -f $composefile"
+project_version=$(echo "$VERSION" | tr '.' '_')
+echo "\n|--- Using docker compose project $project_version"
+
+alias compose="docker compose -p mage_e2e_$project_version -f $composefile"
 
 compose down
 

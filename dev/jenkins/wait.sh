@@ -2,14 +2,17 @@
 
 RUNNER=$1
 
+project_version=$(echo "$VERSION" | tr '.' '_')
+echo -e "\n|--- Using docker compose project $project_version"
+
 wait_it()
 {
   while :
   do
-    result=$(docker-compose -p "mage_${RUNNER}_${VERSION}" ps | grep magento)
-    echo $result
+    result=$(docker compose -p "mage_${RUNNER}_${project_version}" ps | grep magento)
+    echo -e $result
     if [ ! -z "$result" ]; then
-      healthy=$(echo $result | grep "Up (healthy)")
+      healthy=$(echo $result | grep "(healthy)")
       if [ ! -z "$healthy" ]; then
         echo "ready"
         break
