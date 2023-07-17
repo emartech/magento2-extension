@@ -12,7 +12,7 @@ else
   composefile="docker-compose.yml"
 fi
 
-alias compose="docker-compose -f $composefile"
+alias compose="docker compose -f $composefile"
 
 compose -p mage_unit_$VERSION down || echo "Could not stop Docker..."
 compose -p mage_e2e_$VERSION down || echo "Could not stop Docker..."
