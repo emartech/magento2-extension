@@ -1,16 +1,16 @@
 name: Run tests
+
 on:
   push:
-    branches:
-      - master
-  pull_request
-​
-permissions:
-  contents: read
-​
+    branches: [master]
+  pull_request:
+    branches: [master]
+    
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+     contents: 'read'
     steps:
       - name: Extract branch name
         shell: bash
@@ -19,7 +19,7 @@ jobs:
       - name: Run gitlab tests
         uses: digital-blueprint/gitlab-pipeline-trigger-action@main
         with:
-          host: "${{ vars.GITLAB_URL }}"'
+          host: "${{ vars.GITLAB_URL }}"
           trigger_token: ${{ secrets.DEPLOY_TRIGGER_TOKEN }}
           access_token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
           id: '227'
