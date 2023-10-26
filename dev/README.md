@@ -128,6 +128,10 @@ To run the tests use
 $ make test
 ```
 
+### Testing with ITG Pipeline 
+Chech Git Hub Actions to see the trigger of a remote pipeline. 
+The execution shall be successful. 
+
 ---
 ## Release
 
