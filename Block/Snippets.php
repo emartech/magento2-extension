@@ -293,7 +293,8 @@ class Snippets extends Template
      */
     public function getMerchantId(): string
     {
-        return (string) $this->configReader->getConfigValue(ConfigInterface::MERCHANT_ID);
+        $merchantId = $this->configReader->getConfigValue(ConfigInterface::MERCHANT_ID);
+        return is_array($merchantId) ? '' : (string) $merchantId;
     }
 
     /**
@@ -303,7 +304,8 @@ class Snippets extends Template
      */
     public function getSnippetUrl(): string
     {
-        return (string) $this->configReader->getConfigValue(ConfigInterface::SNIPPET_URL);
+        $snippetUrl = $this->configReader->getConfigValue(ConfigInterface::SNIPPET_URL);
+        return is_array($snippetUrl) ? '' : (string) $snippetUrl;
     }
 
     /**
