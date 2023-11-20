@@ -12,9 +12,9 @@ use Emartech\Emarsys\Api\Data\InventoryApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\Data\InventoryItemInterfaceFactory;
 use Emartech\Emarsys\Api\Data\InventoryItemItemInterfaceFactory;
 use Emartech\Emarsys\Api\InventoryApiInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Model\ResourceModel\Iterator;
 use Magento\Inventory\Model\ResourceModel\SourceItem\Collection as SourceItemCollection;
-use Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory as SourceItemCollectionFactory;
 
 /**
  * Class InventoryApi
@@ -23,10 +23,6 @@ use Magento\Inventory\Model\ResourceModel\SourceItem\CollectionFactory as Source
  */
 class InventoryApi implements InventoryApiInterface
 {
-    /**
-     * @var SourceItemCollectionFactory
-     */
-    private $sourceItemCollectionFactory;
 
     /**
      * @var SourceItemCollection
@@ -61,20 +57,17 @@ class InventoryApi implements InventoryApiInterface
     /**
      * InventoryApi constructor.
      *
-     * @param SourceItemCollectionFactory          $sourceItemCollectionFactory
      * @param InventoryApiResponseInterfaceFactory $inventoryApiResponseFactory
      * @param InventoryItemInterfaceFactory        $inventoryItemInterfaceFactory
      * @param InventoryItemItemInterfaceFactory    $inventoryItemItemFactory
      * @param Iterator                             $iterator
      */
     public function __construct(
-        SourceItemCollectionFactory $sourceItemCollectionFactory,
         InventoryApiResponseInterfaceFactory $inventoryApiResponseFactory,
         InventoryItemInterfaceFactory $inventoryItemInterfaceFactory,
         InventoryItemItemInterfaceFactory $inventoryItemItemFactory,
         Iterator $iterator
     ) {
-        $this->sourceItemCollectionFactory = $sourceItemCollectionFactory;
         $this->inventoryApiResponseFactory = $inventoryApiResponseFactory;
         $this->inventoryItemFactory = $inventoryItemInterfaceFactory;
         $this->inventoryItemItemFactory = $inventoryItemItemFactory;
@@ -189,7 +182,7 @@ class InventoryApi implements InventoryApiInterface
      */
     private function initCollection(): InventoryApiInterface
     {
-        $this->sourceItemCollection = $this->sourceItemCollectionFactory->create();
+        $this->sourceItemCollection = ObjectManager::getInstance()->create(SourceItemCollection::class);
 
         return $this;
     }
