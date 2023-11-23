@@ -1,6 +1,12 @@
 Release notes:
 ==============
 
+2.0.12
+-------
+* Fix
+  * Fixing error during installation on Magento Cloud
+
+
 2.0.11
 -------
 * Fix
