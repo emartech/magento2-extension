@@ -1,0 +1,13 @@
+name: Run new tests
+
+on:
+  push:
+    branches:
+      - "*"
+jobs:
+  test:
+    runs-on: github-actions-runner-emarsys
+    steps:
+      - name: Test
+        shell: bash
+        run: echo "Hello world!"
