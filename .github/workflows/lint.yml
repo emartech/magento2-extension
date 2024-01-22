@@ -16,7 +16,9 @@ jobs:
       contents: "read"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        shell: bash
+        run: |
+          git clone https://github.com/emartech/magento2-extension.git
       - name: Login to GitLab
         uses: docker/login-action@v3
         with:
