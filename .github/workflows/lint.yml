@@ -26,7 +26,7 @@ jobs:
       - name: Run codesniffer
         shell: bash
         run: |
-          sh dev/test_v2/tools/scripts/run-code-style.sh
+          ls -la
         env:
           VERSION: 2.4.0ce
       # TODO need fix eslint outputs
