@@ -55,7 +55,7 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension
-          bash dev/test_v2/tools/scripts/run-unit.sh
+          bash dev/testv2/tools/scripts/run-unit.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
   e2e-tests:
@@ -103,6 +103,6 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension
-          bash -x dev/test_v2/tools/scripts/run-e2e.sh
+          bash dev/testv2/tools/scripts/run-e2e.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
