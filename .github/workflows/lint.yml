@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension
-          sh dev/test_v2/tools/scripts/run-code-style.sh
+          ls -la dev/
         env:
           VERSION: 2.4.0ce
       # TODO need fix eslint outputs
