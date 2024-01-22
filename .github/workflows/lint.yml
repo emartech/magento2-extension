@@ -18,6 +18,8 @@ jobs:
       - name: Checkout code
         shell: bash
         run: |
+          sudo apt-get update
+          sudo apt-get install git
           git clone https://github.com/emartech/magento2-extension.git
       - name: Login to GitLab
         uses: docker/login-action@v3
