@@ -1,0 +1,52 @@
+version: '3.2'
+
+services:
+  db:
+    image: healthcheck/percona
+    restart: always
+    env_file:
+      - ../setup/.env
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+  magento-test:
+    image: registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/ems-integration-magento-sampledata:$VERSION
+    volumes:
+      - ../../../..:/app/vendor/emartech/emarsys-magento2-extension
+      - ../setup/setup:/opt/emartech/setup
+      - ../setup/php.ini:/opt/docker/etc/php/php.ini
+      - ../setup/cache-flush.php:/app/cache-flush.php
+      - ../setup/reindex.php:/app/reindex.php
+      - ../setup/trigger_event.php:/app/trigger_event.php
+      - ../setup/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
+    environment:
+      - MAGENTO_URL=http://magento-test.local
+      - MAGENTO_REPO_KEY=$MAGENTO_REPO_KEY
+      - MAGENTO_REPO_SECRET=$MAGENTO_REPO_SECRET
+      - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
+    env_file:
+      - ../setup/.env
+    command: ['/opt/emartech/wait-for-it.sh', 'db:3306', '--timeout=30', '--strict', '--', '/opt/emartech/init']
+    links:
+      - db
+      - elastic
+  elastic:
+    image: elasticsearch:7.6.2
+    environment:
+      - 'discovery.type=single-node'
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+  node:
+    image: registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/mage_node
+    ipc: host
+    env_file:
+      - ../setup/.env
+    environment:
+      - NPM_TOKEN=$NPM_TOKEN
+      - MAGENTO_URL=magento-test.local
+    links:
+      - magento-test:magento-test.local
+      - db
+  mailhog:
+    image: mailhog/mailhog
+    restart: always

@@ -1,0 +1,36 @@
+---
+name: Lint code
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  lint:
+    runs-on: github-actions-runner-emarsys
+    permissions:
+      contents: "read"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to GitLab
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.REGISTRY_URL }}
+          username: ${{ secrets.GITLAB_USER }}
+          password: ${{ secrets.GITLAB_TOKEN }}
+      - name: Run codesniffer
+        shell: bash
+        run: |
+          sh dev/test_v2/tools/scripts/run-code-style.sh
+        env:
+          VERSION: 2.4.0ce
+      # TODO need fix eslint outputs
+      # - name: Run eslint
+      #   shell: bash
+      #   run: |
+      #     docker run --rm "${{ vars.REGISTRY_URL }}/itg-commerce/emarsys-magento2-extension-test/mage_node" sh -c "npm run code-style"
