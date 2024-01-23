@@ -38,8 +38,9 @@ jobs:
           sh dev/testv2/tools/scripts/run-code-style.sh
         env:
           VERSION: 2.4.0ce
-      # TODO need fix eslint outputs
-      # - name: Run eslint
-      #   shell: bash
-      #   run: |
-      #     docker run --rm "${{ vars.REGISTRY_URL }}/itg-commerce/emarsys-magento2-extension-test/mage_node" sh -c "npm run code-style"
+      - name: Run eslint
+        shell: bash
+        run: |
+          docker run --rm -v $(pwd)/dev/testv2:/test -e NPM_TOKEN=${NPM_TOKEN} "${{ vars.REGISTRY_URL }}/itg-commerce/emarsys-magento2-extension-test/mage_node" sh -c "npm i && ./node_modules/.bin/cypress install && ./node_modules/.bin/cypress verify && npm run code-style"
+          env:
+            NPM_TOKEN:  ${{ secrets.NPM_DEPLOYER_TOKEN }}

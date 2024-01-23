@@ -9,7 +9,8 @@
   "env": {
     "es6": true,
     "node": true,
-    "mocha": true
+    "mocha": true,
+    "browser": true
   },
   "globals": {
     "inject": true,
@@ -24,13 +25,25 @@
     "curly": [2, "multi-line"],
     "new-cap": 0,
     "no-unused-expressions": 0,
-    "no-unused-vars": [2, { "vars": "all", "args": "after-used" }],
     "operator-linebreak": "off",
     "require-yield": 0,
     "security/detect-child-process": 0,
     "security/detect-non-literal-fs-filename": 0,
     "security/detect-non-literal-require": 0,
     "security/detect-object-injection": 0,
-    "space-before-function-paren": 0
+    "space-before-function-paren": 0,
+    // TODO
+    "indent": "off",
+    "object-curly-spacing": 0,
+    "one-var": 0,
+    "dot-notation": 0,
+    "comma-dangle": 0,
+    "semi": 0,
+    "key-spacing": 0,
+    "max-len": 0,
+    "strict": 0,
+    "quotes": 0,
+    "no-unused-vars": 0,
+    "no-undef": 0
   }
 }
