@@ -2,9 +2,6 @@
 name: Lint code
 
 on:
-  push:
-    branches:
-      - "*"
   pull_request:
     branches:
       - "*"
