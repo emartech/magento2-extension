@@ -17,7 +17,7 @@ services:
       - ../setup/setup:/opt/emartech/setup
       - ../setup/php.ini:/opt/docker/etc/php/php.ini
       - ../setup/cache-flush.php:/app/cache-flush.php
-      - ../setup/cache-flush.php:/app/pub/cache-flush.php  
+      - ../setup/cache-flush.php:/app/pub/cache-flush.php
       - ../setup/reindex.php:/app/reindex.php
       - ../setup/reindex.php:/app/pub/reindex.php
       - ../setup/trigger_event.php:/app/trigger_event.php
@@ -42,7 +42,9 @@ services:
     links:
       - db
   node:
-    image: registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/mage_node
+    # image: registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/mage_node:13.6.4
+    build: Dockerfile-mage-node
+    container_name: mage_node
     ipc: host
     env_file:
       - ../setup/.env

@@ -14,13 +14,13 @@ db('information_schema.tables')
         const { table_name: tableName } = rows[0];
         let prefix = tableName.split('core_config_data')[0];
         let replaceQuery = db(prefix + 'core_config_data')
-            .insert({scope: 'default', scope_id: 0, path: 'oauth/consumer/enable_integration_as_bearer', value: '1'})
+            .insert({ scope: 'default', scope_id: 0, path: 'oauth/consumer/enable_integration_as_bearer', value: '1' })
             .toString().replace(/^INSERT/i, 'REPLACE');
 
-        db.raw(replaceQuery).then((result) => {
+        db.raw(replaceQuery).then(() => {
             let _baseUrl = process.env.CYPRESS_baseUrl || 'http://magento-test.local';
-            axios.get(`${_baseUrl}/cache-flush.php`)
-        })
+            axios.get(`${_baseUrl}/cache-flush.php`);
+        });
     });
 // END API bearer token compatibility
 
