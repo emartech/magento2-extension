@@ -55,6 +55,7 @@ jobs:
           bash dev/testv2/tools/scripts/run-unit.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISHER_TOKEN }}
   e2e-tests:
     runs-on: github-actions-runner-emarsys
     permissions:
@@ -103,3 +104,4 @@ jobs:
           bash dev/testv2/tools/scripts/run-e2e.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISHER_TOKEN }}
