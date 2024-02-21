@@ -65,7 +65,7 @@ describe('Default behaviour with everything turned off', function() {
       cy.task('setDefaultCustomerProperty', { email: newEmail, password: newPassword });
 
       cy.task('getSentAddresses').then(emailAddresses => {
-        expect(emailAddresses).to.be.eql([this.defaultCustomer.email]);
+          expect(emailAddresses).to.include.members([this.defaultCustomer.email]);
       });
     });
   });

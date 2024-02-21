@@ -1,6 +1,5 @@
 'use strict';
 
-require('cypress-plugin-retries');
 require('./commands');
 
 before(() => {
@@ -16,6 +15,7 @@ Cypress.on('uncaught:exception', (err, runnable) => { // eslint-disable-line no-
 let logs = '';
 
 Cypress.on('window:before:load', window => {
+/*
   const docIframe = window.parent.document.getElementById("Your App: 'test'");
   const appWindow = docIframe.contentWindow;
 
@@ -24,6 +24,7 @@ Cypress.on('window:before:load', window => {
       logs += args.join(' ') + '\n';
     };
   });
+ */
 });
 
 Cypress.mocha.getRunner().on('test', () => {

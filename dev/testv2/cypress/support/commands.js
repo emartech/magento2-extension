@@ -12,7 +12,7 @@ Cypress.Commands.add('shouldCreateEvent', (type, expectedDataSubset) => {
 
 Cypress.Commands.add('shouldNotExistsEvents', () => {
   cy.task('getAllEvents').then(events => {
-    expect(events.length).to.be.empty;
+      expect(events.length).to.equal(0);
   });
 });
 
@@ -59,7 +59,7 @@ Cypress.Commands.add('shouldNotShowErrorMessage', excludeErrorMessage => {
       expect(errorMessage).to.include(excludeErrorMessage);
     });
   } else {
-    return cy.get('[data-ui-id="message-error"]').should('not.be.visible');
+      return cy.get('[data-ui-id="message-error"]').should('not.exist');
   }
 });
 
