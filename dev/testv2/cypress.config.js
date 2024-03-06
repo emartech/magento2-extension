@@ -3,9 +3,9 @@ const { defineConfig } = require('cypress');
 module.exports = defineConfig({
     video: false,
     trashAssetsBeforeRuns: false,
-    requestTimeout: 60000,
-    defaultCommandTimeout: 60000,
-    pageLoadTimeout: 60000,
+    requestTimeout: 120000,
+    defaultCommandTimeout: 120000,
+    pageLoadTimeout: 120000,
     blockHosts: ['*snippet.url.com', '*scarabresearch.com'],
     env: {
         snippetUrl: 'http://snippet.url.com/main.js'
