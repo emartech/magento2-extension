@@ -1,4 +1,4 @@
-version: "3.2"
+version: '3.2'
 
 services:
   db:
@@ -30,25 +30,17 @@ services:
       - PHP_SENDMAIL_PATH='/usr/local/bin/mhsendmail --smtp-addr="mailhog:1025"'
     env_file:
       - ../setup/.env
-    command:
-      [
-        "/opt/emartech/wait-for-it.sh",
-        "db:3306",
-        "--timeout=30",
-        "--strict",
-        "--",
-        "/opt/emartech/init",
-      ]
+    command: ['/opt/emartech/wait-for-it.sh', 'db:3306', '--timeout=30', '--strict', '--', '/opt/emartech/init']
     links:
       - db
   node:
-    # image: registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/mage_node:13.6.4
-    build:
-      context: ../../..
-      args:
-        - NPM_TOKEN=$NPM_TOKEN
-      dockerfile: testv2/tools/docker/Dockerfile-mage-node
-    container_name: mage_node
+    image: mage_node
+    # build:
+    #   context: ../../..
+    #   args:
+    #     - NPM_TOKEN=$NPM_TOKEN
+    #   dockerfile: testv2/tools/docker/Dockerfile-mage-node
+    # container_name: mage_node
     ipc: host
     env_file:
       - ../setup/.env
