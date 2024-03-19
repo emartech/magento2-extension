@@ -74,6 +74,7 @@ describe('Web extend scripts', function() {
     cy.get('.action.showcart').click();
     cy.get('#top-cart-btn-checkout').click();
 
+    cy.visit('/checkout');
     // cy.wait(6000);
     // cy.contains('Email Address').should('be.visible');
 
