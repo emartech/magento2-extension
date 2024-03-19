@@ -357,7 +357,7 @@ describe('Products endpoint', function () {
       try {
           await this.reindex();
       } catch (e) {
-          console.log(e.stack);
+          console.log(e.message);
       }
     });
 
@@ -366,7 +366,7 @@ describe('Products endpoint', function () {
       try {
           await this.reindex();
       } catch (e) {
-          console.log(e.stack);
+          console.log(e.message);
       }
     });
     it('returns configurable product min price if price or final price is 0', async function () {

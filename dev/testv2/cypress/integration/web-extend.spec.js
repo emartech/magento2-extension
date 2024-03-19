@@ -91,6 +91,7 @@ describe('Web extend scripts', function() {
     cy.get('button[data-role="opc-continue"]').click();
 
     cy.get('button[title="Place Order"]').click();
+    cy.wait(1000);
     cy.get('.checkout-success');
 
     cy.window().then(win => {
