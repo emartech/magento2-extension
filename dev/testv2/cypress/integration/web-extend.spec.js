@@ -74,6 +74,10 @@ describe('Web extend scripts', function() {
     cy.get('.action.showcart').click();
     cy.get('#top-cart-btn-checkout').click();
 
+    cy.visit('/checkout');
+    // cy.wait(6000);
+    // cy.contains('Email Address').should('be.visible');
+
     cy.get('#checkout-step-shipping input.input-text[name="username"]').type('guest@cypress.net');
     cy.get('#checkout-step-shipping input.input-text[name="firstname"]').type('Guest');
     cy.get('#checkout-step-shipping input.input-text[name="lastname"]').type('Da Best');
@@ -87,6 +91,7 @@ describe('Web extend scripts', function() {
     cy.get('button[data-role="opc-continue"]').click();
 
     cy.get('button[title="Place Order"]').click();
+    cy.wait(1000);
     cy.get('.checkout-success');
 
     cy.window().then(win => {

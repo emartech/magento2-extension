@@ -23,7 +23,7 @@ echo "\n|--- Running tests on Magento $VERSION"
 echo "\n|--- Pulling newest image version"
 docker pull registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/ems-integration-magento-sampledata:$VERSION
 echo "\n|--- Starting containers"
-docker compose -p mage_unit_$project_version -f $composefile up -d
+docker compose -p mage_unit_$project_version -f $composefile up --build -d
 echo "\n|--- Waiting for containers to initialize"
 sh ./wait.sh unit >>/dev/null 2>&1
 
