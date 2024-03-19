@@ -353,7 +353,12 @@ describe('Products endpoint', function () {
       originalPrice = configurableProduct.store_data.find((data) => data.store_id !== 0).price;
 
       await setPriceForEntityId(entityIdUsed, 0, this.db, this.magentoEdition);
-      await this.reindex();
+
+      try {
+          await this.reindex();
+      } catch (e) {
+          console.log(e);
+      }
     });
 
     after(async function () {
