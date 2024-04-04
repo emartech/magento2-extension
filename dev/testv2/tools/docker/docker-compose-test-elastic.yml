@@ -22,7 +22,7 @@ services:
       - ../setup/reindex.php:/app/pub/reindex.php
       - ../setup/trigger_event.php:/app/trigger_event.php
       - ../setup/trigger_event.php:/app/pub/trigger_event.php
-      - ../setup/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
+      # - ../setup/customer-data.js:/app/vendor/magento/module-customer/view/frontend/web/js/customer-data.js
     environment:
       - MAGENTO_URL=http://magento-test.local
       - MAGENTO_REPO_KEY=$MAGENTO_REPO_KEY

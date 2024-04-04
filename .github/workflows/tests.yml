@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         magento-versions:
-          ["2.3.3ce", "2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
+          ["2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
     steps:
       - name: Extract branch name
         shell: bash
@@ -72,7 +72,7 @@ jobs:
       fail-fast: false
       matrix:
         magento-versions:
-          ["2.3.3ce", "2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
+          ["2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
     steps:
       - name: Extract branch name
         shell: bash
