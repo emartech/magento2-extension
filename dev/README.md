@@ -203,4 +203,3 @@ git push -f --tags
 ## Update Cypress
 * Update the version in `package.json`
 * Run `make build-cypress VERSION=new-version` from project root
-
