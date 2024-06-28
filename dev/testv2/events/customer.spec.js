@@ -17,8 +17,8 @@ const customer = {
   ]
 };
 
-describe('Customer events', function() {
-  before(async function() {
+describe('Customer events', function () {
+  before(async function () {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 1,
       type: 'customer',
@@ -26,12 +26,12 @@ describe('Customer events', function() {
     });
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email = "yolo99@yolo.net"`);
     await this.turnOffEverySetting(1);
   });
 
-  after(async function() {
+  after(async function () {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 1,
       type: 'customer',
@@ -39,7 +39,7 @@ describe('Customer events', function() {
     });
   });
 
-  it('"customers/update" is saved in DB if customer is created', async function() {
+  it('"customers/update" is saved in DB if customer is created', async function () {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
     await this.createCustomer(customer);
 
@@ -56,7 +56,7 @@ describe('Customer events', function() {
     expect(event.store_id).to.equal(1);
   });
 
-  it('"customers/update" is saved in DB if customer is updated', async function() {
+  it('"customers/update" is saved in DB if customer is updated', async function () {
     const createdCustomer = await this.createCustomer(customer);
 
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
@@ -83,7 +83,7 @@ describe('Customer events', function() {
     expect(event.store_id).to.equal(1);
   });
 
-  it('"customers/delete" is saved in DB if customer is deleted', async function() {
+  it('"customers/delete" is saved in DB if customer is deleted', async function () {
     const createdCustomer = await this.createCustomer(customer);
 
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
@@ -100,7 +100,7 @@ describe('Customer events', function() {
     expect(event.entity_id).to.eql(createdCustomer.entityId);
   });
 
-  it('are not saved in DB if collectCustomerEvents is disabled', async function() {
+  it('are not saved in DB if collectCustomerEvents is disabled', async function () {
     await this.turnOffEverySetting(1);
 
     await this.createCustomer(customer);

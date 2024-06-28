@@ -33,12 +33,12 @@ const customers = [
   }
 ];
 
-describe('Events API endpoint', function() {
-  before(async function() {
+describe('Events API endpoint', function () {
+  before(async function () {
     await this.magentoApi.execute('config', 'set', { websiteId: 1, config: { collectCustomerEvents: 'enabled' } });
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     await this.db.raw(
       `DELETE FROM ${this.getTableName(
         'customer_entity'
@@ -46,11 +46,11 @@ describe('Events API endpoint', function() {
     );
   });
 
-  after(async function() {
+  after(async function () {
     await this.turnOffEverySetting(1);
   });
 
-  it('returns number of events defined in page_size and deletes events before since_id', async function() {
+  it('returns number of events defined in page_size and deletes events before since_id', async function () {
     for (const customer of customers) {
       await this.createCustomer(customer);
     }
@@ -75,7 +75,7 @@ describe('Events API endpoint', function() {
     expect(firstEvent.store_id).to.equal(1);
   });
 
-  it('returns 406 status if sinceId is higher than max event ID in the events table', async function() {
+  it('returns 406 status if sinceId is higher than max event ID in the events table', async function () {
     for (const customer of customers) {
       await this.createCustomer(customer);
     }
@@ -95,7 +95,7 @@ describe('Events API endpoint', function() {
     expect(eventsResponse.events.length).to.equal(3);
   });
 
-  it('does not return 406 status if sinceId is equal to the maximal event ID in the table', async function() {
+  it('does not return 406 status if sinceId is equal to the maximal event ID in the table', async function () {
     for (const customer of customers) {
       await this.createCustomer(customer);
     }
@@ -105,7 +105,7 @@ describe('Events API endpoint', function() {
     expect(eventsResponse.events.length).to.equal(0);
   });
 
-  it('does not return 406 status if there are no entries in the events table', async function() {
+  it('does not return 406 status if there are no entries in the events table', async function () {
     const eventsResponse = await this.magentoApi.execute('events', 'getSinceId', { sinceId: 1, pageSize: 10 });
 
     expect(eventsResponse.events.length).to.equal(0);

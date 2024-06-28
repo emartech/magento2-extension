@@ -4,7 +4,7 @@ const merchantId = 'merchantId123';
 const webTrackingSnippetUrl = Cypress.env('snippetUrl');
 const predictUrl = `http://cdn.scarabresearch.com/js/${merchantId}/scarab-v2.js`;
 
-describe('Web extend scripts', function() {
+describe('Web extend scripts', function () {
   before(() => {
     cy.task('setConfig', {
       injectSnippet: 'enabled',
@@ -24,9 +24,9 @@ describe('Web extend scripts', function() {
       win.customerStub = cy.stub().as('customerStub');
 
       const testScriptNode = win.document.createElement('script');
-      testScriptNode.text = `window.require(['Magento_Customer/js/customer-data'], function(customerData) {
+      testScriptNode.text = `window.require(['Magento_Customer/js/customer-data'], function (customerData) {
         window.customerStub(customerData.get('customer')())
-        customerData.get('customer').subscribe(function(customer) {
+        customerData.get('customer').subscribe(function (customer) {
           window.customerStub(customer);
         });
       });`;
@@ -38,7 +38,7 @@ describe('Web extend scripts', function() {
     cy.logout();
   });
 
-  it('should include web-extend scripts', function() {
+  it('should include web-extend scripts', function () {
     cy.visit('/');
 
     cy.get('script').then(scripts => {
@@ -48,7 +48,7 @@ describe('Web extend scripts', function() {
     });
   });
 
-  it('should include proper customer data', function() {
+  it('should include proper customer data', function () {
     cy.loginWithCustomer({ email: 'roni_cost@example.com', password: 'roni_cost3@example.com' });
     cy.visit('/fusion-backpack.html');
 
@@ -60,7 +60,7 @@ describe('Web extend scripts', function() {
     });
   });
 
-  it('should include orderData after ordering as a guest', function() {
+  it('should include orderData after ordering as a guest', function () {
     cy.visit('/fusion-backpack.html');
 
     cy.get('.loading-mask').should('not.exist');
@@ -73,10 +73,6 @@ describe('Web extend scripts', function() {
 
     cy.get('.action.showcart').click();
     cy.get('#top-cart-btn-checkout').click();
-
-    cy.visit('/checkout');
-    // cy.wait(6000);
-    // cy.contains('Email Address').should('be.visible');
 
     cy.get('#checkout-step-shipping input.input-text[name="username"]').type('guest@cypress.net');
     cy.get('#checkout-step-shipping input.input-text[name="firstname"]').type('Guest');
@@ -91,7 +87,6 @@ describe('Web extend scripts', function() {
     cy.get('button[data-role="opc-continue"]').click();
 
     cy.get('button[title="Place Order"]').click();
-    cy.wait(1000);
     cy.get('.checkout-success');
 
     cy.window().then(win => {
@@ -108,7 +103,7 @@ describe('Web extend scripts', function() {
     });
   });
 
-  it('should include orderData after ordering as a logged in user', function() {
+  it('should include orderData after ordering as a logged in user', function () {
     cy.loginWithCustomer({ email: 'roni_cost@example.com', password: 'roni_cost3@example.com' });
     cy.visit('/fusion-backpack.html');
 

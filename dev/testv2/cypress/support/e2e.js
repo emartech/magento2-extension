@@ -41,7 +41,7 @@ Cypress.on('fail', error => {
   throw error;
 });
 
-console.log = function(...args) {
+console.log = function (...args) {
   logs += args.join('\n');
   logs += '\n';
 };

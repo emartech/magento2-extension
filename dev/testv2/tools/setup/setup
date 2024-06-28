@@ -25,5 +25,8 @@ fi
 
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "UPDATE ${TABLE_PREFIX}oauth_token SET token = 'Almafa456';"
 
+echo "-|| Update cookie lifetime"
+bin/magento config:set web/cookie/cookie_lifetime 36000
+
 echo "-|| Flushing cache"
 bin/magento cache:flush

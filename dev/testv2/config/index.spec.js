@@ -21,21 +21,21 @@ const dbKeys = {
 };
 
 const websiteId = 1;
-describe('Config endpoint', function() {
-  before(async function() {
+describe('Config endpoint', function () {
+  before(async function () {
     await this.turnOffEverySetting(1);
   });
 
-  afterEach(async function() {
+  afterEach(async function () {
     await this.turnOffEverySetting(1);
   });
 
-  after(async function() {
+  after(async function () {
     await this.setDefaultStoreSettings();
   });
 
-  describe('set', function() {
-    it('should modify config values for website', async function() {
+  describe('set', function () {
+    it('should modify config values for website', async function () {
       await this.magentoApi.execute('config', 'set', {
         websiteId,
         config: fullConfig

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Default behaviour with everything turned off', function() {
+describe('Default behaviour with everything turned off', function () {
   before(() => {
     cy.task('setConfig', {});
   });
@@ -14,13 +14,13 @@ describe('Default behaviour with everything turned off', function() {
     cy.task('clearMails');
   });
 
-  context('MarketingEvents - Customer', function() {
+  context('MarketingEvents - Customer', function () {
     afterEach(() => {
       cy.task('clearEvents');
       cy.logout();
     });
 
-    it('should not create customer_password_reset event', function() {
+    it('should not create customer_password_reset event', function () {
       const newPassword = 'newPassword1';
 
       cy.loginWithCustomer(this.defaultCustomer);
@@ -36,7 +36,7 @@ describe('Default behaviour with everything turned off', function() {
       });
     });
 
-    it('should not create customer_email_changed event', function() {
+    it('should not create customer_email_changed event', function () {
       const oldEmail = this.defaultCustomer.email;
       const newEmail = 'cypress2@default.com';
 
@@ -52,7 +52,7 @@ describe('Default behaviour with everything turned off', function() {
       });
     });
 
-    it('should not create customer_email_and_password_changed event', function() {
+    it('should not create customer_email_and_password_changed event', function () {
       const newEmail = 'cypress5@default.com';
       const newPassword = 'newPassword4';
 
@@ -70,7 +70,7 @@ describe('Default behaviour with everything turned off', function() {
     });
   });
 
-  context('MarketingEvents - Subscription', function() {
+  context('MarketingEvents - Subscription', function () {
     const unsubscribe = email => {
       cy.task('getSubscription', email).then(subscription => {
         cy.visit(`/newsletter/subscriber/unsubscribe?id=${subscription.subscriber_id}\
@@ -84,8 +84,8 @@ describe('Default behaviour with everything turned off', function() {
       cy.get('.action.subscribe.primary[type="submit"]').click();
     };
 
-    context('guest with double optin off', function() {
-      it('should not create subscription events', function() {
+    context('guest with double optin off', function () {
+      it('should not create subscription events', function () {
         const guestEmail = 'no-event.doptin-off@guest-cypress.com';
         subscribe(guestEmail);
 
@@ -110,7 +110,7 @@ describe('Default behaviour with everything turned off', function() {
       });
     });
 
-    context('guest with double optin on', function() {
+    context('guest with double optin on', function () {
       before(() => {
         cy.task('setDoubleOptin', true);
         cy.task('flushMagentoCache');
@@ -120,7 +120,7 @@ describe('Default behaviour with everything turned off', function() {
         cy.task('setDoubleOptin', false);
       });
 
-      it('should not create subscription events', function() {
+      it('should not create subscription events', function () {
         const guestEmail = 'no-event.doptin-on@guest-cypress.com';
         subscribe(guestEmail);
 
