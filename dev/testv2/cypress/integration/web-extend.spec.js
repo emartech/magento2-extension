@@ -74,6 +74,8 @@ describe('Web extend scripts', function () {
     cy.get('.action.showcart').click();
     cy.get('#top-cart-btn-checkout').click();
 
+    cy.visit('/checkout');
+
     cy.get('#checkout-step-shipping input.input-text[name="username"]').type('guest@cypress.net');
     cy.get('#checkout-step-shipping input.input-text[name="firstname"]').type('Guest');
     cy.get('#checkout-step-shipping input.input-text[name="lastname"]').type('Da Best');
