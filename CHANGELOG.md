@@ -1,6 +1,11 @@
 Release notes:
 ==============
 
+2.0.13
+-------
+* Fix
+  * Fixing email trigger, if not default template has been selected
+
 2.0.12
 -------
 * Fix
