@@ -8,7 +8,10 @@ use Emartech\Emarsys\Helper\Customer as CustomerHelper;
 use Emartech\Emarsys\Helper\Json;
 use Emartech\Emarsys\Model\EventFactory as EmarsysEventFactory;
 use Emartech\Emarsys\Model\EventRepository;
+use Magento\Config\Model\ResourceModel\Config as ConfigResource;
+use Magento\Framework\App\Config\Initial\Reader as InitialConfigReader;
 use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\AbstractModel;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Container\OrderIdentity;
@@ -49,29 +52,50 @@ class SenderBuilderPlugin
     private $customerHelper;
 
     /**
+     * @var ConfigResource
+     */
+    private $configResource;
+
+    /**
+     * @var InitialConfigReader
+     */
+    private $initialConfigReader;
+
+    /**
+     * @var array
+     */
+    private $initialConfig = [];
+
+    /**
      * SenderBuilderPlugin constructor.
      *
      * @param ConfigReader        $configReader
+     * @param InitialConfigReader $initialConfigReader
      * @param EmarsysEventFactory $eventFactory
      * @param EventRepository     $eventRepository
      * @param Json                $json
      * @param CustomerHelper      $customerHelper
+     * @param ConfigResource      $configResource
      * @param LoggerInterface     $logger
      */
     public function __construct(
         ConfigReader $configReader,
+        InitialConfigReader $initialConfigReader,
         EmarsysEventFactory $eventFactory,
         EventRepository $eventRepository,
         Json $json,
         CustomerHelper $customerHelper,
+        ConfigResource $configResource,
         LoggerInterface $logger
     ) {
         $this->configReader = $configReader;
+        $this->initialConfigReader = $initialConfigReader;
         $this->eventFactory = $eventFactory;
         $this->eventRepository = $eventRepository;
         $this->json = $json;
         $this->logger = $logger;
         $this->customerHelper = $customerHelper;
+        $this->configResource = $configResource;
     }
 
     /**
@@ -121,7 +145,7 @@ class SenderBuilderPlugin
             $this->saveEvent(
                 $this->websiteId,
                 $storeId,
-                $templateContainer->getTemplateId(),
+                $this->getOriginalTemplateId($templateContainer->getTemplateId()),
                 $data['order']['entity_id'],
                 $data
             );
@@ -271,5 +295,61 @@ class SenderBuilderPlugin
             ->setEventData($data);
 
         $this->eventRepository->save($eventModel);
+    }
+
+    /**
+     * Get config path by template ID
+     *
+     * @param int $templateId
+     *
+     * @return string
+     * @throws LocalizedException
+     */
+    private function getConfigPathByTemplateId(string $templateId): string
+    {
+        $select = $this->configResource->getConnection()->select()
+            ->from($this->configResource->getMainTable(), ['path'])
+            ->where('value = ?', $templateId)
+            ->where('path like ?', '%template')
+            ->limit(1);
+
+        return (string) $this->configResource->getConnection()->fetchOne($select);
+    }
+
+    /**
+     * Get original template ID
+     *
+     * @param string $templateId
+     *
+     * @return string
+     * @throws LocalizedException
+     */
+    private function getOriginalTemplateId(string $templateId): string
+    {
+        if (!is_numeric($templateId)) {
+            return $templateId;
+        }
+
+        $configPath = $this->getConfigPathByTemplateId($templateId);
+        if (!$configPath) {
+            return $templateId;
+        }
+
+        if (empty($this->initialConfig)) {
+            $this->initialConfig = $this->initialConfigReader->read();
+        }
+
+        if (isset($this->initialConfig['data']['default'])) {
+            $configValue = $this->initialConfig['data']['default'];
+            foreach (explode('/', $configPath) as $key) {
+                $configValue = $configValue[$key] ?? [];
+            }
+
+            if (!empty($configValue) && is_string($configValue)) {
+                return (string) $configValue;
+            }
+        }
+
+        return $templateId;
     }
 }
