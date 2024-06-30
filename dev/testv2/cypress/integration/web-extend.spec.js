@@ -71,14 +71,16 @@ describe('Web extend scripts', function () {
     cy.get('#product-addtocart-button').click();
     cy.get('.counter-number').should('contain', '2');
 
+    wait(100);
     cy.get('.action.showcart').click();
+    wait(300);
     cy.get('#top-cart-btn-checkout').click();
 
     cy.wait(1000);
     cy.url().then(url => {
           cy.log(url);
 
-          if (url.includes('checkout/cart')) {
+          if (url.includes('checkout/cart') || url.includes('fusion-backpack')) {
               cy.log('Reload checkout page');
               cy.visit('/checkout');
           }
