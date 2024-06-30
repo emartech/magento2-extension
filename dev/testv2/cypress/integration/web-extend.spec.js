@@ -71,12 +71,15 @@ describe('Web extend scripts', function () {
     cy.get('#product-addtocart-button').click();
     cy.get('.counter-number').should('contain', '2');
 
+    // Wait for the cart to update
     cy.wait(100);
     cy.get('.action.showcart').click();
     cy.wait(300);
     cy.get('#top-cart-btn-checkout').click();
 
     cy.wait(1000);
+
+    // Check if we are on the checkout page (if not, reload the page)
     cy.url().then(url => {
           cy.log(url);
 
@@ -85,6 +88,7 @@ describe('Web extend scripts', function () {
               cy.visit('/checkout');
           }
     });
+
     cy.wait(1000);
 
     cy.get('#checkout-step-shipping input.input-text[name="username"]').type('guest@cypress.net');
