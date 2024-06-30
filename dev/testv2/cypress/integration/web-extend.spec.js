@@ -74,8 +74,16 @@ describe('Web extend scripts', function () {
     cy.get('.action.showcart').click();
     cy.get('#top-cart-btn-checkout').click();
 
-    // cy.wait(1000);
-    cy.visit('/checkout');
+    cy.wait(1000);
+    cy.url().then(url => {
+          cy.log(url);
+
+          if (url.includes('checkout/cart')) {
+              cy.log('Reload checkout page');
+              cy.visit('/checkout');
+          }
+    });
+    cy.wait(1000);
 
     cy.get('#checkout-step-shipping input.input-text[name="username"]').type('guest@cypress.net');
     cy.get('#checkout-step-shipping input.input-text[name="firstname"]').type('Guest');
