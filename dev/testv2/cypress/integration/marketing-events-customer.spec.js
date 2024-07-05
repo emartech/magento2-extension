@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Marketing Events', function() {
+describe('Marketing Events', function () {
   beforeEach(() => {
     cy.task('clearMails');
     cy.task('getDefaultCustomer').as('defaultCustomer');
@@ -10,7 +10,7 @@ describe('Marketing Events', function() {
     cy.logout();
   });
 
-  context('magentoSendEmails config is disabled', function() {
+  context('magentoSendEmails config is disabled', function () {
     before(() => {
       cy.task('setConfig', {
         collectMarketingEvents: 'enabled',
@@ -19,7 +19,7 @@ describe('Marketing Events', function() {
       cy.task('clearEvents');
     });
 
-    it('should create customer_password_reset event', function() {
+    it('should create customer_password_reset event', function () {
       const newPassword = 'newPassword2';
 
       cy.loginWithCustomer(this.defaultCustomer);
@@ -36,7 +36,7 @@ describe('Marketing Events', function() {
       });
     });
 
-    it('should create customer_email_changed event', function() {
+    it('should create customer_email_changed event', function () {
       const newEmail = 'cypress3@default.com';
 
       cy.loginWithCustomer(this.defaultCustomer);
@@ -53,7 +53,7 @@ describe('Marketing Events', function() {
       });
     });
 
-    it('should create customer_email_and_password_changed event', function() {
+    it('should create customer_email_and_password_changed event', function () {
       const newEmail = 'cypress4@default.com';
       const newPassword = 'newPassword3';
 
@@ -72,7 +72,7 @@ describe('Marketing Events', function() {
     });
   });
 
-  context('magentoSendEmails config is enabled', function() {
+  context('magentoSendEmails config is enabled', function () {
     before(() => {
       cy.task('setConfig', {
         collectMarketingEvents: 'enabled',
@@ -81,7 +81,7 @@ describe('Marketing Events', function() {
       cy.task('clearEvents');
     });
 
-    it('should create customer_password_reset event', function() {
+    it('should create customer_password_reset event', function () {
       const newPassword = 'newPassword2';
 
       cy.loginWithCustomer(this.defaultCustomer);
@@ -98,7 +98,7 @@ describe('Marketing Events', function() {
       });
     });
 
-    it('should create customer_email_changed event', function() {
+    it('should create customer_email_changed event', function () {
       const oldEmail = this.defaultCustomer.email;
       const newEmail = 'cypress3@default.com';
 
@@ -116,7 +116,7 @@ describe('Marketing Events', function() {
       });
     });
 
-    it('should create customer_email_and_password_changed event', function() {
+    it('should create customer_email_and_password_changed event', function () {
       const oldEmail = this.defaultCustomer.email;
       const newEmail = 'cypress4@default.com';
       const newPassword = 'newPassword3';

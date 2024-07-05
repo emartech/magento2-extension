@@ -6,13 +6,13 @@ const websiteId = 1;
 
 const mapAttributes = attributes => attributes.map(attribute => ({ code: attribute.code, name: attribute.name }));
 
-describe('Attributes endpoint', function() {
-  afterEach(async function() {});
+describe('Attributes endpoint', function () {
+  afterEach(async function () {});
 
-  after(async function() {});
+  after(async function () {});
 
-  describe('get', function() {
-    it('should fetch attributes including extra fields for customer', async function() {
+  describe('get', function () {
+    it('should fetch attributes including extra fields for customer', async function () {
       const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'customer' });
       const mappedAttributes = mapAttributes(attributes);
 
@@ -29,7 +29,7 @@ describe('Attributes endpoint', function() {
       }
     });
 
-    it('should fetch attributes including extra fields for customer_address', async function() {
+    it('should fetch attributes including extra fields for customer_address', async function () {
       const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'customer_address' });
       const mappedAttributes = mapAttributes(attributes);
 
@@ -40,7 +40,7 @@ describe('Attributes endpoint', function() {
       }
     });
 
-    it('should fetch attributes including extra fields for products', async function() {
+    it('should fetch attributes including extra fields for products', async function () {
       const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'product' });
       const mappedAttributes = attributes.map(attribute => {
         return { code: attribute.code, name: attribute.name };
@@ -58,8 +58,8 @@ describe('Attributes endpoint', function() {
     });
   });
 
-  describe('set', function() {
-    it('should modify customer attribute config for website', async function() {
+  describe('set', function () {
+    it('should modify customer attribute config for website', async function () {
       await this.magentoApi.execute('attributes', 'set', {
         websiteId,
         type: 'customer',
@@ -76,7 +76,7 @@ describe('Attributes endpoint', function() {
       expect(config.value).to.equal(JSON.stringify(['hello_attribute']));
     });
 
-    it('should modify customer_address attribute config for website', async function() {
+    it('should modify customer_address attribute config for website', async function () {
       await this.magentoApi.execute('attributes', 'set', {
         websiteId,
         type: 'customer_address',
@@ -93,7 +93,7 @@ describe('Attributes endpoint', function() {
       expect(config.value).to.equal(JSON.stringify(['hello_attribute']));
     });
 
-    it('should modify product attribute config for website', async function() {
+    it('should modify product attribute config for website', async function () {
       await this.magentoApi.execute('attributes', 'set', {
         websiteId: 0,
         type: 'product',

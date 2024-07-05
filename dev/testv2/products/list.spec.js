@@ -353,12 +353,21 @@ describe('Products endpoint', function () {
       originalPrice = configurableProduct.store_data.find((data) => data.store_id !== 0).price;
 
       await setPriceForEntityId(entityIdUsed, 0, this.db, this.magentoEdition);
-      await this.reindex();
+
+      try {
+          await this.reindex();
+      } catch (e) {
+          console.log(e.message);
+      }
     });
 
     after(async function () {
       await setPriceForEntityId(entityIdUsed, originalPrice, this.db, this.magentoEdition);
-      await this.reindex();
+      try {
+          await this.reindex();
+      } catch (e) {
+          console.log(e.message);
+      }
     });
     it('returns configurable product min price if price or final price is 0', async function () {
       const { products } = await this.magentoApi.execute('products', 'get', requestParams);

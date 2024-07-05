@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Marketing Events', function() {
+describe('Marketing Events', function () {
   const unsubscribe = email => {
     cy.task('getSubscription', email).then(subscription => {
       cy.visit(`/newsletter/subscriber/unsubscribe?id=${subscription.subscriber_id}\
@@ -19,7 +19,7 @@ describe('Marketing Events', function() {
     cy.task('clearEvents');
   });
 
-  context('magentoSendEmails config is disabled', function() {
+  context('magentoSendEmails config is disabled', function () {
     before(() => {
       cy.task('setConfig', {
         collectMarketingEvents: 'enabled',
@@ -27,8 +27,8 @@ describe('Marketing Events', function() {
       });
     });
 
-    context('guest with double optin off', function() {
-      it('should create subscription events', function() {
+    context('guest with double optin off', function () {
+      it('should create subscription events', function () {
         const guestEmail = 'event.doptin-off.sub@guest-cypress.com';
         subscribe(guestEmail);
 
@@ -56,7 +56,7 @@ describe('Marketing Events', function() {
       });
     });
 
-    context('guest with double optin on', function() {
+    context('guest with double optin on', function () {
       before(() => {
         cy.task('setDoubleOptin', true);
         cy.task('flushMagentoCache');
@@ -66,7 +66,7 @@ describe('Marketing Events', function() {
         cy.task('setDoubleOptin', false);
       });
 
-      it('should create newsletter_send_confirmation_request_email event', function() {
+      it('should create newsletter_send_confirmation_request_email event', function () {
         const guestEmail = 'event.doptin-on.sub@guest-cypress.com';
         subscribe(guestEmail);
 
@@ -95,7 +95,7 @@ describe('Marketing Events', function() {
     });
   });
 
-  context('magentoSendEmails config is enabled', function() {
+  context('magentoSendEmails config is enabled', function () {
     before(() => {
       cy.task('setConfig', {
         collectMarketingEvents: 'enabled',
@@ -103,8 +103,8 @@ describe('Marketing Events', function() {
       });
     });
 
-    context('guest with double optin off', function() {
-      it('should create subscription events', function() {
+    context('guest with double optin off', function () {
+      it('should create subscription events', function () {
         const guestEmail = 'event.doptin-off.sub@guest-cypress.com';
         subscribe(guestEmail);
 
@@ -133,7 +133,7 @@ describe('Marketing Events', function() {
       });
     });
 
-    context('guest with double optin on', function() {
+    context('guest with double optin on', function () {
       before(() => {
         cy.task('setDoubleOptin', true);
         cy.task('flushMagentoCache');
@@ -143,7 +143,7 @@ describe('Marketing Events', function() {
         cy.task('setDoubleOptin', false);
       });
 
-      it('should create newsletter_send_confirmation_request_email event', function() {
+      it('should create newsletter_send_confirmation_request_email event', function () {
         const guestEmail = 'event.doptin-on.sub@guest-cypress.com';
         subscribe(guestEmail);
 

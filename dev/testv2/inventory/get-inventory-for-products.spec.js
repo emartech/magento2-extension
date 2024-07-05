@@ -1,6 +1,6 @@
 'use strict';
 
-const createSource = async function(magentoApi) {
+const createSource = async function (magentoApi) {
   return await magentoApi.post({
     path: '/index.php/rest/V1/inventory/sources',
     payload: {
@@ -15,7 +15,7 @@ const createSource = async function(magentoApi) {
   });
 };
 
-const addStockForProductInInventorySource = async function(magentoApi) {
+const addStockForProductInInventorySource = async function (magentoApi) {
   return await magentoApi.post({
     path: '/index.php/rest/V1/inventory/source-items',
     payload: {
@@ -35,9 +35,9 @@ const inventorySourceCode = 'custom_source';
 const skuWithMultipleSources = '24-WB04';
 const skuWithDefaultSource = '24-WB07';
 
-describe('Product inventory API', function() {
+describe('Product inventory API', function () {
 
-  before(async function() {
+  before(async function () {
     if (this.magentoVersion >= '2.3.0') {
       await createSource(this.magentoApi);
       try {
@@ -48,7 +48,7 @@ describe('Product inventory API', function() {
     }
   });
 
-  it('should return product stock for all inventory sources', async function() {
+  it('should return product stock for all inventory sources', async function () {
     if (this.magentoVersion >= '2.3.0') {
       const { items } = await this.magentoApi.execute('inventory', 'getForProducts', {
         sku: [skuWithMultipleSources, skuWithDefaultSource]
