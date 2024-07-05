@@ -1,6 +1,6 @@
 'use strict';
 
-const Magento2ApiClient = require('@emartech/magento2-api');
+const Magento2ApiClient = require('@itg-commerce/magento2-api');
 const db = require('../../helpers/db');
 const { getTableName, cacheTablePrefix } = require('../../helpers/get-table-name');
 const { getSentAddresses, clearMails } = require('../../helpers/mailhog');

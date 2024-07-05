@@ -4,10 +4,10 @@ const { shipOrder, createNewGuestOrder } = require('../helpers/orders');
 
 const orderCount = 4;
 
-describe('Orders endpoint', function() {
+describe('Orders endpoint', function () {
   let localCartItem;
 
-  before(async function() {
+  before(async function () {
     await this.dbCleaner.clearOrders();
     localCartItem = this.localCartItem;
 
@@ -17,11 +17,11 @@ describe('Orders endpoint', function() {
     }
   });
 
-  after(async function() {
+  after(async function () {
     await this.dbCleaner.clearOrders();
   });
 
-  it('should return orders and paging info according to parameters', async function() {
+  it('should return orders and paging info according to parameters', async function () {
     const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
@@ -40,7 +40,7 @@ describe('Orders endpoint', function() {
     expect(ordersResponse.orders[0].store_id).to.equal(1);
   });
 
-  it('should handle multiple store IDs', async function() {
+  it('should handle multiple store IDs', async function () {
     const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
@@ -53,7 +53,7 @@ describe('Orders endpoint', function() {
     expect(ordersResponse.orderCount).to.be.equal(orderCount);
   });
 
-  it('should filter for store IDs', async function() {
+  it('should filter for store IDs', async function () {
     const limit = 1;
     const page = 1;
     const ordersResponse = await this.magentoApi.execute('orders', 'getSinceId', {
@@ -66,7 +66,7 @@ describe('Orders endpoint', function() {
     expect(ordersResponse.orderCount).to.be.equal(0);
   });
 
-  it('should filter with sinceId', async function() {
+  it('should filter with sinceId', async function () {
     const limit = 1;
     const page = 2;
     const sinceId = 2;

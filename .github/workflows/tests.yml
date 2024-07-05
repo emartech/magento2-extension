@@ -12,11 +12,11 @@ jobs:
     permissions:
       contents: "read"
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       fail-fast: false
       matrix:
         magento-versions:
-          ["2.3.3ce", "2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
+          ["2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
     steps:
       - name: Extract branch name
         shell: bash
@@ -48,6 +48,13 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-compose-plugin -y
+      - name: Build mage_node image
+        shell: bash
+        run: |
+          cd magento2-extension/dev
+          docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
+        env:
+          NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       - name: Run unittest
         shell: bash
         run: |
@@ -55,17 +62,17 @@ jobs:
           bash dev/testv2/tools/scripts/run-unit.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
-          NPM_TOKEN: ${{ secrets.NPM_DEPLOYER_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
   e2e-tests:
     runs-on: github-actions-runner-emarsys
     permissions:
       contents: "read"
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       fail-fast: false
       matrix:
         magento-versions:
-          ["2.3.3ce", "2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
+          ["2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
     steps:
       - name: Extract branch name
         shell: bash
@@ -97,6 +104,13 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-compose-plugin -y
+      - name: Build mage_node image
+        shell: bash
+        run: |
+          cd magento2-extension/dev
+          docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
+        env:
+          NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       - name: Run e2stest
         shell: bash
         run: |
@@ -104,4 +118,4 @@ jobs:
           bash dev/testv2/tools/scripts/run-e2e.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
-          NPM_TOKEN: ${{ secrets.NPM_DEPLOYER_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}

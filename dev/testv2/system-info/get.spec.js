@@ -1,7 +1,7 @@
 'use strict';
 
-describe('SystemInfo API', function() {
-  it('should return system information', async function() {
+describe('SystemInfo API', function () {
+  it('should return system information', async function () {
 
     const info = await this.magentoApi.execute('systeminfo', 'get');
 
@@ -11,13 +11,13 @@ describe('SystemInfo API', function() {
     expect(info.magento_edition).to.not.be.undefined;
   });
 
-  it('should return customer DB website scope when configured so', async function() {
+  it('should return customer DB website scope when configured so', async function () {
     const info = await this.magentoApi.execute('systeminfo', 'get');
 
     expect(info.is_website_scope).to.be.true;
   });
 
-  it('should return customer DB website scope when configured so', async function() {
+  it('should return customer DB website scope when configured so', async function () {
     await this.db(this.getTableName('core_config_data')).insert(
       { scope: 'default', path: 'customer/account_share/scope', value: 0 }
     );

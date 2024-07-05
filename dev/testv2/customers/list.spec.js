@@ -23,8 +23,8 @@ const customers = [
   }
 ];
 
-describe('Customers endpoint', function() {
-  before(async function() {
+describe('Customers endpoint', function () {
+  before(async function () {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 1,
       type: 'customer',
@@ -35,7 +35,7 @@ describe('Customers endpoint', function() {
     }
   });
 
-  after(async function() {
+  after(async function () {
     await this.magentoApi.execute('attributes', 'set', {
       websiteId: 1,
       type: 'customer',
@@ -44,7 +44,7 @@ describe('Customers endpoint', function() {
     await this.db.raw(`DELETE FROM ${this.getTableName('customer_entity')} where email like "%@customer.net"`);
   });
 
-  it('returns customers according to page and page_size inlcuding last_page', async function() {
+  it('returns customers according to page and page_size inlcuding last_page', async function () {
     const page = 1;
     const limit = 2;
 
@@ -66,7 +66,7 @@ describe('Customers endpoint', function() {
     expect(customer).to.have.property('shipping_address');
   });
 
-  it('returns extra_fields for customers', async function() {
+  it('returns extra_fields for customers', async function () {
     const page = 1;
     const limit = 1;
 

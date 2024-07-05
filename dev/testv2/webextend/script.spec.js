@@ -45,8 +45,8 @@ const insertNewCategoryBetween = async (magentoApi, { name, parentId, childId })
 };
 
 describe('Webextend scripts', function () {
-  describe('enabled', function() {
-    beforeEach(async function() {
+  describe('enabled', function () {
+    beforeEach(async function () {
       await this.magentoApi.execute('config', 'set', {
         websiteId: 1,
         config: {
@@ -57,7 +57,7 @@ describe('Webextend scripts', function () {
       });
     });
 
-    it('should be in the HTML if injectsnippet is enabled', async function() {
+    it('should be in the HTML if injectsnippet is enabled', async function () {
       const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
 
       expect(emarsysSnippets.includes('<script src="http://yolo.hu/script"></script>')).to.be.true;
@@ -77,7 +77,7 @@ describe('Webextend scripts', function () {
       ).to.be.true;
     });
 
-    it('should include search term', async function() {
+    it('should include search term', async function () {
       const emarsysSnippets = await getEmarsysSnippetContents('catalogsearch/result/?q=magento+is+hit');
       expect(
         emarsysSnippets.includes(
@@ -87,7 +87,7 @@ describe('Webextend scripts', function () {
       ).to.be.true;
     });
 
-    it('should include categories in the right order', async function() {
+    it('should include categories in the right order', async function () {
       let parentCategoryId = '11';
       let childCategoryId = '12';
 
@@ -117,7 +117,7 @@ describe('Webextend scripts', function () {
       ).to.be.true;
     });
 
-    it('should include product', async function() {
+    it('should include product', async function () {
       const emarsysSnippets = await getEmarsysSnippetContents('cassius-sparring-tank.html');
 
       let productHelper = new ProductHelper(this.db, this.magentoEdition, this.magentoVersion);
@@ -131,7 +131,7 @@ describe('Webextend scripts', function () {
       ).to.be.true;
     });
 
-    it('should include if product is visible child', async function() {
+    it('should include if product is visible child', async function () {
       await alterProductVisibility(this.magentoApi, 'MT12-XS-Blue');
       const emarsysSnippets = await getEmarsysSnippetContents('cassius-sparring-tank-xs-blue.html');
 
@@ -139,16 +139,16 @@ describe('Webextend scripts', function () {
       expect(emarsysSnippets.includes('"isVisibleChild":true')).to.be.true;
     });
 
-    describe('store is not enabled', function() {
-      before(async function() {
+    describe('store is not enabled', function () {
+      before(async function () {
         await this.clearStoreSettings();
       });
 
-      after(async function() {
+      after(async function () {
         await this.setDefaultStoreSettings();
       });
 
-      it('should not be in the HTML', async function() {
+      it('should not be in the HTML', async function () {
         await this.turnOffEverySetting(1);
         const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
         expect(emarsysSnippets).to.eql('');
@@ -157,7 +157,7 @@ describe('Webextend scripts', function () {
   });
 
   describe('disabled', function () {
-    it('should not be in the HTML if injectsnippet setting is disabled', async function() {
+    it('should not be in the HTML if injectsnippet setting is disabled', async function () {
       await this.turnOffEverySetting(1);
       const emarsysSnippets = await getEmarsysSnippetContents('customer/account/login/');
       expect(emarsysSnippets).to.eql('');

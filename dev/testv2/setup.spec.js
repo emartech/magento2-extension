@@ -6,7 +6,7 @@ const chaiSubset = require('chai-subset');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const url = require('url');
-const Magento2ApiClient = require('@emartech/magento2-api');
+const Magento2ApiClient = require('@itg-commerce/magento2-api');
 const axios = require('axios');
 
 const { cacheTablePrefix, getTableName } = require('./helpers/get-table-name');
