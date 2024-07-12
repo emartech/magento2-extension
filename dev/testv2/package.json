@@ -5,8 +5,8 @@
   "scripts": {
     "postinstall": "if [ -d \"./../../.git\" ]; then npm run copy-git-hooks; fi",
     "test": "npm run mocha && npm run code-style",
-    "e2e": "cypress run --browser electron --headless",
-    "e2e:ci": "cypress run --browser electron --headless --record --key 80ddf60c-0dca-4075-8074-31207092e038",
+    "e2e": "ENV NODE_OPTIONS=\"--max-old-space-size=4096\" && cypress run --browser electron --headless",
+    "e2e:ci": "ENV NODE_OPTIONS=\"--max-old-space-size=4096\" && cypress run --browser electron --headless --record --key 80ddf60c-0dca-4075-8074-31207092e038",
     "e2e:debug": "DEBUG=cypress:* cypress run --browser electron --headless",
     "quick-test": "npm run mocha",
     "mocha": "./node_modules/mocha/bin/mocha.js --exit --timeout 120000 --colors ./setup.spec.js './!(node_modules|cypress)/**/*.spec.js'",
