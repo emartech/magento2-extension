@@ -22,8 +22,8 @@ module.exports = defineConfig({
                         launchOptions.args.push("--disable-gl-drawing-for-tests");
                         launchOptions.args.push("--disable-gpu");
                     }
-                    launchOptions.args.push("--js-flags=--max-old-space-size=3500");
                 }
+                launchOptions.args.push("--js-flags=--max-old-space-size=3500");
                 return launchOptions;
             });
 

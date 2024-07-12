@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "if [ -d \"./../../.git\" ]; then npm run copy-git-hooks; fi",
     "test": "npm run mocha && npm run code-style",
-    "e2e": "cypress run --browser chrome --headless",
+    "e2e": "cypress run --browser electron --headless",
     "e2e:ci": "cypress run --browser electron --headless --record --key 80ddf60c-0dca-4075-8074-31207092e038",
     "e2e:debug": "DEBUG=cypress:* cypress run --browser electron --headless",
     "quick-test": "npm run mocha",
