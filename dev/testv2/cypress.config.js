@@ -7,6 +7,8 @@ module.exports = defineConfig({
     defaultCommandTimeout: 120000,
     pageLoadTimeout: 120000,
     experimentalMemoryManagement: true,
+    experimentalModifyObstructiveThirdPartyCode: true,
+    numTestsKeptInMemory: 0,
     blockHosts: ['*snippet.url.com', '*scarabresearch.com'],
     env: {
         snippetUrl: 'http://snippet.url.com/main.js'
