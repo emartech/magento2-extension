@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "if [ -d \"./../../.git\" ]; then npm run copy-git-hooks; fi",
     "test": "npm run mocha && npm run code-style",
-    "e2e": "cypress run --browser electron --headless",
+    "e2e": "cypress run --browser edge --headless",
     "e2e:ci": "cypress run --browser electron --headless --record --key 80ddf60c-0dca-4075-8074-31207092e038",
     "e2e:debug": "DEBUG=cypress:* cypress run --browser electron --headless",
     "quick-test": "npm run mocha",
@@ -30,7 +30,7 @@
     "chai-subset": "^1.6.0",
     "chai-as-promised": "7.1.1",
     "cheerio": "^1.0.0-rc.12",
-    "cypress": "13.6.4",
+    "cypress": "13.13.1",
     "eslint": "6.3.0",
     "eslint-config-emarsys": "5.1.0",
     "eslint-plugin-mocha": "6.1.0",
