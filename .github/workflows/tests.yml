@@ -63,6 +63,11 @@ jobs:
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      - name: Tear down Docker containers
+        shell: bash
+        run: |
+          cd magento2-extension/dev
+          docker-compose down
   e2e-tests:
     runs-on: github-actions-runner-emarsys
     needs: unit-tests
@@ -120,3 +125,8 @@ jobs:
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      - name: Tear down Docker containers
+        shell: bash
+        run: |
+          cd magento2-extension/dev
+          docker-compose down
