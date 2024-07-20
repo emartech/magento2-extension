@@ -65,6 +65,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
   e2e-tests:
     runs-on: github-actions-runner-emarsys
+    needs: unit-tests
     permissions:
       contents: "read"
     strategy:
