@@ -67,7 +67,7 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension/dev
-          docker-compose down
+          docker compose down
   e2e-tests:
     runs-on: github-actions-runner-emarsys
     needs: unit-tests
@@ -129,4 +129,4 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension/dev
-          docker-compose down
+          docker compose down
