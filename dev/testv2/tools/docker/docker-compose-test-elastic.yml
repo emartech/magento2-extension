@@ -56,6 +56,10 @@ services:
     links:
       - magento-test:magento-test.local
       - db
+    deploy:
+      resources:
+        limits:
+          memory: 8G
   mailhog:
     image: mailhog/mailhog
     restart: always
