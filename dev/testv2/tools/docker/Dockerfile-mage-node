@@ -1,11 +1,13 @@
 FROM registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/cypress:13.6.4
 ARG NPM_TOKEN
 ENV NPM_TOKEN=${NPM_TOKEN}
+# ENV NODE_OPTIONS="--max-old-space-size=16384"
 
 COPY testv2 /test
 
 WORKDIR /test
 RUN npm i && \
+    node --max-old-space-size=16384 && \
     ./node_modules/.bin/cypress install && \
     ./node_modules/.bin/cypress verify
 

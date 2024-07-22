@@ -17,6 +17,7 @@ module.exports = defineConfig({
         // We've imported your old cypress plugins here.
         // You may want to clean this up later by importing these.
         setupNodeEvents(on, config) {
+            /*
             on("before:browser:launch", (browser, launchOptions) => {
                 if (["chrome", "edge"].includes(browser.name)) {
                     if (browser.isHeadless) {
@@ -28,6 +29,7 @@ module.exports = defineConfig({
                 launchOptions.args.push("--js-flags=--max-old-space-size=8192");
                 return launchOptions;
             });
+             */
 
             return require('./cypress/plugins/index.js')(on, config);
         },
