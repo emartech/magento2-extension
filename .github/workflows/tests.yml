@@ -47,12 +47,12 @@ jobs:
             $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
-          sudo apt-get install docker-compose-plugin -y
+          sudo apt-get install docker-compose-plugin docker-buildx-plugin -y
       - name: Build mage_node image
         shell: bash
         run: |
           cd magento2-extension/dev
-          docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
+          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       - name: Run unittest
@@ -104,12 +104,12 @@ jobs:
             $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
-          sudo apt-get install docker-compose-plugin -y
+          sudo apt-get install docker-compose-plugin docker-buildx-plugin -y
       - name: Build mage_node image
         shell: bash
         run: |
           cd magento2-extension/dev
-          docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
+          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       - name: Run e2stest
