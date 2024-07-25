@@ -5,7 +5,7 @@ ENV NPM_TOKEN=${NPM_TOKEN}
 COPY testv2 /test
 
 WORKDIR /test
-RUN npm i
+RUN npm ci
 RUN ./node_modules/.bin/cypress install
 RUN ./node_modules/.bin/cypress verify
 
