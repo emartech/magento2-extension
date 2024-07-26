@@ -9,5 +9,4 @@ RUN npm ci
 RUN ./node_modules/.bin/cypress install
 RUN ./node_modules/.bin/cypress verify
 
-
 #CMD /usr/local/bin/shell.sh ; sleep infinity
