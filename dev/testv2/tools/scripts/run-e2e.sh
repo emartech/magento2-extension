@@ -28,6 +28,7 @@ echo "\n|--- Running frontend tests"
 docker compose -p mage_e2e_"$project_version" -f $composefile run --rm node sh -c "npm run e2e" --exit-code-from node --abort-on-container-exit node
 exitcode=$?
 echo "\n\n|--- All tests passed"
+free
 
 docker compose -p mage_e2e_"$project_version" -f $composefile down
 exit $exitcode
