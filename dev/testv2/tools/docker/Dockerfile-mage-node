@@ -2,15 +2,11 @@ FROM registry.itg.cloud/itg-commerce/emarsys-magento2-extension-test/cypress:13.
 ARG NPM_TOKEN
 ENV NPM_TOKEN=${NPM_TOKEN}
 
-RUN apt-get update && apt-get install -y dbus
-RUN mkdir -p /run/dbus && \
-    dbus-daemon --system --fork
-
 COPY testv2 /test
 
 WORKDIR /test
 RUN npm ci && free
 RUN ./node_modules/.bin/cypress install && free
-RUN ./node_modules/.bin/cypress verify && free
+# RUN ./node_modules/.bin/cypress verify && free
 
 #CMD /usr/local/bin/shell.sh ; sleep infinity

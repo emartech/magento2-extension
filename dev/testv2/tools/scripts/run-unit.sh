@@ -38,4 +38,5 @@ docker compose -p mage_unit_$project_version -f $composefile run --rm node sh -c
 exitcode=$?
 echo "\n\n|--- Stopping containers"
 docker compose -p mage_unit_$project_version -f $composefile down
+sleep 30
 exit $exitcode
