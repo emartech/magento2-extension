@@ -8,6 +8,7 @@ module.exports = defineConfig({
     pageLoadTimeout: 120000,
     experimentalMemoryManagement: true,
     experimentalModifyObstructiveThirdPartyCode: true,
+    modifyObstructiveCode: true,
     numTestsKeptInMemory: 0,
     blockHosts: ['*snippet.url.com', '*scarabresearch.com'],
     env: {
