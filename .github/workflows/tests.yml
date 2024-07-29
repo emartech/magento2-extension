@@ -7,23 +7,36 @@ on:
       - "*"
 
 jobs:
-  build-image:
+  build-and-run-test:
     runs-on: github-actions-runner-emarsys
     permissions:
       contents: "read"
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        magento-versions:
+          ["2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
       - name: Checkout code
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install git -y
-          git clone https://github.com/emartech/magento2-extension.git
+          git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/emartech/magento2-extension.git
+
       - name: Login to GitLab
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_URL }}
           username: ${{ secrets.GITLAB_USER }}
           password: ${{ secrets.GITLAB_TOKEN }}
+
       - name: Install system tools
         shell: bash
         run: |
@@ -38,111 +51,29 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-compose-plugin docker-buildx-plugin -y
+
       - name: Build mage_node image
         shell: bash
         run: |
           cd magento2-extension/dev
-          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node:latest" .
+          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-      - name: Save mage_node image
-        shell: bash
-        run: |
-          docker save mage_node:latest | gzip > mage_node_latest.tar.gz
-      - name: Upload mage_node image
-        uses: actions/upload-artifact@v3
-        with:
-          name: mage_node_image
-          path: mage_node_latest.tar.gz
 
-  unit-tests:
-    runs-on: github-actions-runner-emarsys
-    needs: build-image
-    permissions:
-      contents: "read"
-    strategy:
-      max-parallel: 1
-      fail-fast: false
-      matrix:
-        magento-versions:
-          ["2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
-    steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-      - name: Checkout code
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install git -y
-          git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/emartech/magento2-extension.git
-      - name: Login to GitLab
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ vars.REGISTRY_URL }}
-          username: ${{ secrets.GITLAB_USER }}
-          password: ${{ secrets.GITLAB_TOKEN }}
-      - name: Download mage_node image
-        uses: actions/download-artifact@v3
-        with:
-          name: mage_node_image
-          path: .
-      - name: Load mage_node image
-        shell: bash
-        run: |
-          gunzip -c mage_node_latest.tar.gz | docker load
-      - name: Run unittest
+      - name: Run unit tests
         shell: bash
         run: |
           cd magento2-extension
-          bash dev/testv2/tools/scripts/run-unit.sh
+          docker run -e VERSION=${{ matrix.magento-versions }} -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} mage_node bash dev/testv2/tools/scripts/run-unit-tests.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
-  e2e-tests:
-    runs-on: github-actions-runner-emarsys
-    needs: [build-image, unit-tests]
-    permissions:
-      contents: "read"
-    strategy:
-      max-parallel: 1
-      fail-fast: false
-      matrix:
-        magento-versions:
-          ["2.3.5ce", "2.4.0ce", "2.4.2ce", "2.4.4ce", "2.4.6ce"]
-    steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-      - name: Checkout code
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install git -y
-          git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/emartech/magento2-extension.git
-      - name: Login to GitLab
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ vars.REGISTRY_URL }}
-          username: ${{ secrets.GITLAB_USER }}
-          password: ${{ secrets.GITLAB_TOKEN }}
-      - name: Download mage_node image
-        uses: actions/download-artifact@v3
-        with:
-          name: mage_node_image
-          path: .
-      - name: Load mage_node image
-        shell: bash
-        run: |
-          gunzip -c mage_node_latest.tar.gz | docker load
-      - name: Run e2etest
+      - name: Run e2e tests
         shell: bash
         run: |
           cd magento2-extension
-          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} -v $(pwd)/dev/testv2/tools/scripts:/scripts mage_node:latest bash /scripts/run-e2e.sh
+          docker run -e VERSION=${{ matrix.magento-versions }} -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} mage_node bash dev/testv2/tools/scripts/run-e2e.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
