@@ -32,5 +32,4 @@ echo "\n\n|--- All tests passed"
 free
 
 docker compose -p mage_e2e_"$project_version" -f $composefile down
-sleep 30
 exit $exitcode

@@ -96,7 +96,8 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension
-          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} mage_node:latest bash dev/testv2/tools/scripts/run-unit.sh
+          ls -la dev/testv2/tools/scripts/
+          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} -v $(pwd)/dev/testv2/tools/scripts:/scripts mage_node:latest bash /scripts/run-unit.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
@@ -142,7 +143,7 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension
-          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} mage_node:latest bash dev/testv2/tools/scripts/run-e2e.sh
+          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} -v $(pwd)/dev/testv2/tools/scripts:/scripts mage_node:latest bash /scripts/run-e2e.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
