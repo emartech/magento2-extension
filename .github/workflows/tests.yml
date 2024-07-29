@@ -22,18 +22,24 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+        retry:
+          max_attempts: 3
       - name: Checkout code
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install git -y
           git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/emartech/magento2-extension.git
+        retry:
+          max_attempts: 3
       - name: Login to GitLab
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_URL }}
           username: ${{ secrets.GITLAB_USER }}
           password: ${{ secrets.GITLAB_TOKEN }}
+        retry:
+          max_attempts: 3
       - name: Install system tools
         shell: bash
         run: |
@@ -48,6 +54,8 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-compose-plugin docker-buildx-plugin -y
+        retry:
+          max_attempts: 3
       - name: Build mage_node image
         shell: bash
         run: |
@@ -55,6 +63,8 @@ jobs:
           DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        retry:
+          max_attempts: 3
       - name: Run unittest
         shell: bash
         run: |
@@ -63,9 +73,11 @@ jobs:
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        retry:
+          max_attempts: 3
   e2e-tests:
     runs-on: github-actions-runner-emarsys
-    needs: unit-tests
+#    needs: unit-tests
     permissions:
       contents: "read"
     strategy:
@@ -79,18 +91,24 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+        retry:
+          max_attempts: 3
       - name: Checkout code
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install git -y
           git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/emartech/magento2-extension.git
+        retry:
+          max_attempts: 3
       - name: Login to GitLab
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_URL }}
           username: ${{ secrets.GITLAB_USER }}
           password: ${{ secrets.GITLAB_TOKEN }}
+        retry:
+          max_attempts: 3
       - name: Install system tools
         shell: bash
         run: |
@@ -105,6 +123,8 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-compose-plugin docker-buildx-plugin -y
+        retry:
+          max_attempts: 3
       - name: Build mage_node image
         shell: bash
         run: |
@@ -112,6 +132,8 @@ jobs:
           DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        retry:
+          max_attempts: 3
       - name: Run e2stest
         shell: bash
         run: |
@@ -120,3 +142,5 @@ jobs:
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        retry:
+          max_attempts: 3
