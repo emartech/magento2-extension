@@ -22,24 +22,21 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-        retry:
-          max_attempts: 3
+
       - name: Checkout code
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install git -y
           git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/emartech/magento2-extension.git
-        retry:
-          max_attempts: 3
+
       - name: Login to GitLab
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_URL }}
           username: ${{ secrets.GITLAB_USER }}
           password: ${{ secrets.GITLAB_TOKEN }}
-        retry:
-          max_attempts: 3
+
       - name: Install system tools
         shell: bash
         run: |
@@ -54,27 +51,38 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-compose-plugin docker-buildx-plugin -y
-        retry:
-          max_attempts: 3
+
       - name: Build mage_node image
         shell: bash
         run: |
-          cd magento2-extension/dev
-          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
+          retries=3
+          count=0
+          until [ $count -ge $retries ]
+          do
+            cd magento2-extension/dev && DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .  && break
+            count=$((count+1))
+            echo "Retrying e2e tests ($count/$retries)..."
+            sleep 30
+          done
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        retry:
-          max_attempts: 3
-      - name: Run unittest
+
+      - name: Run unit test
         shell: bash
         run: |
-          cd magento2-extension
-          bash dev/testv2/tools/scripts/run-unit.sh
+          retries=3
+          count=0
+          until [ $count -ge $retries ]
+          do
+            cd magento2-extension && bash dev/testv2/tools/scripts/run-unit.sh && break
+            count=$((count+1))
+            echo "Retrying e2e tests ($count/$retries)..."
+            sleep 30
+          done
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        retry:
-          max_attempts: 3
+
   e2e-tests:
     runs-on: github-actions-runner-emarsys
 #    needs: unit-tests
@@ -91,24 +99,21 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-        retry:
-          max_attempts: 3
+
       - name: Checkout code
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install git -y
           git clone --branch ${{ steps.extract_branch.outputs.branch }} https://github.com/emartech/magento2-extension.git
-        retry:
-          max_attempts: 3
+
       - name: Login to GitLab
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.REGISTRY_URL }}
           username: ${{ secrets.GITLAB_USER }}
           password: ${{ secrets.GITLAB_TOKEN }}
-        retry:
-          max_attempts: 3
+
       - name: Install system tools
         shell: bash
         run: |
@@ -123,24 +128,34 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-compose-plugin docker-buildx-plugin -y
-        retry:
-          max_attempts: 3
+
       - name: Build mage_node image
         shell: bash
         run: |
-          cd magento2-extension/dev
-          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
+          retries=3
+          count=0
+          until [ $count -ge $retries ]
+          do
+            cd magento2-extension/dev && DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .  && break
+            count=$((count+1))
+            echo "Retrying e2e tests ($count/$retries)..."
+            sleep 30
+          done
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        retry:
-          max_attempts: 3
-      - name: Run e2stest
+
+      - name: Run e2e test
         shell: bash
         run: |
-          cd magento2-extension
-          bash dev/testv2/tools/scripts/run-e2e.sh
+          retries=3
+          count=0
+          until [ $count -ge $retries ]
+          do
+            cd magento2-extension && bash dev/testv2/tools/scripts/run-e2e.sh && break
+            count=$((count+1))
+            echo "Retrying e2e tests ($count/$retries)..."
+            sleep 30
+          done
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        retry:
-          max_attempts: 3
