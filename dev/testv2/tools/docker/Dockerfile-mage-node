@@ -7,6 +7,6 @@ COPY testv2 /test
 WORKDIR /test
 RUN npm i
 RUN ./node_modules/.bin/cypress install
-# RUN ./node_modules/.bin/cypress verify && free
+# RUN ./node_modules/.bin/cypress verify
 
 #CMD /usr/local/bin/shell.sh ; sleep infinity
