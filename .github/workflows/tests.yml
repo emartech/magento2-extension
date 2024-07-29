@@ -42,9 +42,18 @@ jobs:
         shell: bash
         run: |
           cd magento2-extension/dev
-          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .
+          DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node:latest" .
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      - name: Save mage_node image
+        shell: bash
+        run: |
+          docker save mage_node:latest | gzip > mage_node_latest.tar.gz
+      - name: Upload mage_node image
+        uses: actions/upload-artifact@v3
+        with:
+          name: mage_node_image
+          path: mage_node_latest.tar.gz
 
   unit-tests:
     runs-on: github-actions-runner-emarsys
@@ -74,11 +83,20 @@ jobs:
           registry: ${{ vars.REGISTRY_URL }}
           username: ${{ secrets.GITLAB_USER }}
           password: ${{ secrets.GITLAB_TOKEN }}
+      - name: Download mage_node image
+        uses: actions/download-artifact@v3
+        with:
+          name: mage_node_image
+          path: .
+      - name: Load mage_node image
+        shell: bash
+        run: |
+          gunzip -c mage_node_latest.tar.gz | docker load
       - name: Run unittest
         shell: bash
         run: |
           cd magento2-extension
-          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} mage_node bash dev/testv2/tools/scripts/run-unit.sh
+          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} mage_node:latest bash dev/testv2/tools/scripts/run-unit.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
@@ -111,11 +129,20 @@ jobs:
           registry: ${{ vars.REGISTRY_URL }}
           username: ${{ secrets.GITLAB_USER }}
           password: ${{ secrets.GITLAB_TOKEN }}
+      - name: Download mage_node image
+        uses: actions/download-artifact@v3
+        with:
+          name: mage_node_image
+          path: .
+      - name: Load mage_node image
+        shell: bash
+        run: |
+          gunzip -c mage_node_latest.tar.gz | docker load
       - name: Run e2etest
         shell: bash
         run: |
           cd magento2-extension
-          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} mage_node bash dev/testv2/tools/scripts/run-e2e.sh
+          docker run --rm -e NPM_TOKEN=${{ secrets.GITLAB_TOKEN }} -e VERSION=${{ matrix.magento-versions }} mage_node:latest bash dev/testv2/tools/scripts/run-e2e.sh
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
