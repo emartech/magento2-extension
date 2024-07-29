@@ -70,11 +70,12 @@ jobs:
       - name: Run unit test
         shell: bash
         run: |
+          cd magento2-extension
           retries=3
           count=0
           until [ $count -ge $retries ]
           do
-            cd magento2-extension && bash dev/testv2/tools/scripts/run-unit.sh && break
+            bash dev/testv2/tools/scripts/run-unit.sh && break
             count=$((count+1))
             echo "Retrying e2e tests ($count/$retries)..."
             sleep 30
@@ -147,11 +148,12 @@ jobs:
       - name: Run e2e test
         shell: bash
         run: |
+          cd magento2-extension
           retries=3
           count=0
           until [ $count -ge $retries ]
           do
-            cd magento2-extension && bash dev/testv2/tools/scripts/run-e2e.sh && break
+            bash dev/testv2/tools/scripts/run-e2e.sh && break
             count=$((count+1))
             echo "Retrying e2e tests ($count/$retries)..."
             sleep 30
