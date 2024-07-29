@@ -55,15 +55,20 @@ jobs:
       - name: Build mage_node image
         shell: bash
         run: |
+          cd magento2-extension/dev
           retries=3
           count=0
           until [ $count -ge $retries ]
           do
-            cd magento2-extension/dev && DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .  && break
+            DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .  && break
             count=$((count+1))
-            echo "Retrying e2e tests ($count/$retries)..."
+            echo "Retrying build mage_node image ($count/$retries)..."
             sleep 30
           done
+          if [ $count -ge $retries ]; then
+            echo "mage_node image building failed after $retries attempts."
+            exit 1
+          fi
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
@@ -77,9 +82,13 @@ jobs:
           do
             bash dev/testv2/tools/scripts/run-unit.sh && break
             count=$((count+1))
-            echo "Retrying e2e tests ($count/$retries)..."
+            echo "Retrying unit tests ($count/$retries)..."
             sleep 30
           done
+          if [ $count -ge $retries ]; then
+            echo "unit tests failed after $retries attempts."
+            exit 1
+          fi
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
@@ -133,15 +142,20 @@ jobs:
       - name: Build mage_node image
         shell: bash
         run: |
+          cd magento2-extension/dev
           retries=3
           count=0
           until [ $count -ge $retries ]
           do
-            cd magento2-extension/dev && DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .  && break
+            DOCKER_BUILDKIT=1 docker build -f testv2/tools/docker/Dockerfile-mage-node --build-arg NPM_TOKEN=$NPM_TOKEN -t "mage_node" .  && break
             count=$((count+1))
-            echo "Retrying e2e tests ($count/$retries)..."
+            echo "Retrying build mage_node image ($count/$retries)..."
             sleep 30
           done
+          if [ $count -ge $retries ]; then
+            echo "mage_node image building failed after $retries attempts."
+            exit 1
+          fi
         env:
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
@@ -158,6 +172,10 @@ jobs:
             echo "Retrying e2e tests ($count/$retries)..."
             sleep 30
           done
+          if [ $count -ge $retries ]; then
+            echo "e2e tests failed after $retries attempts."
+            exit 1
+          fi
         env:
           VERSION: ${{ matrix.magento-versions }}
           NPM_TOKEN: ${{ secrets.GITLAB_TOKEN }}
