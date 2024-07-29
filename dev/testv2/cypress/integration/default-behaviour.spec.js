@@ -23,10 +23,6 @@ describe('Default behaviour with everything turned off', function () {
     it('should not create customer_password_reset event', function () {
       const newPassword = 'newPassword1';
 
-      // @TODO Remove this line when the test is ready
-      let deliberateError = true;
-      expect(deliberateError).to.be.false;
-
       cy.loginWithCustomer(this.defaultCustomer);
       cy.changeCredentials(this.defaultCustomer.password, { password: newPassword });
 
