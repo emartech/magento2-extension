@@ -9,12 +9,9 @@ module.exports = defineConfig({
     experimentalMemoryManagement: true,
     experimentalModifyObstructiveThirdPartyCode: true,
     modifyObstructiveCode: true,
-    chromeWebSecurity: false,
-    numTestsKeptInMemory: 0,
     blockHosts: ['*snippet.url.com', '*scarabresearch.com'],
     env: {
-        snippetUrl: 'http://snippet.url.com/main.js',
-        NODE_OPTIONS: "--max-old-space-size=4096"
+        snippetUrl: 'http://snippet.url.com/main.js'
     },
     e2e: {
         // We've imported your old cypress plugins here.

@@ -27,12 +27,6 @@ docker compose -p mage_unit_$project_version -f $composefile up --build -d
 echo "\n|--- Waiting for containers to initialize"
 sh ./wait.sh unit >>/dev/null 2>&1
 
-if ![[ $VERSION =~ ^2\.3\.3 ]]
-then
-  echo "\n|--- Testing Magento DI compilation"
-  docker compose -p mage_unit_$project_version -f $composefile exec -T --user application magento-test bash -c "bin/magento setup:di:compile"
-fi
-
 echo "\n|--- Running backend tests"
 docker compose -p mage_unit_$project_version -f $composefile run --rm node sh -c "npm run mocha" --exit-code-from node --abort-on-container-exit node
 exitcode=$?

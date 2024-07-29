@@ -24,12 +24,11 @@ echo "\n|--- Starting containers"
 docker compose -p mage_e2e_"$project_version" -f $composefile up --build -d
 echo "\n|--- Waiting for containers to initialize"
 sh ./wait.sh e2e >>/dev/null 2>&1
+
 echo "\n|--- Running frontend tests"
-free
-docker compose -p mage_e2e_"$project_version" -f $composefile run --rm node sh -c "free && npm run e2e" --exit-code-from node --abort-on-container-exit node
+docker compose -p mage_e2e_"$project_version" -f $composefile run --rm node sh -c "npm run e2e" --exit-code-from node --abort-on-container-exit node
 exitcode=$?
 echo "\n\n|--- All tests passed"
-free
 
 docker compose -p mage_e2e_"$project_version" -f $composefile down
 exit $exitcode

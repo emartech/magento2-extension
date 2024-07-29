@@ -13,6 +13,10 @@ describe('Attributes endpoint', function () {
 
   describe('get', function () {
     it('should fetch attributes including extra fields for customer', async function () {
+      // @TODO Remove this line when the test is ready
+      let deliberateError = true;
+      expect(deliberateError).to.be.false;
+
       const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'customer' });
       const mappedAttributes = mapAttributes(attributes);
 
