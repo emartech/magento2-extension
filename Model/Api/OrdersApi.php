@@ -6,6 +6,7 @@ use Emartech\Emarsys\Api\Data\OrdersApiResponseInterface;
 use Emartech\Emarsys\Api\Data\OrdersApiResponseInterfaceFactory;
 use Emartech\Emarsys\Api\OrdersApiInterface;
 use Magento\Framework\Webapi\Exception as WebApiException;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\Collection as OrderCollection;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 
@@ -144,7 +145,9 @@ class OrdersApi implements OrdersApiInterface
     {
         $returnArray = [];
 
+        /** @var Order $order */
         foreach ($this->orderCollection as $order) {
+            $order->setStoreName(str_replace(PHP_EOL, ' ', $order->getStoreName()));
             $returnArray[] = $order;
         }
 
