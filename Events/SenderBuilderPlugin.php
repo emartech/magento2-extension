@@ -284,7 +284,7 @@ class SenderBuilderPlugin
      */
     private function saveEvent(int $websiteId, int $storeId, string $type, int $entityId, array $data): void
     {
-        $data = $this->json->serialize($data);
+        $data = json_encode($data, JSON_INVALID_UTF8_IGNORE);
 
         $eventModel = $this->eventFactory
             ->create()

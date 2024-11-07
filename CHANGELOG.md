@@ -1,6 +1,11 @@
 Release notes:
 ==============
 
+2.0.14
+-------
+* Fix
+  * Fixing email trigger, if not default template has been choosen for guests orders not triggered
+
 2.0.13
 -------
 * Fix
