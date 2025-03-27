@@ -14,6 +14,8 @@ interface CustomersApiInterface
      * @param string|null $websiteId
      * @param string|null $storeId
      * @param bool|null   $onlyReg
+     * @param string|null $lastUpdatedFrom
+     * @param string|null $lastUpdatedTo
      *
      * @return \Emartech\Emarsys\Api\Data\CustomersApiResponseInterface
      */
@@ -22,6 +24,8 @@ interface CustomersApiInterface
         int $pageSize,
         string $websiteId = null,
         string $storeId = null,
-        bool $onlyReg = null
+        bool $onlyReg = null,
+        string $lastUpdatedFrom = null,
+        string $lastUpdatedTo = null
     ): CustomersApiResponseInterface;
 }

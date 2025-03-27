@@ -98,6 +98,8 @@ class CustomersApi implements CustomersApiInterface
      * @param string|null $websiteId
      * @param string|null $storeId
      * @param bool|null   $onlyReg
+     * @param string|null $lastUpdatedFrom
+     * @param string|null $lastUpdatedTo
      *
      * @return CustomersApiResponseInterface
      * @throws WebApiException
@@ -107,7 +109,9 @@ class CustomersApi implements CustomersApiInterface
         int $pageSize,
         string $websiteId = null,
         string $storeId = null,
-        bool $onlyReg = null
+        bool $onlyReg = null,
+        string $lastUpdatedFrom = null,
+        string $lastUpdatedTo = null
     ): CustomersApiResponseInterface {
         $config = $this->configFactory->create();
 
@@ -121,6 +125,7 @@ class CustomersApi implements CustomersApiInterface
         $this
             ->handleWebsiteId($websiteId, $onlyReg)
             ->initCollection()
+            ->setDateFilter($lastUpdatedFrom, $lastUpdatedTo)
             ->handleIds($page, $pageSize)
             ->handleAttributeData()
             ->handleAddressesAttributeData()
@@ -230,6 +235,21 @@ class CustomersApi implements CustomersApiInterface
     protected function setWhere(): CustomersApi
     {
         $this->customerHelper->setWhere($this->linkField, $this->minId, $this->maxId, $this->websiteId);
+
+        return $this;
+    }
+
+    /**
+     * Set date filter
+     *
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
+     *
+     * @return CustomersApi
+     */
+    protected function setDateFilter(?string $dateFrom, ?string $dateTo): CustomersApi
+    {
+        $this->customerHelper->setDateFilter($dateFrom, $dateTo);
 
         return $this;
     }
