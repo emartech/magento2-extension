@@ -24,7 +24,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@itg-commerce/magento2-api": "4.7.0",
-    "axios": "^1.6.7",
+    "axios": "^1.9.0",
     "chai": "^4.4.1",
     "chai-string": "^1.5.0",
     "chai-subset": "^1.6.0",
@@ -52,6 +52,10 @@
     "semver": "7.6.0",
     "acorn": "8.3.0",
     "ajv": "8.6.2",
-    "ansi-regex": "6.0.1"
+    "ansi-regex": "6.0.1",
+    "micromatch": "^4.0.8",
+    "path-to-regexp": "^8.2.0",
+    "inflight": "^1.0.6",
+    "cross-spawn": "^7.0.6"
   }
 }
