@@ -6,7 +6,7 @@
     "php": ">7.0.1"
   },
   "type": "magento2-module",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "autoload": {
     "files": [
       "registration.php"
