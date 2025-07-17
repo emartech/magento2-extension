@@ -1,6 +1,11 @@
 Release notes:
 ==============
 
+2.0.15
+-------
+* New
+  * Orders filtering & Refund polling based on timestamps 
+
 2.0.14
 -------
 * Fix
