@@ -13,6 +13,8 @@ interface RefundsApiInterface
      * @param int         $pageSize
      * @param int         $sinceId
      * @param string|null $storeId
+     * @param string|null $lastUpdatedFrom
+     * @param string|null $lastUpdatedTo
      *
      * @return \Emartech\Emarsys\Api\Data\RefundsApiResponseInterface
      */
@@ -20,6 +22,8 @@ interface RefundsApiInterface
         int $page,
         int $pageSize,
         int $sinceId = 0,
-        string $storeId = null
+        string $storeId = null,
+        string $lastUpdatedFrom = null,
+        string $lastUpdatedTo = null
     ): RefundsApiResponseInterface;
 }

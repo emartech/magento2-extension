@@ -48,12 +48,21 @@ class OrdersApi implements OrdersApiInterface
      * @param int         $pageSize
      * @param int         $sinceId
      * @param string|null $storeId
+     * @param string|null $lastUpdatedFrom
+     * @param string|null $lastUpdatedTo
      *
      * @return OrdersApiResponseInterface
      * @throws WebApiException
      */
-    public function get(int $page, int $pageSize, int $sinceId = 0, string $storeId = null): OrdersApiResponseInterface
-    {
+    public function get(
+        int $page,
+        int $pageSize,
+        int $sinceId = 0,
+        string $storeId = null,
+        string $lastUpdatedFrom = null,
+        string $lastUpdatedTo = null
+    ): OrdersApiResponseInterface {
+
         if (empty($storeId)) {
             throw new WebApiException(__('Store ID is required'));
         }
@@ -62,6 +71,7 @@ class OrdersApi implements OrdersApiInterface
             ->initCollection()
             ->filterStore($storeId)
             ->filterSinceId($sinceId)
+            ->filterLastUpdated($lastUpdatedFrom, $lastUpdatedTo)
             ->setPage($page, $pageSize);
 
         return $this->responseFactory
@@ -116,6 +126,27 @@ class OrdersApi implements OrdersApiInterface
         if ($sinceId) {
             $this->orderCollection
                 ->addFieldToFilter('entity_id', ['gt' => $sinceId]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Filter last updated at
+     *
+     * @param string|null $lastUpdatedFrom
+     * @param string|null $lastUpdatedTo
+     *
+     * @return OrdersApi
+     */
+    private function filterLastUpdated(?string $lastUpdatedFrom = null, ?string $lastUpdatedTo = null): OrdersApi
+    {
+        if ($lastUpdatedFrom) {
+            $this->orderCollection->addFieldToFilter('updated_at', ['gteq' => $lastUpdatedFrom]);
+        }
+
+        if ($lastUpdatedTo) {
+            $this->orderCollection->addFieldToFilter('updated_at', ['lteq' => $lastUpdatedTo]);
         }
 
         return $this;
