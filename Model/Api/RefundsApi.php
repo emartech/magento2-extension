@@ -47,12 +47,21 @@ class RefundsApi implements RefundsApiInterface
      * @param int         $pageSize
      * @param int         $sinceId
      * @param string|null $storeId
+     * @param string|null $lastUpdatedFrom
+     * @param string|null $lastUpdatedTo
      *
      * @return RefundsApiResponseInterface
      * @throws WebApiException
      */
-    public function get(int $page, int $pageSize, int $sinceId = 0, string $storeId = null): RefundsApiResponseInterface
-    {
+    public function get(
+        int $page,
+        int $pageSize,
+        int $sinceId = 0,
+        string $storeId = null,
+        string $lastUpdatedFrom = null,
+        string $lastUpdatedTo = null
+    ): RefundsApiResponseInterface {
+
         if (empty($storeId)) {
             throw new WebApiException(__('Store ID is required'));
         }
@@ -61,6 +70,7 @@ class RefundsApi implements RefundsApiInterface
             ->initCollection()
             ->filterStore($storeId)
             ->filterSinceId($sinceId)
+            ->filterLastUpdated($lastUpdatedFrom, $lastUpdatedTo)
             ->setPage($page, $pageSize);
 
         return $this->responseFactory
@@ -114,6 +124,27 @@ class RefundsApi implements RefundsApiInterface
     {
         if ($sinceId) {
             $this->creditmemoCollection->addFieldToFilter('entity_id', ['gt' => $sinceId]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Filter last updated at
+     *
+     * @param string|null $lastUpdatedFrom
+     * @param string|null $lastUpdatedTo
+     *
+     * @return RefundsApi
+     */
+    private function filterLastUpdated(?string $lastUpdatedFrom = null, ?string $lastUpdatedTo = null): RefundsApi
+    {
+        if ($lastUpdatedFrom) {
+            $this->creditmemoCollection->addFieldToFilter('updated_at', ['gteq' => $lastUpdatedFrom]);
+        }
+
+        if ($lastUpdatedTo) {
+            $this->creditmemoCollection->addFieldToFilter('updated_at', ['lteq' => $lastUpdatedTo]);
         }
 
         return $this;
