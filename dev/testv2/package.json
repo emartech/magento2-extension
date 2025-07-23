@@ -38,14 +38,14 @@
     "eslint-plugin-security": "1.4.0",
     "form-data": "2.5.1",
     "knex": "2.5.1",
-    "mocha": "10.6.0",
+    "mocha": "11.7.1",
     "nock": "13.5.1",
     "mysql": "2.18.1",
     "semantic-release": "24.0.0",
     "sinon": "18.0.0",
     "sinon-chai": "3.7.0",
     "minimist": "1.2.8",
-    "minimatch": "9.0.3",
+    "minimatch": "10.0.3",
     "mkdirp": "3.0.1",
     "debug": "4.3.4",
     "word-wrap": "1.2.5",
@@ -55,7 +55,6 @@
     "ansi-regex": "6.0.1",
     "micromatch": "^4.0.8",
     "path-to-regexp": "^8.2.0",
-    "inflight": "^1.0.6",
     "cross-spawn": "^7.0.6"
   }
 }
