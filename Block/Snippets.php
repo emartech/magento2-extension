@@ -229,7 +229,7 @@ class Snippets extends Template
      * @throws NoSuchEntityException
      * @throws LocalizedException
      */
-    public function getCategory(int $storeId = null): ?array
+    public function getCategory(?int $storeId = null): ?array
     {
         $category = $this->coreRegistry->registry('current_category');
         if ($category instanceof CategoryModel) {
