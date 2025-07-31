@@ -1,7 +1,7 @@
 name: dev-sec-ops pipeline
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   integration-cloud-workstream:
