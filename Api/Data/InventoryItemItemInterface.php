@@ -27,7 +27,7 @@ interface InventoryItemItemInterface
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setSourceCode(string $sourceCode = null): InventoryItemItemInterface;
+    public function setSourceCode(?string $sourceCode = null): InventoryItemItemInterface;
 
     /**
      * GetQuantity
@@ -43,7 +43,7 @@ interface InventoryItemItemInterface
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setQuantity(float $quantity = null): InventoryItemItemInterface;
+    public function setQuantity(?float $quantity = null): InventoryItemItemInterface;
 
     /**
      * GetIsInStock
@@ -59,5 +59,5 @@ interface InventoryItemItemInterface
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemItemInterface
      */
-    public function setIsInStock(bool $isInStock = null): InventoryItemItemInterface;
+    public function setIsInStock(?bool $isInStock = null): InventoryItemItemInterface;
 }

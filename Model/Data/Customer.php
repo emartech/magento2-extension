@@ -230,7 +230,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setAcceptsMarketing(int $acceptsMarketing = null): CustomerInterface
+    public function setAcceptsMarketing(?int $acceptsMarketing = null): CustomerInterface
     {
         $this->setData(self::ACCEPTS_MARKETING_KEY, $acceptsMarketing);
 
@@ -258,7 +258,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setCreatedAt(string $createdAt = null): CustomerInterface
+    public function setCreatedAt(?string $createdAt = null): CustomerInterface
     {
         $this->setData(self::CREATED_AT_KEY, $createdAt);
 
@@ -272,7 +272,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setDob(string $dob = null): CustomerInterface
+    public function setDob(?string $dob = null): CustomerInterface
     {
         $this->setData(self::DOB_KEY, $dob);
 
@@ -286,7 +286,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setEmail(string $email = null): CustomerInterface
+    public function setEmail(?string $email = null): CustomerInterface
     {
         $this->setData(self::EMAIL_KEY, $email);
 
@@ -300,7 +300,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setFirstname(string $firstName = null): CustomerInterface
+    public function setFirstname(?string $firstName = null): CustomerInterface
     {
         $this->setData(self::FIRSTNAME_KEY, $firstName);
 
@@ -314,7 +314,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setGender(int $gender = null): CustomerInterface
+    public function setGender(?int $gender = null): CustomerInterface
     {
         $this->setData(self::GENDER_KEY, $gender);
 
@@ -328,7 +328,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setGroupId(int $groupId = null): CustomerInterface
+    public function setGroupId(?int $groupId = null): CustomerInterface
     {
         $this->setData(self::GROUP_ID_KEY, $groupId);
 
@@ -342,7 +342,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setIsActive(int $isActive = null): CustomerInterface
+    public function setIsActive(?int $isActive = null): CustomerInterface
     {
         $this->setData(self::IS_ACTIVE_KEY, $isActive);
 
@@ -356,7 +356,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setLastname(string $lastName = null): CustomerInterface
+    public function setLastname(?string $lastName = null): CustomerInterface
     {
         $this->setData(self::LASTNAME_KEY, $lastName);
 
@@ -370,7 +370,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setMiddlename(string $middleName = null): CustomerInterface
+    public function setMiddlename(?string $middleName = null): CustomerInterface
     {
         $this->setData(self::MIDDLENAME_KEY, $middleName);
 
@@ -384,7 +384,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setPrefix(string $prefix = null): CustomerInterface
+    public function setPrefix(?string $prefix = null): CustomerInterface
     {
         $this->setData(self::PREFIX_KEY, $prefix);
 
@@ -412,7 +412,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setStoreId(int $storeId = null): CustomerInterface
+    public function setStoreId(?int $storeId = null): CustomerInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 
@@ -426,7 +426,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setSuffix(string $suffix = null): CustomerInterface
+    public function setSuffix(?string $suffix = null): CustomerInterface
     {
         $this->setData(self::SUFFIX_KEY, $suffix);
 
@@ -440,7 +440,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setTaxvat(string $taxVat = null): CustomerInterface
+    public function setTaxvat(?string $taxVat = null): CustomerInterface
     {
         $this->setData(self::TAXVAT_KEY, $taxVat);
 
@@ -454,7 +454,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setUpdatedAt(string $updatedAt = null): CustomerInterface
+    public function setUpdatedAt(?string $updatedAt = null): CustomerInterface
     {
         $this->setData(self::UPDATED_AT_KEY, $updatedAt);
 
@@ -468,7 +468,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return CustomerInterface
      */
-    public function setWebsiteId(int $websiteId = null): CustomerInterface
+    public function setWebsiteId(?int $websiteId = null): CustomerInterface
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
 
@@ -482,7 +482,7 @@ class Customer extends DataObject implements CustomerInterface
      *
      * @return $this
      */
-    public function setExtraFields(array $extraFields = null): CustomerInterface
+    public function setExtraFields(?array $extraFields = null): CustomerInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
 

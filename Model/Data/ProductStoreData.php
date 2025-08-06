@@ -176,7 +176,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setDescription(string $description = null): ProductStoreDataInterface
+    public function setDescription(?string $description = null): ProductStoreDataInterface
     {
         $this->setData(self::DESCRIPTION_KEY, $description);
 
@@ -190,7 +190,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setLink(string $link = null): ProductStoreDataInterface
+    public function setLink(?string $link = null): ProductStoreDataInterface
     {
         $this->setData(self::LINK_KEY, $link);
 
@@ -204,7 +204,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setName(string $name = null): ProductStoreDataInterface
+    public function setName(?string $name = null): ProductStoreDataInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -218,7 +218,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setPrice(float $price = null): ProductStoreDataInterface
+    public function setPrice(?float $price = null): ProductStoreDataInterface
     {
         $this->setData(self::PRICE_KEY, $price);
 
@@ -232,7 +232,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setDisplayPrice(float $displayPrice = null): ProductStoreDataInterface
+    public function setDisplayPrice(?float $displayPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::DISPLAY_PRICE_KEY, $displayPrice);
 
@@ -246,7 +246,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setOriginalPrice(float $originalPrice = null): ProductStoreDataInterface
+    public function setOriginalPrice(?float $originalPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::ORIGINAL_PRICE_KEY, $originalPrice);
 
@@ -260,7 +260,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setOriginalDisplayPrice(float $originalDisplayPrice = null): ProductStoreDataInterface
+    public function setOriginalDisplayPrice(?float $originalDisplayPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::ORIGINAL_DISPLAY_PRICE_KEY, $originalDisplayPrice);
 
@@ -274,7 +274,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setWebshopPrice(float $webShopPrice = null): ProductStoreDataInterface
+    public function setWebshopPrice(?float $webShopPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::WEBSHOP_PRICE, $webShopPrice);
 
@@ -288,7 +288,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setDisplayWebshopPrice(float $displayWebShopPrice = null): ProductStoreDataInterface
+    public function setDisplayWebshopPrice(?float $displayWebShopPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::DISPLAY_WEBSHOP_PRICE, $displayWebShopPrice);
 
@@ -302,7 +302,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setOriginalWebshopPrice(float $originalWebshopPrice = null): ProductStoreDataInterface
+    public function setOriginalWebshopPrice(?float $originalWebshopPrice = null): ProductStoreDataInterface
     {
         $this->setData(self::ORIGINAL_WEBSHOP_PRICE, $originalWebshopPrice);
 
@@ -316,8 +316,9 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setOriginalDisplayWebshopPrice(float $originalDisplayWebshopPrice = null): ProductStoreDataInterface
-    {
+    public function setOriginalDisplayWebshopPrice(
+        ?float $originalDisplayWebshopPrice = null
+    ): ProductStoreDataInterface {
         $this->setData(self::ORIGINAL_DISPLAY_WEBSHOP_PRICE, $originalDisplayWebshopPrice);
 
         return $this;
@@ -330,7 +331,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setStatus(int $status = null): ProductStoreDataInterface
+    public function setStatus(?int $status = null): ProductStoreDataInterface
     {
         $this->setData(self::STATUS_KEY, $status);
 
@@ -344,7 +345,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setStoreId(int $storeId = null): ProductStoreDataInterface
+    public function setStoreId(?int $storeId = null): ProductStoreDataInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 
@@ -358,7 +359,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setCurrencyCode(string $currencyCode = null): ProductStoreDataInterface
+    public function setCurrencyCode(?string $currencyCode = null): ProductStoreDataInterface
     {
         $this->setData(self::CURRENCY_KEY, $currencyCode);
 
@@ -372,7 +373,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setExtraFields(array $extraFields = null): ProductStoreDataInterface
+    public function setExtraFields(?array $extraFields = null): ProductStoreDataInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
 
@@ -386,7 +387,7 @@ class ProductStoreData extends DataObject implements ProductStoreDataInterface
      *
      * @return ProductStoreDataInterface
      */
-    public function setImages(ImagesInterface $images = null): ProductStoreDataInterface
+    public function setImages(?ImagesInterface $images = null): ProductStoreDataInterface
     {
         $this->setData(self::IMAGES_KEY, $images);
 

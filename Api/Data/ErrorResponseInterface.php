@@ -20,5 +20,5 @@ interface ErrorResponseInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ErrorResponseInterface
      */
-    public function setErrors(array $errors = null): ErrorResponseInterface;
+    public function setErrors(?array $errors = null): ErrorResponseInterface;
 }

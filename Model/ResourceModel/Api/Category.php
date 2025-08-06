@@ -61,7 +61,7 @@ class Category extends AbstractEntity
      *
      * @return array
      */
-    public function getCategoryIds(array $wheres, array $joinInner = null): array
+    public function getCategoryIds(array $wheres, ?array $joinInner = null): array
     {
         $this->categoryIds = [];
 

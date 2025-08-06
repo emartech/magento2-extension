@@ -56,7 +56,7 @@ class Category extends DataObject implements CategoryInterface
      *
      * @return CategoryInterface
      */
-    public function setChildrenCount(int $childrenCount = null): CategoryInterface
+    public function setChildrenCount(?int $childrenCount = null): CategoryInterface
     {
         $this->setData(self::CHILDREN_COUNT_KEY, $childrenCount);
 
@@ -84,7 +84,7 @@ class Category extends DataObject implements CategoryInterface
      *
      * @return CategoryInterface
      */
-    public function setPath(string $path = null): CategoryInterface
+    public function setPath(?string $path = null): CategoryInterface
     {
         $this->setData(self::PATH_KEY, $path);
 
@@ -98,7 +98,7 @@ class Category extends DataObject implements CategoryInterface
      *
      * @return CategoryInterface
      */
-    public function setStoreData(array $storeData = null): CategoryInterface
+    public function setStoreData(?array $storeData = null): CategoryInterface
     {
         $this->setData(self::STORE_DATA_KEY, $storeData);
 

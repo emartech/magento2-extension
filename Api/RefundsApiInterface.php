@@ -22,8 +22,8 @@ interface RefundsApiInterface
         int $page,
         int $pageSize,
         int $sinceId = 0,
-        string $storeId = null,
-        string $lastUpdatedFrom = null,
-        string $lastUpdatedTo = null
+        ?string $storeId = null,
+        ?string $lastUpdatedFrom = null,
+        ?string $lastUpdatedTo = null
     ): RefundsApiResponseInterface;
 }

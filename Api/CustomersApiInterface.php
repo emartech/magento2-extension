@@ -20,8 +20,8 @@ interface CustomersApiInterface
     public function get(
         int $page,
         int $pageSize,
-        string $websiteId = null,
-        string $storeId = null,
-        bool $onlyReg = null
+        ?string $websiteId = null,
+        ?string $storeId = null,
+        ?bool $onlyReg = null
     ): CustomersApiResponseInterface;
 }

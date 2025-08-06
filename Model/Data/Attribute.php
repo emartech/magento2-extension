@@ -78,7 +78,7 @@ class Attribute extends DataObject implements AttributeInterface
      *
      * @return AttributeInterface
      */
-    public function setName(string $name = null): AttributeInterface
+    public function setName(?string $name = null): AttributeInterface
     {
         $this->setData(self::NAME_KEY, $name);
 
@@ -92,7 +92,7 @@ class Attribute extends DataObject implements AttributeInterface
      *
      * @return AttributeInterface
      */
-    public function setIsSystem(bool $isSystem = null): AttributeInterface
+    public function setIsSystem(?bool $isSystem = null): AttributeInterface
     {
         $this->setData(self::IS_SYSTEM_KEY, $isSystem);
 
@@ -106,7 +106,7 @@ class Attribute extends DataObject implements AttributeInterface
      *
      * @return AttributeInterface
      */
-    public function setIsVisible(bool $isVisible = null): AttributeInterface
+    public function setIsVisible(?bool $isVisible = null): AttributeInterface
     {
         $this->setData(self::IS_VISIBLE_KEY, $isVisible);
 
@@ -120,7 +120,7 @@ class Attribute extends DataObject implements AttributeInterface
      *
      * @return AttributeInterface
      */
-    public function setIsVisibleOnFront(bool $isVisibleOnFront = null): AttributeInterface
+    public function setIsVisibleOnFront(?bool $isVisibleOnFront = null): AttributeInterface
     {
         $this->setData(self::IS_VISIBLE_ON_FRONT_KEY, $isVisibleOnFront);
 

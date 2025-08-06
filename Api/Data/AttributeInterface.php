@@ -66,7 +66,7 @@ interface AttributeInterface
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setName(string $name = null): AttributeInterface;
+    public function setName(?string $name = null): AttributeInterface;
 
     /**
      * SetIsSystem
@@ -75,7 +75,7 @@ interface AttributeInterface
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsSystem(bool $isSystem = null): AttributeInterface;
+    public function setIsSystem(?bool $isSystem = null): AttributeInterface;
 
     /**
      * SetIsVisible
@@ -84,7 +84,7 @@ interface AttributeInterface
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsVisible(bool $isVisible = null): AttributeInterface;
+    public function setIsVisible(?bool $isVisible = null): AttributeInterface;
 
     /**
      * SetIsVisibleOnFront
@@ -93,5 +93,5 @@ interface AttributeInterface
      *
      * @return \Emartech\Emarsys\Api\Data\AttributeInterface
      */
-    public function setIsVisibleOnFront(bool $isVisibleOnFront = null): AttributeInterface;
+    public function setIsVisibleOnFront(?bool $isVisibleOnFront = null): AttributeInterface;
 }

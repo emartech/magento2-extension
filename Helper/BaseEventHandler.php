@@ -81,7 +81,7 @@ class BaseEventHandler extends AbstractHelper
      *
      * @return bool
      */
-    protected function isEnabledForWebsite(int $websiteId = null): bool
+    protected function isEnabledForWebsite(?int $websiteId = null): bool
     {
         return $this->configReader->isEnabledForWebsite(ConfigInterface::CUSTOMER_EVENTS, $websiteId);
     }
@@ -93,7 +93,7 @@ class BaseEventHandler extends AbstractHelper
      *
      * @return bool
      */
-    protected function isEnabledForStore(int $storeId = null): bool
+    protected function isEnabledForStore(?int $storeId = null): bool
     {
         return $this->configReader->isEnabledForStore(ConfigInterface::SALES_EVENTS, $storeId);
     }

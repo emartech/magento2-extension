@@ -49,7 +49,7 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
      *
      * @return ErrorResponseItemInterface
      */
-    public function setEmail(string $email = null): ErrorResponseItemInterface
+    public function setEmail(?string $email = null): ErrorResponseItemInterface
     {
         $this->setData(self::EMAIL_KEY, $email);
 
@@ -63,7 +63,7 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
      *
      * @return ErrorResponseItemInterface
      */
-    public function setCustomerId(int $customerId = null): ErrorResponseItemInterface
+    public function setCustomerId(?int $customerId = null): ErrorResponseItemInterface
     {
         $this->setData(self::CUSTOMER_ID_KEY, $customerId);
 
@@ -77,7 +77,7 @@ class ErrorResponseItem extends DataObject implements ErrorResponseItemInterface
      *
      * @return ErrorResponseItemInterface
      */
-    public function setMessage(string $message = null): ErrorResponseItemInterface
+    public function setMessage(?string $message = null): ErrorResponseItemInterface
     {
         $this->setData(self::MESSAGE_KEY, $message);
 

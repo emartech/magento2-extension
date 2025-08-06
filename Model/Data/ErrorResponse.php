@@ -30,7 +30,7 @@ class ErrorResponse extends DataObject implements ErrorResponseInterface
      *
      * @return ErrorResponseInterface
      */
-    public function setErrors(array $errors = null): ErrorResponseInterface
+    public function setErrors(?array $errors = null): ErrorResponseInterface
     {
         $this->setData(self::ERRORS_KEY, $errors);
 
