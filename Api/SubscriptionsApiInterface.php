@@ -22,10 +22,10 @@ interface SubscriptionsApiInterface
     public function get(
         int $page = 1,
         int $pageSize = 1000,
-        bool $subscribed = null,
+        ?bool $subscribed = null,
         bool $onlyGuest = false,
-        string $websiteId = null,
-        string $storeId = null
+        ?string $websiteId = null,
+        ?string $storeId = null
     ): SubscriptionsApiResponseInterface;
 
     /**

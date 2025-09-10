@@ -113,7 +113,7 @@ class CustomerAddress extends CustomerAddressResourceModel
         int $minCustomerId,
         int $maxCustomerId,
         array $attributeCodes,
-        int $websiteId = null
+        ?int $websiteId = null
     ): array {
         $this->mainTable = $this->getEntityTable();
 
@@ -196,7 +196,7 @@ class CustomerAddress extends CustomerAddressResourceModel
         int $minCustomerId,
         int $maxCustomerId,
         array $attributeMapper,
-        int $websiteId = null
+        ?int $websiteId = null
     ): CustomerAddress {
         if ($mainTableFields) {
             if (!in_array($this->linkField, $mainTableFields)) {
@@ -262,7 +262,7 @@ class CustomerAddress extends CustomerAddressResourceModel
         int $minCustomerId,
         int $maxCustomerId,
         array $attributeMapper,
-        int $websiteId = null
+        ?int $websiteId = null
     ): CustomerAddress {
         $attributeQueries = [];
 

@@ -75,11 +75,6 @@ class Product extends AbstractHelper
     ];
 
     /**
-     * @var null|string[]
-     */
-    private $extraStoreFields = null;
-
-    /**
      * @var ConfigInterfaceFactory
      */
     private $configFactory;
@@ -295,10 +290,10 @@ class Product extends AbstractHelper
     public function handleIds(
         int $page,
         int $pageSize,
-        string $table = null,
-        string $primaryKey = null,
+        ?string $table = null,
+        ?string $primaryKey = null,
         array $wheres = [],
-        string $countField = null
+        ?string $countField = null
     ): array {
         return $this->productResource->handleIds(
             $page,
@@ -318,7 +313,7 @@ class Product extends AbstractHelper
      *
      * @return Product
      */
-    public function getCategoryIds(array $wheres, array $joinInner = null): Product
+    public function getCategoryIds(array $wheres, ?array $joinInner = null): Product
     {
         $this->categoryIds = $this->categoryResource->getCategoryIds(
             $wheres,
@@ -336,7 +331,7 @@ class Product extends AbstractHelper
      *
      * @return Product
      */
-    public function getChildrenProductIds(array $wheres, array $joinInner = null): Product
+    public function getChildrenProductIds(array $wheres, ?array $joinInner = null): Product
     {
         $this->childrenProductIds = $this->productResource->getChildrenProductIds(
             $wheres,
@@ -354,7 +349,7 @@ class Product extends AbstractHelper
      *
      * @return Product
      */
-    public function getStockData(array $wheres, array $joinInner = null): Product
+    public function getStockData(array $wheres, ?array $joinInner = null): Product
     {
         $this->stockData = $this->productResource->getStockData(
             $wheres,
@@ -372,7 +367,7 @@ class Product extends AbstractHelper
      *
      * @return Product
      */
-    public function getStatusData(array $wheres, array $joinInner = null): Product
+    public function getStatusData(array $wheres, ?array $joinInner = null): Product
     {
         $this->statusData = $this->productResource->getStatusData(
             $wheres,
@@ -395,8 +390,8 @@ class Product extends AbstractHelper
     public function getAttributeData(
         array $wheres,
         array $storeIds,
-        array $joinInner = null,
-        array $fields = null
+        ?array $joinInner = null,
+        ?array $fields = null
     ): void {
         if (!$fields) {
             $fields = array_merge(
@@ -993,7 +988,7 @@ class Product extends AbstractHelper
         array $websiteIds,
         array $customerGroupIds,
         array $wheres,
-        array $joinInner = null
+        ?array $joinInner = null
     ): Product {
         $this->priceData = $this->productResource->getPrices($websiteIds, $customerGroupIds, $wheres, $joinInner);
 

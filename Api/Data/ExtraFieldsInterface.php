@@ -41,7 +41,7 @@ interface ExtraFieldsInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setKey(string $key = null): ExtraFieldsInterface;
+    public function setKey(?string $key = null): ExtraFieldsInterface;
 
     /**
      * SetValue
@@ -50,7 +50,7 @@ interface ExtraFieldsInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setValue(string $value = null): ExtraFieldsInterface;
+    public function setValue(?string $value = null): ExtraFieldsInterface;
 
     /**
      * SetTextValue
@@ -59,5 +59,5 @@ interface ExtraFieldsInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ExtraFieldsInterface
      */
-    public function setTextValue(string $textValue = null): ExtraFieldsInterface;
+    public function setTextValue(?string $textValue = null): ExtraFieldsInterface;
 }

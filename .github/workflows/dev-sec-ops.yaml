@@ -1,0 +1,10 @@
+name: dev-sec-ops pipeline
+on:
+  push:
+    branches: [master]
+
+
+jobs:
+  integration-cloud-workstream:
+    uses: Emartech/IntegrationCloud-DevOps-Workstream/.github/workflows/devsecops.yml@main
+    secrets: inherit

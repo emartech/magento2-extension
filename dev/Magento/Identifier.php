@@ -67,7 +67,7 @@ class Identifier
      * Mark sections with data id
      *
      * @param array $sectionsData
-     * @param null $sectionNames
+     * @param array|null $sectionNames
      * @param bool $updateIds
      * @return array
      */
@@ -82,7 +82,7 @@ class Identifier
             if ($updateIds || !array_key_exists(self::SECTION_KEY, $sectionsData[$name])) {
                 $sectionsData[$name][self::SECTION_KEY] = $markId;
             }
-            if(!isset($sectionsData[$name])){
+            if (!isset($sectionsData[$name])) {
                 $sectionsData[$name] = [];
             }
         }

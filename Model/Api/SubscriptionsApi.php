@@ -136,10 +136,10 @@ class SubscriptionsApi implements SubscriptionsApiInterface
     public function get(
         int $page = 1,
         int $pageSize = 1000,
-        bool $subscribed = null,
+        ?bool $subscribed = null,
         bool $onlyGuest = false,
-        string $websiteId = null,
-        string $storeId = null
+        ?string $websiteId = null,
+        ?string $storeId = null
     ): SubscriptionsApiResponseInterface {
 
         $this
@@ -330,7 +330,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return SubscriptionsApi
      */
-    private function filterWebsite(string $websiteId = null): SubscriptionsApi
+    private function filterWebsite(?string $websiteId = null): SubscriptionsApi
     {
         if ($websiteId !== null) {
             if (!is_array($websiteId)) {
@@ -352,7 +352,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return SubscriptionsApi
      */
-    private function filterStore(string $storeId = null): SubscriptionsApi
+    private function filterStore(?string $storeId = null): SubscriptionsApi
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {
@@ -371,7 +371,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return SubscriptionsApi
      */
-    private function filterSubscribed(bool $subscribed = null): SubscriptionsApi
+    private function filterSubscribed(?bool $subscribed = null): SubscriptionsApi
     {
         if ($subscribed === true) {
             $this->subscriptionCollection->addFieldToFilter('subscriber_status', ['eq' => 1]);
@@ -389,7 +389,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      *
      * @return SubscriptionsApi
      */
-    private function filterCustomers(bool $onlyGuest = null): SubscriptionsApi
+    private function filterCustomers(?bool $onlyGuest = null): SubscriptionsApi
     {
         if ($onlyGuest) {
             $this->subscriptionCollection->addFieldToFilter('customer_id', ['eq' => 0]);
@@ -492,7 +492,7 @@ class SubscriptionsApi implements SubscriptionsApiInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function getCustomerData(int $customerId = null): ?CustomerInterface
+    private function getCustomerData(?int $customerId = null): ?CustomerInterface
     {
         return $this->customerRepository->getById($customerId);
     }

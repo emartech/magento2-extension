@@ -276,7 +276,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return string|string[]
      */
-    public function getConfigValue(string $key, int $websiteId = null)
+    public function getConfigValue(string $key, ?int $websiteId = null)
     {
         if (null === $websiteId) {
             try {
@@ -308,7 +308,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForWebsite(string $key, int $websiteId = null): bool
+    public function isEnabledForWebsite(string $key, ?int $websiteId = null): bool
     {
         return $this->getConfigValue($key, $websiteId) === self::CONFIG_ENABLED;
     }
@@ -321,7 +321,7 @@ class Config extends DataObject implements ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForStore(string $key, int $storeId = null): bool
+    public function isEnabledForStore(string $key, ?int $storeId = null): bool
     {
         try {
             if (!$storeId) {

@@ -140,7 +140,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setName(string $name = null): ProductStoreDataInterface;
+    public function setName(?string $name = null): ProductStoreDataInterface;
 
     /**
      * SetPrice
@@ -149,7 +149,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setPrice(float $price = null): ProductStoreDataInterface;
+    public function setPrice(?float $price = null): ProductStoreDataInterface;
 
     /**
      * SetDisplayPrice
@@ -158,7 +158,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setDisplayPrice(float $displayPrice = null): ProductStoreDataInterface;
+    public function setDisplayPrice(?float $displayPrice = null): ProductStoreDataInterface;
 
     /**
      * SetOriginalPrice
@@ -167,7 +167,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setOriginalPrice(float $originalPrice = null): ProductStoreDataInterface;
+    public function setOriginalPrice(?float $originalPrice = null): ProductStoreDataInterface;
 
     /**
      * SetOriginalDisplayPrice
@@ -176,7 +176,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setOriginalDisplayPrice(float $originalDisplayPrice = null): ProductStoreDataInterface;
+    public function setOriginalDisplayPrice(?float $originalDisplayPrice = null): ProductStoreDataInterface;
 
     /**
      * SetWebshopPrice
@@ -185,7 +185,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setWebshopPrice(float $webShopPrice = null): ProductStoreDataInterface;
+    public function setWebshopPrice(?float $webShopPrice = null): ProductStoreDataInterface;
 
     /**
      * SetDisplayWebshopPrice
@@ -194,7 +194,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setDisplayWebshopPrice(float $displayWebShopPrice = null): ProductStoreDataInterface;
+    public function setDisplayWebshopPrice(?float $displayWebShopPrice = null): ProductStoreDataInterface;
 
     /**
      * SetOriginalWebshopPrice
@@ -203,7 +203,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setOriginalWebshopPrice(float $originalWebshopPrice = null): ProductStoreDataInterface;
+    public function setOriginalWebshopPrice(?float $originalWebshopPrice = null): ProductStoreDataInterface;
 
     /**
      * SetOriginalDisplayWebshopPrice
@@ -213,7 +213,7 @@ interface ProductStoreDataInterface
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
     public function setOriginalDisplayWebshopPrice(
-        float $originalDisplayWebshopPrice = null
+        ?float $originalDisplayWebshopPrice = null
     ): ProductStoreDataInterface;
 
     /**
@@ -223,7 +223,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setLink(string $link = null): ProductStoreDataInterface;
+    public function setLink(?string $link = null): ProductStoreDataInterface;
 
     /**
      * SetDescription
@@ -232,7 +232,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setDescription(string $description = null): ProductStoreDataInterface;
+    public function setDescription(?string $description = null): ProductStoreDataInterface;
 
     /**
      * SetStatus
@@ -241,7 +241,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setStatus(int $status = null): ProductStoreDataInterface;
+    public function setStatus(?int $status = null): ProductStoreDataInterface;
 
     /**
      * SetStoreId
@@ -250,7 +250,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setStoreId(int $storeId = null): ProductStoreDataInterface;
+    public function setStoreId(?int $storeId = null): ProductStoreDataInterface;
 
     /**
      * SetCurrencyCode
@@ -259,7 +259,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setCurrencyCode(string $currencyCode = null): ProductStoreDataInterface;
+    public function setCurrencyCode(?string $currencyCode = null): ProductStoreDataInterface;
 
     /**
      * SetExtraFields
@@ -268,7 +268,7 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setExtraFields(array $extraFields = null): ProductStoreDataInterface;
+    public function setExtraFields(?array $extraFields = null): ProductStoreDataInterface;
 
     /**
      * SetImages
@@ -277,5 +277,5 @@ interface ProductStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductStoreDataInterface
      */
-    public function setImages(ImagesInterface $images = null): ProductStoreDataInterface;
+    public function setImages(?ImagesInterface $images = null): ProductStoreDataInterface;
 }
