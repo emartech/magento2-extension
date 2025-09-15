@@ -152,7 +152,7 @@ class Customer extends CustomerResourceModel
      *
      * @return array
      */
-    public function handleIds(int $page, int $pageSize, int $websiteId = null): array
+    public function handleIds(int $page, int $pageSize, ?int $websiteId = null): array
     {
         $customerTable = $this->getTable('customer_entity');
 
@@ -217,7 +217,7 @@ class Customer extends CustomerResourceModel
         int $minCustomerId,
         int $maxCustomerId,
         array $attributeCodes,
-        int $websiteId = null
+        ?int $websiteId = null
     ): array {
         $this->mainTable = $this->getEntityTable();
         $this->attributeData = [];
@@ -320,7 +320,7 @@ class Customer extends CustomerResourceModel
         int $minCustomerId,
         int $maxCustomerId,
         array $attributeMapper,
-        int $websiteId = null
+        ?int $websiteId = null
     ): Customer {
         if ($mainTableFields) {
             if (!in_array($this->linkField, $mainTableFields)) {
@@ -373,7 +373,7 @@ class Customer extends CustomerResourceModel
         int $minCustomerId,
         int $maxCustomerId,
         array $attributeMapper,
-        int $websiteId = null
+        ?int $websiteId = null
     ): Customer {
         $attributeQueries = [];
 

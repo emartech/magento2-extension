@@ -58,9 +58,9 @@ class OrdersApi implements OrdersApiInterface
         int $page,
         int $pageSize,
         int $sinceId = 0,
-        string $storeId = null,
-        string $lastUpdatedFrom = null,
-        string $lastUpdatedTo = null
+        ?string $storeId = null,
+        ?string $lastUpdatedFrom = null,
+        ?string $lastUpdatedTo = null
     ): OrdersApiResponseInterface {
 
         if (empty($storeId)) {
@@ -102,7 +102,7 @@ class OrdersApi implements OrdersApiInterface
      *
      * @return OrdersApi
      */
-    private function filterStore(string $storeId = null): OrdersApi
+    private function filterStore(?string $storeId = null): OrdersApi
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {

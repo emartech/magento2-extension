@@ -26,7 +26,7 @@ interface InventoryItemInterface
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemInterface
      */
-    public function setSku(string $sku = null): InventoryItemInterface;
+    public function setSku(?string $sku = null): InventoryItemInterface;
 
     /**
      * GetInventoryItems
@@ -42,5 +42,5 @@ interface InventoryItemInterface
      *
      * @return \Emartech\Emarsys\Api\Data\InventoryItemInterface
      */
-    public function setInventoryItems(array $inventoryItems = null): InventoryItemInterface;
+    public function setInventoryItems(?array $inventoryItems = null): InventoryItemInterface;
 }

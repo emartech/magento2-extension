@@ -74,7 +74,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return SubscriptionInterface
      */
-    public function setCustomerId(int $customerId = null): SubscriptionInterface
+    public function setCustomerId(?int $customerId = null): SubscriptionInterface
     {
         $this->setData(self::CUSTOMER_ID_KEY, $customerId);
 
@@ -88,7 +88,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return SubscriptionInterface
      */
-    public function setSubscriberId(int $subscriberId = null): SubscriptionInterface
+    public function setSubscriberId(?int $subscriberId = null): SubscriptionInterface
     {
         $this->setData(self::SUBSCRIBER_ID, $subscriberId);
 
@@ -102,7 +102,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return SubscriptionInterface
      */
-    public function setSubscriberEmail(string $subscriberEmail = null): SubscriptionInterface
+    public function setSubscriberEmail(?string $subscriberEmail = null): SubscriptionInterface
     {
         $this->setData(self::SUBSCRIBER_EMAIL, $subscriberEmail);
 
@@ -116,7 +116,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return SubscriptionInterface
      */
-    public function setSubscriberStatus(string $subscriberStatus = null): SubscriptionInterface
+    public function setSubscriberStatus(?string $subscriberStatus = null): SubscriptionInterface
     {
         $this->setData(self::SUBSCRIBER_STATUS, $subscriberStatus);
 
@@ -130,7 +130,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return SubscriptionInterface
      */
-    public function setStoreId(int $storeId = null): SubscriptionInterface
+    public function setStoreId(?int $storeId = null): SubscriptionInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 
@@ -144,7 +144,7 @@ class Subscription extends DataObject implements SubscriptionInterface
      *
      * @return SubscriptionInterface
      */
-    public function setWebsiteId(int $websiteId = null): SubscriptionInterface
+    public function setWebsiteId(?int $websiteId = null): SubscriptionInterface
     {
         $this->setData(self::WEBSITE_ID_KEY, $websiteId);
 

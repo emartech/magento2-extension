@@ -189,7 +189,7 @@ interface ConfigInterface
      *
      * @return string|string[]
      */
-    public function getConfigValue(string $key, int $websiteId = null);
+    public function getConfigValue(string $key, ?int $websiteId = null);
 
     /**
      * IsEnabledForWebsite
@@ -199,7 +199,7 @@ interface ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForWebsite(string $key, int $websiteId = null): bool;
+    public function isEnabledForWebsite(string $key, ?int $websiteId = null): bool;
 
     /**
      * IsEnabledForStore
@@ -209,7 +209,7 @@ interface ConfigInterface
      *
      * @return bool
      */
-    public function isEnabledForStore(string $key, int $storeId = null): bool;
+    public function isEnabledForStore(string $key, ?int $storeId = null): bool;
 
     /**
      * GetAvailableWebsites

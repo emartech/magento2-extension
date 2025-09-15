@@ -282,7 +282,7 @@ class CategoriesApi implements CategoriesApiInterface
      *
      * @return string
      */
-    private function getAttributeValueAlias(string $attributeCode, int $storeId = null): string
+    private function getAttributeValueAlias(string $attributeCode, ?int $storeId = null): string
     {
         $returnValue = $attributeCode;
         if ($storeId !== null) {

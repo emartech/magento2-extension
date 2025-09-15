@@ -84,13 +84,13 @@ class CustomerEventHandler extends BaseEventHandler
      *
      * @param int         $customerId
      * @param int|null    $websiteId
-     * @param int         $storeId
+     * @param int|null    $storeId
      * @param string|null $type
      *
      * @return bool
      * @throws AlreadyExistsException
      */
-    public function store(int $customerId, int $websiteId = null, int $storeId, string $type = null): bool
+    public function store(int $customerId, ?int $websiteId = null, ?int $storeId = null, ?string $type = null): bool
     {
         if (!$this->isEnabledForWebsite($websiteId)) {
             return false;
@@ -101,10 +101,6 @@ class CustomerEventHandler extends BaseEventHandler
         }
 
         $customerData = $this->customerHelper->getOneCustomer($customerId, $websiteId, true);
-
-        /*if (!empty($customerData['rp_token'])) {
-            $customerData['rp_token'] = $this->tokenHelper->decryptRpToken($customerData['rp_token']);
-        }*/
 
         if (false !== $customerData) {
             $this->saveEvent($websiteId, $storeId, $type, $customerId, $customerData);
@@ -119,7 +115,7 @@ class CustomerEventHandler extends BaseEventHandler
      * @param array       $customerData
      * @param int         $customerId
      * @param int|null    $websiteId
-     * @param int         $storeId
+     * @param int|null    $storeId
      * @param string|null $type
      *
      * @return bool
@@ -128,9 +124,9 @@ class CustomerEventHandler extends BaseEventHandler
     public function storeUserDataDirectly(
         array $customerData,
         int $customerId,
-        int $websiteId = null,
-        int $storeId,
-        string $type = null
+        ?int $websiteId = null,
+        ?int $storeId = null,
+        ?string $type = null
     ): bool {
         if (!$this->isEnabledForWebsite($websiteId)) {
             return false;

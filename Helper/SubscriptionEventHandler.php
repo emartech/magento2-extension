@@ -60,14 +60,18 @@ class SubscriptionEventHandler extends BaseEventHandler
      *
      * @param Subscriber  $subscription
      * @param int|null    $websiteId
-     * @param int         $storeId
+     * @param int|null    $storeId
      * @param string|null $type
      *
      * @return bool
      * @throws AlreadyExistsException
      */
-    public function store(Subscriber $subscription, int $websiteId = null, int $storeId, string $type = null): bool
-    {
+    public function store(
+        Subscriber $subscription,
+        ?int $websiteId = null,
+        ?int $storeId = null,
+        ?string $type = null
+    ): bool {
         if (!$this->isEnabledForWebsite($websiteId)) {
             return false;
         }

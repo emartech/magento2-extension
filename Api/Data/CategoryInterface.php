@@ -53,7 +53,7 @@ interface CategoryInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setPath(string $path = null): CategoryInterface;
+    public function setPath(?string $path = null): CategoryInterface;
 
     /**
      * SetChildrenCount
@@ -62,7 +62,7 @@ interface CategoryInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setChildrenCount(int $childrenCount = null): CategoryInterface;
+    public function setChildrenCount(?int $childrenCount = null): CategoryInterface;
 
     /**
      * SetStoreData
@@ -71,5 +71,5 @@ interface CategoryInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryInterface
      */
-    public function setStoreData(array $storeData = null): CategoryInterface;
+    public function setStoreData(?array $storeData = null): CategoryInterface;
 }

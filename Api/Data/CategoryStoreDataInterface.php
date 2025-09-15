@@ -52,7 +52,7 @@ interface CategoryStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setName(string $name = null): CategoryStoreDataInterface;
+    public function setName(?string $name = null): CategoryStoreDataInterface;
 
     /**
      * SetImage
@@ -61,7 +61,7 @@ interface CategoryStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setImage(string $image = null): CategoryStoreDataInterface;
+    public function setImage(?string $image = null): CategoryStoreDataInterface;
 
     /**
      * SetDescription
@@ -70,7 +70,7 @@ interface CategoryStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setDescription(string $description = null): CategoryStoreDataInterface;
+    public function setDescription(?string $description = null): CategoryStoreDataInterface;
 
     /**
      * SetIsActive
@@ -79,7 +79,7 @@ interface CategoryStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setIsActive(int $isActive = null): CategoryStoreDataInterface;
+    public function setIsActive(?int $isActive = null): CategoryStoreDataInterface;
 
     /**
      * SetStoreId
@@ -88,5 +88,5 @@ interface CategoryStoreDataInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CategoryStoreDataInterface
      */
-    public function setStoreId(int $storeId = null): CategoryStoreDataInterface;
+    public function setStoreId(?int $storeId = null): CategoryStoreDataInterface;
 }

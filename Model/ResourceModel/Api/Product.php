@@ -211,10 +211,10 @@ class Product extends ProductResourceModel
     public function handleIds(
         int $page,
         int $pageSize,
-        string $table = null,
-        string $primaryKey = null,
+        ?string $table = null,
+        ?string $primaryKey = null,
         array $wheres = [],
-        string $countField = null
+        ?string $countField = null
     ): array {
         if (null === $table) {
             $table = $this->getTable('catalog_product_entity');
@@ -281,7 +281,7 @@ class Product extends ProductResourceModel
      *
      * @return array
      */
-    public function getChildrenProductIds(array $wheres, array $joinInner = null): array
+    public function getChildrenProductIds(array $wheres, ?array $joinInner = null): array
     {
         $this->childrenProductIds = [];
 
@@ -339,7 +339,7 @@ class Product extends ProductResourceModel
      *
      * @return array
      */
-    public function getStockData(array $wheres, array $joinInner = null): array
+    public function getStockData(array $wheres, ?array $joinInner = null): array
     {
         $this->stockData = [];
         $stockItemTable = $this->getTable('cataloginventory_stock_item');
@@ -408,7 +408,7 @@ class Product extends ProductResourceModel
      *
      * @return array
      */
-    public function getStatusData(array $wheres, array $joinInner = null): array
+    public function getStatusData(array $wheres, ?array $joinInner = null): array
     {
         $this->statusData = [];
         $productWebsiteTable = $this->getTable('catalog_product_website');
@@ -483,7 +483,7 @@ class Product extends ProductResourceModel
         array $wheres,
         array $storeIds,
         array $attributeCodes,
-        array $joinInner = null
+        ?array $joinInner = null
     ): array {
         $this->mainTable = $this->getEntityTable();
         $this->attributeData = [];
@@ -565,7 +565,7 @@ class Product extends ProductResourceModel
         array $wheres,
         array $storeIds,
         array $attributeMapper,
-        array $joinInner = null
+        ?array $joinInner = null
     ): Product {
         if ($mainTableFields) {
             if (!in_array($this->linkField, $mainTableFields)) {
@@ -622,7 +622,7 @@ class Product extends ProductResourceModel
         array $wheres,
         array $storeIds,
         array $attributeMapper,
-        array $joinInner = null
+        ?array $joinInner = null
     ): Product {
         $attributeQueries = [];
 
@@ -778,7 +778,7 @@ class Product extends ProductResourceModel
         array $websiteIds,
         array $customerGroupIds,
         array $wheres,
-        array $joinInner = null
+        ?array $joinInner = null
     ): array {
         $this->priceData = [];
 

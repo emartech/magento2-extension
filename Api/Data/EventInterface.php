@@ -77,7 +77,7 @@ interface EventInterface
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEventType(string $eventType = null): EventInterface;
+    public function setEventType(?string $eventType = null): EventInterface;
 
     /**
      * SetEventData
@@ -86,7 +86,7 @@ interface EventInterface
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setEventData(string $eventData = null): EventInterface;
+    public function setEventData(?string $eventData = null): EventInterface;
 
     /**
      * SetCreatedAt
@@ -95,7 +95,7 @@ interface EventInterface
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setCreatedAt(string $createdAt = null): EventInterface;
+    public function setCreatedAt(?string $createdAt = null): EventInterface;
 
     /**
      * SetWebsiteId
@@ -104,7 +104,7 @@ interface EventInterface
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setWebsiteId(int $websiteId = null): EventInterface;
+    public function setWebsiteId(?int $websiteId = null): EventInterface;
 
     /**
      * SetStoreId
@@ -113,7 +113,7 @@ interface EventInterface
      *
      * @return \Emartech\Emarsys\Api\Data\EventInterface
      */
-    public function setStoreId(int $storeId = null): EventInterface;
+    public function setStoreId(?int $storeId = null): EventInterface;
 
     /**
      * SetEntityId

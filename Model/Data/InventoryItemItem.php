@@ -39,7 +39,7 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
      *
      * @return InventoryItemItemInterface
      */
-    public function setQuantity(float $quantity = null): InventoryItemItemInterface
+    public function setQuantity(?float $quantity = null): InventoryItemItemInterface
     {
         $this->setData(self::QUANTITY_KEY, $quantity);
 
@@ -53,7 +53,7 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
      *
      * @return InventoryItemItemInterface
      */
-    public function setSourceCode(string $sourceCode = null): InventoryItemItemInterface
+    public function setSourceCode(?string $sourceCode = null): InventoryItemItemInterface
     {
         $this->setData(self::SOURCE_CODE_KEY, $sourceCode);
 
@@ -77,7 +77,7 @@ class InventoryItemItem extends DataObject implements InventoryItemItemInterface
      *
      * @return InventoryItemItemInterface
      */
-    public function setIsInStock(bool $isInStock = null): InventoryItemItemInterface
+    public function setIsInStock(?bool $isInStock = null): InventoryItemItemInterface
     {
         $this->setData(self::IS_IN_STOCK_KEY, $isInStock);
 

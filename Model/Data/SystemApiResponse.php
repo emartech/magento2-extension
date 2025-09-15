@@ -64,7 +64,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return SystemApiResponseInterface
      */
-    public function setMagentoVersion(string $magentoVersion = null): SystemApiResponseInterface
+    public function setMagentoVersion(?string $magentoVersion = null): SystemApiResponseInterface
     {
         $this->setData(self::MAGENTO_VERSION_KEY, $magentoVersion);
 
@@ -78,7 +78,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return SystemApiResponseInterface
      */
-    public function setModuleVersion(string $moduleVersion = null): SystemApiResponseInterface
+    public function setModuleVersion(?string $moduleVersion = null): SystemApiResponseInterface
     {
         $this->setData(self::MODULE_VERSION_KEY, $moduleVersion);
 
@@ -92,7 +92,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return SystemApiResponseInterface
      */
-    public function setPhpVersion(string $phpVersion = null): SystemApiResponseInterface
+    public function setPhpVersion(?string $phpVersion = null): SystemApiResponseInterface
     {
         $this->setData(self::PHP_VERSION_KEY, $phpVersion);
 
@@ -106,7 +106,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return SystemApiResponseInterface
      */
-    public function setMagentoEdition(string $magentoEdition = null): SystemApiResponseInterface
+    public function setMagentoEdition(?string $magentoEdition = null): SystemApiResponseInterface
     {
         $this->setData(self::MAGENTO_EDITION_KEY, $magentoEdition);
 
@@ -120,7 +120,7 @@ class SystemApiResponse extends DataObject implements SystemApiResponseInterface
      *
      * @return SystemApiResponseInterface
      */
-    public function setIsWebsiteScope(bool $isWebsiteScope = null): SystemApiResponseInterface
+    public function setIsWebsiteScope(?bool $isWebsiteScope = null): SystemApiResponseInterface
     {
         $this->setData(self::IS_WEBSITE_SCOPE_KEY, $isWebsiteScope);
 

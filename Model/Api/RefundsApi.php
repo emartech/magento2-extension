@@ -57,9 +57,9 @@ class RefundsApi implements RefundsApiInterface
         int $page,
         int $pageSize,
         int $sinceId = 0,
-        string $storeId = null,
-        string $lastUpdatedFrom = null,
-        string $lastUpdatedTo = null
+        ?string $storeId = null,
+        ?string $lastUpdatedFrom = null,
+        ?string $lastUpdatedTo = null
     ): RefundsApiResponseInterface {
 
         if (empty($storeId)) {
@@ -101,7 +101,7 @@ class RefundsApi implements RefundsApiInterface
      *
      * @return RefundsApi
      */
-    private function filterStore(string $storeId = null): RefundsApi
+    private function filterStore(?string $storeId = null): RefundsApi
     {
         if ($storeId !== null) {
             if (!is_array($storeId)) {

@@ -34,7 +34,7 @@ class StoreConfig extends DataObject implements StoreConfigInterface
      *
      * @return StoreConfigInterface
      */
-    public function setSlug(string $slug = null): StoreConfigInterface
+    public function setSlug(?string $slug = null): StoreConfigInterface
     {
         $this->setData(self::STORE_SLUG_KEY, $slug);
 
@@ -48,7 +48,7 @@ class StoreConfig extends DataObject implements StoreConfigInterface
      *
      * @return StoreConfigInterface
      */
-    public function setStoreId(int $storeId = null): StoreConfigInterface
+    public function setStoreId(?int $storeId = null): StoreConfigInterface
     {
         $this->setData(self::STORE_ID_KEY, $storeId);
 

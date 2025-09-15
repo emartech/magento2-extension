@@ -36,7 +36,7 @@ interface ImagesInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function setImage(string $image = null): ImagesInterface;
+    public function setImage(?string $image = null): ImagesInterface;
 
     /**
      * SetSmallImage
@@ -45,7 +45,7 @@ interface ImagesInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function setSmallImage(string $smallImage = null): ImagesInterface;
+    public function setSmallImage(?string $smallImage = null): ImagesInterface;
 
     /**
      * SetThumbnail
@@ -54,5 +54,5 @@ interface ImagesInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ImagesInterface
      */
-    public function setThumbnail(string $thumbnail = null): ImagesInterface;
+    public function setThumbnail(?string $thumbnail = null): ImagesInterface;
 }

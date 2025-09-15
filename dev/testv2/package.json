@@ -24,7 +24,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@itg-commerce/magento2-api": "4.7.0",
-    "axios": "^1.6.7",
+    "axios": "^1.9.0",
     "chai": "^4.4.1",
     "chai-string": "^1.5.0",
     "chai-subset": "^1.6.0",
@@ -38,20 +38,23 @@
     "eslint-plugin-security": "1.4.0",
     "form-data": "2.5.1",
     "knex": "2.5.1",
-    "mocha": "10.6.0",
+    "mocha": "11.7.1",
     "nock": "13.5.1",
     "mysql": "2.18.1",
     "semantic-release": "24.0.0",
     "sinon": "18.0.0",
     "sinon-chai": "3.7.0",
     "minimist": "1.2.8",
-    "minimatch": "9.0.3",
+    "minimatch": "10.0.3",
     "mkdirp": "3.0.1",
     "debug": "4.3.4",
     "word-wrap": "1.2.5",
     "semver": "7.6.0",
     "acorn": "8.3.0",
     "ajv": "8.6.2",
-    "ansi-regex": "6.0.1"
+    "ansi-regex": "6.0.1",
+    "micromatch": "^4.0.8",
+    "path-to-regexp": "^8.2.0",
+    "cross-spawn": "^7.0.6"
   }
 }

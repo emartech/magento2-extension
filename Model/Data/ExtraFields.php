@@ -44,7 +44,7 @@ class ExtraFields extends DataObject implements ExtraFieldsInterface
      *
      * @return ExtraFieldsInterface
      */
-    public function setKey(string $key = null): ExtraFieldsInterface
+    public function setKey(?string $key = null): ExtraFieldsInterface
     {
         $this->setData(self::KEY_KEY, $key);
 
@@ -58,7 +58,7 @@ class ExtraFields extends DataObject implements ExtraFieldsInterface
      *
      * @return ExtraFieldsInterface
      */
-    public function setValue(string $value = null): ExtraFieldsInterface
+    public function setValue(?string $value = null): ExtraFieldsInterface
     {
         $this->setData(self::VALUE_KEY, $value);
 
@@ -72,7 +72,7 @@ class ExtraFields extends DataObject implements ExtraFieldsInterface
      *
      * @return ExtraFieldsInterface
      */
-    public function setTextValue(string $textValue = null): ExtraFieldsInterface
+    public function setTextValue(?string $textValue = null): ExtraFieldsInterface
     {
         $this->setData(self::TEXT_VALUE_KEY, $textValue);
 

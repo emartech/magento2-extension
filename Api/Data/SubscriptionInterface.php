@@ -25,7 +25,7 @@ interface SubscriptionInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setCustomerId(int $customerId = null): SubscriptionInterface;
+    public function setCustomerId(?int $customerId = null): SubscriptionInterface;
 
     /**
      * GetSubscriberId
@@ -41,7 +41,7 @@ interface SubscriptionInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberId(int $subscriberId = null): SubscriptionInterface;
+    public function setSubscriberId(?int $subscriberId = null): SubscriptionInterface;
 
     /**
      * GetWebsiteId
@@ -57,7 +57,7 @@ interface SubscriptionInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setWebsiteId(int $websiteId = null): SubscriptionInterface;
+    public function setWebsiteId(?int $websiteId = null): SubscriptionInterface;
 
     /**
      * GetStoreId
@@ -73,7 +73,7 @@ interface SubscriptionInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setStoreId(int $storeId = null): SubscriptionInterface;
+    public function setStoreId(?int $storeId = null): SubscriptionInterface;
 
     /**
      * GetSubscriberEmail
@@ -89,7 +89,7 @@ interface SubscriptionInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberEmail(string $subscriberEmail = null): SubscriptionInterface;
+    public function setSubscriberEmail(?string $subscriberEmail = null): SubscriptionInterface;
 
     /**
      * GetSubscriberStatus
@@ -105,5 +105,5 @@ interface SubscriptionInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SubscriptionInterface
      */
-    public function setSubscriberStatus(string $subscriberStatus = null): SubscriptionInterface;
+    public function setSubscriberStatus(?string $subscriberStatus = null): SubscriptionInterface;
 }

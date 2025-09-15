@@ -22,10 +22,10 @@ interface CustomersApiInterface
     public function get(
         int $page,
         int $pageSize,
-        string $websiteId = null,
-        string $storeId = null,
-        bool $onlyReg = null,
-        string $lastUpdatedFrom = null,
-        string $lastUpdatedTo = null
+        ?string $websiteId = null,
+        ?string $storeId = null,
+        ?bool $onlyReg = null,
+        ?string $lastUpdatedFrom = null,
+        ?string $lastUpdatedTo = null
     ): CustomersApiResponseInterface;
 }

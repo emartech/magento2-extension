@@ -52,7 +52,7 @@ interface SystemApiResponseInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setMagentoVersion(string $magentoVersion = null): SystemApiResponseInterface;
+    public function setMagentoVersion(?string $magentoVersion = null): SystemApiResponseInterface;
 
     /**
      * SetPhpVersion
@@ -61,7 +61,7 @@ interface SystemApiResponseInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setPhpVersion(string $phpVersion = null): SystemApiResponseInterface;
+    public function setPhpVersion(?string $phpVersion = null): SystemApiResponseInterface;
 
     /**
      * SetModuleVersion
@@ -70,7 +70,7 @@ interface SystemApiResponseInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setModuleVersion(string $moduleVersion = null): SystemApiResponseInterface;
+    public function setModuleVersion(?string $moduleVersion = null): SystemApiResponseInterface;
 
     /**
      * SetMagentoEdition
@@ -79,7 +79,7 @@ interface SystemApiResponseInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setMagentoEdition(string $magentoEdition = null): SystemApiResponseInterface;
+    public function setMagentoEdition(?string $magentoEdition = null): SystemApiResponseInterface;
 
     /**
      * SetIsWebsiteScope
@@ -88,5 +88,5 @@ interface SystemApiResponseInterface
      *
      * @return \Emartech\Emarsys\Api\Data\SystemApiResponseInterface
      */
-    public function setIsWebsiteScope(bool $isWebsiteScope = null): SystemApiResponseInterface;
+    public function setIsWebsiteScope(?bool $isWebsiteScope = null): SystemApiResponseInterface;
 }

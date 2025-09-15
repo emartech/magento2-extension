@@ -106,7 +106,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setStoreData(array $storeData = null): ProductInterface
+    public function setStoreData(?array $storeData = null): ProductInterface
     {
         $this->setData(self::STORE_DATA_KEY, $storeData);
 
@@ -120,7 +120,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setCategories(array $categories = null): ProductInterface
+    public function setCategories(?array $categories = null): ProductInterface
     {
         $this->setData(self::CATEGORIES_KEY, $categories);
 
@@ -134,7 +134,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setChildrenEntityIds(array $childrenEntityIds = null): ProductInterface
+    public function setChildrenEntityIds(?array $childrenEntityIds = null): ProductInterface
     {
         $this->setData(self::CHILDREN_ENTITY_IDS_KEY, $childrenEntityIds);
 
@@ -162,7 +162,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setImages(ImagesInterface $images = null): ProductInterface
+    public function setImages(?ImagesInterface $images = null): ProductInterface
     {
         $this->setData(self::IMAGES_KEY, $images);
 
@@ -176,7 +176,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setIsInStock(int $isInStock = null): ProductInterface
+    public function setIsInStock(?int $isInStock = null): ProductInterface
     {
         $this->setData(self::IS_IN_STOCK_KEY, $isInStock);
 
@@ -190,7 +190,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setQty(float $qty = null): ProductInterface
+    public function setQty(?float $qty = null): ProductInterface
     {
         $this->setData(self::QTY_KEY, $qty);
 
@@ -204,7 +204,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setSku(string $sku = null): ProductInterface
+    public function setSku(?string $sku = null): ProductInterface
     {
         $this->setData(self::SKU_KEY, $sku);
 
@@ -218,7 +218,7 @@ class Product extends DataObject implements ProductInterface
      *
      * @return ProductInterface
      */
-    public function setType(string $type = null): ProductInterface
+    public function setType(?string $type = null): ProductInterface
     {
         $this->setData(self::TYPE_KEY, $type);
 

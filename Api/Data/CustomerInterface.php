@@ -55,7 +55,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setEmail(string $email = null): CustomerInterface;
+    public function setEmail(?string $email = null): CustomerInterface;
 
     /**
      * GetWebsiteId
@@ -71,7 +71,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setWebsiteId(int $websiteId = null): CustomerInterface;
+    public function setWebsiteId(?int $websiteId = null): CustomerInterface;
 
     /**
      * GetGroupId
@@ -87,7 +87,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setGroupId(int $groupId = null): CustomerInterface;
+    public function setGroupId(?int $groupId = null): CustomerInterface;
 
     /**
      * GetStoreId
@@ -110,7 +110,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setStoreId(int $storeId = null): CustomerInterface;
+    public function setStoreId(?int $storeId = null): CustomerInterface;
 
     /**
      * GetIsActive
@@ -126,7 +126,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setIsActive(int $isActive = null): CustomerInterface;
+    public function setIsActive(?int $isActive = null): CustomerInterface;
 
     /**
      * GetPrefix
@@ -142,7 +142,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setPrefix(string $prefix = null): CustomerInterface;
+    public function setPrefix(?string $prefix = null): CustomerInterface;
 
     /**
      * GetFirstname
@@ -158,7 +158,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setFirstname(string $firstName = null): CustomerInterface;
+    public function setFirstname(?string $firstName = null): CustomerInterface;
 
     /**
      * GetMiddlename
@@ -174,7 +174,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setMiddlename(string $middleName = null): CustomerInterface;
+    public function setMiddlename(?string $middleName = null): CustomerInterface;
 
     /**
      * GetLastname
@@ -190,7 +190,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setLastname(string $lastName = null): CustomerInterface;
+    public function setLastname(?string $lastName = null): CustomerInterface;
 
     /**
      * GetSuffix
@@ -206,7 +206,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setSuffix(string $suffix = null): CustomerInterface;
+    public function setSuffix(?string $suffix = null): CustomerInterface;
 
     /**
      * GetDob
@@ -222,7 +222,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setDob(string $dob = null): CustomerInterface;
+    public function setDob(?string $dob = null): CustomerInterface;
 
     /**
      * GetTaxvat
@@ -238,7 +238,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setTaxvat(string $taxVat = null): CustomerInterface;
+    public function setTaxvat(?string $taxVat = null): CustomerInterface;
 
     /**
      * GetGender
@@ -254,7 +254,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setGender(int $gender = null): CustomerInterface;
+    public function setGender(?int $gender = null): CustomerInterface;
 
     /**
      * GetBillingAddress
@@ -302,7 +302,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setAcceptsMarketing(int $acceptsMarketing = null): CustomerInterface;
+    public function setAcceptsMarketing(?int $acceptsMarketing = null): CustomerInterface;
 
     /**
      * GetCreatedAt
@@ -318,7 +318,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setCreatedAt(string $createdAt = null): CustomerInterface;
+    public function setCreatedAt(?string $createdAt = null): CustomerInterface;
 
     /**
      * GetUpdatedAt
@@ -334,7 +334,7 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setUpdatedAt(string $updatedAt = null): CustomerInterface;
+    public function setUpdatedAt(?string $updatedAt = null): CustomerInterface;
 
     /**
      * SetExtraFields
@@ -343,5 +343,5 @@ interface CustomerInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerInterface
      */
-    public function setExtraFields(array $extraFields = null): CustomerInterface;
+    public function setExtraFields(?array $extraFields = null): CustomerInterface;
 }

@@ -162,7 +162,7 @@ class CustomerPlugin
         string $type = EmailNotificationInterface::NEW_ACCOUNT_EMAIL_REGISTERED,
         $backUrl = '',
         int $storeId = 0,
-        int $senderMailStoreId = null
+        ?int $senderMailStoreId = null
     ) {
         if (!$storeId) {
             $storeId = $this->getWebsiteStoreId($customer, $senderMailStoreId);

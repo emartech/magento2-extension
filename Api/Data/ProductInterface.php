@@ -88,7 +88,7 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setStoreData(array $storeData = null): ProductInterface;
+    public function setStoreData(?array $storeData = null): ProductInterface;
 
     /**
      * SetEntityId
@@ -106,7 +106,7 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setType(string $type = null): ProductInterface;
+    public function setType(?string $type = null): ProductInterface;
 
     /**
      * SetChildrenEntityIds
@@ -115,7 +115,7 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setChildrenEntityIds(array $childrenEntityIds = null): ProductInterface;
+    public function setChildrenEntityIds(?array $childrenEntityIds = null): ProductInterface;
 
     /**
      * SetCategories
@@ -124,7 +124,7 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setCategories(array $categories = null): ProductInterface;
+    public function setCategories(?array $categories = null): ProductInterface;
 
     /**
      * SetSku
@@ -133,7 +133,7 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setSku(string $sku = null): ProductInterface;
+    public function setSku(?string $sku = null): ProductInterface;
 
     /**
      * SetImages
@@ -142,7 +142,7 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setImages(ImagesInterface $images = null): ProductInterface;
+    public function setImages(?ImagesInterface $images = null): ProductInterface;
 
     /**
      * SetQty
@@ -151,7 +151,7 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setQty(float $qty = null): ProductInterface;
+    public function setQty(?float $qty = null): ProductInterface;
 
     /**
      * SetIsInStock
@@ -160,5 +160,5 @@ interface ProductInterface
      *
      * @return \Emartech\Emarsys\Api\Data\ProductInterface
      */
-    public function setIsInStock(int $isInStock = null): ProductInterface;
+    public function setIsInStock(?int $isInStock = null): ProductInterface;
 }

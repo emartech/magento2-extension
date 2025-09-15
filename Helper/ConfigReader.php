@@ -35,7 +35,7 @@ class ConfigReader extends AbstractHelper
      *
      * @return string|string[]
      */
-    public function getConfigValue(string $key, int $websiteId = null)
+    public function getConfigValue(string $key, ?int $websiteId = null)
     {
         return $this->config->getConfigValue($key, $websiteId);
     }
@@ -48,7 +48,7 @@ class ConfigReader extends AbstractHelper
      *
      * @return bool
      */
-    public function isEnabledForWebsite(string $key, int $websiteId = null): bool
+    public function isEnabledForWebsite(string $key, ?int $websiteId = null): bool
     {
         return $this->config->isEnabledForWebsite($key, $websiteId);
     }
@@ -61,7 +61,7 @@ class ConfigReader extends AbstractHelper
      *
      * @return bool
      */
-    public function isEnabledForStore(string $key, int $storeId = null): bool
+    public function isEnabledForStore(string $key, ?int $storeId = null): bool
     {
         return $this->config->isEnabledForStore($key, $storeId);
     }

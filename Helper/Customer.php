@@ -185,7 +185,7 @@ class Customer extends AbstractHelper
      *
      * @return Customer
      */
-    public function initCollection(int $websiteId = null): Customer
+    public function initCollection(?int $websiteId = null): Customer
     {
         $this->customerCollection = $this->customerCollectionFactory->create();
 
@@ -208,7 +208,7 @@ class Customer extends AbstractHelper
      *
      * @return array|CustomerInterface|false
      */
-    public function getOneCustomer(int $customerId, int $websiteId = null, bool $toArray = false)
+    public function getOneCustomer(int $customerId, ?int $websiteId = null, bool $toArray = false)
     {
         $this
             ->initCollection($websiteId)
@@ -236,7 +236,7 @@ class Customer extends AbstractHelper
      *
      * @return array
      */
-    public function handleIds(int $page, int $pageSize, int $websiteId = null): array
+    public function handleIds(int $page, int $pageSize, ?int $websiteId = null): array
     {
         return $this->customerResource->handleIds($page, $pageSize, $websiteId);
     }
@@ -248,7 +248,7 @@ class Customer extends AbstractHelper
      *
      * @return Customer
      */
-    public function joinSubscriptionStatus(int $websiteId = null): Customer
+    public function joinSubscriptionStatus(?int $websiteId = null): Customer
     {
         $this->customerResource->joinSubscriptionStatus(
             $this->customerCollection,
@@ -268,7 +268,7 @@ class Customer extends AbstractHelper
      *
      * @return Customer
      */
-    public function setWhere(string $linkField, int $min, int $max, int $websiteId = null): Customer
+    public function setWhere(string $linkField, int $min, int $max, ?int $websiteId = null): Customer
     {
         $this->customerCollection
             ->addFieldToFilter($linkField, ['from' => $min])
@@ -345,7 +345,7 @@ class Customer extends AbstractHelper
      *
      * @return array
      */
-    public function getCustomerExtraFields(int $websiteId = null): array
+    public function getCustomerExtraFields(?int $websiteId = null): array
     {
         if (null == $this->extraFields) {
             $this->extraFields = [];
@@ -382,7 +382,7 @@ class Customer extends AbstractHelper
      *
      * @return string[]
      */
-    public function getCustomerAddressExtraFields(int $websiteId = null): array
+    public function getCustomerAddressExtraFields(?int $websiteId = null): array
     {
         if (null == $this->extraAddressFields) {
             $this->extraAddressFields = [];
@@ -415,8 +415,8 @@ class Customer extends AbstractHelper
     public function getCustomersAttributeData(
         int $minId,
         int $maxId,
-        int $websiteId = null,
-        array $fields = null
+        ?int $websiteId = null,
+        ?array $fields = null
     ): Customer {
         if (!$fields) {
             $fields = array_merge(
@@ -455,8 +455,8 @@ class Customer extends AbstractHelper
     public function getCustomersAddressesAttributeData(
         int $minId,
         int $maxId,
-        int $websiteId = null,
-        array $fields = null
+        ?int $websiteId = null,
+        ?array $fields = null
     ): Customer {
         if (!$fields) {
             $fields = array_merge(
@@ -597,7 +597,7 @@ class Customer extends AbstractHelper
      *
      * @return array|CustomerInterface|null
      */
-    public function buildCustomerObject(CustomerModel $customer, int $websiteId = null, bool $toArray = false)
+    public function buildCustomerObject(CustomerModel $customer, ?int $websiteId = null, bool $toArray = false)
     {
         $billingAddress = $this->getAddressFromCustomer(
             $customer->getId(),
@@ -686,8 +686,8 @@ class Customer extends AbstractHelper
      */
     private function getAddressFromCustomer(
         int $customerId,
-        int $addressId = null,
-        int $websiteId = null,
+        ?int $addressId = null,
+        ?int $websiteId = null,
         bool $toArray = false
     ) {
         /** @var CustomerAddressInterface $address */

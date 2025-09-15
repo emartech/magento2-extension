@@ -26,3 +26,4 @@ Release notes:
 -------
 * Fix
   * Fixing type conversion for PHP 8.1.
+

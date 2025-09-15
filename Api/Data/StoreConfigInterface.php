@@ -28,7 +28,7 @@ interface StoreConfigInterface
      *
      * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface
      */
-    public function setStoreId(int $storeId = null): StoreConfigInterface;
+    public function setStoreId(?int $storeId = null): StoreConfigInterface;
 
     /**
      * SetSlug
@@ -37,5 +37,5 @@ interface StoreConfigInterface
      *
      * @return \Emartech\Emarsys\Api\Data\StoreConfigInterface
      */
-    public function setSlug(string $slug = null): StoreConfigInterface;
+    public function setSlug(?string $slug = null): StoreConfigInterface;
 }

@@ -33,7 +33,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setPrefix(string $prefix = null): CustomerAddressInterface;
+    public function setPrefix(?string $prefix = null): CustomerAddressInterface;
 
     /**
      * GetFirstname
@@ -49,7 +49,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setFirstname(string $firstName = null): CustomerAddressInterface;
+    public function setFirstname(?string $firstName = null): CustomerAddressInterface;
 
     /**
      * GetMiddlename
@@ -65,7 +65,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setMiddlename(string $middleName = null): CustomerAddressInterface;
+    public function setMiddlename(?string $middleName = null): CustomerAddressInterface;
 
     /**
      * GetLastname
@@ -81,7 +81,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setLastname(string $lastName = null): CustomerAddressInterface;
+    public function setLastname(?string $lastName = null): CustomerAddressInterface;
 
     /**
      * GetSuffix
@@ -104,7 +104,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setSuffix(string $suffix = null): CustomerAddressInterface;
+    public function setSuffix(?string $suffix = null): CustomerAddressInterface;
 
     /**
      * GetCompany
@@ -120,7 +120,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setCompany(string $company = null): CustomerAddressInterface;
+    public function setCompany(?string $company = null): CustomerAddressInterface;
 
     /**
      * GetStreet
@@ -136,7 +136,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setStreet(string $street = null): CustomerAddressInterface;
+    public function setStreet(?string $street = null): CustomerAddressInterface;
 
     /**
      * GetCity
@@ -152,7 +152,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setCity(string $city = null): CustomerAddressInterface;
+    public function setCity(?string $city = null): CustomerAddressInterface;
 
     /**
      * GetCountryId
@@ -168,7 +168,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setCountryId(string $countryId = null): CustomerAddressInterface;
+    public function setCountryId(?string $countryId = null): CustomerAddressInterface;
 
     /**
      * GetRegion
@@ -184,7 +184,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setRegion(string $region = null): CustomerAddressInterface;
+    public function setRegion(?string $region = null): CustomerAddressInterface;
 
     /**
      * GetPostcode
@@ -200,7 +200,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setPostcode(string $postCode = null): CustomerAddressInterface;
+    public function setPostcode(?string $postCode = null): CustomerAddressInterface;
 
     /**
      * GetTelephone
@@ -216,7 +216,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setTelephone(string $telephone = null): CustomerAddressInterface;
+    public function setTelephone(?string $telephone = null): CustomerAddressInterface;
 
     /**
      * GetFax
@@ -232,7 +232,7 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setFax(string $fax = null): CustomerAddressInterface;
+    public function setFax(?string $fax = null): CustomerAddressInterface;
 
     /**
      * SetExtraFields
@@ -241,5 +241,5 @@ interface CustomerAddressInterface
      *
      * @return \Emartech\Emarsys\Api\Data\CustomerAddressInterface
      */
-    public function setExtraFields(array $extraFields = null): CustomerAddressInterface;
+    public function setExtraFields(?array $extraFields = null): CustomerAddressInterface;
 }

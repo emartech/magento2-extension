@@ -155,7 +155,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setCity(string $city = null): CustomerAddressInterface
+    public function setCity(?string $city = null): CustomerAddressInterface
     {
         $this->setData(self::CITY_KEY, $city);
 
@@ -169,7 +169,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setCompany(string $company = null): CustomerAddressInterface
+    public function setCompany(?string $company = null): CustomerAddressInterface
     {
         $this->setData(self::COMPANY_KEY, $company);
 
@@ -183,7 +183,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setCountryId(string $countryId = null): CustomerAddressInterface
+    public function setCountryId(?string $countryId = null): CustomerAddressInterface
     {
         $this->setData(self::COUNTRY_ID_KEY, $countryId);
 
@@ -197,7 +197,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setFax(string $fax = null): CustomerAddressInterface
+    public function setFax(?string $fax = null): CustomerAddressInterface
     {
         $this->setData(self::FAX_KEY, $fax);
 
@@ -211,7 +211,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setFirstname(string $firstName = null): CustomerAddressInterface
+    public function setFirstname(?string $firstName = null): CustomerAddressInterface
     {
         $this->setData(self::FIRSTNAME_KEY, $firstName);
 
@@ -225,7 +225,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setLastname(string $lastName = null): CustomerAddressInterface
+    public function setLastname(?string $lastName = null): CustomerAddressInterface
     {
         $this->setData(self::LASTNAME_KEY, $lastName);
 
@@ -239,7 +239,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setMiddlename(string $middleName = null): CustomerAddressInterface
+    public function setMiddlename(?string $middleName = null): CustomerAddressInterface
     {
         $this->setData(self::MIDDLENAME_KEY, $middleName);
 
@@ -253,7 +253,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setPostcode(string $postCode = null): CustomerAddressInterface
+    public function setPostcode(?string $postCode = null): CustomerAddressInterface
     {
         $this->setData(self::POSTCODE_KEY, $postCode);
 
@@ -267,7 +267,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setPrefix(string $prefix = null): CustomerAddressInterface
+    public function setPrefix(?string $prefix = null): CustomerAddressInterface
     {
         $this->setData(self::PREFIX_KEY, $prefix);
 
@@ -281,7 +281,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setRegion(string $region = null): CustomerAddressInterface
+    public function setRegion(?string $region = null): CustomerAddressInterface
     {
         $this->setData(self::REGION_KEY, $region);
 
@@ -295,7 +295,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setStreet(string $street = null): CustomerAddressInterface
+    public function setStreet(?string $street = null): CustomerAddressInterface
     {
         $this->setData(self::STREET_KEY, $street);
 
@@ -309,7 +309,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setSuffix(string $suffix = null): CustomerAddressInterface
+    public function setSuffix(?string $suffix = null): CustomerAddressInterface
     {
         $this->setData(self::SUFFIX_KEY, $suffix);
 
@@ -323,7 +323,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setTelephone(string $telephone = null): CustomerAddressInterface
+    public function setTelephone(?string $telephone = null): CustomerAddressInterface
     {
         $this->setData(self::TELEPHONE_KEY, $telephone);
 
@@ -337,7 +337,7 @@ class CustomerAddress extends DataObject implements CustomerAddressInterface
      *
      * @return CustomerAddressInterface
      */
-    public function setExtraFields(array $extraFields = null): CustomerAddressInterface
+    public function setExtraFields(?array $extraFields = null): CustomerAddressInterface
     {
         $this->setData(self::EXTRA_FIELDS, $extraFields);
 

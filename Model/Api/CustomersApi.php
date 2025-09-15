@@ -107,11 +107,11 @@ class CustomersApi implements CustomersApiInterface
     public function get(
         int $page,
         int $pageSize,
-        string $websiteId = null,
-        string $storeId = null,
-        bool $onlyReg = null,
-        string $lastUpdatedFrom = null,
-        string $lastUpdatedTo = null
+        ?string $websiteId = null,
+        ?string $storeId = null,
+        ?bool $onlyReg = null,
+        ?string $lastUpdatedFrom = null,
+        ?string $lastUpdatedTo = null
     ): CustomersApiResponseInterface {
         $config = $this->configFactory->create();
 
@@ -152,7 +152,7 @@ class CustomersApi implements CustomersApiInterface
      *
      * @return CustomersApi
      */
-    private function handleWebsiteId(int $websiteId = null, bool $onlyReg = false): CustomersApi
+    private function handleWebsiteId(?int $websiteId = null, bool $onlyReg = false): CustomersApi
     {
         if ($onlyReg || $this->configShare->isWebsiteScope()) {
             $this->websiteId = $websiteId;
@@ -288,7 +288,7 @@ class CustomersApi implements CustomersApiInterface
      *
      * @return CustomersApi
      */
-    private function joinSubscriptionStatus(int $websiteId = null): CustomersApi
+    private function joinSubscriptionStatus(?int $websiteId = null): CustomersApi
     {
         $this->customerHelper->joinSubscriptionStatus($websiteId);
 
