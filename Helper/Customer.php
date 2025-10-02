@@ -281,6 +281,27 @@ class Customer extends AbstractHelper
     }
 
     /**
+     * Set date filter
+     *
+     * @param null|string $dateFrom
+     * @param null|string $dateTo
+     *
+     * @return Customer
+     */
+    public function setDateFilter(?string $dateFrom, ?string $dateTo): Customer
+    {
+        if ($dateFrom) {
+            $this->customerCollection->addFieldToFilter('updated_at', ['gteq' => $dateFrom]);
+        }
+
+        if ($dateTo) {
+            $this->customerCollection->addFieldToFilter('updated_at', ['lteq' => $dateTo]);
+        }
+
+        return $this;
+    }
+
+    /**
      * SetOrder
      *
      * @param string $linkField
