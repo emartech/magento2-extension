@@ -179,9 +179,44 @@ class OrdersApi implements OrdersApiInterface
         /** @var Order $order */
         foreach ($this->orderCollection as $order) {
             $order->setStoreName(str_replace(PHP_EOL, ' ', $order->getStoreName()));
+            $this->fixDoubleCompleteStatusHistory($order);
             $returnArray[] = $order;
         }
 
         return $returnArray;
+    }
+
+    /**
+     * Fix double "complete" status in status history
+     *
+     * @param Order $order
+     *
+     * @return void
+     */
+    private function fixDoubleCompleteStatusHistory(Order $order): void
+    {
+        $statusHistory = $order->getStatusHistories();
+        $filteredStatusHistory = [];
+
+        $isCompleteAlready = false;
+        $isFiltered = false;
+
+        $statusHistory = array_reverse($statusHistory);
+
+        foreach ($statusHistory as $status) {
+            if ($status->getStatus() == 'complete') {
+                if ($isCompleteAlready) {
+                    $isFiltered = true;
+                    continue;
+                }
+                $isCompleteAlready = true;
+            }
+            $filteredStatusHistory[] = $status;
+        }
+
+        if ($isFiltered) {
+            $filteredStatusHistory = array_reverse($filteredStatusHistory);
+            $order->setData('status_histories', $filteredStatusHistory);
+        }
     }
 }
