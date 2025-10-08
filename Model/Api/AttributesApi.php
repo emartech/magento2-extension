@@ -161,6 +161,16 @@ class AttributesApi implements AttributesApiInterface
                 ->setIsSystem((bool) $attribute->getIsSystem());
         }
 
+        if ($this->attributeCollection instanceof ProductAttributeCollection) {
+            $returnArray[] = $this->attributeFactory
+                ->create()
+                ->setCode('qty')
+                ->setName('Quantity')
+                ->setIsVisible(true)
+                ->setIsVisibleOnFront(true)
+                ->setIsSystem(true);
+        }
+
         return $returnArray;
     }
 
