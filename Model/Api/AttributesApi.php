@@ -165,7 +165,7 @@ class AttributesApi implements AttributesApiInterface
             $returnArray[] = $this->attributeFactory
                 ->create()
                 ->setCode('qty')
-                ->setName('Quantity')
+                ->setName('Qty')
                 ->setIsVisible(true)
                 ->setIsVisibleOnFront(true)
                 ->setIsSystem(true);
