@@ -1,6 +1,13 @@
 Release notes:
 ==============
 
+2.0.16
+-------
+* Fix
+  * Security patches
+  * Web behavior commands cart and purchase price handling
+  * Avoid order duplication during order sync
+
 2.0.15
 -------
 * New
