@@ -1,6 +1,18 @@
 Release notes:
 ==============
 
+2.0.17 (2026-03-12)
+-------
+* Fix
+  * Security update of test dependencies to the latest available packages
+
+2.0.16 (2025-12-03)
+-------
+* Fix
+    * Security update of test dependencies to the latest available packages
+    * Web behavior commands cart and purchase price handling
+    * Avoid order duplication during order sync
+
 2.0.15
 -------
 * New
