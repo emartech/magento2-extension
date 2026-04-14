@@ -1,6 +1,11 @@
 Release notes:
 ==============
 
+2.0.18 (2026-04-14)
+-------
+* Fix
+    * Product Sync field mapping - make 'qty' field selectable
+
 2.0.17 (2026-03-12)
 -------
 * Fix
