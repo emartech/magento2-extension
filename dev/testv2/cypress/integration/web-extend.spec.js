@@ -147,7 +147,7 @@ describe('Web extend scripts', function () {
       expect(orderData.items).to.be.eql([
         {
           item: '24-MB02',
-          price: 118,
+          price: 127.74,
           quantity: 2
         }
       ]);

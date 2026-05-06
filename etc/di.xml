@@ -58,6 +58,9 @@
     <type name="Magento\Customer\CustomerData\Customer">
         <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
     </type>
+    <type name="Magento\Checkout\CustomerData\ItemPool">
+        <plugin name="emartech_checkout_itempool_plugin" type="Emartech\Emarsys\CustomerData\ItemPool"/>
+    </type>
     <type name="Magento\Newsletter\Model\Subscriber">
         <plugin name="emarsys_newsletter" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
     </type>
