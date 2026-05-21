@@ -26,4 +26,4 @@ For development environment information refer to [dev README](dev/README.md).
 1.  ### Turn on the features
     Now you can start turning on the provided features. Note that some features and depending on each other, so for example you will not be able to turn on **Orders** until the initial **Customers** upload is finished.
 
-    Also note, that if your store does not use the Magento provided frontend, the **Web behavior tracking** feature will not work. You will have to implement tracking as described [here](https://help.emarsys.com/hc/en-us/articles/360005884393-tracking-code-Web-Extend).
+    Also note, that if your store does not use the Magento provided frontend, the **Web behavior tracking** feature will not work. You will have to implement tracking as described [here](https://help.sap.com/docs/SAP_EMARSYS/5d44574160f44536b0130abf58cb87cc/fdf71c5474c11014862cea4b1196072e.html?locale=en-UShttps://help.sap.com/docs/SAP_EMARSYS/5d44574160f44536b0130abf58cb87cc/fdf71c5474c11014862cea4b1196072e.html?locale=en-US).
