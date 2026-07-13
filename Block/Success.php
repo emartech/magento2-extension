@@ -105,7 +105,7 @@ class Success extends \Magento\Framework\View\Element\Template
                 if ($this->notBundleProduct($item) && $this->notConfigurableChild($item)) {
                     $qty = (int) $item->getQtyOrdered();
                     $sku = $item->getSku();
-                    $price = $item->getBaseRowTotal() - $item->getBaseDiscountAmount();
+                    $price = $item->getBaseRowTotalInclTax() - $item->getBaseDiscountAmount();
 
                     $items[] = [
                         'item'     => $sku,
