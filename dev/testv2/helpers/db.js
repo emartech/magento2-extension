@@ -5,8 +5,9 @@ const knex = require('knex');
 module.exports = knex(
   process.env.CYPRESS_baseUrl
     ? {
-      client: 'mysql',
+      client: 'mysql2',
       connection: {
+        decimalNumbers: true,
         host: '127.0.0.1',
         port: 13306,
         user: 'magento',
@@ -15,8 +16,9 @@ module.exports = knex(
       }
     }
     : {
-      client: 'mysql',
+      client: 'mysql2',
       connection: {
+        decimalNumbers: true,
         host: process.env.MYSQL_HOST,
         user: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASSWORD,
