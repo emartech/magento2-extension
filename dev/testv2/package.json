@@ -63,8 +63,9 @@
     "brace-expansion@1": "^1.1.18",
     "brace-expansion@2": "^2.1.4",
     "diff": "^8.0.4",
-    "fast-uri": "^3.1.5",
-    "js-yaml": "^4.3.1",
+    "fast-uri": "^3.1.8",
+    "js-yaml": "^4.3.2",
+    "qs": "^6.16.0",
     "serialize-javascript": "^7.1.0",
     "undici@7": "^7.29.0"
   }
