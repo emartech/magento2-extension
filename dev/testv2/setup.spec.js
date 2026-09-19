@@ -1,10 +1,10 @@
 'use strict';
 
 const chai = require('chai');
-const chaiString = require('chai-string');
+const chaiString = require('chai-string').default;
 const chaiSubset = require('chai-subset');
 const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
+const sinonChai = require('sinon-chai').default;
 const url = require('url');
 const Magento2ApiClient = require('@itg-commerce/magento2-api');
 const axios = require('axios');
