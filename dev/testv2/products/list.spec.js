@@ -134,6 +134,37 @@ describe('Products endpoint', function () {
         expect(updatedProduct.store_data[0].extra_fields.length).to.be.equal(2);
     });
 
+    context('qty in extra_fields', function () {
+        before(async function () {
+            await this.magentoApi.execute('attributes', 'set', {
+                websiteId: 0,
+                type: 'product',
+                attributeCodes: ['qty']
+            });
+        });
+
+        after(async function () {
+            await this.magentoApi.execute('attributes', 'set', {
+                websiteId: 0,
+                type: 'product',
+                attributeCodes: ['emarsys_test_fuel_type', 'country_of_manufacture']
+            });
+        });
+
+        it('returns qty from stock data in extra_fields', async function () {
+            const {products} = await this.magentoApi.execute('products', 'get', {page: 1, limit: 3, storeIds: [0, 1]});
+
+            products.forEach((product) => {
+                product.store_data.forEach((storeData) => {
+                    const qtyField = storeData.extra_fields.find((field) => field.key === 'qty');
+
+                    expect(qtyField).not.to.be.undefined;
+                    expect(qtyField.value).to.be.equal(String(product.qty));
+                });
+            });
+        });
+    });
+
     it('returns different prices for the same product on multiple websites', async function () {
         const sku = '24-MB01';
 

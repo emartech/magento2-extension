@@ -56,6 +56,20 @@ describe('Attributes endpoint', function () {
 
       expect(mappedAttributes).to.containSubset(productExtraAttributes);
     });
+
+    it('should fetch qty as a selectable system attribute for products', async function () {
+      const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'product' });
+      const qtyAttributes = attributes.filter(attribute => attribute.code === 'qty');
+
+      expect(qtyAttributes.length).to.equal(1);
+      expect(qtyAttributes[0]).to.containSubset({ code: 'qty', name: 'Qty', is_system: true });
+    });
+
+    it('should not add qty to non-product attributes', async function () {
+      const { attributes } = await this.magentoApi.execute('attributes', 'get', { type: 'customer' });
+
+      expect(attributes.find(attribute => attribute.code === 'qty')).to.be.undefined;
+    });
   });
 
   describe('set', function () {

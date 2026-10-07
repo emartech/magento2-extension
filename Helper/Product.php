@@ -750,6 +750,22 @@ class Product extends AbstractHelper
             if ($this->getProductExtraFields()) {
                 $extraFields = [];
                 foreach ($this->getProductExtraFields() as $field) {
+                    if ($field === ProductInterface::QTY_KEY) {
+                        $extraField =
+                            $this->extraFieldsFactory
+                                ->create()
+                                ->setKey($field)
+                                ->setValue((string) $this->handleQty($productEntityId))
+                                ->setTextValue(null);
+
+                        if ($toArray) {
+                            $extraField = $extraField->getData();
+                        }
+
+                        $extraFields[] = $extraField;
+                        continue;
+                    }
+
                     $value = $this->getStoreData($productId, $storeId, $field);
                     if ($value) {
                         $textValue = $this->getStoreAttributeValue(

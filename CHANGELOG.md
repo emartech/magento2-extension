@@ -1,6 +1,11 @@
 Release notes:
 ==============
 
+2.0.19 (2026-09-25)
+-------
+* Fix
+    * Product Sync - include 'qty' in extra_fields of products API response
+
 2.0.18 (2026-04-14)
 -------
 * Fix
