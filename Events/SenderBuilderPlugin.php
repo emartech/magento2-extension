@@ -115,7 +115,9 @@ class SenderBuilderPlugin
             $reflection = new ReflectionClass(SenderBuilder::class);
             /** @var OrderIdentity $identityContainer */
             $identityContainer = $reflection->getProperty('identityContainer');
-            $identityContainer->setAccessible(true);
+            if (PHP_VERSION_ID < 80100) {
+                $identityContainer->setAccessible(true);
+            }
             $identityContainer = $identityContainer->getValue($senderBuilder);
             $storeId = $identityContainer->getStore()->getStoreId();
             $this->websiteId = $identityContainer->getStore()->getWebsiteId();
@@ -134,7 +136,9 @@ class SenderBuilderPlugin
 
             /** @var TemplateContainer $templateContainer */
             $templateContainer = $reflection->getProperty('templateContainer');
-            $templateContainer->setAccessible(true);
+            if (PHP_VERSION_ID < 80100) {
+                $templateContainer->setAccessible(true);
+            }
             $templateContainer = $templateContainer->getValue($senderBuilder);
 
             $data = $this->parseTemplateVars($templateContainer);
