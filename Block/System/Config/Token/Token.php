@@ -45,6 +45,18 @@ class Token extends Field
     {
         $connectToken = $this->integrationHelper->generateConnectToken();
 
-        return '<textarea disabled>' . $connectToken . '</textarea>';
+        $message = __(
+            'The current token stops working immediately. Emarsys sync will fail until the new token is pasted into Emarsys. Continue?'
+        );
+        $onClick = sprintf(
+            'deleteConfirm(%s, %s, {data: {}})',
+            json_encode((string) $message),
+            json_encode($this->getUrl('emarsys/token/rotate'))
+        );
+
+        return '<textarea disabled>' . $connectToken . '</textarea>'
+            . '<button type="button" class="action-default" style="margin-top:10px" onclick="'
+            . $this->_escaper->escapeHtmlAttr($onClick) . '">'
+            . $this->_escaper->escapeHtml(__('Generate new token')) . '</button>';
     }
 }

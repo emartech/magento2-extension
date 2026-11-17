@@ -12,6 +12,8 @@ use Magento\Integration\Model\Integration as IntegrationModel;
 use Magento\Integration\Model\IntegrationService;
 use Magento\Integration\Model\Oauth\Token;
 use Magento\Integration\Model\Oauth\Token\Provider;
+use Magento\Integration\Model\Oauth\TokenFactory;
+use Magento\Integration\Model\ResourceModel\Oauth\Token as TokenResource;
 use Magento\Setup\Exception as SetupException;
 
 class Integration extends AbstractHelper
@@ -62,6 +64,16 @@ class Integration extends AbstractHelper
      */
     private $context;
 
+    /**
+     * @var TokenFactory
+     */
+    private $tokenFactory;
+
+    /**
+     * @var TokenResource
+     */
+    private $tokenResource;
+
     public const MAGENTO_VERSION = 2;
 
     /**
@@ -74,6 +86,8 @@ class Integration extends AbstractHelper
      * @param Token                $token
      * @param Provider             $tokenProvider
      * @param WriterInterface      $configWriter
+     * @param TokenFactory         $tokenFactory
+     * @param TokenResource        $tokenResource
      */
     public function __construct(
         Context $context,
@@ -82,7 +96,9 @@ class Integration extends AbstractHelper
         Json $json,
         Token $token,
         Provider $tokenProvider,
-        WriterInterface $configWriter
+        WriterInterface $configWriter,
+        TokenFactory $tokenFactory,
+        TokenResource $tokenResource
     ) {
         parent::__construct($context);
         $this->context = $context;
@@ -92,6 +108,42 @@ class Integration extends AbstractHelper
         $this->tokenProvider = $tokenProvider;
         $this->configWriter = $configWriter;
         $this->json = $json;
+        $this->tokenFactory = $tokenFactory;
+        $this->tokenResource = $tokenResource;
+    }
+
+    /**
+     * RotateToken
+     *
+     * Replaces the API token of the Emarsys integration. The integration, its
+     * permissions and the Emarsys-side store mapping stay unchanged; the old
+     * token stops working immediately.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function rotateToken(): void
+    {
+        $integration = $this->getExistingIntegration();
+        if ($integration->getId() === null) {
+            $this->create();
+            return;
+        }
+
+        $consumerId = (int) $integration->getConsumerId();
+        $connection = $this->tokenResource->getConnection();
+        $connection->beginTransaction();
+        try {
+            $connection->delete(
+                $this->tokenResource->getMainTable(),
+                ['consumer_id = ?' => $consumerId]
+            );
+            $this->tokenFactory->create()->createVerifierToken($consumerId);
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            throw $e;
+        }
     }
 
     /**
